@@ -102,7 +102,7 @@ class ServiceCallTileFeature extends LitElement {
 				height: 40px;
 				border-radius: 10px;
 				border: none;
-				margin: 0px;
+				margin: 0 6px;
 				padding: 0px;
 				box-sizing: border-box;
 				line-height: 0;
