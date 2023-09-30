@@ -1,11 +1,9 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { IConfig } from './models/interfaces';
 
-@customElement('service-call')
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class ServiceCallTileFeature extends LitElement {
 	@property({ attribute: false })
 	hass!: HomeAssistant;
@@ -104,6 +102,8 @@ class ServiceCallTileFeature extends LitElement {
 		`;
 	}
 }
+
+customElements.define('service-call', ServiceCallTileFeature);
 
 window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({
