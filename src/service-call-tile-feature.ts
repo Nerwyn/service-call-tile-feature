@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -27,8 +27,12 @@ class ServiceCallTileFeature extends LitElement {
 	static getStubConfig() {
 		return {
 			type: 'custom:service-call',
-			service: '',
-			data: {},
+			buttons: [
+				{
+					service: '',
+					data: {},
+				},
+			],
 		};
 	}
 
@@ -39,14 +43,19 @@ class ServiceCallTileFeature extends LitElement {
 		this.config = config;
 	}
 
-	_press(e: Event) {
-		e.stopPropagation();
-		const [domain, entity] = this.config.service.split('.');
+	_press(e: MouseEvent) {
+		e.stopImmediatePropagation();
+		const i = parseInt(
+			(e.currentTarget as HTMLButtonElement).getAttribute('itemid') ||
+				'-1',
+		);
+		const button = this.config.buttons[i];
 
-		const data = JSON.parse(JSON.stringify(this.config.data || {}));
+		const data = JSON.parse(JSON.stringify(button.data || {}));
 		if (!('entity_id' in data) || data.entity_id == '') {
 			data.entity_id = this.stateObj.entity_id;
 		}
+		const [domain, entity] = button.service.split('.');
 
 		this.hass.callService(domain, entity, data);
 	}
@@ -56,15 +65,16 @@ class ServiceCallTileFeature extends LitElement {
 			return null;
 		}
 
-		return html`
-			<div class="container">
-				<button class="button" @click=${this._press}>
-					<ha-icon
-						.icon=${this.config.icon || 'mdi:radiobox-marked'}
-					></ha-icon>
-				</button>
-			</div>
-		`;
+		const buttons: TemplateResult[] = [];
+		for (const [i, button] of this.config.buttons.entries()) {
+			buttons.push(
+				html`<button class="button" itemid=${i} "@click" =${this._press}>
+					<ha-icon .icon=${button.icon}></ha-icon>
+				</button>`,
+			);
+		}
+
+		return html`<div class="container">${buttons.join('')}</div> `;
 	}
 
 	static get styles() {
