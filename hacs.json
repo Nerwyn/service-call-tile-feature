@@ -2,5 +2,5 @@
 	"name": "Service Call Tile Feature for Home Assistant Tile Card",
 	"content_in_root": false,
 	"homeassistant": "2023.9.3",
-	"filename": "service-call-tile-features.js"
+	"filename": "service-call-tile-feature.js"
 }
