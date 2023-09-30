@@ -109,6 +109,5 @@ window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({
 	type: 'service-call',
 	name: 'Service Call',
-	supported: true,
 	configurable: true,
 });
