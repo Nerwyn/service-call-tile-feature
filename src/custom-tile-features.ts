@@ -87,7 +87,7 @@ class ButtonPressTileFeature extends LitElement {
 				align-items: center;
 				justify-content: center;
 				width: 100%;
-				height: 100%;
+				height: 40px;
 				border-radius: var(--control-button-border-radius);
 				border: none;
 				margin: 0px;
@@ -97,7 +97,7 @@ class ButtonPressTileFeature extends LitElement {
 				outline: 0px;
 				overflow: hidden;
 				background: 0px 0px;
-				--mdc-ripple-color: var(--control-button-background-color);
+				--mdc-ripple-color: var(--disabled-color);
 				font-size: inherit;
 				color: inherit;
 			}
