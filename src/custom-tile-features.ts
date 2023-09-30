@@ -62,7 +62,7 @@ class ButtonPressTileFeature extends LitElement {
 		return html`
 			<div class="container">
 				<button class="button" @click=${this._press}>
-					<ha-icon .icon="mdi:radiobox-marked"></ha-icon>
+					<ha-icon .icon=mdi:radiobox-marked></ha-icon>
 				</button>
 			</div>
 		`;
@@ -79,7 +79,7 @@ class ButtonPressTileFeature extends LitElement {
 
 			.button {
 				z-index: 9 !important;
-				background-color: var(--background-color);
+				background-color: var(--secondary-background-color);
 				transition: background-color 180ms ease-in-out;
 				position: relative;
 				cursor: pointer;
