@@ -2,19 +2,15 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { IConfig } from './models/interfaces';
 
-const supportsButtonPressTileFeature = (stateObj: HassEntity) => {
-	const domain = stateObj.entity_id.split('.')[0];
-	return domain === 'button';
-};
-
-@customElement('button-press')
+@customElement('service-call')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class ButtonPress extends LitElement {
+class ServiceCallTileFeature extends LitElement {
 	@property({ attribute: false })
 	hass!: HomeAssistant;
 	@property({ attribute: false })
-	private config!: Record<string, string>;
+	private config!: IConfig;
 	@property({ attribute: false })
 	private stateObj!: HassEntity;
 
@@ -32,12 +28,15 @@ class ButtonPress extends LitElement {
 
 	static getStubConfig() {
 		return {
-			type: 'custom:button-press-tile-feature',
-			label: 'Press',
+			type: 'custom:service-call',
+			service: '',
+			data: {
+				entity_id: '',
+			},
 		};
 	}
 
-	setConfig(config: Record<string, string>) {
+	setConfig(config: IConfig) {
 		if (!config) {
 			throw new Error('Invalid configuration');
 		}
@@ -46,18 +45,16 @@ class ButtonPress extends LitElement {
 
 	_press(e: Event) {
 		e.stopPropagation();
-		this.hass.callService('button', 'press', {
-			entity_id: this.stateObj.entity_id,
-		});
+		const [domain, entity] = this.config.service.split('.');
+		this.hass.callService(
+			domain,
+			entity,
+			this.config.data || { entity_id: this.stateObj.entity_id },
+		);
 	}
 
 	render() {
-		if (
-			!this.config ||
-			!this.hass ||
-			!this.stateObj ||
-			!supportsButtonPressTileFeature(this.stateObj)
-		) {
+		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
 		}
 
@@ -110,8 +107,8 @@ class ButtonPress extends LitElement {
 
 window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({
-	type: 'button-press',
-	name: 'Button press',
-	// supported: supportsButtonPressTileFeature, // Optional
-	configurable: true, // Optional - defaults to false
+	type: 'service-call',
+	name: 'Service Call',
+	supported: true,
+	configurable: true,
 });
