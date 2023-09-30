@@ -74,7 +74,7 @@ class ServiceCallTileFeature extends LitElement {
 			);
 		}
 
-		return html`<div class="container">${buttons.join('')}</div> `;
+		return html`<div class="container">${buttons}</div> `;
 	}
 
 	static get styles() {
