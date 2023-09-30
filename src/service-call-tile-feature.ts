@@ -87,11 +87,17 @@ class ServiceCallTileFeature extends LitElement {
 			.row {
 				display: flex;
 				flex-direction: row;
+				flex-flow: row;
+				justify-content: center;
+				align-items: center;
 				padding: 0 12px 12px 12px;
 				width: auto;
 			}
 			.container {
-				display: block;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: relative;
 				height: 40px;
 				width: 100%;
 				border-radius: 10px;
@@ -111,14 +117,18 @@ class ServiceCallTileFeature extends LitElement {
 				transition: background-color 180ms ease-in-out;
 				position: relative;
 				cursor: pointer;
+				height: 100%;
+				width: 100%;
+				border-radius: 10px;
+				border: none;
 			}
 			@media (hover: hover) {
 				.button:hover {
-					opacity: 0.6;
+					opacity: 0.5;
 				}
 			}
 			.button:active {
-				opacity: 0.6;
+				opacity: 0.5;
 			}
 		`;
 	}
