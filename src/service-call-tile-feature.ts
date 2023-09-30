@@ -28,9 +28,7 @@ class ServiceCallTileFeature extends LitElement {
 		return {
 			type: 'custom:service-call',
 			service: '',
-			data: {
-				entity_id: '',
-			},
+			data: {},
 		};
 	}
 
@@ -44,11 +42,11 @@ class ServiceCallTileFeature extends LitElement {
 	_press(e: Event) {
 		e.stopPropagation();
 		const [domain, entity] = this.config.service.split('.');
-		this.hass.callService(
-			domain,
-			entity,
-			this.config.data || { entity_id: this.stateObj.entity_id },
-		);
+		const data = this.config.data;
+		if (!data.entity_id) {
+			data.entity_id = this.stateObj.entity_id;
+		}
+		this.hass.callService(domain, entity, data);
 	}
 
 	render() {
@@ -75,7 +73,6 @@ class ServiceCallTileFeature extends LitElement {
 				padding: 0 12px 12px 12px;
 				width: auto;
 			}
-
 			.button {
 				z-index: 9 !important;
 				background-color: var(--secondary-background-color);
@@ -95,9 +92,11 @@ class ServiceCallTileFeature extends LitElement {
 				line-height: 0;
 				outline: 0px;
 				overflow: hidden;
-				--mdc-ripple-color: var(--disabled-color);
 				font-size: inherit;
 				color: inherit;
+			}
+			.button:hover {
+				background-color: var(--disabled-color);
 			}
 		`;
 	}
