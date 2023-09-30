@@ -61,15 +61,20 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	render() {
-		if (!this.config || !this.hass || !this.stateObj) {
+		if (
+			!this.config ||
+			!this.config.buttons.length ||
+			!this.hass ||
+			!this.stateObj
+		) {
 			return null;
 		}
 
 		const buttons: TemplateResult[] = [];
-		for (const [i, button] of this.config.buttons.entries()) {
+		for (const [i, entry] of this.config.buttons.entries()) {
 			buttons.push(
 				html`<button class="button" itemid=${i} "@click" =${this._press}>
-					<ha-icon .icon=${button.icon}></ha-icon>
+					<ha-icon .icon=${entry.icon}></ha-icon>
 				</button>`,
 			);
 		}
