@@ -14,15 +14,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Nerwyn/custom-tile-features.git"
+		"url": "git+https://github.com/Nerwyn/service-call-tile-feature.git"
 	},
 	"keywords": [],
 	"author": "Nerwyn",
 	"license": "Apache-2.0",
 	"bugs": {
-		"url": "https://github.com/Nerwyn/custom-tile-features/issues"
+		"url": "https://github.com/Nerwyn/service-call-tile-feature/issues"
 	},
-	"homepage": "https://github.com/Nerwyn/custom-tile-features#readme",
+	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"husky": {
 		"hooks": {
 			"pre-commit": "pretty-quick --staged"
