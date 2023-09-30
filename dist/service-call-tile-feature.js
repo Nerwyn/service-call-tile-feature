@@ -15,7 +15,6 @@
 				width: auto;
 			}
 			.button {
-				z-index: 9 !important;
 				background-color: var(--secondary-background-color);
 				transition: background-color 180ms ease-in-out;
 				position: relative;

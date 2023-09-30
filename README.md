@@ -1,2 +1,2 @@
 # Service Call Tile Feature
-Home Assistant Tile Card Custom Features
+Call any service via a tile button
