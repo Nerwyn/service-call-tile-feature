@@ -60,37 +60,43 @@ class ButtonPressTileFeature extends LitElement {
 		}
 
 		return html`
-			<div class="container">
-				<button class="button" @click=${this._press}>
-					${this.config.label || 'Press'}
-				</button>
-			</div>
+			<ha-control-button>
+				<button
+					type="button"
+					class="button"
+					@click=${this._press}
+				></button>
+				<ha-icon .icon="mdi:radiobox-marked"> </ha-icon>
+			</ha-control-button>
 		`;
 	}
 
 	static get styles() {
 		return css`
-			.container {
-				display: flex;
-				flex-direction: row;
-				padding: 0 12px 12px 12px;
-				width: auto;
-			}
 			.button {
-				display: block;
-				width: 100%;
-				height: 40px;
-				border-radius: 6px;
+				z-index: 9;
 				border: none;
-				background-color: #eeeeee;
-				cursor: pointer;
+				background-color: var(--control-button-background-color);
 				transition: background-color 180ms ease-in-out;
-			}
-			.button:hover {
-				background-color: #dddddd;
-			}
-			.button:focus {
-				background-color: #cdcdcd;
+				position: relative;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				height: 100%;
+				border-radius: var(--control-button-border-radius);
+				border: none;
+				margin: 0px;
+				padding: 0px;
+				box-sizing: border-box;
+				line-height: 0;
+				outline: 0px;
+				overflow: hidden;
+				background: 0px 0px;
+				--mdc-ripple-color: var(--control-button-background-color);
+				font-size: inherit;
+				color: inherit;
 			}
 		`;
 	}
