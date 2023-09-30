@@ -60,21 +60,23 @@ class ButtonPressTileFeature extends LitElement {
 		}
 
 		return html`
-			<ha-control-button>
-				<button
-					type="button"
-					class="button"
-					@click=${this._press}
-				></button>
-				<ha-icon .icon="mdi:radiobox-marked"> </ha-icon>
-			</ha-control-button>
+			<ha-control-button-group>
+				<ha-control-button>
+					<button
+						type="button"
+						class="button"
+						@click=${this._press}
+					></button>
+					<ha-icon .icon="mdi:radiobox-marked"></ha-icon>
+				</ha-control-button>
+			</ha-control-button-group>
 		`;
 	}
 
 	static get styles() {
 		return css`
 			.button {
-				z-index: 9;
+				z-index: 9 !important;
 				border: none;
 				background-color: var(--control-button-background-color);
 				transition: background-color 180ms ease-in-out;
