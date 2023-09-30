@@ -1,9 +1,9 @@
 /*! For license information please see custom-tile-features.js.LICENSE.txt */
 (()=>{"use strict";var t={141:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var n,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)r=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(n=t[l])&&(r=(o<3?n(r):o>3?n(e,i,r):n(e,i))||r);return o>3&&r&&Object.defineProperty(e,i,r),r};Object.defineProperty(e,"__esModule",{value:!0});const n=i(62),o=i(595);class r extends n.LitElement{constructor(){super()}static get properties(){return{hass:{},config:{},stateObj:{}}}static getStubConfig(){return{type:"custom:button-press-tile-feature",label:"Press"}}setConfig(t){if(!t)throw new Error("Invalid configuration");this.config=t}_press(t){t.stopPropagation(),this.hass.callService("button","press",{entity_id:this.stateObj.entity_id})}render(){return this.config&&this.hass&&this.stateObj&&"button"===this.stateObj.entity_id.split(".")[0]?n.html`
 			<div class="container">
-				<ha-icon-button class="button" @click=${this._press}>
+				<button class="button" @click=${this._press}>
 					<ha-icon .icon="mdi:radiobox-marked"></ha-icon>
-				</ha-icon-button>
+				</button>
 			</ha-control-button-group>
 		`:null}static get styles(){return n.css`
 			.container {
