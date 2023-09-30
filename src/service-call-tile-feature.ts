@@ -68,34 +68,32 @@ class ServiceCallTileFeature extends LitElement {
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
 			buttons.push(
-				html`<button class="button" itemid=${i} @click=${this._press}>
+				html`<div class="container">
+					<button
+						class="button"
+						itemid=${i}
+						@click=${this._press}
+					></button>
 					<ha-icon .icon=${entry.icon}></ha-icon>
-				</button>`,
+				</div>`,
 			);
 		}
 
-		return html`<div class="container">${buttons}</div> `;
+		return html`<div class="row">${buttons}</div> `;
 	}
 
 	static get styles() {
 		return css`
-			.container {
+			.row {
 				display: flex;
 				flex-direction: row;
 				padding: 0 12px 12px 12px;
 				width: auto;
 			}
-			.button {
-				background-color: var(--disabled-color);
-				opacity: 0.2;
-				transition: background-color 180ms ease-in-out;
-				position: relative;
-				cursor: pointer;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				width: 100%;
+			.container {
+				display: block;
 				height: 40px;
+				width: 100%;
 				border-radius: 10px;
 				border: none;
 				margin: 0 6px;
@@ -107,13 +105,20 @@ class ServiceCallTileFeature extends LitElement {
 				font-size: inherit;
 				color: inherit;
 			}
+			.button {
+				background-color: var(--disabled-color);
+				opacity: 0.2;
+				transition: background-color 180ms ease-in-out;
+				position: relative;
+				cursor: pointer;
+			}
 			@media (hover: hover) {
 				.button:hover {
-					opacity: 0.8;
+					opacity: 0.6;
 				}
 			}
 			.button:active {
-				opacity: 0.8;
+				opacity: 0.6;
 			}
 		`;
 	}
