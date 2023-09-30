@@ -8,9 +8,9 @@ const supportsButtonPressTileFeature = (stateObj: HassEntity) => {
 	return domain === 'button';
 };
 
-@customElement('button-press-tile-feature')
+@customElement('button-press')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class ButtonPressTileFeature extends LitElement {
+class ButtonPress extends LitElement {
 	@property({ attribute: false })
 	hass!: HomeAssistant;
 	@property({ attribute: false })
@@ -64,7 +64,9 @@ class ButtonPressTileFeature extends LitElement {
 		return html`
 			<div class="container">
 				<button class="button" @click=${this._press}>
-					<ha-icon .icon=${this.config.icon}></ha-icon>
+					<ha-icon
+						.icon=${this.config.icon || 'mdi:radiobox-marked'}
+					></ha-icon>
 				</button>
 			</div>
 		`;
