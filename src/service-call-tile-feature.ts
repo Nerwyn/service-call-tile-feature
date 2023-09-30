@@ -102,6 +102,9 @@ class ServiceCallTileFeature extends LitElement {
 					background-color: var(--primary-background-color);
 				}
 			}
+			.button:active {
+				background-color: var(--primary-background-color);
+			}
 		`;
 	}
 }
