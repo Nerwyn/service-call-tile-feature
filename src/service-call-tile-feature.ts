@@ -61,11 +61,7 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	render() {
-		if (
-			!this.config ||
-			!this.hass ||
-			!this.stateObj
-		) {
+		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
 		}
 
@@ -90,7 +86,8 @@ class ServiceCallTileFeature extends LitElement {
 				width: auto;
 			}
 			.button {
-				background-color: var(--secondary-background-color);
+				background-color: var(--disabled-color);
+				opacity: 0.2;
 				transition: background-color 180ms ease-in-out;
 				position: relative;
 				cursor: pointer;
@@ -112,11 +109,11 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			@media (hover: hover) {
 				.button:hover {
-					background-color: var(--primary-background-color);
+					opacity: 0.8;
 				}
 			}
 			.button:active {
-				background-color: var(--primary-background-color);
+				opacity: 0.8;
 			}
 		`;
 	}
