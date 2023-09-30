@@ -97,8 +97,10 @@ class ServiceCallTileFeature extends LitElement {
 				font-size: inherit;
 				color: inherit;
 			}
-			.button:hover {
-				background-color: var(--primary-background-color);
+			@media (hover: hover) {
+				.button:hover {
+					background-color: var(--primary-background-color);
+				}
 			}
 		`;
 	}
