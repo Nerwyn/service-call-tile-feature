@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 
@@ -8,6 +8,8 @@ const supportsButtonPressTileFeature = (stateObj: HassEntity) => {
 	return domain === 'button';
 };
 
+@customElement('button-press-tile-feature')
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class ButtonPressTileFeature extends LitElement {
 	@property({ attribute: false })
 	hass!: HomeAssistant;
@@ -62,7 +64,7 @@ class ButtonPressTileFeature extends LitElement {
 		return html`
 			<div class="container">
 				<button class="button" @click=${this._press}>
-					<ha-icon .icon=mdi:radiobox-marked></ha-icon>
+					<ha-icon .icon=${this.config.icon}></ha-icon>
 				</button>
 			</div>
 		`;
@@ -104,11 +106,9 @@ class ButtonPressTileFeature extends LitElement {
 	}
 }
 
-customElements.define('button-press-tile-feature', ButtonPressTileFeature);
-
 window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({
-	type: 'button-press-tile-feature',
+	type: 'button-press',
 	name: 'Button press',
 	// supported: supportsButtonPressTileFeature, // Optional
 	configurable: true, // Optional - defaults to false
