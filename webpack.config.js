@@ -3,11 +3,11 @@ const path = require('path');
 module.exports = {
 	mode: 'production',
 	entry: {
-		main: './src/custom-tile-features.ts',
+		main: './src/service-call-tile-feature.ts',
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
-		filename: 'custom-tile-features.js',
+		filename: 'service-call-tile-feature.js',
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js'],
