@@ -63,7 +63,6 @@ class ServiceCallTileFeature extends LitElement {
 	render() {
 		if (
 			!this.config ||
-			!this.config.buttons.length ||
 			!this.hass ||
 			!this.stateObj
 		) {
