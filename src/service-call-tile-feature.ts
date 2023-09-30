@@ -42,8 +42,8 @@ class ServiceCallTileFeature extends LitElement {
 	_press(e: Event) {
 		e.stopPropagation();
 		const [domain, entity] = this.config.service.split('.');
-		const data = this.config.data;
-		if (!data.entity_id) {
+		const data = this.config.data || {};
+		if (!('entity_id' in data) || data.entity_id == '') {
 			data.entity_id = this.stateObj.entity_id;
 		}
 		this.hass.callService(domain, entity, data);
