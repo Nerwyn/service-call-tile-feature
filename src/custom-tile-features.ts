@@ -79,7 +79,7 @@ class ButtonPressTileFeature extends LitElement {
 
 			.button {
 				z-index: 9 !important;
-				background-color: var(--control-button-background-color);
+				background-color: var(--disabled-color);
 				transition: background-color 180ms ease-in-out;
 				position: relative;
 				cursor: pointer;
