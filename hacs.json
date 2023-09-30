@@ -1,0 +1,6 @@
+{
+	"name": "Custom Tile Features for Home Assistant Tile Card",
+	"content_in_root": false,
+	"homeassistant": "2023.9.3",
+	"filename": "custom-tile-features.js"
+}

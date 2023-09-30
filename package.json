@@ -1,0 +1,47 @@
+{
+	"name": "custom-tile-features",
+	"version": "0.0.1",
+	"description": "Custom Tile Features for Home Assistant Tile Card",
+	"main": "./dist/custom-tile-features.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "npx webpack",
+		"prelint": "tsc --noemit",
+		"lint": "eslint ./src --fix --ext .ts --config ./.eslintrc.js",
+		"pretty-quick": "pretty-quick",
+		"postinstall": "husky install",
+		"build-css": "tcm src"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Nerwyn/custom-tile-features.git"
+	},
+	"keywords": [],
+	"author": "Nerwyn",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/Nerwyn/custom-tile-features/issues"
+	},
+	"homepage": "https://github.com/Nerwyn/custom-tile-features#readme",
+	"husky": {
+		"hooks": {
+			"pre-commit": "pretty-quick --staged"
+		}
+	},
+	"dependencies": {
+		"custom-card-helpers": "^1.9.0",
+		"lit": "^2.8.0"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^6.6.0",
+		"@typescript-eslint/parser": "^6.6.0",
+		"eslint": "^8.48.0",
+		"husky": "^8.0.3",
+		"prettier": "^3.0.3",
+		"pretty-quick": "^3.1.3",
+		"ts-loader": "^9.4.4",
+		"typescript": "^5.2.2",
+		"webpack": "^5.88.2",
+		"webpack-cli": "^5.1.4"
+	}
+}
