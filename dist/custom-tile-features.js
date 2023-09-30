@@ -4,7 +4,7 @@
 				<button class="button" @click=${this._press}>
 					<ha-icon .icon="mdi:radiobox-marked"></ha-icon>
 				</button>
-			</ha-control-button-group>
+			</div>
 		`:null}static get styles(){return n.css`
 			.container {
 				display: flex;

@@ -64,7 +64,7 @@ class ButtonPressTileFeature extends LitElement {
 				<button class="button" @click=${this._press}>
 					<ha-icon .icon="mdi:radiobox-marked"></ha-icon>
 				</button>
-			</ha-control-button-group>
+			</div>
 		`;
 	}
 
