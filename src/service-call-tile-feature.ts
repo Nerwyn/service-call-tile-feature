@@ -67,6 +67,8 @@ class ServiceCallTileFeature extends LitElement {
 
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
+			const button = [];
+
 			// Button color and opacity
 			let color = ``;
 			let opacity = ``;
@@ -77,16 +79,27 @@ class ServiceCallTileFeature extends LitElement {
 				opacity = `opacity: ${entry.opacity};`;
 			}
 			const style = `${color}${opacity}`;
+			button.push(
+				html`<button
+					class="button"
+					itemid=${i}
+					@click=${this._press}
+					style="${style}"
+				></button>`,
+			);
 
 			// Icon
 			let iconStyle = ``;
 			if ('icon_color' in entry) {
 				iconStyle = `color: ${entry.icon_color};`;
 			}
-			let icon = html``;
 			if ('icon' in entry) {
-				// prettier-ignore
-				icon = html`<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>`;
+				button.push(
+					html`<ha-icon
+						.icon=${entry.icon}
+						style="${iconStyle}"
+					></ha-icon>`,
+				);
 			}
 
 			// Label
@@ -94,26 +107,16 @@ class ServiceCallTileFeature extends LitElement {
 			if ('label_color' in entry) {
 				labelStyle = `color: ${entry.label_color}`;
 			}
-			let label = html``;
 			if ('label' in entry) {
-				// prettier-ignore
-				label = html`<div class="label" style="${labelStyle}">${entry.label}</div>`;
+				button.push(
+					html`<div class="label" style="${labelStyle}">
+						${entry.label}
+					</div>`,
+				);
 			}
 
 			// Button, icon, and label in a container
-			// prettier-ignore
-			buttons.push(
-				html`<div class="container">
-					<button
-						class="button"
-						itemid=${i}
-						@click=${this._press}
-						style="${style}"
-					></button>
-					${icon}
-					${label}
-				</div>`,
-			);
+			buttons.push(html`<div class="container">${button}</div>`);
 		}
 
 		return html`<div class="row">${buttons}</div> `;
