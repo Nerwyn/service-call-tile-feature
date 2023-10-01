@@ -11,24 +11,28 @@
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
-Call any service via a tile button, with no restrictions on the tile entity type.
-
-[The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it?
-
-This custom tile feature will let you do whatever you want with tile card button features.
+Call any service via a tile button. This custom tile feature will let you do whatever you want with tile card buttons. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
 
 ## Options
 
-| Name           | Type   | Description/Value                                                                                                                                                  |
+### Base Config
+
+| Name    | Type   | Description/Value                                  |
+| ------- | ------ | -------------------------------------------------- |
+| type    | string | `custom:service-call`                              |
+| buttons | array  | List of buttons to include in a tile features row. |
+
+### Button Config
+
+| Name           | Type   | Description                                                                                                                                                        |
 | -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| type           | string | `custom:service-call`                                                                                                                                              |
-| service        | string | The service call to make, like `light.toggle` or `lock.unlock`.                                                                                                    |
-| data           | string | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
+| service        | string | The service call to make, e.g. `light.toggle` or `lock.unlock`.                                                                                                    |
 | data.entity_id | string | The entity ID of the device to call the service on. If left blank will use the entity ID assigned to the tile card.                                                |
+| data           | string | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
 
 ## Examples
 
-### A lock button
+### A lock tile with lock and unlock buttons
 
 ```yaml
 type: tile
@@ -37,8 +41,11 @@ show_entity_picture: false
 vertical: true
 features:
   - type: custom:service-call
-    service: script.toggle_front_door
-    icon: mdi:lock
+    buttons:
+      - service: lock.lock
+        icon: mdi:lock
+      - service: lock.unlock
+        icon: mdi:lock-open
 card_mod:
   style:
     ha-tile-info$: |
@@ -48,7 +55,41 @@ card_mod:
       }
 ```
 
-<img src="assets/lock_button.png" alt="guide" width="600"/>
+<img src="assets/lock_tile.png" alt="guide" width="600"/>
+
+### A light tile with a button for each bulb
+
+```yaml
+type: tile
+entity: light.chandelier
+features:
+  - type: custom:service-call
+    buttons:
+      - service: light.toggle
+        icon: mdi:ceiling-light
+      - service: light.toggle
+        icon: mdi:lightbulb
+        data:
+          entity_id: light.chandelier_bulb_1
+      - service: light.toggle
+        icon: mdi:lightbulb
+        data:
+          entity_id: light.chandelier_bulb_2
+      - service: light.toggle
+        icon: mdi:lightbulb
+        data:
+          entity_id: light.chandelier_bulb_3
+      - service: light.toggle
+        icon: mdi:lightbulb
+        data:
+          entity_id: light.chandelier_bulb_4
+      - service: light.toggle
+        icon: mdi:lightbulb
+        data:
+          entity_id: light.chandelier_bulb_5
+```
+
+<img src="assets/light_tile.png" alt="guide" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
