@@ -67,16 +67,31 @@ class ServiceCallTileFeature extends LitElement {
 
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
-			buttons.push(
-				html`<div class="container">
-					<button
-						class="button"
-						itemid=${i}
-						@click=${this._press}
-					></button>
-					<ha-icon .icon=${entry.icon}></ha-icon>
-				</div>`,
-			);
+			let color = html``;
+			let opacity = html``;
+			if ('color' in entry) {
+				color = html`background-color: ${entry.color};`;
+			}
+			if ('opacity' in entry) {
+				opacity = html`opacity: ${entry.opacity};`;
+			}
+			const style = html`${color}${opacity}`;
+
+			let iconStyle = html``;
+			if ('icon_color' in entry) {
+				iconStyle = html`color: ${entry.icon_color}`;
+			}
+
+			const button = html`<div class="container">
+				<button
+					class="button"
+					itemid=${i}
+					@click=${this._press}
+					style="${style}"
+				></button>
+				<ha-icon .icon=${entry.icon} style="${iconStyle}></ha-icon>
+			</div>`;
+			buttons.push(button);
 		}
 
 		return html`<div class="row">${buttons}</div> `;
