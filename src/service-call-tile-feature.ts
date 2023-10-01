@@ -130,6 +130,9 @@ class ServiceCallTileFeature extends LitElement {
 			.button:active {
 				opacity: 0.5;
 			}
+			ha-icon {
+				position: absolute;
+			}
 		`;
 	}
 }
