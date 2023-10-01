@@ -8,6 +8,10 @@ export interface IConfig {
 				[key: string]: string | number | boolean | undefined;
 			};
 			icon?: string;
+			color?: string;
+			opacity?: number;
+			icon_color?: string;
+			label?: string;
 		},
 	];
 }

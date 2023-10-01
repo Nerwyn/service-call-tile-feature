@@ -67,6 +67,7 @@ class ServiceCallTileFeature extends LitElement {
 
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
+			// Button color and opacity
 			let color = ``;
 			let opacity = ``;
 			if ('color' in entry) {
@@ -77,21 +78,31 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			const style = `${color}${opacity}`;
 
+			// Icon color
 			let iconStyle = ``;
 			if ('icon_color' in entry) {
 				iconStyle = `color: ${entry.icon_color};`;
 			}
 
-			const button = html`<div class="container">
-				<button
-					class="button"
-					itemid=${i}
-					@click=${this._press}
-					style="${style}"
-				></button>
-				<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>
-			</div>`;
-			buttons.push(button);
+			// Button label
+			let label = html``;
+			if ('label' in entry) {
+				label = html`<div class="label">${entry.label}</div>`;
+			}
+
+			// Button, icon, and label in a container
+			buttons.push(
+				html`<div class="container">
+					<button
+						class="button"
+						itemid=${i}
+						@click=${this._press}
+						style="${style}"
+					></button>
+					<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>
+					${label}
+				</div>`,
+			);
 		}
 
 		return html`<div class="row">${buttons}</div> `;
@@ -128,16 +139,13 @@ class ServiceCallTileFeature extends LitElement {
 				color: inherit;
 			}
 			.button {
-				display: inline-flex;
-				align-items: flex-end;
-				justify-content: center;
 				background-color: var(--disabled-color);
 				opacity: 0.2;
 				transition: background-color 180ms ease-in-out;
 				position: absolute;
 				cursor: pointer;
-				height: 100%;
-				width: 100%;
+				height: inherit;
+				width: inherit;
 				border-radius: 10px;
 				border: none;
 			}
@@ -149,10 +157,13 @@ class ServiceCallTileFeature extends LitElement {
 			.button:active {
 				opacity: 0.4;
 			}
-			
+
 			ha-icon {
 				position: relative;
 				pointer-events: none;
+				display: inline-flex;
+				flex-flow: column;
+				place-content: center;
 			}
 
 			.label {

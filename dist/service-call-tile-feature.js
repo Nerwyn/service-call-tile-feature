@@ -1,13 +1,14 @@
 /*! For license information please see service-call-tile-feature.js.LICENSE.txt */
-(()=>{"use strict";var t={114:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var n,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)r=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(n=t[l])&&(r=(o<3?n(r):o>3?n(e,i,r):n(e,i))||r);return o>3&&r&&Object.defineProperty(e,i,r),r};Object.defineProperty(e,"__esModule",{value:!0});const n=i(62),o=i(595);class r extends n.LitElement{constructor(){super()}static get properties(){return{hass:{},config:{},stateObj:{}}}static getStubConfig(){return{type:"custom:service-call",buttons:[{service:"",data:{}}]}}setConfig(t){if(!t)throw new Error("Invalid configuration");this.config=t}_press(t){t.stopImmediatePropagation();const e=parseInt(t.currentTarget.getAttribute("itemid")||"-1"),i=this.config.buttons[e],s=JSON.parse(JSON.stringify(i.data||{}));"entity_id"in s&&""!=s.entity_id||(s.entity_id=this.stateObj.entity_id);const[n,o]=i.service.split(".");this.hass.callService(n,o,s)}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.buttons.entries()){let s="",o="";"color"in i&&(s=`background-color: ${i.color};`),"opacity"in i&&(o=`opacity: ${i.opacity};`);const r=`${s}${o}`;let l="";"icon_color"in i&&(l=`color: ${i.icon_color};`);const a=n.html`<div class="container">
-				<button
-					class="button"
-					itemid=${e}
-					@click=${this._press}
-					style="${r}"
-				></button>
-				<ha-icon .icon=${i.icon} style="${l}"></ha-icon>
-			</div>`;t.push(a)}return n.html`<div class="row">${t}</div> `}static get styles(){return n.css`
+(()=>{"use strict";var t={114:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var n,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)r=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(n=t[l])&&(r=(o<3?n(r):o>3?n(e,i,r):n(e,i))||r);return o>3&&r&&Object.defineProperty(e,i,r),r};Object.defineProperty(e,"__esModule",{value:!0});const n=i(62),o=i(595);class r extends n.LitElement{constructor(){super()}static get properties(){return{hass:{},config:{},stateObj:{}}}static getStubConfig(){return{type:"custom:service-call",buttons:[{service:"",data:{}}]}}setConfig(t){if(!t)throw new Error("Invalid configuration");this.config=t}_press(t){t.stopImmediatePropagation();const e=parseInt(t.currentTarget.getAttribute("itemid")||"-1"),i=this.config.buttons[e],s=JSON.parse(JSON.stringify(i.data||{}));"entity_id"in s&&""!=s.entity_id||(s.entity_id=this.stateObj.entity_id);const[n,o]=i.service.split(".");this.hass.callService(n,o,s)}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.buttons.entries()){let s="",o="";"color"in i&&(s=`background-color: ${i.color};`),"opacity"in i&&(o=`opacity: ${i.opacity};`);const r=`${s}${o}`;let l="";"icon_color"in i&&(l=`color: ${i.icon_color};`);let a=n.html``;"label"in i&&(a=n.html`<div class="label">${i.label}</div>`),t.push(n.html`<div class="container">
+					<button
+						class="button"
+						itemid=${e}
+						@click=${this._press}
+						style="${r}"
+					></button>
+					<ha-icon .icon=${i.icon} style="${l}"></ha-icon>
+					${a}
+				</div>`)}return n.html`<div class="row">${t}</div> `}static get styles(){return n.css`
 			.row {
 				display: flex;
 				flex-direction: row;
@@ -37,16 +38,13 @@
 				color: inherit;
 			}
 			.button {
-				display: inline-flex;
-				align-items: flex-end;
-				justify-content: center;
 				background-color: var(--disabled-color);
 				opacity: 0.2;
 				transition: background-color 180ms ease-in-out;
 				position: absolute;
 				cursor: pointer;
-				height: 100%;
-				width: 100%;
+				height: inherit;
+				width: inherit;
 				border-radius: 10px;
 				border: none;
 			}
@@ -58,10 +56,13 @@
 			.button:active {
 				opacity: 0.4;
 			}
-			
+
 			ha-icon {
 				position: relative;
 				pointer-events: none;
+				display: inline-flex;
+				flex-flow: column;
+				place-content: center;
 			}
 
 			.label {
