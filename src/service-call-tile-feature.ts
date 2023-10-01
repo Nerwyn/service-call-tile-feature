@@ -110,7 +110,8 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			.container {
 				display: flex;
-				justify-content: center;
+				flex-flow: column;
+				place-content: center space-around;
 				align-items: center;
 				position: relative;
 				height: 40px;
@@ -127,10 +128,13 @@ class ServiceCallTileFeature extends LitElement {
 				color: inherit;
 			}
 			.button {
+				display: inline-flex;
+				align-items: flex-end;
+				justify-content: center;
 				background-color: var(--disabled-color);
 				opacity: 0.2;
 				transition: background-color 180ms ease-in-out;
-				position: relative;
+				position: absolute;
 				cursor: pointer;
 				height: 100%;
 				width: 100%;
@@ -145,9 +149,20 @@ class ServiceCallTileFeature extends LitElement {
 			.button:active {
 				opacity: 0.4;
 			}
+			
 			ha-icon {
-				position: absolute;
+				position: relative;
 				pointer-events: none;
+			}
+
+			.label {
+				position: relative;
+				pointer-events: none;
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+				height: 15px;
+				width: inherit;
 			}
 		`;
 	}
