@@ -132,6 +132,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			ha-icon {
 				position: absolute;
+				pointer-events: none;
 			}
 		`;
 	}
