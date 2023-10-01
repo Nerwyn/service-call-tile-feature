@@ -67,7 +67,7 @@ class ServiceCallTileFeature extends LitElement {
 
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
-			const button = [];
+			const button: TemplateResult[] = [];
 
 			// Button color and opacity
 			let color = ``;
