@@ -6,7 +6,7 @@
 					@click=${this._press}
 					style="${r}"
 				></button>
-				<ha-icon .icon=${i.icon} style="${l}></ha-icon>
+				<ha-icon .icon=${i.icon} style="${l}"></ha-icon>
 			</div>`;t.push(a)}return n.html`<div class="row">${t}</div> `}static get styles(){return n.css`
 			.row {
 				display: flex;

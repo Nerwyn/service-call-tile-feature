@@ -89,7 +89,7 @@ class ServiceCallTileFeature extends LitElement {
 					@click=${this._press}
 					style="${style}"
 				></button>
-				<ha-icon .icon=${entry.icon} style="${iconStyle}></ha-icon>
+				<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>
 			</div>`;
 			buttons.push(button);
 		}
