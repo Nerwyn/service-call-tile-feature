@@ -7,9 +7,9 @@ export interface IConfig {
 				entity_id?: string;
 				[key: string]: string | number | boolean | undefined;
 			};
-			icon?: string;
 			color?: string;
 			opacity?: number;
+			icon?: string;
 			icon_color?: string;
 			label?: string;
 			label_color?: string;

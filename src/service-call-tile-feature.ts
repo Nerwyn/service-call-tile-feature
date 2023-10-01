@@ -78,13 +78,18 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			const style = `${color}${opacity}`;
 
-			// Icon color
+			// Icon
 			let iconStyle = ``;
 			if ('icon_color' in entry) {
 				iconStyle = `color: ${entry.icon_color};`;
 			}
+			let icon = html``;
+			if ('icon' in entry) {
+				// prettier-ignore
+				icon = html`<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>`;
+			}
 
-			// Button label
+			// Label
 			let labelStyle = ``;
 			if ('label_color' in entry) {
 				labelStyle = `color: ${entry.label_color}`;
@@ -96,6 +101,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 
 			// Button, icon, and label in a container
+			// prettier-ignore
 			buttons.push(
 				html`<div class="container">
 					<button
@@ -104,7 +110,7 @@ class ServiceCallTileFeature extends LitElement {
 						@click=${this._press}
 						style="${style}"
 					></button>
-					<ha-icon .icon=${entry.icon} style="${iconStyle}"></ha-icon>
+					${icon}
 					${label}
 				</div>`,
 			);
