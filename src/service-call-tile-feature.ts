@@ -79,7 +79,7 @@ class ServiceCallTileFeature extends LitElement {
 
 			let iconStyle = html``;
 			if ('icon_color' in entry) {
-				iconStyle = html`color: ${entry.icon_color}`;
+				iconStyle = html`color: ${entry.icon_color};`;
 			}
 
 			const button = html`<div class="container">
