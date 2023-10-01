@@ -78,13 +78,13 @@ class ServiceCallTileFeature extends LitElement {
 			if ('opacity' in entry) {
 				opacity = `opacity: ${entry.opacity};`;
 			}
-			const style = `style="${color}${opacity}"`;
+			const style = `${color}${opacity}`;
 			button.push(
 				html`<button
 					class="button"
 					itemid=${i}
 					@click=${this._press}
-					${style}
+					style="${style}"
 				></button>`,
 			);
 
@@ -92,10 +92,13 @@ class ServiceCallTileFeature extends LitElement {
 			if ('icon' in entry) {
 				let iconStyle = ``;
 				if ('icon_color' in entry) {
-					iconStyle = `style="color: ${entry.icon_color};"`;
+					iconStyle = `color: ${entry.icon_color};`;
 				}
 				button.push(
-					html`<ha-icon .icon=${entry.icon} ${iconStyle}></ha-icon>`,
+					html`<ha-icon
+						.icon=${entry.icon}
+						style="${iconStyle}"
+					></ha-icon>`,
 				);
 			}
 
@@ -103,11 +106,11 @@ class ServiceCallTileFeature extends LitElement {
 			if ('label' in entry) {
 				let labelStyle = ``;
 				if ('label_color' in entry) {
-					labelStyle = `style="color: ${entry.label_color};"`;
+					labelStyle = `color: ${entry.label_color};`;
 				}
 				button.push(
 					// prettier-ignore
-					html`<div class="label" ${labelStyle}>${entry.label}</div>`,
+					html`<div class="label" style="${labelStyle}">${entry.label}</div>`,
 				);
 			}
 
