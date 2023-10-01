@@ -33,7 +33,10 @@ Call any service via a tile button. This custom tile feature will let you do wha
 | data           | object | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
 | color          | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                      |
 | opacity        | float  | Opacity of the button background. Should be a number between 0 and 1. Defaults to 0.2.                                                                             |
+| icon           | string | Material design icon to use.                                                                                                                                       |
 | icon_color     | string | Custom color for the icon. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                        |
+| label          | string | String label to place underneath the icon, or by itself.                                                                                                           |
+| label_color    | string | Custom color for the string label. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                |
 
 ## Examples
 
@@ -65,59 +68,74 @@ card_mod:
 ### A light tile with a button for each bulb and color buttons
 
 ```yaml
-type: tile
-entity: light.chandelier
 features:
   - type: custom:service-call
     buttons:
       - service: light.toggle
         icon: mdi:ceiling-light
+        icon_color: red
       - service: light.toggle
         icon: mdi:lightbulb
+        icon_color: orange
+        label: Bulb 1
         data:
           entity_id: light.chandelier_bulb_1
       - service: light.toggle
         icon: mdi:lightbulb
+        icon_color: yellow
+        label: Bulb 2
         data:
           entity_id: light.chandelier_bulb_2
       - service: light.toggle
         icon: mdi:lightbulb
+        icon_color: green
+        label: Bulb 3
         data:
           entity_id: light.chandelier_bulb_3
       - service: light.toggle
         icon: mdi:lightbulb
+        icon_color: blue
+        label: Bulb 4
         data:
           entity_id: light.chandelier_bulb_4
       - service: light.toggle
         icon: mdi:lightbulb
+        icon_color: purple
+        label: Bulb 5
         data:
           entity_id: light.chandelier_bulb_5
   - type: custom:service-call
     buttons:
       - service: light.turn_on
         color: red
-        icon_color: rgb(255 0 0)
-        icon: mdi:alpha-r
+        xicon_color: rgb(255 0 0)
+        label: Red
+        label_color: red
         data:
           color_name: red
       - service: light.turn_on
         color: green
         icon_color: rgb(0 255 0)
-        icon: mdi:alpha-g
+        label: Green
+        label_color: green
         data:
           color_name: green
       - service: light.turn_on
         color: blue
         icon_color: rgb(0 0 255)
-        icon: mdi:alpha-b
+        label: Blue
+        label_color: blue
         data:
           color_name: blue
       - service: light.turn_on
         color: white
         icon_color: rgb(255 255 255)
-        icon: mdi:alpha-w
+        label: White
+        label_color: white
         data:
           color_temp: 500
+type: tile
+entity: light.chandelier
 ```
 
 <img src="assets/light_tile.png" alt="guide" width="600"/>
