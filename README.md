@@ -63,7 +63,7 @@ card_mod:
       }
 ```
 
-<img src="assets/lock_tile.png" alt="guide" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/lock_tile.png" alt="lock_tile" width="600"/>
 
 ### A light tile with a button for each bulb and color buttons
 
@@ -138,7 +138,7 @@ type: tile
 entity: light.chandelier
 ```
 
-<img src="assets/light_tile.png" alt="guide" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/cd27af901165c46cfee537a4b35f1999c4626df5/assets/light_tile.png" alt="light_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
