@@ -67,19 +67,19 @@ class ServiceCallTileFeature extends LitElement {
 
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
-			let color = html``;
-			let opacity = html``;
+			let color = ``;
+			let opacity = ``;
 			if ('color' in entry) {
-				color = html`background-color: ${entry.color};`;
+				color = `background-color: ${entry.color};`;
 			}
 			if ('opacity' in entry) {
-				opacity = html`opacity: ${entry.opacity};`;
+				opacity = `opacity: ${entry.opacity};`;
 			}
-			const style = html`${color}${opacity}`;
+			const style = `${color}${opacity}`;
 
-			let iconStyle = html``;
+			let iconStyle = ``;
 			if ('icon_color' in entry) {
-				iconStyle = html`color: ${entry.icon_color};`;
+				iconStyle = `color: ${entry.icon_color};`;
 			}
 
 			const button = html`<div class="container">
