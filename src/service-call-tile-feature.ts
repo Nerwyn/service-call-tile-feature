@@ -91,9 +91,8 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			let label = html``;
 			if ('label' in entry) {
-				label = html`<div class="label" style="${labelStyle}">
-					${entry.label}
-				</div>`;
+				// prettier-ignore
+				label = html`<div class="label" style="${labelStyle}">${entry.label}</div>`;
 			}
 
 			// Button, icon, and label in a container
