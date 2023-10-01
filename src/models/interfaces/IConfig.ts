@@ -12,6 +12,7 @@ export interface IConfig {
 			opacity?: number;
 			icon_color?: string;
 			label?: string;
+			label_color?: string;
 		},
 	];
 }

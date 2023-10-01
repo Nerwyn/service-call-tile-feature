@@ -85,9 +85,15 @@ class ServiceCallTileFeature extends LitElement {
 			}
 
 			// Button label
+			let labelStyle = ``;
+			if ('label_color' in entry) {
+				labelStyle = `color: ${entry.label_color}`;
+			}
 			let label = html``;
 			if ('label' in entry) {
-				label = html`<div class="label">${entry.label}</div>`;
+				label = html`<div class="label" style="${labelStyle}">
+					${entry.label}
+				</div>`;
 			}
 
 			// Button, icon, and label in a container
@@ -122,7 +128,7 @@ class ServiceCallTileFeature extends LitElement {
 			.container {
 				display: flex;
 				flex-flow: column;
-				place-content: center space-around;
+				place-content: center space-evenly;
 				align-items: center;
 				position: relative;
 				height: 40px;
@@ -174,6 +180,9 @@ class ServiceCallTileFeature extends LitElement {
 				align-items: center;
 				height: 15px;
 				width: inherit;
+				font-family: inherit;
+				font-size: 12px;
+				bottom: 2px;
 			}
 		`;
 	}
