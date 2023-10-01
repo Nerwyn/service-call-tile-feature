@@ -124,11 +124,11 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			@media (hover: hover) {
 				.button:hover {
-					opacity: 0.5;
+					opacity: 0.4;
 				}
 			}
 			.button:active {
-				opacity: 0.5;
+				opacity: 0.4;
 			}
 			ha-icon {
 				position: absolute;
