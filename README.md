@@ -31,9 +31,9 @@ Call any service via a tile button. This custom tile feature will let you do wha
 | service        | string | The service call to make, e.g. `light.toggle` or `lock.unlock`.                                                                                                    |
 | data.entity_id | string | The entity ID of the device to call the service on. If left blank will use the entity ID assigned to the tile card.                                                |
 | data           | object | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
-| color          | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`                                                       |
+| color          | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                      |
 | opacity        | float  | Opacity of the button background. Should be a number between 0 and 1. Defaults to 0.2.                                                                             |
-| icon_color     | string | Custom color of                                                                                                                                                    |
+| icon_color     | string | Custom color for the icon. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                        |
 
 ## Examples
 
