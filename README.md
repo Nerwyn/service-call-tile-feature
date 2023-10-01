@@ -29,6 +29,9 @@ Call any service via a tile button. This custom tile feature will let you do wha
 | service        | string | The service call to make, e.g. `light.toggle` or `lock.unlock`.                                                                                                    |
 | data.entity_id | string | The entity ID of the device to call the service on. If left blank will use the entity ID assigned to the tile card.                                                |
 | data           | string | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
+| color          | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`                                                       |
+| opacity        | float  | Opacity of the button background. Should be a number between 0 and 1. Defaults to 0.2.                                                                             |
+| icon_color     | string | Custom color of                                                                                                                                                    |
 
 ## Examples
 
@@ -87,6 +90,32 @@ features:
         icon: mdi:lightbulb
         data:
           entity_id: light.chandelier_bulb_5
+  - type: custom:service-call
+    buttons:
+      - service: light.turn_on
+        color: red
+        icon_color: rgb(255 0 0)
+        icon: mdi:alpha-r
+        data:
+          color_name: red
+      - service: light.turn_on
+        color: green
+        icon_color: rgb(0 255 0)
+        icon: mdi:alpha-g
+        data:
+          color_name: green
+      - service: light.turn_on
+        color: blue
+        icon_color: rgb(0 0 255)
+        icon: mdi:alpha-b
+        data:
+          color_name: blue
+      - service: light.turn_on
+        color: white
+        icon_color: rgb(255 255 255)
+        icon: mdi:alpha-w
+        data:
+          color_temp: 500
 ```
 
 <img src="assets/light_tile.png" alt="guide" width="600"/>
