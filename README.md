@@ -13,6 +13,8 @@
 
 Call any service via a tile button. This custom tile feature will let you do whatever you want with tile card buttons. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
 
+[Home Assistant Community Forums Thread](https://community.home-assistant.io/t/service-call-button-tile-feature/620724)
+
 ## Options
 
 ### Base Config
@@ -60,7 +62,7 @@ card_mod:
 
 <img src="assets/lock_tile.png" alt="guide" width="600"/>
 
-### A light tile with a button for each bulb
+### A light tile with a button for each bulb and color buttons
 
 ```yaml
 type: tile
@@ -123,7 +125,7 @@ features:
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-[forum]: https://community.home-assistant.io/t/
+[forum]: https://community.home-assistant.io/t/service-call-button-tile-feature/620724
 [license-shield]: https://img.shields.io/github/license/Nerwyn/service-call-tile-feature.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/Nerwyn/service-call-tile-feature.svg?style=for-the-badge
