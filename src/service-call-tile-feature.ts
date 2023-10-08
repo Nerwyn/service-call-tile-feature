@@ -129,7 +129,8 @@ class ServiceCallTileFeature extends LitElement {
 				flex-flow: row;
 				justify-content: center;
 				align-items: center;
-				padding: 0 12px 12px 12px;
+				padding: 0 12px 12px;
+				gap: 12px;
 				width: auto;
 			}
 			.container {
@@ -142,7 +143,6 @@ class ServiceCallTileFeature extends LitElement {
 				width: 100%;
 				border-radius: 10px;
 				border: none;
-				margin: 0 6px;
 				padding: 0px;
 				box-sizing: border-box;
 				line-height: 0;
