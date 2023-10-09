@@ -72,7 +72,7 @@ class ServiceCallTileFeature extends LitElement {
 				!('device_id' in button.data) &&
 				!('area_id' in button.data)
 			) {
-				button.data.entity_id = this.stateObj.entity_id;
+				button.data['entity_id'] = this.stateObj.entity_id;
 			}
 		}
 		this.config = config;
