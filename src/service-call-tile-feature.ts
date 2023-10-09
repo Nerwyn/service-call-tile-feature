@@ -3,7 +3,7 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { IConfig, IStyle } from './models/interfaces';
+import { IConfig } from './models/interfaces';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -46,31 +46,8 @@ class ServiceCallTileFeature extends LitElement {
 			throw new Error('Invalid configuration');
 		}
 		config = JSON.parse(JSON.stringify(config));
-		// eslint-disable-next-line
-		for (let button of config.buttons) {
-			// Legacy style config move to style object
-			const style: IStyle = {};
-			if (!('style' in button)) {
-				for (const key in button) {
-					if (
-						[
-							'color',
-							'opacity',
-							'icon',
-							'icon_color',
-							'label',
-							'label_color',
-						].includes(key)
-					) {
-						(style[key as keyof IStyle] as string) = (
-							button as IStyle
-						)[key as keyof IStyle] as string;
-					}
-				}
-				button.style = style;
-			}
-
-			// Convert developer tool service data to frontend callService data
+		for (const button of config.buttons) {
+			// Merge target and data fields
 			button.data = {
 				...(button.data || {}),
 				...(button.target || {}),
@@ -119,20 +96,20 @@ class ServiceCallTileFeature extends LitElement {
 		></button>`;
 	}
 
-	renderIcon(icon: string, iconColor?: string) {
+	renderIcon(icon: string, color?: string) {
 		let style = ``;
-		if (iconColor) {
-			style = `color: ${iconColor};`;
+		if (color) {
+			style = `color: ${color};`;
 		}
 		return html`<ha-icon .icon=${icon} style="${style}"></ha-icon>`;
 	}
 
-	renderLabel(label: string, labelColor?: string) {
+	renderLabel(text: string, color?: string) {
 		let style = ``;
-		if (labelColor) {
-			style = `color: ${labelColor};`;
+		if (color) {
+			style = `color: ${color};`;
 		}
-		return html`<div class="label" style="${style}">${label}</div>`;
+		return html`<div class="label" style="${style}">${text}</div>`;
 	}
 
 	render() {
@@ -143,22 +120,21 @@ class ServiceCallTileFeature extends LitElement {
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
 			const button: TemplateResult[] = [];
-			const style = entry.style ?? {};
 
 			// Button/Background
-			button.push(this.renderBackground(i, style.color, style.opacity));
+			button.push(this.renderBackground(i, entry.color, entry.opacity));
 
 			// Icon
-			if ('icon' in style) {
+			if ('icon' in entry) {
 				button.push(
-					this.renderIcon(style.icon as string, style.icon_color),
+					this.renderIcon(entry.icon as string, entry.icon_color),
 				);
 			}
 
 			// Label
-			if ('label' in style) {
+			if ('label' in entry) {
 				button.push(
-					this.renderLabel(style.label as string, style.label_color),
+					this.renderLabel(entry.label as string, entry.label_color),
 				);
 			}
 

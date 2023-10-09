@@ -139,7 +139,6 @@ features:
           color_temp: 500
 type: tile
 entity: light.chandelier
-
 ```
 
 <img src="assets/light_tile.png" alt="guide" width="600"/>

@@ -3,9 +3,7 @@ export interface IConfig {
 	buttons: IButton[];
 }
 
-export interface IButton extends IServiceCall {
-	style?: IStyle;
-}
+export interface IButton extends IServiceCall, IStyle {}
 
 export interface IServiceCall {
 	service: string;
