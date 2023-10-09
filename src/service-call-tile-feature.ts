@@ -30,7 +30,6 @@ class ServiceCallTileFeature extends LitElement {
 			buttons: [
 				{
 					service: '',
-					data: {},
 				},
 			],
 		};
@@ -51,13 +50,20 @@ class ServiceCallTileFeature extends LitElement {
 		);
 		const button = this.config.buttons[i];
 
-		const data = JSON.parse(JSON.stringify(button.data || {}));
-		if (!('entity_id' in data) || data.entity_id == '') {
+		const data = {
+			...JSON.parse(JSON.stringify(button.data || {})),
+			...JSON.parse(JSON.stringify(button.target || {})),
+		};
+		if (
+			!('entity_id' in data) &&
+			!('device_id' in data) &&
+			!('area_id' in data)
+		) {
 			data.entity_id = this.stateObj.entity_id;
 		}
-		const [domain, entity] = button.service.split('.');
+		const [domain, service] = button.service.split('.');
 
-		this.hass.callService(domain, entity, data);
+		this.hass.callService(domain, service, data);
 	}
 
 	render() {
