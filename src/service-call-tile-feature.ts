@@ -67,13 +67,6 @@ class ServiceCallTileFeature extends LitElement {
 				...(button.data || {}),
 				...(button.target || {}),
 			};
-			if (
-				!('entity_id' in button.data) &&
-				!('device_id' in button.data) &&
-				!('area_id' in button.data)
-			) {
-				button.data['entity_id'] = this.stateObj.entity_id;
-			}
 		}
 		this.config = config;
 	}
@@ -86,7 +79,17 @@ class ServiceCallTileFeature extends LitElement {
 		);
 		const button = this.config.buttons[i];
 		const [domain, service] = button.service.split('.');
-		this.hass.callService(domain, service, button.data);
+
+		const data = button.data || {};
+		if (
+			!('entity_id' in data) &&
+			!('device_id' in data) &&
+			!('area_id' in data)
+		) {
+			data['entity_id'] = this.stateObj.entity_id;
+		}
+
+		this.hass.callService(domain, service, data);
 	}
 
 	renderBackground(itemid: number, color?: string, opacity?: number) {
