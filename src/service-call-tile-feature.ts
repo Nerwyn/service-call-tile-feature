@@ -1,8 +1,14 @@
+import { version } from '../package.json';
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { IConfig } from './models/interfaces';
+
+console.info(
+	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
+	'color: white; font-weight: bold; background: cornflowerblue',
+);
 
 class ServiceCallTileFeature extends LitElement {
 	@property({ attribute: false })
@@ -30,7 +36,6 @@ class ServiceCallTileFeature extends LitElement {
 			buttons: [
 				{
 					service: '',
-					data: {},
 				},
 			],
 		};
@@ -39,6 +44,14 @@ class ServiceCallTileFeature extends LitElement {
 	setConfig(config: IConfig) {
 		if (!config) {
 			throw new Error('Invalid configuration');
+		}
+		config = JSON.parse(JSON.stringify(config));
+		for (const button of config.buttons) {
+			// Merge target and data fields
+			button.data = {
+				...(button.data || {}),
+				...(button.target || {}),
+			};
 		}
 		this.config = config;
 	}
@@ -50,14 +63,53 @@ class ServiceCallTileFeature extends LitElement {
 				'-1',
 		);
 		const button = this.config.buttons[i];
+		const [domain, service] = button.service.split('.');
 
-		const data = JSON.parse(JSON.stringify(button.data || {}));
-		if (!('entity_id' in data) || data.entity_id == '') {
-			data.entity_id = this.stateObj.entity_id;
+		const data = button.data || {};
+		if (
+			!('entity_id' in data) &&
+			!('device_id' in data) &&
+			!('area_id' in data)
+		) {
+			data['entity_id'] = this.stateObj.entity_id;
 		}
-		const [domain, entity] = button.service.split('.');
 
-		this.hass.callService(domain, entity, data);
+		this.hass.callService(domain, service, data);
+	}
+
+	renderBackground(itemid: number, color?: string, opacity?: number) {
+		let colorStyle = ``;
+		let opacityStyle = ``;
+		if (color) {
+			colorStyle = `background-color: ${color};`;
+		}
+		if (opacity) {
+			opacityStyle = `opacity: ${opacity};`;
+		}
+		const style = `${colorStyle}${opacityStyle}`;
+
+		return html`<button
+			class="button"
+			itemid=${itemid}
+			@click=${this._press}
+			style="${style}"
+		></button>`;
+	}
+
+	renderIcon(icon: string, color?: string) {
+		let style = ``;
+		if (color) {
+			style = `color: ${color};`;
+		}
+		return html`<ha-icon .icon=${icon} style="${style}"></ha-icon>`;
+	}
+
+	renderLabel(text: string, color?: string) {
+		let style = ``;
+		if (color) {
+			style = `color: ${color};`;
+		}
+		return html`<div class="label" style="${style}">${text}</div>`;
 	}
 
 	render() {
@@ -69,48 +121,20 @@ class ServiceCallTileFeature extends LitElement {
 		for (const [i, entry] of this.config.buttons.entries()) {
 			const button: TemplateResult[] = [];
 
-			// Button color and opacity
-			let color = ``;
-			let opacity = ``;
-			if ('color' in entry) {
-				color = `background-color: ${entry.color};`;
-			}
-			if ('opacity' in entry) {
-				opacity = `opacity: ${entry.opacity};`;
-			}
-			const style = `${color}${opacity}`;
-			button.push(
-				html`<button
-					class="button"
-					itemid=${i}
-					@click=${this._press}
-					style="${style}"
-				></button>`,
-			);
+			// Button/Background
+			button.push(this.renderBackground(i, entry.color, entry.opacity));
 
 			// Icon
 			if ('icon' in entry) {
-				let iconStyle = ``;
-				if ('icon_color' in entry) {
-					iconStyle = `color: ${entry.icon_color};`;
-				}
 				button.push(
-					html`<ha-icon
-						.icon=${entry.icon}
-						style="${iconStyle}"
-					></ha-icon>`,
+					this.renderIcon(entry.icon as string, entry.icon_color),
 				);
 			}
 
 			// Label
 			if ('label' in entry) {
-				let labelStyle = ``;
-				if ('label_color' in entry) {
-					labelStyle = `color: ${entry.label_color};`;
-				}
 				button.push(
-					// prettier-ignore
-					html`<div class="label" style="${labelStyle}">${entry.label}</div>`,
+					this.renderLabel(entry.label as string, entry.label_color),
 				);
 			}
 
@@ -129,7 +153,8 @@ class ServiceCallTileFeature extends LitElement {
 				flex-flow: row;
 				justify-content: center;
 				align-items: center;
-				padding: 0 12px 12px 12px;
+				padding: 0 12px 12px;
+				gap: 12px;
 				width: auto;
 			}
 			.container {
@@ -142,7 +167,6 @@ class ServiceCallTileFeature extends LitElement {
 				width: 100%;
 				border-radius: 10px;
 				border: none;
-				margin: 0 6px;
 				padding: 0px;
 				box-sizing: border-box;
 				line-height: 0;
@@ -189,7 +213,6 @@ class ServiceCallTileFeature extends LitElement {
 				width: inherit;
 				font-family: inherit;
 				font-size: 12px;
-				bottom: 2px;
 			}
 		`;
 	}

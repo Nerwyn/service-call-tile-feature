@@ -26,17 +26,24 @@ Call any service via a tile button. This custom tile feature will let you do wha
 
 ### Button Config
 
-| Name           | Type   | Description                                                                                                                                                        |
-| -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| service        | string | The service call to make, e.g. `light.toggle` or `lock.unlock`.                                                                                                    |
-| data.entity_id | string | The entity ID of the device to call the service on. If left blank will use the entity ID assigned to the tile card.                                                |
-| data           | object | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
-| color          | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                      |
-| opacity        | float  | Opacity of the button background. Should be a number between 0 and 1. Defaults to 0.2.                                                                             |
-| icon           | string | Material design icon to use.                                                                                                                                       |
-| icon_color     | string | Custom color for the icon. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                        |
-| label          | string | String label to place underneath the icon, or by itself.                                                                                                           |
-| label_color    | string | Custom color for the string label. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.                                                |
+### Service Call Options
+
+| Name    | Type   | Description                                                                                                                                                        |
+| ------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| service | string | The service call to make, e.g. `light.toggle` or `lock.unlock`.                                                                                                    |
+| target  | object | The entity IDs, device IDs, or area IDs to call the service on. If left blank will use the entity ID assigned to the tile card.                                    |
+| data    | object | Additional data to pass to the service call. See the Home Assistant documentation or go to `Developer Tools > Services` to see available options for each service. |
+
+#### Style Options
+
+| Name        | Type   | Description                                                                                                         |
+| ----------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| color       | string | Custom color for the button. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.       |
+| opacity     | float  | Opacity of the button background. Should be a number between 0 and 1. Defaults to 0.2.                              |
+| icon        | string | Material design icon to use.                                                                                        |
+| icon_color  | string | Custom color for the icon. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`.         |
+| label       | string | String label to place underneath the icon, or by itself.                                                            |
+| label_color | string | Custom color for the string label. Should either be a color name like `red` or an rgb function like `rgb(255 0 0)`. |
 
 ## Examples
 
@@ -78,58 +85,54 @@ features:
         icon: mdi:lightbulb
         icon_color: orange
         label: Bulb 1
-        data:
+        target:
           entity_id: light.chandelier_bulb_1
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: yellow
         label: Bulb 2
-        data:
+        target:
           entity_id: light.chandelier_bulb_2
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: green
         label: Bulb 3
-        data:
+        target:
           entity_id: light.chandelier_bulb_3
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: blue
         label: Bulb 4
-        data:
+        target:
           entity_id: light.chandelier_bulb_4
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: purple
         label: Bulb 5
-        data:
+        target:
           entity_id: light.chandelier_bulb_5
   - type: custom:service-call
     buttons:
       - service: light.turn_on
         color: red
-        xicon_color: rgb(255 0 0)
         label: Red
         label_color: red
         data:
           color_name: red
       - service: light.turn_on
         color: green
-        icon_color: rgb(0 255 0)
         label: Green
         label_color: green
         data:
           color_name: green
       - service: light.turn_on
         color: blue
-        icon_color: rgb(0 0 255)
         label: Blue
         label_color: blue
         data:
           color_name: blue
       - service: light.turn_on
         color: white
-        icon_color: rgb(255 255 255)
         label: White
         label_color: white
         data:
