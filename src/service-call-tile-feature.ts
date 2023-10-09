@@ -1,8 +1,14 @@
+import { version } from '../package.json';
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { IConfig, IStyle } from './models/interfaces';
+
+console.info(
+	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
+	'color: white; font-weight: bold; background: cornflowerblue',
+);
 
 class ServiceCallTileFeature extends LitElement {
 	@property({ attribute: false })
@@ -43,23 +49,25 @@ class ServiceCallTileFeature extends LitElement {
 		// eslint-disable-next-line
 		for (let button of config.buttons) {
 			// Legacy style config move to style object
-			for (const key in button) {
-				if (
-					[
-						'color',
-						'opacity',
-						'icon',
-						'icon_color',
-						'label',
-						'label_color',
-					].includes(key)
-				) {
-					if (!('style' in button)) {
-						button.style = {};
+			const style: IStyle = {};
+			if (!('style' in button)) {
+				for (const key in button) {
+					if (
+						[
+							'color',
+							'opacity',
+							'icon',
+							'icon_color',
+							'label',
+							'label_color',
+						].includes(key)
+					) {
+						(style[key as keyof IStyle] as string) = (
+							button as IStyle
+						)[key as keyof IStyle] as string;
 					}
-					((button.style! as IStyle)[key as keyof IStyle] as string) =
-						(button as IStyle)[key as keyof IStyle] as string;
 				}
+				button.style = style;
 			}
 
 			// Convert developer tool service data to frontend callService data
@@ -68,6 +76,9 @@ class ServiceCallTileFeature extends LitElement {
 				...(button.target || {}),
 			};
 		}
+
+		console.log(config)
+
 		this.config = config;
 	}
 
@@ -137,7 +148,7 @@ class ServiceCallTileFeature extends LitElement {
 			const button: TemplateResult[] = [];
 			const style = entry.style ?? {};
 
-			// Button color and opacity
+			// Button/Background
 			button.push(this.renderBackground(i, style.color, style.opacity));
 
 			// Icon
