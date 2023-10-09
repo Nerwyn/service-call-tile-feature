@@ -39,7 +39,9 @@ class ServiceCallTileFeature extends LitElement {
 		if (!config) {
 			throw new Error('Invalid configuration');
 		}
-		for (const button of config.buttons) {
+		config = JSON.parse(JSON.stringify(config));
+		// eslint-disable-next-line
+		for (let button of config.buttons) {
 			// Legacy style config move to style object
 			for (const key in button) {
 				if (
