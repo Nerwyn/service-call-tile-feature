@@ -76,9 +76,6 @@ class ServiceCallTileFeature extends LitElement {
 				...(button.target || {}),
 			};
 		}
-
-		console.log(config)
-
 		this.config = config;
 	}
 
@@ -152,14 +149,14 @@ class ServiceCallTileFeature extends LitElement {
 			button.push(this.renderBackground(i, style.color, style.opacity));
 
 			// Icon
-			if ('icon' in entry) {
+			if ('icon' in style) {
 				button.push(
 					this.renderIcon(style.icon as string, style.icon_color),
 				);
 			}
 
 			// Label
-			if ('label' in entry) {
+			if ('label' in style) {
 				button.push(
 					this.renderLabel(style.label as string, style.label_color),
 				);
