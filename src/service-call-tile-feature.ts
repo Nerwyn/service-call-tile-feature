@@ -237,7 +237,6 @@ class ServiceCallTileFeature extends LitElement {
 				width: inherit;
 				font-family: inherit;
 				font-size: 12px;
-				bottom: 2px;
 			}
 		`;
 	}
