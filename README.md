@@ -85,64 +85,61 @@ features:
         icon: mdi:lightbulb
         icon_color: orange
         label: Bulb 1
-        data:
+        target:
           entity_id: light.chandelier_bulb_1
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: yellow
         label: Bulb 2
-        data:
+        target:
           entity_id: light.chandelier_bulb_2
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: green
         label: Bulb 3
-        data:
+        target:
           entity_id: light.chandelier_bulb_3
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: blue
         label: Bulb 4
-        data:
+        target:
           entity_id: light.chandelier_bulb_4
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: purple
         label: Bulb 5
-        data:
+        target:
           entity_id: light.chandelier_bulb_5
   - type: custom:service-call
     buttons:
       - service: light.turn_on
         color: red
-        xicon_color: rgb(255 0 0)
         label: Red
         label_color: red
         data:
           color_name: red
       - service: light.turn_on
         color: green
-        icon_color: rgb(0 255 0)
         label: Green
         label_color: green
         data:
           color_name: green
       - service: light.turn_on
         color: blue
-        icon_color: rgb(0 0 255)
         label: Blue
         label_color: blue
         data:
           color_name: blue
       - service: light.turn_on
         color: white
-        icon_color: rgb(255 255 255)
         label: White
         label_color: white
         data:
           color_temp: 500
 type: tile
 entity: light.chandelier
+
 ```
 
 <img src="assets/light_tile.png" alt="guide" width="600"/>

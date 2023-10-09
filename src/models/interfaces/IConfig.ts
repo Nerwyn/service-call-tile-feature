@@ -3,7 +3,21 @@ export interface IConfig {
 	buttons: IButton[];
 }
 
-export interface IButton extends IStyle, IServiceCall {}
+export interface IButton extends IServiceCall {
+	style?: IStyle;
+}
+
+export interface IServiceCall {
+	service: string;
+	data?: {
+		[key: string]: string | string[] | number | boolean;
+	};
+	target?: {
+		entity_id?: string | string[];
+		device_id?: string | string[];
+		area_id?: string | string[];
+	};
+}
 
 export interface IStyle {
 	color?: string;
@@ -12,16 +26,4 @@ export interface IStyle {
 	icon_color?: string;
 	label?: string;
 	label_color?: string;
-}
-
-export interface IServiceCall {
-	service: string;
-	data?: {
-		[key: string]: string | number | boolean;
-	};
-	target?: {
-		entity_id?: string | string[];
-		device_id?: string | string[];
-		area_id?: string | string[];
-	};
 }

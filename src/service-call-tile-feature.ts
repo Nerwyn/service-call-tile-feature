@@ -2,7 +2,7 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { IConfig } from './models/interfaces';
+import { IConfig, IStyle } from './models/interfaces';
 
 class ServiceCallTileFeature extends LitElement {
 	@property({ attribute: false })
@@ -39,6 +39,40 @@ class ServiceCallTileFeature extends LitElement {
 		if (!config) {
 			throw new Error('Invalid configuration');
 		}
+		for (const button of config.buttons) {
+			// Legacy style config move to style object
+			for (const key in button) {
+				if (
+					[
+						'color',
+						'opacity',
+						'icon',
+						'icon_color',
+						'label',
+						'label_color',
+					].includes(key)
+				) {
+					if (!('style' in button)) {
+						button.style = {};
+					}
+					((button.style! as IStyle)[key as keyof IStyle] as string) =
+						(button as IStyle)[key as keyof IStyle] as string;
+				}
+			}
+
+			// Convert developer tool service data to frontend callService data
+			button.data = {
+				...(button.data || {}),
+				...(button.target || {}),
+			};
+			if (
+				!('entity_id' in button.data) &&
+				!('device_id' in button.data) &&
+				!('area_id' in button.data)
+			) {
+				button.data.entity_id = this.stateObj.entity_id;
+			}
+		}
 		this.config = config;
 	}
 
@@ -49,21 +83,43 @@ class ServiceCallTileFeature extends LitElement {
 				'-1',
 		);
 		const button = this.config.buttons[i];
-
-		const data = {
-			...JSON.parse(JSON.stringify(button.data || {})),
-			...JSON.parse(JSON.stringify(button.target || {})),
-		};
-		if (
-			!('entity_id' in data) &&
-			!('device_id' in data) &&
-			!('area_id' in data)
-		) {
-			data.entity_id = this.stateObj.entity_id;
-		}
 		const [domain, service] = button.service.split('.');
+		this.hass.callService(domain, service, button.data);
+	}
 
-		this.hass.callService(domain, service, data);
+	renderBackground(itemid: number, color?: string, opacity?: number) {
+		let colorStyle = ``;
+		let opacityStyle = ``;
+		if (color) {
+			colorStyle = `background-color: ${color};`;
+		}
+		if (opacity) {
+			opacityStyle = `opacity: ${opacity};`;
+		}
+		const style = `${colorStyle}${opacityStyle}`;
+
+		return html`<button
+			class="button"
+			itemid=${itemid}
+			@click=${this._press}
+			style="${style}"
+		></button>`;
+	}
+
+	renderIcon(icon: string, iconColor?: string) {
+		let style = ``;
+		if (iconColor) {
+			style = `color: ${iconColor};`;
+		}
+		return html`<ha-icon .icon=${icon} style="${style}"></ha-icon>`;
+	}
+
+	renderLabel(label: string, labelColor?: string) {
+		let style = ``;
+		if (labelColor) {
+			style = `color: ${labelColor};`;
+		}
+		return html`<div class="label" style="${style}">${label}</div>`;
 	}
 
 	render() {
@@ -74,49 +130,22 @@ class ServiceCallTileFeature extends LitElement {
 		const buttons: TemplateResult[] = [];
 		for (const [i, entry] of this.config.buttons.entries()) {
 			const button: TemplateResult[] = [];
+			const style = entry.style ?? {};
 
 			// Button color and opacity
-			let color = ``;
-			let opacity = ``;
-			if ('color' in entry) {
-				color = `background-color: ${entry.color};`;
-			}
-			if ('opacity' in entry) {
-				opacity = `opacity: ${entry.opacity};`;
-			}
-			const style = `${color}${opacity}`;
-			button.push(
-				html`<button
-					class="button"
-					itemid=${i}
-					@click=${this._press}
-					style="${style}"
-				></button>`,
-			);
+			button.push(this.renderBackground(i, style.color, style.opacity));
 
 			// Icon
 			if ('icon' in entry) {
-				let iconStyle = ``;
-				if ('icon_color' in entry) {
-					iconStyle = `color: ${entry.icon_color};`;
-				}
 				button.push(
-					html`<ha-icon
-						.icon=${entry.icon}
-						style="${iconStyle}"
-					></ha-icon>`,
+					this.renderIcon(style.icon as string, style.icon_color),
 				);
 			}
 
 			// Label
 			if ('label' in entry) {
-				let labelStyle = ``;
-				if ('label_color' in entry) {
-					labelStyle = `color: ${entry.label_color};`;
-				}
 				button.push(
-					// prettier-ignore
-					html`<div class="label" style="${labelStyle}">${entry.label}</div>`,
+					this.renderLabel(style.label as string, style.label_color),
 				);
 			}
 
