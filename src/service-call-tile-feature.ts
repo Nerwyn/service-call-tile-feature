@@ -181,7 +181,7 @@ class ServiceCallTileFeature extends LitElement {
 			>${entry.label}</input>`,
 		);
 
-		slider.push();
+		slider.push(this.renderLabel(''));
 
 		return slider;
 	}
