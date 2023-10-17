@@ -152,6 +152,22 @@ class ServiceCallTileFeature extends LitElement {
 		return button;
 	}
 
+	onSlide(e: InputEvent) {
+		let value = parseInt((e.currentTarget as HTMLInputElement).value) ?? 0;
+
+		if (value < 0) {
+			value = 0;
+		} else if (value > 100) {
+			value = 100;
+		}
+		(e.currentTarget as HTMLInputElement).value = value.toString();
+
+		// Placeholder
+		(
+			e.currentTarget as HTMLInputElement
+		).parentElement!.children[1].innerHTML = value.toString();
+	}
+
 	renderSlider(itemid: number, entry: IEntry): TemplateResult[] {
 		const slider: TemplateResult[] = [];
 
@@ -159,10 +175,13 @@ class ServiceCallTileFeature extends LitElement {
 			html`<input
 				type="range"
 				class="slider"
-				min="0" max="100"
+				min="-1" max="101
 				itemid=${itemid}
+				@input=${this.onSlide}
 			>${entry.label}</input>`,
 		);
+
+		slider.push();
 
 		return slider;
 	}
@@ -244,12 +263,14 @@ class ServiceCallTileFeature extends LitElement {
 			}
 
 			.slider {
+				position: absolute;
 				appearance: none;
 				-webkit-apperanace: none;
 				-moz-apperance: none;
 				height: inherit;
 				width: inherit;
 				overflow: hidden;
+				border-radius: 10px;
 			}
 
 			.slider::-webkit-slider-thumb {
@@ -260,7 +281,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 8px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
 			}
 
 			.slider::-moz-range-thumb {
@@ -271,7 +292,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 8px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
 			}
 
 			ha-icon {
