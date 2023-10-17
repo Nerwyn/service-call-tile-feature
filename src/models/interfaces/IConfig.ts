@@ -7,12 +7,18 @@ export interface IButton extends IServiceCall, IStyle {}
 
 export interface IServiceCall {
 	service: string;
-	data?: Record<string, string | string[] | number | boolean>;
-	target?: {
-		entity_id?: string | string[];
-		device_id?: string | string[];
-		area_id?: string | string[];
-	};
+	data?: IData;
+	target?: ITarget;
+}
+
+export interface IData {
+	[key: string]: string | string[] | number | boolean;
+}
+
+export interface ITarget {
+	entity_id?: string | string[];
+	device_id?: string | string[];
+	area_id?: string | string[];
 }
 
 export interface IStyle {
