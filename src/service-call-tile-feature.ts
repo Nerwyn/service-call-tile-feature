@@ -251,15 +251,24 @@ class ServiceCallTileFeature extends LitElement {
 				width: inherit;
 			}
 
-			.slider::-moz-range-thumb,
 			.slider::-webkit-slider-thumb {
 				appearance: none;
 				-webkit-appearance: none;
+				height: 18px;
+				width: 4px;
+				border-radius: 12px;
+				background: #ffffff;
+				cursor: pointer;
+			}
+
+			.slider::-moz-range-thumb {
+				appearance: none;
 				-moz-appearance: none;
 				height: 18px;
 				width: 4px;
 				border-radius: 12px;
-				background: #FFFFFF;
+				background: #ffffff;
+				cursor: pointer;
 			}
 
 			ha-icon {
