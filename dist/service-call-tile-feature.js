@@ -53,11 +53,11 @@
 			}
 			@media (hover: hover) {
 				.button:hover {
-					opacity: 0.4;
+					opacity: 0.3;
 				}
 			}
 			.button:active {
-				opacity: 0.4;
+				opacity: 0.3;
 			}
 
 			.slider-background {
