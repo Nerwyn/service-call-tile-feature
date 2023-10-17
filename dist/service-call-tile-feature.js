@@ -7,7 +7,7 @@
 		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}onSlide(t){var e;let i=null!==(e=parseInt(t.currentTarget.value))&&void 0!==e?e:0;i<0?i=0:i>100&&(i=100),t.currentTarget.value=i.toString(),t.currentTarget.parentElement.children[1].innerHTML=i.toString()}renderSlider(t,e){const i=[];return i.push(r.html`<input
 				type="range"
 				class="slider"
-				min="-1" max="101
+				min="-1" max="101"
 				itemid=${t}
 				@input=${this.onSlide}
 			>${e.label}</input>`),i.push(this.renderLabel("")),i}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let s;s="slider"===i.type.toLowerCase()?this.renderSlider(e,i):this.renderButton(e,i),t.push(r.html`<div class="container">${s}</div>`)}return r.html`<div class="row">${t}</div> `}static get styles(){return r.css`

@@ -175,7 +175,7 @@ class ServiceCallTileFeature extends LitElement {
 			html`<input
 				type="range"
 				class="slider"
-				min="-1" max="101
+				min="-1" max="101"
 				itemid=${itemid}
 				@input=${this.onSlide}
 			>${entry.label}</input>`,
