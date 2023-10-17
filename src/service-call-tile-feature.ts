@@ -249,6 +249,7 @@ class ServiceCallTileFeature extends LitElement {
 				-moz-apperance: none;
 				height: inherit;
 				width: inherit;
+				overflow: hidden;
 			}
 
 			.slider::-webkit-slider-thumb {
@@ -259,6 +260,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
+				box-shadow: calc(-100vw + 8px) 0 0 100vw var(--slider-color);
 			}
 
 			.slider::-moz-range-thumb {
@@ -269,6 +271,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
+				box-shadow: calc(-100vw + 8px) 0 0 100vw var(--slider-color);
 			}
 
 			ha-icon {
