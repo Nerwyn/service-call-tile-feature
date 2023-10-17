@@ -1,6 +1,7 @@
 import { version } from '../package.json';
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+// import { styleMap } from 'lit/directives/style-map.js'
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { IConfig, IEntry } from './models/interfaces';
@@ -92,6 +93,7 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	renderButtonBackground(itemid: number, color?: string, opacity?: number) {
+		// TODO - switch to lit styleMap
 		let colorStyle = ``;
 		let opacityStyle = ``;
 		if (color) {
