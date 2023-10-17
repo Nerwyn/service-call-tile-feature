@@ -158,7 +158,6 @@ class ServiceCallTileFeature extends LitElement {
 		slider.push(
 			html`<input
 				type="range"
-				id="slider"
 				class="slider"
 				min="0" max="100"
 				itemid=${itemid}
@@ -242,6 +241,23 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			.button:active {
 				opacity: 0.4;
+			}
+
+			.slider {
+				appearance: none;
+				-webkit-apperanace: none;
+				-moz-apperance: none;
+				height: inherit;
+				width: inherit;
+			}
+
+			.slider::-moz-range-thumb,
+			.slider::-webkit-slider-thumb {
+				appearance: none;
+				-webkit-apperanace: none;
+				-moz-apperance: none;
+				height: 50%;
+				width: 12px;
 			}
 
 			ha-icon {
