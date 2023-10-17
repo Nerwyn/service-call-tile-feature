@@ -1,10 +1,12 @@
 import { version } from '../package.json';
+
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-// import { styleMap } from 'lit/directives/style-map.js'
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
+
 import { IConfig, IEntry } from './models/interfaces';
+import './classes/service-call-button';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -21,14 +23,6 @@ class ServiceCallTileFeature extends LitElement {
 
 	constructor() {
 		super();
-	}
-
-	static get properties() {
-		return {
-			hass: {},
-			config: {},
-			stateObj: {},
-		};
 	}
 
 	static getStubConfig() {
@@ -62,6 +56,15 @@ class ServiceCallTileFeature extends LitElement {
 				...(entry.target || {}),
 			};
 
+			// Set entity ID to tile card entity ID if no other ID is present
+			if (
+				!('entity_id' in entry.data) &&
+				!('device_id' in entry.data) &&
+				!('area_id' in entry.data)
+			) {
+				entry.data['entity_id'] = this.stateObj.entity_id;
+			}
+
 			// Set entry type to button if not present
 			if (!('type' in entry)) {
 				(entry as IEntry).type = 'button';
@@ -69,47 +72,6 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		this.config = config;
-	}
-
-	pressButton(e: MouseEvent) {
-		e.stopImmediatePropagation();
-		const i = parseInt(
-			(e.currentTarget as HTMLButtonElement).getAttribute('itemid') ||
-				'-1',
-		);
-		const button = this.config.entries[i];
-		const [domain, service] = button.service.split('.');
-
-		const data = button.data || {};
-		if (
-			!('entity_id' in data) &&
-			!('device_id' in data) &&
-			!('area_id' in data)
-		) {
-			data['entity_id'] = this.stateObj.entity_id;
-		}
-
-		this.hass.callService(domain, service, data);
-	}
-
-	renderButtonBackground(itemid: number, color?: string, opacity?: number) {
-		// TODO - switch to lit styleMap
-		let colorStyle = ``;
-		let opacityStyle = ``;
-		if (color) {
-			colorStyle = `background-color: ${color};`;
-		}
-		if (opacity) {
-			opacityStyle = `opacity: ${opacity};`;
-		}
-		const style = `${colorStyle}${opacityStyle}`;
-
-		return html`<button
-			class="button"
-			itemid=${itemid}
-			@click=${this.pressButton}
-			style="${style}"
-		></button>`;
 	}
 
 	renderIcon(icon: string, color?: string) {
@@ -126,32 +88,6 @@ class ServiceCallTileFeature extends LitElement {
 			style = `color: ${color};`;
 		}
 		return html`<div class="label" style="${style}">${text}</div>`;
-	}
-
-	renderButton(itemid: number, entry: IEntry): TemplateResult[] {
-		// Button, icon, and label in a container
-		const button: TemplateResult[] = [];
-
-		// Button/Background
-		button.push(
-			this.renderButtonBackground(itemid, entry.color, entry.opacity),
-		);
-
-		// Icon
-		if ('icon' in entry) {
-			button.push(
-				this.renderIcon(entry.icon as string, entry.icon_color),
-			);
-		}
-
-		// Label
-		if ('label' in entry) {
-			button.push(
-				this.renderLabel(entry.label as string, entry.label_color),
-			);
-		}
-
-		return button;
 	}
 
 	onSlide(e: InputEvent) {
@@ -197,23 +133,19 @@ class ServiceCallTileFeature extends LitElement {
 		).parentElement!.children[2].innerHTML = value.toString();
 	}
 
-	renderSlider(itemid: number, _entry: IEntry): TemplateResult[] {
-		const slider: TemplateResult[] = [];
-
-		slider.push(html`<div class="slider-background"></div>`);
-
-		slider.push(
-			html`<input
+	renderSlider(itemid: number, _entry: IEntry) {
+		const slider = html`
+			<div class="slider-background"></div>
+			<input
 				type="range"
 				class="slider"
 				min="0"
 				max="100"
 				itemid=${itemid}
 				@input=${this.onSlide}
-			/>`,
-		);
-
-		slider.push(this.renderLabel(''));
+			/>
+			${this.renderLabel('50')}
+		`;
 
 		return slider;
 	}
@@ -225,23 +157,28 @@ class ServiceCallTileFeature extends LitElement {
 
 		const entries: TemplateResult[] = [];
 		for (const [itemid, entry] of this.config.entries.entries()) {
-			let renderedEntry: TemplateResult[];
+			let renderedEntry: TemplateResult;
 
 			const entryType = entry.type;
 			switch (entryType.toLowerCase()) {
 				case 'slider':
 					renderedEntry = this.renderSlider(itemid, entry);
+					entries.push(
+						html`<div class="container">${renderedEntry}</div>`,
+					);
 					break;
 				case 'button':
 				default:
-					renderedEntry = this.renderButton(itemid, entry);
+					renderedEntry = html` <service-call-button
+						.hass=${this.hass}
+						.entry=${entry}
+						.itemid=${itemid}
+					/>`;
 					break;
 			}
-
-			entries.push(html`<div class="container">${renderedEntry}</div>`);
 		}
 
-		return html`<div class="row">${entries}</div> `;
+		return html`<div class="row">${entries}</div>`;
 	}
 
 	static get styles() {
