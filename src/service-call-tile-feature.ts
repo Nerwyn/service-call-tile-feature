@@ -165,11 +165,13 @@ class ServiceCallTileFeature extends LitElement {
 		// Placeholder
 		(
 			e.currentTarget as HTMLInputElement
-		).parentElement!.children[1].innerHTML = value.toString();
+		).parentElement!.children[2].innerHTML = value.toString();
 	}
 
 	renderSlider(itemid: number, entry: IEntry): TemplateResult[] {
 		const slider: TemplateResult[] = [];
+
+		slider.push(html`<div class="slider-background"></div>`);
 
 		slider.push(
 			html`<input
@@ -262,6 +264,13 @@ class ServiceCallTileFeature extends LitElement {
 				opacity: 0.4;
 			}
 
+			.slider-background {
+				position: absolute;
+				width: inherit;
+				height: inherit;
+				background: rgba(var(--slider-color), 0.2);
+			}
+
 			.slider {
 				position: absolute;
 				appearance: none;
@@ -271,6 +280,7 @@ class ServiceCallTileFeature extends LitElement {
 				width: inherit;
 				overflow: hidden;
 				border-radius: 10px;
+				background: none;
 			}
 
 			.slider::-webkit-slider-thumb {
@@ -281,7 +291,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
 			}
 
 			.slider::-moz-range-thumb {
@@ -292,7 +302,7 @@ class ServiceCallTileFeature extends LitElement {
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
 			}
 
 			ha-icon {

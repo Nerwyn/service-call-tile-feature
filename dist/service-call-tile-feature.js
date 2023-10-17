@@ -4,7 +4,7 @@
 			itemid=${t}
 			@click=${this.pressButton}
 			style="${o}"
-		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}onSlide(t){var e;let i=null!==(e=parseInt(t.currentTarget.value))&&void 0!==e?e:0;i<0?i=0:i>100&&(i=100),t.currentTarget.value=i.toString(),t.currentTarget.parentElement.children[1].innerHTML=i.toString()}renderSlider(t,e){const i=[];return i.push(r.html`<input
+		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}onSlide(t){var e;let i=null!==(e=parseInt(t.currentTarget.value))&&void 0!==e?e:0;i<0?i=0:i>100&&(i=100),t.currentTarget.value=i.toString(),t.currentTarget.parentElement.children[2].innerHTML=i.toString()}renderSlider(t,e){const i=[];return i.push(r.html`<div class="slider-background"></div>`),i.push(r.html`<input
 				type="range"
 				class="slider"
 				min="-1" max="101"
@@ -59,6 +59,13 @@
 				opacity: 0.4;
 			}
 
+			.slider-background {
+				position: absolute;
+				width: inherit;
+				height: inherit;
+				background: rgba(var(--slider-color), 0.2);
+			}
+
 			.slider {
 				position: absolute;
 				appearance: none;
@@ -68,6 +75,7 @@
 				width: inherit;
 				overflow: hidden;
 				border-radius: 10px;
+				background: none;
 			}
 
 			.slider::-webkit-slider-thumb {
@@ -78,7 +86,7 @@
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
 			}
 
 			.slider::-moz-range-thumb {
@@ -89,7 +97,7 @@
 				border-radius: 12px;
 				background: #ffffff;
 				cursor: pointer;
-				box-shadow: calc(-100vw + 4px) 0 0 100vw var(--slider-color);
+				box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
 			}
 
 			ha-icon {
