@@ -47,6 +47,8 @@ class ServiceCallTileFeature extends LitElement {
 			throw new Error('Invalid configuration');
 		}
 		config = JSON.parse(JSON.stringify(config));
+
+		// Legacy config updates
 		if ('buttons' in config && !('entries' in config)) {
 			(config as IConfig).entries = (
 				config as Record<'buttons', IEntry[]>
@@ -58,7 +60,13 @@ class ServiceCallTileFeature extends LitElement {
 				...(entry.data || {}),
 				...(entry.target || {}),
 			};
+
+			// Set entry type to button if not present
+			if (!('type' in entry)) {
+				(entry as IEntry).type = 'button';
+			}
 		}
+
 		this.config = config;
 	}
 
@@ -83,7 +91,7 @@ class ServiceCallTileFeature extends LitElement {
 		this.hass.callService(domain, service, data);
 	}
 
-	renderBackground(itemid: number, color?: string, opacity?: number) {
+	renderButtonBackground(itemid: number, color?: string, opacity?: number) {
 		let colorStyle = ``;
 		let opacityStyle = ``;
 		if (color) {
@@ -123,7 +131,9 @@ class ServiceCallTileFeature extends LitElement {
 		const button: TemplateResult[] = [];
 
 		// Button/Background
-		button.push(this.renderBackground(itemid, entry.color, entry.opacity));
+		button.push(
+			this.renderButtonBackground(itemid, entry.color, entry.opacity),
+		);
 
 		// Icon
 		if ('icon' in entry) {
@@ -142,6 +152,14 @@ class ServiceCallTileFeature extends LitElement {
 		return button;
 	}
 
+	renderSlider(itemid: number, _entry: IEntry): TemplateResult[] {
+		const slider: TemplateResult[] = [];
+
+		slider.push(html`<div class="slider" itemid=${itemid}></div>`);
+
+		return slider;
+	}
+
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -151,9 +169,11 @@ class ServiceCallTileFeature extends LitElement {
 		for (const [itemid, entry] of this.config.entries.entries()) {
 			let renderedEntry: TemplateResult[];
 
-			const entryType = entry.type ?? 'button';
+			const entryType = entry.type;
 			switch (entryType.toLowerCase()) {
-				case 'slider': // TODO
+				case 'slider':
+					renderedEntry = this.renderSlider(itemid, entry);
+					break;
 				case 'button':
 				default:
 					renderedEntry = this.renderButton(itemid, entry);
