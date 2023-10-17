@@ -166,8 +166,11 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		// TODO - store this somewhere else
+		const start = slider.parentElement!.children[2].innerHTML;
+		slider.value = start;
+
+		let i = parseInt(start);
 		const t = 1;
-		let i = parseInt(slider.parentElement!.children[2].innerHTML);
 		if (i > value) {
 			const id = setInterval(() => {
 				if (value >= i) {
@@ -186,7 +189,7 @@ class ServiceCallTileFeature extends LitElement {
 			}, t);
 		}
 
-		// Placeholder
+		// TODO - store this somewhere else
 		(
 			e.currentTarget as HTMLInputElement
 		).parentElement!.children[2].innerHTML = value.toString();
