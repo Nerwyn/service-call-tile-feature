@@ -1,15 +1,18 @@
 export interface IConfig {
 	type: string;
-	buttons: IButton[];
+	entries: IEntry[];
 }
 
-export interface IButton extends IServiceCall, IStyle {}
+export interface IEntry extends IServiceCall, IStyle {}
 
 export interface IServiceCall {
+	type: TileFeatureType;
 	service: string;
 	data?: IData;
 	target?: ITarget;
 }
+
+export type TileFeatureType = 'button' | 'slider';
 
 export interface IData {
 	[key: string]: string | string[] | number | boolean;

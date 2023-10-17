@@ -3,7 +3,7 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { IConfig } from './models/interfaces';
+import { IConfig, IEntry } from './models/interfaces';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -33,8 +33,9 @@ class ServiceCallTileFeature extends LitElement {
 	static getStubConfig() {
 		return {
 			type: 'custom:service-call',
-			buttons: [
+			entries: [
 				{
+					type: 'button',
 					service: '',
 				},
 			],
@@ -46,23 +47,28 @@ class ServiceCallTileFeature extends LitElement {
 			throw new Error('Invalid configuration');
 		}
 		config = JSON.parse(JSON.stringify(config));
-		for (const button of config.buttons) {
+		if ('buttons' in config && !('entries' in config)) {
+			(config as IConfig).entries = (
+				config as Record<'buttons', IEntry[]>
+			).buttons as IEntry[];
+		}
+		for (const entry of config.entries) {
 			// Merge target and data fields
-			button.data = {
-				...(button.data || {}),
-				...(button.target || {}),
+			entry.data = {
+				...(entry.data || {}),
+				...(entry.target || {}),
 			};
 		}
 		this.config = config;
 	}
 
-	_press(e: MouseEvent) {
+	pressButton(e: MouseEvent) {
 		e.stopImmediatePropagation();
 		const i = parseInt(
 			(e.currentTarget as HTMLButtonElement).getAttribute('itemid') ||
 				'-1',
 		);
-		const button = this.config.buttons[i];
+		const button = this.config.entries[i];
 		const [domain, service] = button.service.split('.');
 
 		const data = button.data || {};
@@ -91,7 +97,7 @@ class ServiceCallTileFeature extends LitElement {
 		return html`<button
 			class="button"
 			itemid=${itemid}
-			@click=${this._press}
+			@click=${this.pressButton}
 			style="${style}"
 		></button>`;
 	}
@@ -112,37 +118,52 @@ class ServiceCallTileFeature extends LitElement {
 		return html`<div class="label" style="${style}">${text}</div>`;
 	}
 
+	renderButton(itemid: number, entry: IEntry): TemplateResult[] {
+		// Button, icon, and label in a container
+		const button: TemplateResult[] = [];
+
+		// Button/Background
+		button.push(this.renderBackground(itemid, entry.color, entry.opacity));
+
+		// Icon
+		if ('icon' in entry) {
+			button.push(
+				this.renderIcon(entry.icon as string, entry.icon_color),
+			);
+		}
+
+		// Label
+		if ('label' in entry) {
+			button.push(
+				this.renderLabel(entry.label as string, entry.label_color),
+			);
+		}
+
+		return button;
+	}
+
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
 		}
 
-		const buttons: TemplateResult[] = [];
-		for (const [i, entry] of this.config.buttons.entries()) {
-			const button: TemplateResult[] = [];
+		const entries: TemplateResult[] = [];
+		for (const [itemid, entry] of this.config.entries.entries()) {
+			let renderedEntry: TemplateResult[];
 
-			// Button/Background
-			button.push(this.renderBackground(i, entry.color, entry.opacity));
-
-			// Icon
-			if ('icon' in entry) {
-				button.push(
-					this.renderIcon(entry.icon as string, entry.icon_color),
-				);
+			const entryType = entry.type ?? 'button';
+			switch (entryType.toLowerCase()) {
+				case 'slider': // TODO
+				case 'button':
+				default:
+					renderedEntry = this.renderButton(itemid, entry);
+					break;
 			}
 
-			// Label
-			if ('label' in entry) {
-				button.push(
-					this.renderLabel(entry.label as string, entry.label_color),
-				);
-			}
-
-			// Button, icon, and label in a container
-			buttons.push(html`<div class="container">${button}</div>`);
+			entries.push(html`<div class="container">${renderedEntry}</div>`);
 		}
 
-		return html`<div class="row">${buttons}</div> `;
+		return html`<div class="row">${entries}</div> `;
 	}
 
 	static get styles() {
