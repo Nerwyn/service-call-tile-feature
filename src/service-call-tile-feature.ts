@@ -153,17 +153,38 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	onSlide(e: InputEvent) {
-		e.preventDefault()
-		e.stopImmediatePropagation()
+		e.preventDefault();
+		e.stopImmediatePropagation();
 
-		let value = parseInt((e.currentTarget as HTMLInputElement).value) ?? 0;
+		const slider = e.currentTarget as HTMLInputElement;
+		let value = parseInt(slider.value) ?? 0;
 
 		if (value < 0) {
 			value = 0;
 		} else if (value > 100) {
 			value = 100;
 		}
-		// (e.currentTarget as HTMLInputElement).value = value.toString();
+
+		// TODO - store this somewhere else
+		const t = 1;
+		let i = parseInt(slider.parentElement!.children[2].innerHTML);
+		if (i > value) {
+			const id = setInterval(() => {
+				if (value >= i) {
+					clearInterval(id);
+				}
+				i -= 1;
+				slider.value = i.toString();
+			}, t);
+		} else if (i < value) {
+			const id = setInterval(() => {
+				if (value <= i) {
+					clearInterval(id);
+				}
+				i += 1;
+				slider.value = i.toString();
+			}, t);
+		}
 
 		// Placeholder
 		(
@@ -171,7 +192,7 @@ class ServiceCallTileFeature extends LitElement {
 		).parentElement!.children[2].innerHTML = value.toString();
 	}
 
-	renderSlider(itemid: number, entry: IEntry): TemplateResult[] {
+	renderSlider(itemid: number, _entry: IEntry): TemplateResult[] {
 		const slider: TemplateResult[] = [];
 
 		slider.push(html`<div class="slider-background"></div>`);
@@ -180,10 +201,11 @@ class ServiceCallTileFeature extends LitElement {
 			html`<input
 				type="range"
 				class="slider"
-				min="-1" max="101"
+				min="-1"
+				max="101"
 				itemid=${itemid}
 				@input=${this.onSlide}
-			>${entry.label}</input>`,
+			/>`,
 		);
 
 		slider.push(this.renderLabel(''));
@@ -278,8 +300,8 @@ class ServiceCallTileFeature extends LitElement {
 			.slider {
 				position: absolute;
 				appearance: none;
-				-webkit-apperanace: none;
-				-moz-apperance: none;
+				-webkit-appearance: none;
+				-moz-appearance: none;
 				height: inherit;
 				width: inherit;
 				overflow: hidden;
