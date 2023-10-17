@@ -152,10 +152,18 @@ class ServiceCallTileFeature extends LitElement {
 		return button;
 	}
 
-	renderSlider(itemid: number, _entry: IEntry): TemplateResult[] {
+	renderSlider(itemid: number, entry: IEntry): TemplateResult[] {
 		const slider: TemplateResult[] = [];
 
-		slider.push(html`<div class="slider" itemid=${itemid}></div>`);
+		slider.push(
+			html`<input
+				type="range"
+				id="slider"
+				class="slider"
+				min="0" max="100"
+				itemid=${itemid}
+			>${entry.label}</input>`,
+		);
 
 		return slider;
 	}

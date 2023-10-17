@@ -4,7 +4,13 @@
 			itemid=${t}
 			@click=${this.pressButton}
 			style="${o}"
-		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}renderSlider(t,e){const i=[];return i.push(r.html`<div class="slider" itemid=${t}></div>`),i}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let s;s="slider"===i.type.toLowerCase()?this.renderSlider(e,i):this.renderButton(e,i),t.push(r.html`<div class="container">${s}</div>`)}return r.html`<div class="row">${t}</div> `}static get styles(){return r.css`
+		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}renderSlider(t,e){const i=[];return i.push(r.html`<input
+				type="range"
+				id="slider"
+				class="slider"
+				min="0" max="100"
+				itemid=${t}
+			>${e.label}</input>`),i}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let s;s="slider"===i.type.toLowerCase()?this.renderSlider(e,i):this.renderButton(e,i),t.push(r.html`<div class="container">${s}</div>`)}return r.html`<div class="row">${t}</div> `}static get styles(){return r.css`
 			.row {
 				display: flex;
 				flex-direction: row;
