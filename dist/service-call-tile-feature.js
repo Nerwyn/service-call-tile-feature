@@ -63,7 +63,8 @@
 				position: absolute;
 				width: inherit;
 				height: inherit;
-				background: rgba(var(--slider-color), 0.2);
+				background: var(--slider-color);
+				opacity: 0.2;
 			}
 
 			.slider {
