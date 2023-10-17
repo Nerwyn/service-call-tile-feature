@@ -7,8 +7,8 @@
 		></button>`}renderIcon(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<ha-icon .icon=${t} style="${i}"></ha-icon>`}renderLabel(t,e){let i="";return e&&(i=`color: ${e};`),r.html`<div class="label" style="${i}">${t}</div>`}renderButton(t,e){const i=[];return i.push(this.renderButtonBackground(t,e.color,e.opacity)),"icon"in e&&i.push(this.renderIcon(e.icon,e.icon_color)),"label"in e&&i.push(this.renderLabel(e.label,e.label_color)),i}onSlide(t){var e;t.preventDefault(),t.stopImmediatePropagation();const i=t.currentTarget;let n=null!==(e=parseInt(i.value))&&void 0!==e?e:0;n<0?n=0:n>100&&(n=100);let s=parseInt(i.parentElement.children[2].innerHTML);if(s>n){const t=setInterval((()=>{n>=s&&clearInterval(t),s-=1,i.value=s.toString()}),1)}else if(s<n){const t=setInterval((()=>{n<=s&&clearInterval(t),s+=1,i.value=s.toString()}),1)}t.currentTarget.parentElement.children[2].innerHTML=n.toString()}renderSlider(t,e){const i=[];return i.push(r.html`<div class="slider-background"></div>`),i.push(r.html`<input
 				type="range"
 				class="slider"
-				min="-1"
-				max="101"
+				min="0"
+				max="100"
 				itemid=${t}
 				@input=${this.onSlide}
 			/>`),i.push(this.renderLabel("")),i}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let n;n="slider"===i.type.toLowerCase()?this.renderSlider(e,i):this.renderButton(e,i),t.push(r.html`<div class="container">${n}</div>`)}return r.html`<div class="row">${t}</div> `}static get styles(){return r.css`
