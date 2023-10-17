@@ -153,6 +153,9 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	onSlide(e: InputEvent) {
+		e.preventDefault()
+		e.stopImmediatePropagation()
+
 		let value = parseInt((e.currentTarget as HTMLInputElement).value) ?? 0;
 
 		if (value < 0) {
@@ -160,7 +163,7 @@ class ServiceCallTileFeature extends LitElement {
 		} else if (value > 100) {
 			value = 100;
 		}
-		(e.currentTarget as HTMLInputElement).value = value.toString();
+		// (e.currentTarget as HTMLInputElement).value = value.toString();
 
 		// Placeholder
 		(
