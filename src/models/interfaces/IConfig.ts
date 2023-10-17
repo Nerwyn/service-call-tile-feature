@@ -7,9 +7,7 @@ export interface IButton extends IServiceCall, IStyle {}
 
 export interface IServiceCall {
 	service: string;
-	data?: {
-		[key: string]: string | string[] | number | boolean;
-	};
+	data?: Record<string, string | string[] | number | boolean>;
 	target?: {
 		entity_id?: string | string[];
 		device_id?: string | string[];
