@@ -41,13 +41,26 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let label = html``;
 		if ('label' in this.entry) {
+			const entity_id = this.entry.data!.entity_id as string;
 			let text = this.entry.label!;
+
 			if (text.includes('VALUE')) {
 				text = text.replace('VALUE', '');
-			} else if (text.includes('STATE')) {
-				const entity_id = this.entry.data!.entity_id as string;
-				text = text.replace('STATE', this.hass.states[entity_id].state);
 			}
+
+			if (text.includes('STATE')) {
+				const state = this.hass.states[entity_id].state;
+				text = text.replace('STATE', state);
+			}
+
+			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
+			let match;
+			while ((match = pattern.exec(text)) != null) {
+				const attribute =
+					this.hass.states[entity_id].attributes[match[1]];
+				text = text.replace(`ATTRIBUTE[${match[1]}]`, attribute);
+			}
+
 			const style = {
 				color: this.entry.label_color,
 			};
