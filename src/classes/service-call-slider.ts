@@ -22,7 +22,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		// TODO - store this somewhere else
 		// const start = slider.nextElementSibling?.innerHTML ?? '0';
 		slider.value = start.toString();
-		this.hass.callService('light', 'turn_on', { brightness_pct: value });
+		this.hass.callService('light', 'turn_on', {
+			entity_id: this.entry.data!.entity_id,
+			brightness_pct: value,
+		});
 
 		let i = start;
 		const t = 1;
@@ -33,7 +36,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 				i -= 1;
 				slider.value = i.toString();
-				console.log(slider.value);
 			}, t);
 		} else if (i < value) {
 			const id = setInterval(() => {
@@ -42,7 +44,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 				i += 1;
 				slider.value = i.toString();
-				console.log(slider.value);
 			}, t);
 		}
 
