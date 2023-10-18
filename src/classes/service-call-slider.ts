@@ -1,6 +1,5 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -84,15 +83,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.step = (max - min) / 50;
 
-		const style = {
-			'--slider-color': this.entry.color,
-			opacity: this.entry.opacity,
-		};
-
 		const slider = html`
-			<style>
-				${styleMap(style)}
-			</style>
 			<div class="slider-background"></div>
 			<input
 				type="range"
