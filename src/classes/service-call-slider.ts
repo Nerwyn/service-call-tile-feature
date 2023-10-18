@@ -47,7 +47,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.oldValue = end;
 	}
 
-	onTouchEnd(e: TouchEvent) {
+	onEnd(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 		const id = setInterval(() => {
 			if (this.inputEnd) {
@@ -70,7 +70,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				min="0"
 				max="100"
 				@input=${this.onInput}
-				@touchend=${this.onTouchEnd}
+				@mouseup=${this.onEnd}
+				@touchend=${this.onEnd}
 			/>
 			${this.renderLabel('')}
 		`;
