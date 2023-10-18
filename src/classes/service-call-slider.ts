@@ -1,10 +1,12 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
+	@property({ attribute: false }) oldValue!: number;
+
 	constructor() {
 		super();
 	}
@@ -13,33 +15,24 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
-		const entity = this.hass.states[this.entry.data!.entity_id as string];
-		const start = entity.attributes.brightness as number;
-
 		const slider = e.currentTarget as HTMLInputElement;
-		const value = parseInt(slider.value ?? start);
-
-		// TODO - store this somewhere else
-		// const start = slider.nextElementSibling?.innerHTML ?? '0';
+		const start = this.oldValue ?? 50;
+		const end = parseInt(slider.value ?? start);
 		slider.value = start.toString();
-		this.hass.callService('light', 'turn_on', {
-			entity_id: this.entry.data!.entity_id,
-			brightness_pct: value,
-		});
 
 		let i = start;
 		const t = 1;
-		if (i > value) {
+		if (start > end) {
 			const id = setInterval(() => {
-				if (value >= i) {
+				if (end >= i) {
 					clearInterval(id);
 				}
 				i -= 1;
 				slider.value = i.toString();
 			}, t);
-		} else if (i < value) {
+		} else if (start < end) {
 			const id = setInterval(() => {
-				if (value <= i) {
+				if (end <= i) {
 					clearInterval(id);
 				}
 				i += 1;
@@ -47,8 +40,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, t);
 		}
 
-		// TODO - store this somewhere else
-		slider.nextElementSibling!.innerHTML = value.toString();
+		slider.nextElementSibling!.innerHTML = end.toString();
+		this.oldValue = end;
+	}
+
+	onMouseUp(e: MouseEvent) {
+		const slider = e.currentTarget as HTMLInputElement;
+		const value = parseInt(slider.value ?? '0');
+
+		this.hass.callService('light', 'turn_on', {
+			entity_id: this.entry.data!.entity_id,
+			brightness_pct: value,
+		});
 	}
 
 	render() {
@@ -60,6 +63,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				min="0"
 				max="100"
 				@input=${this.onInput}
+				@mouseup=${this.onMouseUp}
 			/>
 			${this.renderLabel('')}
 		`;
