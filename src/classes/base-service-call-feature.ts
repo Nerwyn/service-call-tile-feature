@@ -1,5 +1,4 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -8,16 +7,12 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { IEntry } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
-export abstract class BaseServiceCallFeature extends LitElement {
-	@property({ attribute: false }) entity!: HassEntity;
+export class BaseServiceCallFeature extends LitElement {
+	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
 
 	constructor() {
 		super();
-	}
-
-	set hass(hass: HomeAssistant) {
-		this.entity = hass.states[this.entry.data!.entity_id as string] ?? {};
 	}
 
 	renderIcon(icon: string, color?: string) {

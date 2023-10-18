@@ -13,17 +13,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
+		const entity = this.hass.states[this.entry.data!.entity_id as string];
+		const start = entity.attributes.brightness as number;
+
 		const slider = e.currentTarget as HTMLInputElement;
-		const value = parseInt(
-			slider.value ?? this.entity.attributes.brightness,
-		);
+		const value = parseInt(slider.value ?? start);
 
 		// TODO - store this somewhere else
-		const start = slider.nextElementSibling?.innerHTML ?? '0';
-		slider.value = start;
+		// const start = slider.nextElementSibling?.innerHTML ?? '0';
+		slider.value = start.toString();
 		this.hass.callService('light', 'turn_on', { brightness_pct: value });
 
-		let i = parseInt(start);
+		let i = start;
 		const t = 1;
 		if (i > value) {
 			const id = setInterval(() => {
