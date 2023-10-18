@@ -65,7 +65,7 @@
 				.button:active {
 					opacity: 0.3;
 				}
-			`]}};e.ServiceCallButton=a,e.ServiceCallButton=a=r([(0,n.customElement)("service-call-button")],a)},719:function(t,e,i){var r=this&&this.__decorate||function(t,e,i,r){var s,n=arguments.length,o=n<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var l=t.length-1;l>=0;l--)(s=t[l])&&(o=(n<3?s(o):n>3?s(e,i,o):s(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSlider=void 0;const s=i(677),n=i(595),o=i(393);let l=class extends o.BaseServiceCallFeature{constructor(){super()}onInput(t){var e,i,r;t.preventDefault(),t.stopImmediatePropagation();const s=t.currentTarget,n=null!==(e=parseInt(s.value))&&void 0!==e?e:0,o=null!==(r=null===(i=s.nextElementSibling)||void 0===i?void 0:i.innerHTML)&&void 0!==r?r:"50";s.value=o;let l=parseInt(o);if(l>n){const t=setInterval((()=>{n>=l&&clearInterval(t),l-=1,s.value=l.toString(),console.log(s.value)}),1)}else if(l<n){const t=setInterval((()=>{n<=l&&clearInterval(t),l+=1,s.value=l.toString(),console.log(s.value)}),1)}s.nextElementSibling.innerHTML=n.toString()}render(){return s.html`
+			`]}};e.ServiceCallButton=a,e.ServiceCallButton=a=r([(0,n.customElement)("service-call-button")],a)},719:function(t,e,i){var r=this&&this.__decorate||function(t,e,i,r){var s,n=arguments.length,o=n<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var l=t.length-1;l>=0;l--)(s=t[l])&&(o=(n<3?s(o):n>3?s(e,i,o):s(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSlider=void 0;const s=i(677),n=i(595),o=i(393);let l=class extends o.BaseServiceCallFeature{constructor(){super()}onInput(t){var e,i,r;t.preventDefault(),t.stopImmediatePropagation();const s=t.currentTarget,n=parseInt(null!==(e=s.value)&&void 0!==e?e:"0"),o=null!==(r=null===(i=s.nextElementSibling)||void 0===i?void 0:i.innerHTML)&&void 0!==r?r:"0";s.value=o;let l=parseInt(o);if(l>n){const t=setInterval((()=>{n>=l&&clearInterval(t),l-=1,s.value=l.toString(),console.log(s.value)}),1)}else if(l<n){const t=setInterval((()=>{n<=l&&clearInterval(t),l+=1,s.value=l.toString(),console.log(s.value)}),1)}s.nextElementSibling.innerHTML=n.toString()}render(){return s.html`
 			<div class="slider-background"></div>
 			<input
 				type="range"
@@ -74,7 +74,7 @@
 				max="100"
 				@input=${this.onInput}
 			/>
-			${this.renderLabel("50")}
+			${this.renderLabel("")}
 		`}static get styles(){return[super.styles,s.css`
 				.slider-background {
 					position: absolute;

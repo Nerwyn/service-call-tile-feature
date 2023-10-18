@@ -14,10 +14,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const value = parseInt(slider.value) ?? 0;
+		const value = parseInt(slider.value ?? '0');
 
 		// TODO - store this somewhere else
-		const start = slider.nextElementSibling?.innerHTML ?? '50';
+		const start = slider.nextElementSibling?.innerHTML ?? '0';
 		slider.value = start;
 
 		let i = parseInt(start);
@@ -56,7 +56,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				max="100"
 				@input=${this.onInput}
 			/>
-			${this.renderLabel('50')}
+			${this.renderLabel('')}
 		`;
 
 		return slider;
