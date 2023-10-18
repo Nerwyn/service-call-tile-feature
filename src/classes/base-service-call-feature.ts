@@ -19,9 +19,10 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
 			if ('icon' in this.entry) {
 				element.nextElementSibling!.nextElementSibling!.innerHTML =
-					value;
+					this.entry.label.replace('VALUE', value);
 			} else {
-				element.nextElementSibling!.innerHTML = value;
+				element.nextElementSibling!.innerHTML =
+					this.entry.label.replace('VALUE', value);
 			}
 		}
 	}
@@ -40,11 +41,18 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let label = html``;
 		if ('label' in this.entry) {
+			let text = this.entry.label!;
+			if (text.includes('VALUE')) {
+				text = text.replace('VALUE', '');
+			} else if (text.includes('STATE')) {
+				const entity_id = this.entry.data!.entity_id as string;
+				text = text.replace('STATE', this.hass.states[entity_id].state);
+			}
 			const style = {
 				color: this.entry.label_color,
 			};
 			// prettier-ignore
-			label = html`<div class="label" style="${styleMap(style)}">${this.entry.label}</div>`;
+			label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
 		}
 
 		return html`${icon}${label}`;
