@@ -17,7 +17,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const value = parseInt(slider.value) ?? 0;
 
 		// TODO - store this somewhere else
-		const start = slider.parentElement!.children[2].innerHTML;
+		const start = slider.nextElementSibling?.innerHTML ?? '50';
 		slider.value = start;
 
 		let i = parseInt(start);
@@ -43,9 +43,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 
 		// TODO - store this somewhere else
-		(
-			e.currentTarget as HTMLInputElement
-		).parentElement!.children[2].innerHTML = value.toString();
+		slider.nextElementSibling!.innerHTML = value.toString();
 	}
 
 	render() {
