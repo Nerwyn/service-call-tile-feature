@@ -54,14 +54,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				clearInterval(id);
 				const value = slider.value ?? '0';
 				const [domain, service] = this.entry.service.split('.');
-				const data = this.entry.data;
+				const data = JSON.parse(JSON.stringify(this.entry.data));
 				for (const key in data) {
-					if (
-						data[key].toString().toUpperCase().includes('%VALUE%')
-					) {
+					if (data[key].toString().toUpperCase().includes('VALUE')) {
 						data[key] = data[key]
 							.toString()
-							.replace('%VALUE%', value);
+							.replace('VALUE', value);
 					}
 				}
 				this.hass.callService(domain, service, data);
