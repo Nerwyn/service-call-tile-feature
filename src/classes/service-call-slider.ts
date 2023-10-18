@@ -6,12 +6,14 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
+	@property({ attribute: false }) inputEnd: boolean = true;
 
 	constructor() {
 		super();
 	}
 
 	onInput(e: InputEvent) {
+		this.inputEnd = false;
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
@@ -21,37 +23,42 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		slider.value = start.toString();
 
 		let i = start;
-		const t = 1;
 		if (start > end) {
 			const id = setInterval(() => {
-				if (end >= i) {
-					clearInterval(id);
-				}
 				i -= 1;
 				slider.value = i.toString();
-			}, t);
+				if (end >= i) {
+					clearInterval(id);
+					this.inputEnd = true;
+				}
+			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				if (end <= i) {
-					clearInterval(id);
-				}
 				i += 1;
 				slider.value = i.toString();
-			}, t);
+				if (end <= i) {
+					clearInterval(id);
+					this.inputEnd = true;
+				}
+			}, 1);
 		}
 
 		slider.nextElementSibling!.innerHTML = end.toString();
 		this.oldValue = end;
 	}
 
-	onMouseUp(e: MouseEvent) {
+	onTouchEnd(e: TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
-		const value = parseInt(slider.value ?? '0');
-
-		this.hass.callService('light', 'turn_on', {
-			entity_id: this.entry.data!.entity_id,
-			brightness_pct: value,
-		});
+		const id = setInterval(() => {
+			if (this.inputEnd) {
+				clearInterval(id);
+				const value = parseInt(slider.value ?? '0');
+				this.hass.callService('light', 'turn_on', {
+					entity_id: this.entry.data!.entity_id,
+					brightness_pct: value,
+				});
+			}
+		}, 1);
 	}
 
 	render() {
@@ -63,7 +70,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				min="0"
 				max="100"
 				@input=${this.onInput}
-				@mouseup=${this.onMouseUp}
+				@touchend=${this.onTouchEnd}
 			/>
 			${this.renderLabel('')}
 		`;
