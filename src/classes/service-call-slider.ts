@@ -14,11 +14,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const value = parseInt(slider.value ?? '0');
+		const value = parseInt(
+			slider.value ?? this.entity.attributes.brightness,
+		);
 
 		// TODO - store this somewhere else
 		const start = slider.nextElementSibling?.innerHTML ?? '0';
 		slider.value = start;
+		this.hass.callService('light', 'turn_on', { brightness_pct: value });
 
 		let i = parseInt(start);
 		const t = 1;
