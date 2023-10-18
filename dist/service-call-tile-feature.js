@@ -76,11 +76,11 @@
 				@input=${this.onSlide}
 			/>
 			${this.renderLabel("50")}
-		`}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let n;"entity_id"in i.data||"device_id"in i.data||"area_id"in i.data||(i.data.entity_id=this.stateObj.entity_id),"slider"===i.type.toLowerCase()?(n=this.renderSlider(e,i),t.push(s.html`<div class="container">${n}</div>`)):n=s.html` <service-call-button
+		`}render(){if(!this.config||!this.hass||!this.stateObj)return null;const t=[];for(const[e,i]of this.config.entries.entries()){let n;"entity_id"in i.data||"device_id"in i.data||"area_id"in i.data||(i.data.entity_id=this.stateObj.entity_id),"slider"===i.type.toLowerCase()?(n=this.renderSlider(e,i),t.push(s.html`<div class="container">${n}</div>`)):(n=s.html` <service-call-button
 						.hass=${this.hass}
 						.entry=${i}
 						.itemid=${e}
-					/>`}return s.html`<div class="row">${t}</div>`}static get styles(){return s.css`
+					/>`,t.push(n))}return s.html`<div class="row">${t}</div>`}static get styles(){return s.css`
 			.row {
 				display: flex;
 				flex-direction: row;

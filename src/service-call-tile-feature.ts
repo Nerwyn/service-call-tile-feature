@@ -171,6 +171,7 @@ class ServiceCallTileFeature extends LitElement {
 						.entry=${entry}
 						.itemid=${itemid}
 					/>`;
+					entries.push(renderedEntry);
 					break;
 			}
 		}
