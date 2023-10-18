@@ -17,7 +17,6 @@ export abstract class BaseServiceCallFeature extends LitElement {
 	}
 
 	set hass(hass: HomeAssistant) {
-		this.hass = hass;
 		this.entity = hass.states[this.entry.data!.entity_id as string] ?? {};
 	}
 
