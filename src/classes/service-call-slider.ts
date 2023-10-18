@@ -48,7 +48,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		slider.nextElementSibling!.innerHTML = end.toString();
+		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
+			if ('icon' in this.entry) {
+				slider.nextElementSibling!.nextElementSibling!.innerHTML =
+					end.toString();
+			} else {
+				slider.nextElementSibling!.innerHTML = end.toString();
+			}
+		}
 		this.oldValue = end;
 	}
 
@@ -64,7 +71,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				const value = slider.value ?? '0';
 				for (const key in data) {
-					if (data[key].toString().toUpperCase().includes('VALUE')) {
+					if (data[key].toString().includes('VALUE')) {
 						data[key] = data[key]
 							.toString()
 							.replace('VALUE', value);
@@ -94,7 +101,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
-			${this.renderLabel('')}
+			${super.render()}
 		`;
 
 		return slider;

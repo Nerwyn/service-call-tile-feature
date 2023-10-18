@@ -15,43 +15,25 @@ export class BaseServiceCallFeature extends LitElement {
 		super();
 	}
 
-	renderIcon(icon: string, color?: string) {
-		const style: Record<string, string> = {};
-		if (color) {
-			style['color'] = color;
-		}
-		return html`<ha-icon
-			.icon=${icon}
-			style="${styleMap(style)}"
-		></ha-icon>`;
-	}
-
-	renderLabel(text: string, color?: string) {
-		const style: Record<string, string> = {};
-		if (color) {
-			style['color'] = color;
-		}
-		// prettier-ignore
-		return html`<div class="label" style="${styleMap(style)}">${text}</div>`;
-	}
-
 	render() {
-		// Icon
 		let icon = html``;
 		if ('icon' in this.entry) {
-			icon = this.renderIcon(
-				this.entry.icon as string,
-				this.entry.icon_color,
-			);
+			const style = {
+				color: this.entry.icon_color,
+			};
+			icon = html`<ha-icon
+				.icon=${this.entry.icon}
+				style="${styleMap(style)}"
+			></ha-icon>`;
 		}
 
-		// Label
 		let label = html``;
 		if ('label' in this.entry) {
-			label = this.renderLabel(
-				this.entry.label as string,
-				this.entry.label_color,
-			);
+			const style = {
+				color: this.entry.label_color,
+			};
+			// prettier-ignore
+			label = html`<div class="label" style="${styleMap(style)}">${this.entry.label}</div>`;
 		}
 
 		return html`${icon}${label}`;
