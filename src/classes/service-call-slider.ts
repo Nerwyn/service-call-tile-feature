@@ -27,6 +27,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const id = setInterval(() => {
 				i -= 1;
 				slider.value = i.toString();
+
 				if (end >= i) {
 					clearInterval(id);
 					this.inputEnd = true;
@@ -36,6 +37,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const id = setInterval(() => {
 				i += 1;
 				slider.value = i.toString();
+
 				if (end <= i) {
 					clearInterval(id);
 					this.inputEnd = true;
@@ -49,12 +51,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	onEnd(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
+
+		const [domain, service] = this.entry.service.split('.');
+		const data = JSON.parse(JSON.stringify(this.entry.data));
+
 		const id = setInterval(() => {
 			if (this.inputEnd) {
 				clearInterval(id);
+
 				const value = slider.value ?? '0';
-				const [domain, service] = this.entry.service.split('.');
-				const data = JSON.parse(JSON.stringify(this.entry.data));
 				for (const key in data) {
 					if (data[key].toString().toUpperCase().includes('VALUE')) {
 						data[key] = data[key]
@@ -62,19 +67,25 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 							.replace('VALUE', value);
 					}
 				}
+
 				this.hass.callService(domain, service, data);
 			}
 		}, 1);
 	}
 
 	render() {
+		let [min, max] = [0, 100];
+		if (this.entry.range) {
+			[min, max] = this.entry.range!;
+		}
+
 		const slider = html`
 			<div class="slider-background"></div>
 			<input
 				type="range"
 				class="slider"
-				min="0"
-				max="100"
+				min="${min}"
+				max="${max}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}

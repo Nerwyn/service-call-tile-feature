@@ -3,16 +3,18 @@ export interface IConfig {
 	entries: IEntry[];
 }
 
-export interface IEntry extends IServiceCall, IStyle {}
+export interface IEntry extends IServiceCall, IStyle {
+	type: TileFeatureType;
+	range?: [number, number];
+}
+
+export type TileFeatureType = 'button' | 'slider';
 
 export interface IServiceCall {
-	type: TileFeatureType;
 	service: string;
 	data?: IData;
 	target?: ITarget;
 }
-
-export type TileFeatureType = 'button' | 'slider';
 
 export interface IData {
 	[key: string]: string | string[] | number | boolean;
