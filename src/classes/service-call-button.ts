@@ -29,7 +29,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		const button = html`<button
 			class="button"
-			itemid=${this.itemid}
 			@click=${this.onClick}
 			style=${styleMap(style)}
 		></button>`;

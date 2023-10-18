@@ -10,7 +10,6 @@ import { IEntry } from '../models/interfaces';
 export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
-	@property({ attribute: false }) itemid!: number;
 
 	constructor() {
 		super();
