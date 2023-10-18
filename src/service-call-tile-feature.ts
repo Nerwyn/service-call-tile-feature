@@ -68,7 +68,7 @@ class ServiceCallTileFeature extends LitElement {
 			return null;
 		}
 
-		const entries: TemplateResult[] = [];
+		const row: TemplateResult[] = [];
 		for (const entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (
@@ -82,7 +82,7 @@ class ServiceCallTileFeature extends LitElement {
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
 				case 'slider':
-					entries.push(
+					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
@@ -91,7 +91,7 @@ class ServiceCallTileFeature extends LitElement {
 					break;
 				case 'button':
 				default:
-					entries.push(
+					row.push(
 						html`<service-call-button
 							.hass=${this.hass}
 							.entry=${entry}
@@ -101,7 +101,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		return html`<div class="row">${entries}</div>`;
+		return html`<div class="row">${row}</div>`;
 	}
 
 	static get styles() {

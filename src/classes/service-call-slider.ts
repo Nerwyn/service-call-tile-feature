@@ -18,7 +18,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const start = this.oldValue ?? 50;
+		const start = this.oldValue ?? 0;
 		const end = parseInt(slider.value ?? start);
 		slider.value = start.toString();
 
@@ -52,11 +52,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const id = setInterval(() => {
 			if (this.inputEnd) {
 				clearInterval(id);
-				const value = parseInt(slider.value ?? '0');
-				this.hass.callService('light', 'turn_on', {
-					entity_id: this.entry.data!.entity_id,
-					brightness_pct: value,
-				});
+				const value = slider.value ?? '0';
+				const [domain, service] = this.entry.service.split('.');
+				const data = this.entry.data;
+				for (const key in data) {
+					if (
+						data[key].toString().toUpperCase().includes('%VALUE%')
+					) {
+						data[key] = data[key]
+							.toString()
+							.replace('%VALUE%', value);
+					}
+				}
+				this.hass.callService(domain, service, data);
 			}
 		}, 1);
 	}
