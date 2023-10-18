@@ -1,17 +1,11 @@
-import { HomeAssistant } from 'custom-card-helpers';
-
-import { LitElement, TemplateResult, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { html, css, CSSResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { IEntry } from '../models/interfaces';
+import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
-export class ServiceCallButton extends LitElement {
-	@property({ attribute: false }) hass!: HomeAssistant;
-	@property({ attribute: false }) entry!: IEntry;
-	@property({ attribute: false }) itemid!: number;
-
+export class ServiceCallButton extends BaseServiceCallFeature {
 	constructor() {
 		super();
 	}
@@ -24,27 +18,7 @@ export class ServiceCallButton extends LitElement {
 		this.hass.callService(domain, service, data);
 	}
 
-	renderIcon(icon: string, color?: string) {
-		const style: Record<string, string> = {};
-		if (color) {
-			style['color'] = color;
-		}
-		return html`<ha-icon
-			.icon=${icon}
-			style="${styleMap(style)}"
-		></ha-icon>`;
-	}
-
-	renderLabel(text: string, color?: string) {
-		const style: Record<string, string> = {};
-		if (color) {
-			style['color'] = color;
-		}
-		// prettier-ignore
-		return html`<div class="label" style="${styleMap(style)}">${text}</div>`;
-	}
-
-	render(): TemplateResult {
+	render() {
 		const style: Record<string, string | number> = {};
 		if (this.entry.color) {
 			style['background-color'] = this.entry.color;
@@ -80,65 +54,31 @@ export class ServiceCallButton extends LitElement {
 
 		return html`${button}${icon}${label} `;
 	}
+
 	static get styles() {
-		return css`
-			:host {
-				display: flex;
-				flex-flow: column;
-				place-content: center space-evenly;
-				align-items: center;
-				position: relative;
-				height: 40px;
-				width: 100%;
-				border-radius: 10px;
-				border: none;
-				padding: 0px;
-				box-sizing: border-box;
-				line-height: 0;
-				outline: 0px;
-				overflow: hidden;
-				font-size: inherit;
-				color: inherit;
-			}
-			.button {
-				background-color: var(--disabled-color);
-				opacity: 0.2;
-				transition: background-color 180ms ease-in-out;
-				position: absolute;
-				cursor: pointer;
-				height: inherit;
-				width: inherit;
-				border-radius: 10px;
-				border: none;
-			}
-			@media (hover: hover) {
-				.button:hover {
+		return [
+			super.styles as CSSResult,
+			css`
+				.button {
+					background-color: var(--disabled-color);
+					opacity: 0.2;
+					transition: background-color 180ms ease-in-out;
+					position: absolute;
+					cursor: pointer;
+					height: inherit;
+					width: inherit;
+					border-radius: 10px;
+					border: none;
+				}
+				@media (hover: hover) {
+					.button:hover {
+						opacity: 0.3;
+					}
+				}
+				.button:active {
 					opacity: 0.3;
 				}
-			}
-			.button:active {
-				opacity: 0.3;
-			}
-
-			ha-icon {
-				position: relative;
-				pointer-events: none;
-				display: inline-flex;
-				flex-flow: column;
-				place-content: center;
-			}
-
-			.label {
-				position: relative;
-				pointer-events: none;
-				display: inline-flex;
-				justify-content: center;
-				align-items: center;
-				height: 15px;
-				width: inherit;
-				font-family: inherit;
-				font-size: 12px;
-			}
-		`;
+			`,
+		];
 	}
 }
