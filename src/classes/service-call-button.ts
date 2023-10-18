@@ -1,7 +1,9 @@
 import { HomeAssistant } from 'custom-card-helpers';
+
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
+
 import { IEntry } from '../models/interfaces';
 
 @customElement('service-call-button')

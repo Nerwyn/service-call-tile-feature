@@ -14,12 +14,9 @@ console.info(
 );
 
 class ServiceCallTileFeature extends LitElement {
-	@property({ attribute: false })
-	hass!: HomeAssistant;
-	@property({ attribute: false })
-	private config!: IConfig;
-	@property({ attribute: false })
-	private stateObj!: HassEntity;
+	@property({ attribute: false }) hass!: HomeAssistant;
+	@property({ attribute: false }) private config!: IConfig;
+	@property({ attribute: false }) private stateObj!: HassEntity;
 
 	constructor() {
 		super();
@@ -55,15 +52,6 @@ class ServiceCallTileFeature extends LitElement {
 				...(entry.data || {}),
 				...(entry.target || {}),
 			};
-
-			// Set entity ID to tile card entity ID if no other ID is present
-			if (
-				!('entity_id' in entry.data) &&
-				!('device_id' in entry.data) &&
-				!('area_id' in entry.data)
-			) {
-				entry.data['entity_id'] = this.stateObj.entity_id;
-			}
 
 			// Set entry type to button if not present
 			if (!('type' in entry)) {
@@ -158,6 +146,15 @@ class ServiceCallTileFeature extends LitElement {
 		const entries: TemplateResult[] = [];
 		for (const [itemid, entry] of this.config.entries.entries()) {
 			let renderedEntry: TemplateResult;
+
+			// Set entity ID to tile card entity ID if no other ID is present
+			if (
+				!('entity_id' in entry.data!) &&
+				!('device_id' in entry.data!) &&
+				!('area_id' in entry.data!)
+			) {
+				entry.data!['entity_id'] = this.stateObj.entity_id;
+			}
 
 			const entryType = entry.type;
 			switch (entryType.toLowerCase()) {
