@@ -7,6 +7,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) inputEnd: boolean = true;
+	@property({ attribute: false }) step: number = 1;
 
 	constructor() {
 		super();
@@ -25,21 +26,23 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
-				i -= 1;
+				i -= this.step;
 				slider.value = i.toString();
 
 				if (end >= i) {
 					clearInterval(id);
+					slider.value = end.toString();
 					this.inputEnd = true;
 				}
 			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				i += 1;
+				i += this.step;
 				slider.value = i.toString();
 
 				if (end <= i) {
 					clearInterval(id);
+					slider.value = end.toString();
 					this.inputEnd = true;
 				}
 			}, 1);
@@ -78,6 +81,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.entry.range) {
 			[min, max] = this.entry.range!;
 		}
+		this.step = (max - min) / 50;
 
 		const slider = html`
 			<div class="slider-background"></div>
