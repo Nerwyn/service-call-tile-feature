@@ -29,6 +29,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 				i -= 1;
 				slider.value = i.toString();
+				console.log(slider.value);
 			}, t);
 		} else if (i < value) {
 			const id = setInterval(() => {
@@ -37,6 +38,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 				i += 1;
 				slider.value = i.toString();
+				console.log(slider.value);
 			}, t);
 		}
 
