@@ -15,6 +15,17 @@ export class BaseServiceCallFeature extends LitElement {
 		super();
 	}
 
+	setLabelToValue(element: HTMLElement, value: string) {
+		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
+			if ('icon' in this.entry) {
+				element.nextElementSibling!.nextElementSibling!.innerHTML =
+					value;
+			} else {
+				element.nextElementSibling!.innerHTML = value;
+			}
+		}
+	}
+
 	render() {
 		let icon = html``;
 		if ('icon' in this.entry) {

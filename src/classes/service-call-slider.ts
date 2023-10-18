@@ -48,14 +48,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
-			if ('icon' in this.entry) {
-				slider.nextElementSibling!.nextElementSibling!.innerHTML =
-					end.toString();
-			} else {
-				slider.nextElementSibling!.innerHTML = end.toString();
-			}
-		}
+		this.setLabelToValue(slider, end.toString());
 		this.oldValue = end;
 	}
 
