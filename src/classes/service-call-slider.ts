@@ -55,8 +55,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
-		// const slider = e.currentTarget as HTMLInputElement;
-
 		const [domain, service] = this.entry.service.split('.');
 		const data = JSON.parse(JSON.stringify(this.entry.data));
 		for (const key in data) {
@@ -67,23 +65,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 		}
 		this.hass.callService(domain, service, data);
-
-		// const id = setInterval(() => {
-		// 	if (this.inputEnd) {
-		// 		clearInterval(id);
-
-		// 		const value = slider.value ?? '0';
-		// 		for (const key in data) {
-		// 			if (data[key].toString().includes('VALUE')) {
-		// 				data[key] = data[key]
-		// 					.toString()
-		// 					.replace('VALUE', value);
-		// 			}
-		// 		}
-
-		// 		this.hass.callService(domain, service, data);
-		// 	}
-		// }, 1);
 	}
 
 	render() {
@@ -124,7 +105,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
-				value="${this.value.toString()}"
+				value="${this.value}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
