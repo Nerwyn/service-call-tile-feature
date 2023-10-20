@@ -8,11 +8,33 @@ import { IEntry } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
-	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
+	@property({ attribute: false }) entity_id!: string;
+	@property({ attribute: false }) value: string | number = 0;
 
 	constructor() {
 		super();
+	}
+
+	set hass(hass: HomeAssistant) {
+		if (this.entry.data?.entity_id) {
+			if (Array.isArray(this.entry.data?.entity_id)) {
+				this.entity_id = this.entry.data!.entity_id[0];
+			} else {
+				this.entity_id = (this.entry.data?.entity_id as string) ?? '';
+			}
+
+			if (this.entry.value_attribute) {
+				if (this.entry.value_attribute == 'state') {
+					this.value = hass.states[this.entity_id].state;
+				} else {
+					this.value =
+						hass.states[this.entity_id].attributes[
+							this.entry.value_attribute
+						];
+				}
+			}
+		}
 	}
 
 	setLabelToValue(element: HTMLElement, value: string) {

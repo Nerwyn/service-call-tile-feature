@@ -9,7 +9,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) inputEnd: boolean = true;
 	@property({ attribute: false }) step: number = 1;
-	@property({ attribute: false }) value: number = 0;
 
 	constructor() {
 		super();
@@ -79,6 +78,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	render() {
+		// To turn into gradient:
+		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 		const style = {
 			background: this.entry.background_color,
 			opacity: this.entry.background_opacity,
@@ -102,19 +103,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				sliderClass = 'slider';
 				break;
 		}
-		if (this.entry.value_attribute) {
-			let entity_id;
-			if (Array.isArray(this.entry.data!.entity_id)) {
-				entity_id = this.entry.data!.entity_id[0];
-			} else {
-				entity_id = this.entry.data!.entity_id as string;
-			}
-
-			this.value =
-				this.hass.states[entity_id].attributes[
-					this.entry.value_attribute
-				];
-		}
 		const slider = html`
 			<input
 				type="range"
@@ -127,9 +115,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				@touchend=${this.onEnd}
 			/>
 		`;
-
-		// To turn into gradient:
-		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 
 		return html`${background}${slider}${super.render()}`;
 	}
