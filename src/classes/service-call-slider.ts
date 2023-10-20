@@ -9,6 +9,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) inputEnd: boolean = true;
 	@property({ attribute: false }) step: number = 1;
+	@property({ attribute: false }) value: number = 0;
 
 	constructor() {
 		super();
@@ -101,12 +102,26 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				sliderClass = 'slider';
 				break;
 		}
+		if (this.entry.value_attribute) {
+			let entity_id;
+			if (Array.isArray(this.entry.data!.entity_id)) {
+				entity_id = this.entry.data!.entity_id[0];
+			} else {
+				entity_id = this.entry.data!.entity_id as string;
+			}
+
+			this.value =
+				this.hass.states[entity_id].attributes[
+					this.entry.value_attribute
+				];
+		}
 		const slider = html`
 			<input
 				type="range"
 				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
+				value=${this.value}
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
