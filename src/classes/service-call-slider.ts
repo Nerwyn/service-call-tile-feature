@@ -77,7 +77,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			opacity: parseInt(
 				this.setValueInStyleFields(
 					this.entry.background_opacity?.toString(),
-				),
+				) as string,
 			),
 		};
 		const background = html`<div
@@ -115,7 +115,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const style = {
 			'--slider-color': this.setValueInStyleFields(this.entry.color),
 			opacity: parseInt(
-				this.setValueInStyleFields(this.entry.opacity?.toString()),
+				this.setValueInStyleFields(
+					this.entry.opacity?.toString(),
+				) as string,
 			),
 		};
 

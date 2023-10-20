@@ -17,7 +17,7 @@ export class BaseServiceCallFeature extends LitElement {
 		super();
 	}
 
-	setValueInStyleFields(text?: string) {
+	setValueInStyleFields(text?: string): string | number {
 		if (text) {
 			if (text.includes('VALUE')) {
 				text = text.replace('VALUE', this.value.toString());
@@ -37,7 +37,11 @@ export class BaseServiceCallFeature extends LitElement {
 
 				switch (attribute) {
 					case 'brightness':
-						value = Math.round(100 * (parseInt(value ?? 0) / 255));
+						if (value) {
+							value = Math.round(100 * (parseInt(value) / 255));
+						} else {
+							return 0;
+						}
 						break;
 					case 'color':
 					case 'rgb_color':
