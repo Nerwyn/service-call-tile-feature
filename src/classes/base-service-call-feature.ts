@@ -17,13 +17,13 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	set hass(hass: HomeAssistant) {
-		if (this.entry && this.entry.value_attribute) {
+		if ('value_attribute' in this.entry) {
 			if (this.entry.value_attribute == 'state') {
 				this.value = hass.states[this.entity_id].state;
 			} else {
 				this.value =
 					hass.states[this.entity_id].attributes[
-						this.entry.value_attribute
+						this.entry.value_attribute as string
 					];
 			}
 		}
