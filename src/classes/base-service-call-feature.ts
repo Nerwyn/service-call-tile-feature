@@ -106,12 +106,13 @@ export class BaseServiceCallFeature extends LitElement {
 		let label = html``;
 		if ('label' in this.entry) {
 			const text = this.setValueInStyleFields(this.entry.label);
-
-			const style = {
-				color: this.setValueInStyleFields(this.entry.label_color),
-			};
-			// prettier-ignore
-			label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
+			if (text) {
+				const style = {
+					color: this.setValueInStyleFields(this.entry.label_color),
+				};
+				// prettier-ignore
+				label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
+			}
 		}
 
 		return html`${icon}${label}`;
