@@ -58,6 +58,9 @@ export class BaseServiceCallFeature extends LitElement {
 						}
 						break;
 					default:
+						if (value == undefined || value == null) {
+							return '';
+						}
 						break;
 				}
 
