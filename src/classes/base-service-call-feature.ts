@@ -17,22 +17,14 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	set hass(hass: HomeAssistant) {
-		if (this.entry.data?.entity_id) {
-			if (Array.isArray(this.entry.data?.entity_id)) {
-				this.entity_id = this.entry.data?.entity_id[0];
+		if (this.entry.data?.entity_id && this.entry.value_attribute) {
+			if (this.entry.value_attribute == 'state') {
+				this.value = hass.states[this.entity_id].state;
 			} else {
-				this.entity_id = (this.entry.data?.entity_id as string) ?? '';
-			}
-
-			if (this.entry.value_attribute) {
-				if (this.entry.value_attribute == 'state') {
-					this.value = hass.states[this.entity_id].state;
-				} else {
-					this.value =
-						hass.states[this.entity_id].attributes[
-							this.entry.value_attribute
-						];
-				}
+				this.value =
+					hass.states[this.entity_id].attributes[
+						this.entry.value_attribute
+					];
 			}
 		}
 	}
@@ -63,7 +55,6 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let label = html``;
 		if ('label' in this.entry) {
-			const entity_id = this.entry.data!.entity_id as string;
 			let text = this.entry.label!;
 
 			if (text.includes('VALUE')) {
@@ -71,7 +62,7 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 
 			if (text.includes('STATE')) {
-				const state = this.hass.states[entity_id].state;
+				const state = this.hass.states[this.entity_id].state;
 				text = text.replace('STATE', state);
 			}
 
@@ -79,7 +70,7 @@ export class BaseServiceCallFeature extends LitElement {
 			let match;
 			while ((match = pattern.exec(text)) != null) {
 				const attribute =
-					this.hass.states[entity_id].attributes[match[1]];
+					this.hass.states[this.entity_id].attributes[match[1]];
 				text = text.replace(`ATTRIBUTE[${match[1]}]`, attribute);
 			}
 
