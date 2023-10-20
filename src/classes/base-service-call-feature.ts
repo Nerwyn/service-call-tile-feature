@@ -37,11 +37,15 @@ export class BaseServiceCallFeature extends LitElement {
 
 				switch (attribute) {
 					case 'brightness':
-						value = Math.round(100 * (parseInt(value) / 255));
+						value = Math.round(100 * (parseInt(value ?? 0) / 255));
 						break;
 					case 'color':
 					case 'rgb_color':
-						value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
+						if (Array.isArray(value) && value.length == 3) {
+							value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
+						} else {
+							value = 'var(--primary-text-color)';
+						}
 						break;
 					default:
 						break;
