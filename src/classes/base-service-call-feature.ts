@@ -29,7 +29,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
-	setAttributesInVisuals(text?: string) {
+	setValueInStyleFields(text?: string) {
 		if (text) {
 			if (text.includes('VALUE')) {
 				text = text.replace('VALUE', this.value.toString());
@@ -79,20 +79,20 @@ export class BaseServiceCallFeature extends LitElement {
 		let icon = html``;
 		if ('icon' in this.entry) {
 			const style = {
-				color: this.setAttributesInVisuals(this.entry.icon_color),
+				color: this.setValueInStyleFields(this.entry.icon_color),
 			};
 			icon = html`<ha-icon
-				.icon=${this.setAttributesInVisuals(this.entry.icon)}
+				.icon=${this.setValueInStyleFields(this.entry.icon)}
 				style="${styleMap(style)}"
 			></ha-icon>`;
 		}
 
 		let label = html``;
 		if ('label' in this.entry) {
-			const text = this.setAttributesInVisuals(this.entry.label);
+			const text = this.setValueInStyleFields(this.entry.label);
 
 			const style = {
-				color: this.setAttributesInVisuals(this.entry.label_color),
+				color: this.setValueInStyleFields(this.entry.label_color),
 			};
 			// prettier-ignore
 			label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;

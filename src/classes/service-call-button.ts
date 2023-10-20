@@ -22,9 +22,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		const icon_label = super.render();
 
 		const style = {
-			'background-color': this.setAttributesInVisuals(this.entry.color),
+			'background-color': this.setValueInStyleFields(this.entry.color),
 			opacity: parseInt(
-				this.setAttributesInVisuals(this.entry.opacity?.toString()),
+				this.setValueInStyleFields(this.entry.opacity?.toString()),
 			),
 		};
 

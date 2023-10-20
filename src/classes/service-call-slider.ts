@@ -83,11 +83,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		// To turn into gradient:
 		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 		const style = {
-			background: this.setAttributesInVisuals(
+			background: this.setValueInStyleFields(
 				this.entry.background_color,
 			),
 			opacity: parseInt(
-				this.setAttributesInVisuals(
+				this.setValueInStyleFields(
 					this.entry.background_opacity?.toString(),
 				),
 			),
