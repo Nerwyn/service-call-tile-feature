@@ -205,10 +205,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 
 				.slider-off::-webkit-slider-thumb {
-					display: none;
+					visibility: hidden;
 				}
 				.slider-off::-moz-range-thumb {
-					display: none;
+					visibility: hidden;
 				}
 			`,
 		];
