@@ -35,13 +35,18 @@ export class BaseServiceCallFeature extends LitElement {
 		} else {
 			this.entity_id = (this.entry.data!.entity_id as string) ?? '';
 		}
-		if (this.entry.value_attribute == 'state') {
+		const value_attribute = this.entry.value_attribute;
+		if (value_attribute == 'state') {
 			this.value = this.hass.states[this.entity_id].state;
 		} else {
-			this.value =
+			let value =
 				this.hass.states[this.entity_id].attributes[
-					this.entry.value_attribute as string
+					value_attribute as string
 				];
+			if (value_attribute == 'brightness') {
+				value = Math.round(100 * (parseInt(value) / 255));
+			}
+			this.value = value;
 		}
 
 		let icon = html``;
@@ -71,9 +76,12 @@ export class BaseServiceCallFeature extends LitElement {
 			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
 			let match;
 			while ((match = pattern.exec(text)) != null) {
-				const attribute =
+				let value =
 					this.hass.states[this.entity_id].attributes[match[1]];
-				text = text.replace(`ATTRIBUTE[${match[1]}]`, attribute);
+				if (match[1] == 'brightness') {
+					value = Math.round(100 * (parseInt(value) / 255));
+				}
+				text = text.replace(`ATTRIBUTE[${match[1]}]`, value);
 			}
 
 			const style = {
