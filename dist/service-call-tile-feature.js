@@ -95,7 +95,6 @@
 					-moz-appearance: none;
 					height: inherit;
 					width: 98%;
-					overflow: hidden;
 					border-radius: 10px;
 					background: none;
 				}
