@@ -106,10 +106,11 @@ export class BaseServiceCallFeature extends LitElement {
 				:host {
 					display: flex;
 					flex-flow: column;
+					flex-basis: 100%
 					place-content: center space-evenly;
 					align-items: center;
 					position: relative;
-					height: 40px;
+					height: 100%;
 					width: 100%;
 					border-radius: 10px;
 					border: none;
@@ -123,7 +124,7 @@ export class BaseServiceCallFeature extends LitElement {
 				}
 
 				.container {
-					all: inherit !important;
+					all: inherit;
 				}
 
 				ha-icon {
