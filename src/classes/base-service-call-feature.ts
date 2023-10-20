@@ -65,7 +65,7 @@ export class BaseServiceCallFeature extends LitElement {
 			let text = this.entry.label!;
 
 			if (text.includes('VALUE')) {
-				text = text.replace('VALUE', '');
+				text = text.replace('VALUE', this.value.toString());
 			}
 
 			if (text.includes('STATE')) {

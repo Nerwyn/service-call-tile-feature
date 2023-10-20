@@ -111,7 +111,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
-				value="${this.value}"
+				value="${this.value.toString()}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
