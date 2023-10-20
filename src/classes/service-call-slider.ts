@@ -49,7 +49,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		this.setLabelToValue(slider, end.toString());
+		// this.setLabelToValue(slider, end.toString());
 		this.oldValue = end;
 	}
 
