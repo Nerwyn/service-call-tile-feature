@@ -19,7 +19,7 @@ export class BaseServiceCallFeature extends LitElement {
 	set hass(hass: HomeAssistant) {
 		if (this.entry.data?.entity_id) {
 			if (Array.isArray(this.entry.data?.entity_id)) {
-				this.entity_id = this.entry.data!.entity_id[0];
+				this.entity_id = this.entry.data?.entity_id[0];
 			} else {
 				this.entity_id = (this.entry.data?.entity_id as string) ?? '';
 			}
