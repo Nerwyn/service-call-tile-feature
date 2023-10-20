@@ -22,7 +22,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 		const start = this.oldValue ?? 0;
 		const end = parseInt(slider.value ?? start);
-		this.value = end;
+		this.value = end.toString();
 		slider.value = start.toString();
 
 		let i = start;
@@ -60,7 +60,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const data = JSON.parse(JSON.stringify(this.entry.data));
 		for (const key in data) {
 			if (data[key].toString().includes('VALUE')) {
-				data[key] = data[key].toString().replace('VALUE', this.value);
+				data[key] = data[key]
+					.toString()
+					.replace('VALUE', this.value.toString());
 			}
 		}
 		this.hass.callService(domain, service, data);
