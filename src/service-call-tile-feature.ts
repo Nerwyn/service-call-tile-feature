@@ -2,7 +2,6 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -82,19 +81,12 @@ class ServiceCallTileFeature extends LitElement {
 			}
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
-			let style: Record<string, string | number | undefined>;
 			switch (entryType) {
 				case 'slider':
-					style = {
-						'--slider-color': entry.color,
-						opacity: entry.opacity,
-					};
-
 					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${styleMap(style)}
 						/>`,
 					);
 					break;

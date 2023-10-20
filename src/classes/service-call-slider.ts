@@ -72,7 +72,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		// To turn into gradient:
 		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-		const style = {
+		const backgroundStyle = {
 			background: this.setValueInStyleFields(this.entry.background_color),
 			opacity: parseInt(
 				this.setValueInStyleFields(
@@ -82,7 +82,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		};
 		const background = html`<div
 			class="slider-background"
-			style=${styleMap(style)}
+			style=${styleMap(backgroundStyle)}
 		></div>`;
 
 		let [min, max] = [0, 100];
@@ -112,7 +112,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		return html`${background}${slider}${icon_label}`;
+		const style = {
+			'--slider-color': this.entry.color,
+			opacity: this.entry.opacity,
+		};
+
+		return html`<div style=${styleMap(style)}>
+			${background}${slider}${icon_label}
+		</div>`;
 	}
 
 	static get styles() {
