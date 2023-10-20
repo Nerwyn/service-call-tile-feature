@@ -73,18 +73,12 @@ class ServiceCallTileFeature extends LitElement {
 		const row: TemplateResult[] = [];
 		for (const entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
-			let entity_id;
 			if (
 				!('entity_id' in entry.data!) &&
 				!('device_id' in entry.data!) &&
 				!('area_id' in entry.data!)
 			) {
-				entity_id = this.stateObj.entity_id;
-				entry.data!['entity_id'] = entity_id;
-			} else if (Array.isArray(entry.data?.entity_id)) {
-				entity_id = entry.data?.entity_id[0];
-			} else {
-				entity_id = (entry.data?.entity_id as string) ?? '';
+				entry.data!['entity_id'] = this.stateObj.entity_id;
 			}
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
@@ -100,7 +94,6 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
-							.entity_id=${entity_id}
 							style=${styleMap(style)}
 						/>`,
 					);
@@ -111,7 +104,6 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-button
 							.hass=${this.hass}
 							.entry=${entry}
-							.entity_id=${entity_id}
 						/>`,
 					);
 					break;

@@ -8,25 +8,13 @@ import { IEntry } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
+	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
 	@property({ attribute: false }) entity_id!: string;
 	@property({ attribute: false }) value: string | number = 0;
 
 	constructor() {
 		super();
-	}
-
-	set hass(hass: HomeAssistant) {
-		if (this.entry && 'value_attribute' in this.entry && this.entity_id) {
-			if (this.entry.value_attribute == 'state') {
-				this.value = hass.states[this.entity_id].state;
-			} else {
-				this.value =
-					hass.states[this.entity_id].attributes[
-						this.entry.value_attribute as string
-					];
-			}
-		}
 	}
 
 	setLabelToValue(element: HTMLElement, value: string) {
@@ -42,6 +30,20 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
+		if (Array.isArray(this.entry.data!.entity_id)) {
+			this.entity_id = this.entry.data!.entity_id[0];
+		} else {
+			this.entity_id = (this.entry.data!.entity_id as string) ?? '';
+		}
+		if (this.entry.value_attribute == 'state') {
+			this.value = this.hass.states[this.entity_id].state;
+		} else {
+			this.value =
+				this.hass.states[this.entity_id].attributes[
+					this.entry.value_attribute as string
+				];
+		}
+
 		let icon = html``;
 		if ('icon' in this.entry) {
 			const style = {

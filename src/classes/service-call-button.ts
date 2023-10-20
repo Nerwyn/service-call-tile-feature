@@ -19,6 +19,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	render() {
+		const icon_label = super.render();
+
 		const style = {
 			'background-color': this.entry.color,
 			opacity: this.entry.opacity,
@@ -30,7 +32,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			style=${styleMap(style)}
 		></button>`;
 
-		return html`${button}${super.render()} `;
+		return html`${button}${icon_label}`;
 	}
 
 	static get styles() {

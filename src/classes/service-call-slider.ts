@@ -78,6 +78,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	render() {
+		const icon_label = super.render();
+
 		// To turn into gradient:
 		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 		const style = {
@@ -116,7 +118,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		return html`${background}${slider}${super.render()}`;
+		return html`${background}${slider}${icon_label}`;
 	}
 
 	static get styles() {
