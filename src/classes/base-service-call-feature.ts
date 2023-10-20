@@ -31,11 +31,22 @@ export class BaseServiceCallFeature extends LitElement {
 			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
 			let match;
 			while ((match = pattern.exec(text)) != null) {
+				const attribute = match[1];
 				let value =
-					this.hass.states[this.entity_id].attributes[match[1]];
-				if (match[1] == 'brightness') {
-					value = Math.round(100 * (parseInt(value) / 255));
+					this.hass.states[this.entity_id].attributes[attribute];
+
+				switch (attribute) {
+					case 'brightness':
+						value = Math.round(100 * (parseInt(value) / 255));
+						break;
+					case 'color':
+					case 'rgb_color':
+						value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
+						break;
+					default:
+						break;
 				}
+
 				text = text.replace(`ATTRIBUTE[${match[1]}]`, value);
 			}
 			return text;
