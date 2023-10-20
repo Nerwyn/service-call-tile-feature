@@ -83,11 +83,21 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.step = (max - min) / 50;
 
+		let sliderClass = 'slider';
+		switch (this.entry.thumb) {
+			case 'line':
+				sliderClass = 'slider-line-thumb';
+				break;
+			default:
+				sliderClass = 'slider';
+				break;
+		}
+
 		const slider = html`
 			<div class="slider-background"></div>
 			<input
 				type="range"
-				class="slider"
+				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
 				@input=${this.onInput}
@@ -96,6 +106,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 			${super.render()}
 		`;
+
+		// To turn into gradient:
+		// background: linear-gradient(-90deg, #ffa757, #fffffb)
+		// opacity: unset
 
 		return slider;
 	}
@@ -112,7 +126,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: 0.2;
 				}
 
-				.slider {
+				.slider,
+				.slider-line-thumb {
 					position: absolute;
 					appearance: none;
 					-webkit-appearance: none;
@@ -132,7 +147,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
-					box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
+					box-shadow:
+						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
+						-6px 0 0 11px var(--slider-color);
 				}
 
 				.slider::-moz-range-thumb {
@@ -143,7 +160,35 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
-					box-shadow: calc(-100vw + 6px) 0 0 100vw var(--slider-color);
+					box-shadow:
+						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
+						-6px 0 0 11px var(--slider-color);
+				}
+
+				.slider-line-thumb::-webkit-slider-thumb {
+					appearance: none;
+					-webkit-appearance: none;
+					height: 18px;
+					width: 4px;
+					border-radius: 12px;
+					background: #8a8c99;
+					cursor: pointer;
+					box-shadow:
+						0 8px 0 3px #ffffff,
+						0 -8px 0 3px #ffffff;
+				}
+
+				.slider-line-thumb::-moz-range-thumb {
+					appearance: none;
+					-moz-appearance: none;
+					height: 18px;
+					width: 4px;
+					border-radius: 12px;
+					background: #ffffff;
+					cursor: pointer;
+					box-shadow:
+						0 8px 0 3px #ffffff,
+						0 -8px 0 3px #ffffff;
 				}
 			`,
 		];

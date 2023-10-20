@@ -3,9 +3,8 @@ export interface IConfig {
 	entries: IEntry[];
 }
 
-export interface IEntry extends IServiceCall, IStyle {
+export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
 	type: TileFeatureType;
-	range?: [number, number];
 }
 
 export type TileFeatureType = 'button' | 'slider';
@@ -33,4 +32,11 @@ export interface IStyle {
 	icon_color?: string;
 	label?: string;
 	label_color?: string;
+}
+
+export type ThumbType = 'default' | 'line';
+
+export interface ISliderOptions {
+	range?: [number, number];
+	thumb?: ThumbType;
 }
