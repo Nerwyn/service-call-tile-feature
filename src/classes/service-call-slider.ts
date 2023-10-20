@@ -117,7 +117,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		const style = {
 			'--slider-color': this.setValueInStyleFields(this.entry.color),
-			opacity: parseFloat(
+			'--slider-opacity': parseFloat(
 				this.setValueInStyleFields(this.entry.opacity?.toString()),
 			),
 		};
@@ -131,6 +131,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		return [
 			super.styles as CSSResult,
 			css`
+				:host {
+					--slider-opacity: 1;
+				}
 				.slider-background {
 					position: absolute;
 					width: inherit;
@@ -160,6 +163,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
@@ -173,6 +177,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
@@ -186,6 +191,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #8a8c99;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
@@ -199,6 +205,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;

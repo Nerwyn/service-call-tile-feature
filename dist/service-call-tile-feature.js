@@ -84,9 +84,12 @@
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
-		`,d={"--slider-color":this.setValueInStyleFields(this.entry.color),opacity:parseFloat(this.setValueInStyleFields(null===(e=this.entry.opacity)||void 0===e?void 0:e.toString()))};return r.html`<div class="container" style=${(0,o.styleMap)(d)}>
+		`,d={"--slider-color":this.setValueInStyleFields(this.entry.color),"--slider-opacity":parseFloat(this.setValueInStyleFields(null===(e=this.entry.opacity)||void 0===e?void 0:e.toString()))};return r.html`<div class="container" style=${(0,o.styleMap)(d)}>
 			${n}${h}${i}
 		</div>`}static get styles(){return[super.styles,r.css`
+				:host {
+					--slider-opacity: 1;
+				}
 				.slider-background {
 					position: absolute;
 					width: inherit;
@@ -116,6 +119,7 @@
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
@@ -129,6 +133,7 @@
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
@@ -142,6 +147,7 @@
 					border-radius: 12px;
 					background: #8a8c99;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
@@ -155,6 +161,7 @@
 					border-radius: 12px;
 					background: #ffffff;
 					cursor: pointer;
+					opacity: var(--slider-opacity);
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
