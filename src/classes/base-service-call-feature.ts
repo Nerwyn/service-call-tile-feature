@@ -18,14 +18,18 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	setLabelToValue(element: HTMLElement, value: string) {
-		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
-			if ('icon' in this.entry) {
-				element.nextElementSibling!.nextElementSibling!.innerHTML =
-					this.entry.label.replace('VALUE', value);
-			} else {
-				element.nextElementSibling!.innerHTML =
-					this.entry.label.replace('VALUE', value);
+		try {
+			if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
+				if ('icon' in this.entry) {
+					element.nextElementSibling!.nextElementSibling!.innerHTML =
+						this.entry.label.replace('VALUE', value);
+				} else {
+					element.nextElementSibling!.innerHTML =
+						this.entry.label.replace('VALUE', value);
+				}
 			}
+		} catch {
+			return;
 		}
 	}
 
