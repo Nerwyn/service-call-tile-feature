@@ -138,7 +138,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					-moz-appearance: none;
 					height: inherit;
-					width: inherit;
+					width: 98%;
 					overflow: hidden;
 					border-radius: 10px;
 					background: none;
@@ -147,7 +147,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 18px;
+					height: 20px;
 					width: 4px;
 					border-radius: 12px;
 					background: #ffffff;
@@ -160,7 +160,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 18px;
+					height: 20px;
 					width: 4px;
 					border-radius: 12px;
 					background: #ffffff;
@@ -173,7 +173,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider-line-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 18px;
+					height: 20px;
 					width: 4px;
 					border-radius: 12px;
 					background: #8a8c99;
@@ -186,7 +186,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider-line-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 18px;
+					height: 20px;
 					width: 4px;
 					border-radius: 12px;
 					background: #ffffff;
