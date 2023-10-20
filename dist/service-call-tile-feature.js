@@ -73,7 +73,7 @@
 			`]}};e.ServiceCallButton=a,e.ServiceCallButton=a=s([(0,n.customElement)("service-call-button")],a)},719:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSlider=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);let a=class extends l.BaseServiceCallFeature{constructor(){super(),this.inputEnd=!0,this.step=1}onInput(t){var e,i;this.inputEnd=!1,t.preventDefault(),t.stopImmediatePropagation();const s=t.currentTarget,r=null!==(e=this.oldValue)&&void 0!==e?e:0,n=parseInt(null!==(i=s.value)&&void 0!==i?i:r);this.newValue=n,s.value=r.toString();let o=r;if(r>n){const t=setInterval((()=>{o-=this.step,s.value=o.toString(),n>=o&&(clearInterval(t),s.value=n.toString(),this.inputEnd=!0)}),1)}else if(r<n){const t=setInterval((()=>{o+=this.step,s.value=o.toString(),n<=o&&(clearInterval(t),s.value=n.toString(),this.inputEnd=!0)}),1)}this.oldValue=n}onEnd(t){const[e,i]=this.entry.service.split("."),s=JSON.parse(JSON.stringify(this.entry.data));for(const t in s)s[t].toString().includes("VALUE")&&(s[t]=s[t].toString().replace("VALUE",this.newValue));this.hass.callService(e,i,s)}render(){var t,e;const i=super.render(),s={background:this.setValueInStyleFields(this.entry.background_color),opacity:parseInt(this.setValueInStyleFields(null===(t=this.entry.background_opacity)||void 0===t?void 0:t.toString()))},n=r.html`<div
 			class="slider-background"
 			style=${(0,o.styleMap)(s)}
-		></div>`;let[l,a]=[0,100];this.entry.range&&([l,a]=this.entry.range),this.step=(a-l)/50;let c="slider";c="line"===this.entry.thumb?"slider-line-thumb":"slider";const h=r.html`
+		></div>`;let[l,a]=[0,100];this.entry.range&&([l,a]=this.entry.range),this.step=(a-l)/50;let c="slider";c="line"===this.entry.thumb?"slider-line-thumb":"slider",this.value&&0!=this.value||(c="slider-off");const h=r.html`
 			<input
 				type="range"
 				class="${c}"
@@ -96,7 +96,8 @@
 				}
 
 				.slider,
-				.slider-line-thumb {
+				.slider-line-thumb,
+				.slider-off {
 					position: absolute;
 					appearance: none;
 					-webkit-appearance: none;
@@ -157,6 +158,13 @@
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
+				}
+
+				.slider-off::-webkit-slider-thumb {
+					display: none;
+				}
+				.slider-off::-moz-range-thumb {
+					display: none;
 				}
 			`]}};e.ServiceCallSlider=a,s([(0,n.property)({attribute:!1})],a.prototype,"oldValue",void 0),s([(0,n.property)({attribute:!1})],a.prototype,"newValue",void 0),s([(0,n.property)({attribute:!1})],a.prototype,"inputEnd",void 0),s([(0,n.property)({attribute:!1})],a.prototype,"step",void 0),e.ServiceCallSlider=a=s([(0,n.customElement)("service-call-slider")],a)},114:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0});const r=i(147),n=i(677),o=i(595);i(827),i(719),console.info(`%c SERVICE-CALL-TILE-FEATURE v${r.version}`,"color: white; font-weight: bold; background: cornflowerblue");class l extends n.LitElement{constructor(){super()}static getStubConfig(){return{type:"custom:service-call",entries:[{type:"button",service:""}]}}setConfig(t){if(!t)throw new Error("Invalid configuration");"buttons"in(t=JSON.parse(JSON.stringify(t)))&&!("entries"in t)&&(t.entries=t.buttons);for(const e of t.entries)e.data=Object.assign(Object.assign({},e.data||{}),e.target||{}),"type"in e||(e.type="button");this.config=t}render(){var t;if(!this.config||!this.hass||!this.stateObj)return null;const e=[];for(const i of this.config.entries)"entity_id"in i.data||"device_id"in i.data||"area_id"in i.data||(i.data.entity_id=this.stateObj.entity_id),"slider"===(null!==(t=i.type)&&void 0!==t?t:"button").toLowerCase()?e.push(n.html`<service-call-slider
 							.hass=${this.hass}

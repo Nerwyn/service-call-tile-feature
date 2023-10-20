@@ -99,6 +99,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				sliderClass = 'slider';
 				break;
 		}
+		if (!this.value || this.value == 0) {
+			sliderClass = 'slider-off';
+		}
 		const slider = html`
 			<input
 				type="range"
@@ -115,9 +118,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const style = {
 			'--slider-color': this.setValueInStyleFields(this.entry.color),
 			opacity: parseInt(
-				this.setValueInStyleFields(
-					this.entry.opacity?.toString(),
-				),
+				this.setValueInStyleFields(this.entry.opacity?.toString()),
 			),
 		};
 
@@ -139,7 +140,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 
 				.slider,
-				.slider-line-thumb {
+				.slider-line-thumb,
+				.slider-off {
 					position: absolute;
 					appearance: none;
 					-webkit-appearance: none;
@@ -200,6 +202,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
+				}
+
+				.slider-off::-webkit-slider-thumb {
+					display: none;
+				}
+				.slider-off::-moz-range-thumb {
+					display: none;
 				}
 			`,
 		];
