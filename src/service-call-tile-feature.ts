@@ -107,10 +107,6 @@ class ServiceCallTileFeature extends LitElement {
 
 	static get styles() {
 		return css`
-			:host {
-				height: 52px;
-			}
-
 			.row {
 				display: flex;
 				flex-flow: row;

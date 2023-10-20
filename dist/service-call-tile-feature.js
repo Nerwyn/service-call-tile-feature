@@ -6,11 +6,10 @@
 				:host {
 					display: flex;
 					flex-flow: column;
-					flex-basis: 100%
 					place-content: center space-evenly;
 					align-items: center;
 					position: relative;
-					height: 100%;
+					height: 40px;
 					width: 100%;
 					border-radius: 10px;
 					border: none;
@@ -25,6 +24,7 @@
 
 				.container {
 					all: inherit;
+					height: 100%;
 				}
 
 				ha-icon {
@@ -165,10 +165,6 @@
 							.hass=${this.hass}
 							.entry=${i}
 						/>`);return n.html`<div class="row">${e}</div>`}static get styles(){return n.css`
-			:host {
-				height: 52px;
-			}
-
 			.row {
 				display: flex;
 				flex-flow: row;
