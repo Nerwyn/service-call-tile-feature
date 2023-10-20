@@ -17,22 +17,6 @@ export class BaseServiceCallFeature extends LitElement {
 		super();
 	}
 
-	// setLabelToValue(element: HTMLElement, value: string) {
-	// 	try {
-	// 		if ('label' in this.entry && this.entry.label?.includes('VALUE')) {
-	// 			if ('icon' in this.entry) {
-	// 				element.nextElementSibling!.nextElementSibling!.innerHTML =
-	// 					this.setValueInStyleFields(this.entry.label);
-	// 			} else {
-	// 				element.nextElementSibling!.innerHTML =
-	// 					this.setValueInStyleFields(this.entry.label);
-	// 			}
-	// 		}
-	// 	} catch {
-	// 		return;
-	// 	}
-	// }
-
 	setValueInStyleFields(text?: string) {
 		if (text) {
 			if (text.includes('VALUE')) {

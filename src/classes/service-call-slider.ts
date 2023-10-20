@@ -22,6 +22,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 		const start = this.oldValue ?? 0;
 		const end = parseInt(slider.value ?? start);
+		this.value = end;
 		slider.value = start.toString();
 
 		let i = start;
@@ -49,32 +50,37 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		// this.setLabelToValue(slider, end.toString());
 		this.oldValue = end;
 	}
 
-	onEnd(e: MouseEvent | TouchEvent) {
-		const slider = e.currentTarget as HTMLInputElement;
+	onEnd(_e: MouseEvent | TouchEvent) {
+		// const slider = e.currentTarget as HTMLInputElement;
 
 		const [domain, service] = this.entry.service.split('.');
 		const data = JSON.parse(JSON.stringify(this.entry.data));
-
-		const id = setInterval(() => {
-			if (this.inputEnd) {
-				clearInterval(id);
-
-				const value = slider.value ?? '0';
-				for (const key in data) {
-					if (data[key].toString().includes('VALUE')) {
-						data[key] = data[key]
-							.toString()
-							.replace('VALUE', value);
-					}
-				}
-
-				this.hass.callService(domain, service, data);
+		for (const key in data) {
+			if (data[key].toString().includes('VALUE')) {
+				data[key] = data[key].toString().replace('VALUE', this.value);
 			}
-		}, 1);
+		}
+		this.hass.callService(domain, service, data);
+
+		// const id = setInterval(() => {
+		// 	if (this.inputEnd) {
+		// 		clearInterval(id);
+
+		// 		const value = slider.value ?? '0';
+		// 		for (const key in data) {
+		// 			if (data[key].toString().includes('VALUE')) {
+		// 				data[key] = data[key]
+		// 					.toString()
+		// 					.replace('VALUE', value);
+		// 			}
+		// 		}
+
+		// 		this.hass.callService(domain, service, data);
+		// 	}
+		// }, 1);
 	}
 
 	render() {
@@ -83,9 +89,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		// To turn into gradient:
 		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 		const style = {
-			background: this.setValueInStyleFields(
-				this.entry.background_color,
-			),
+			background: this.setValueInStyleFields(this.entry.background_color),
 			opacity: parseInt(
 				this.setValueInStyleFields(
 					this.entry.background_opacity?.toString(),
