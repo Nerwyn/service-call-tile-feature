@@ -113,8 +113,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const style = {
-			'--slider-color': this.entry.color,
-			opacity: this.entry.opacity,
+			'--slider-color': this.setValueInStyleFields(this.entry.color),
+			opacity: parseInt(
+				this.setValueInStyleFields(this.entry.opacity?.toString()),
+			),
 		};
 
 		return html`<div class="container" style=${styleMap(style)}>

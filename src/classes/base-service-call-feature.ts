@@ -122,8 +122,8 @@ export class BaseServiceCallFeature extends LitElement {
 					color: inherit;
 				}
 
-				container {
-					all: inherit;
+				.container {
+					all: inherit !important;
 				}
 
 				ha-icon {
