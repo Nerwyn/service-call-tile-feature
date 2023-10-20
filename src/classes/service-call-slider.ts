@@ -1,5 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -77,12 +78,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	render() {
+		const style = {
+			background: this.entry.background_color,
+			opacity: this.entry.background_opacity,
+		};
+		const background = html`<div
+			class="slider-background"
+			style=${styleMap(style)}
+		></div>`;
+
 		let [min, max] = [0, 100];
 		if (this.entry.range) {
 			[min, max] = this.entry.range!;
 		}
 		this.step = (max - min) / 50;
-
 		let sliderClass = 'slider';
 		switch (this.entry.thumb) {
 			case 'line':
@@ -92,9 +101,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				sliderClass = 'slider';
 				break;
 		}
-
 		const slider = html`
-			<div class="slider-background"></div>
 			<input
 				type="range"
 				class="${sliderClass}"
@@ -104,14 +111,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
-			${super.render()}
 		`;
 
 		// To turn into gradient:
-		// background: linear-gradient(-90deg, #ffa757, #fffffb)
-		// opacity: unset
+		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
 
-		return slider;
+		return html`${background}${slider}${super.render()}`;
 	}
 
 	static get styles() {

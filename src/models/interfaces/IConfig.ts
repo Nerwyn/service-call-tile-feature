@@ -39,4 +39,6 @@ export type ThumbType = 'default' | 'line';
 export interface ISliderOptions {
 	range?: [number, number];
 	thumb?: ThumbType;
+	background_color: string;
+	background_opacity: number;
 }
