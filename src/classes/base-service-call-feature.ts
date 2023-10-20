@@ -19,10 +19,12 @@ export class BaseServiceCallFeature extends LitElement {
 
 	setValueInStyleFields(text?: string): string {
 		if (text) {
-			if (text.includes('VALUE') && this.value) {
-				text = text.replace('VALUE', this.value.toString());
-			} else {
-				return '';
+			if (text.includes('VALUE')) {
+				if (this.value) {
+					text = text.replace('VALUE', this.value.toString());
+				} else {
+					return '';
+				}
 			}
 
 			if (text.includes('STATE')) {
