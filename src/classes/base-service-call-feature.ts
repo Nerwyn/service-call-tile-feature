@@ -29,6 +29,33 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
+	setAttributesInVisuals(text?: string) {
+		if (text) {
+			if (text.includes('VALUE')) {
+				text = text.replace('VALUE', this.value.toString());
+			}
+
+			if (text.includes('STATE')) {
+				const state = this.hass.states[this.entity_id].state;
+				text = text.replace('STATE', state);
+			}
+
+			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
+			let match;
+			while ((match = pattern.exec(text)) != null) {
+				let value =
+					this.hass.states[this.entity_id].attributes[match[1]];
+				if (match[1] == 'brightness') {
+					value = Math.round(100 * (parseInt(value) / 255));
+				}
+				text = text.replace(`ATTRIBUTE[${match[1]}]`, value);
+			}
+			return text;
+		} else {
+			return '';
+		}
+	}
+
 	render() {
 		if (Array.isArray(this.entry.data!.entity_id)) {
 			this.entity_id = this.entry.data!.entity_id[0];
@@ -52,40 +79,20 @@ export class BaseServiceCallFeature extends LitElement {
 		let icon = html``;
 		if ('icon' in this.entry) {
 			const style = {
-				color: this.entry.icon_color,
+				color: this.setAttributesInVisuals(this.entry.icon_color),
 			};
 			icon = html`<ha-icon
-				.icon=${this.entry.icon}
+				.icon=${this.setAttributesInVisuals(this.entry.icon)}
 				style="${styleMap(style)}"
 			></ha-icon>`;
 		}
 
 		let label = html``;
 		if ('label' in this.entry) {
-			let text = this.entry.label!;
-
-			if (text.includes('VALUE')) {
-				text = text.replace('VALUE', this.value.toString());
-			}
-
-			if (text.includes('STATE')) {
-				const state = this.hass.states[this.entity_id].state;
-				text = text.replace('STATE', state);
-			}
-
-			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
-			let match;
-			while ((match = pattern.exec(text)) != null) {
-				let value =
-					this.hass.states[this.entity_id].attributes[match[1]];
-				if (match[1] == 'brightness') {
-					value = Math.round(100 * (parseInt(value) / 255));
-				}
-				text = text.replace(`ATTRIBUTE[${match[1]}]`, value);
-			}
+			const text = this.setAttributesInVisuals(this.entry.label);
 
 			const style = {
-				color: this.entry.label_color,
+				color: this.setAttributesInVisuals(this.entry.label_color),
 			};
 			// prettier-ignore
 			label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
