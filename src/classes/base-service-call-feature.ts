@@ -17,7 +17,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	set hass(hass: HomeAssistant) {
-		if ('value_attribute' in this.entry) {
+		if (this.entry && 'value_attribute' in this.entry && this.entity_id) {
 			if (this.entry.value_attribute == 'state') {
 				this.value = hass.states[this.entity_id].state;
 			} else {
