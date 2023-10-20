@@ -117,7 +117,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			opacity: this.entry.opacity,
 		};
 
-		return html`<div style=${styleMap(style)}>
+		return html`<div class="container" style=${styleMap(style)}>
 			${background}${slider}${icon_label}
 		</div>`;
 	}

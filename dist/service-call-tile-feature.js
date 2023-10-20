@@ -22,6 +22,10 @@
 					color: inherit;
 				}
 
+				container {
+					all: inherit;
+				}
+
 				ha-icon {
 					position: relative;
 					pointer-events: none;
@@ -79,7 +83,7 @@
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
-		`,h={"--slider-color":this.entry.color,opacity:this.entry.opacity};return r.html`<div style=${(0,o.styleMap)(h)}>
+		`,h={"--slider-color":this.entry.color,opacity:this.entry.opacity};return r.html`<div class="container" style=${(0,o.styleMap)(h)}>
 			${s}${c}${e}
 		</div>`}static get styles(){return[super.styles,r.css`
 				.slider-background {
