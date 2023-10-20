@@ -74,7 +74,7 @@
 				class="${l}"
 				min="${s}"
 				max="${n}"
-				value=${this.value}
+				value="${this.value}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
