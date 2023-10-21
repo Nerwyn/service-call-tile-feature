@@ -28,6 +28,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		slider.value = start.toString();
 		this.newValue = end;
+		this.render();
 
 		let i = start;
 		if (start > end) {
