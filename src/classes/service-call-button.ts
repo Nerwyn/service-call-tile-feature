@@ -1,6 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -21,15 +21,20 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		const style = {
-			'background-color': this.setValueInStyleFields(this.entry.color),
-			opacity:
+		const style: StyleInfo = {};
+		if (this.entry.color) {
+			style['background-color'] = this.setValueInStyleFields(
+				this.entry.color,
+			);
+		}
+		if (this.entry.opacity) {
+			style.opacity =
 				parseFloat(
 					this.setValueInStyleFields(
 						this.entry.opacity?.toString(),
 					) || '0.2',
-				) || '0.2',
-		};
+				) || '0.2';
+		}
 
 		const button = html`<button
 			class="button"

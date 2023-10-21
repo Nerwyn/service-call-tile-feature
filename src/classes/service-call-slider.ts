@@ -1,6 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -70,17 +70,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		// To turn into gradient:
-		// background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-		const backgroundStyle = {
-			background: this.setValueInStyleFields(this.entry.background_color),
-			opacity:
+		const backgroundStyle: StyleInfo = {};
+		if (this.entry.background_color) {
+			backgroundStyle.background = this.setValueInStyleFields(
+				this.entry.background_color,
+			);
+		}
+		if (this.entry.background_opacity) {
+			backgroundStyle.opacity =
 				parseFloat(
 					this.setValueInStyleFields(
 						this.entry.background_opacity?.toString(),
 					) || '0.2',
-				) || 0.2,
-		};
+				) || 0.2;
+		}
 		const background = html`<div
 			class="slider-background"
 			style=${styleMap(backgroundStyle)}
@@ -116,15 +119,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		const style = {
-			'--slider-color': this.setValueInStyleFields(this.entry.color),
-			'--slider-opacity':
+		const style: StyleInfo = {};
+		if (this.entry.color) {
+			style['--slider-color'] = this.setValueInStyleFields(
+				this.entry.color,
+			);
+		}
+		if (this.entry.opacity) {
+			style['--slider-opacity'] =
 				parseFloat(
 					this.setValueInStyleFields(
 						this.entry.opacity?.toString(),
 					) || '1',
-				) || 1,
-		};
+				) || 1;
+		}
 
 		return html`<div class="container" style=${styleMap(style)}>
 			${background}${slider}${icon_label}

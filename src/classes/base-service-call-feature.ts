@@ -2,7 +2,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
 
@@ -93,9 +93,10 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let icon = html``;
 		if ('icon' in this.entry) {
-			const style = {
-				color: this.setValueInStyleFields(this.entry.icon_color),
-			};
+			const style: StyleInfo = {};
+			if (this.entry.icon_color) {
+				style.color = this.setValueInStyleFields(this.entry.icon_color);
+			}
 			icon = html`<ha-icon
 				.icon=${this.setValueInStyleFields(this.entry.icon)}
 				style="${styleMap(style)}"
@@ -106,9 +107,12 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('label' in this.entry) {
 			const text = this.setValueInStyleFields(this.entry.label);
 			if (text) {
-				const style = {
-					color: this.setValueInStyleFields(this.entry.label_color),
-				};
+				const style: StyleInfo = {};
+				if (this.entry.label_color) {
+					style.color = this.setValueInStyleFields(
+						this.entry.label_color,
+					);
+				}
 				// prettier-ignore
 				label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
 			}
