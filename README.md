@@ -43,10 +43,10 @@ The custom service call feature is actually a row of entries, each of which have
 
 ### General Options
 
-| Name            | Type   | Description                                                                  |
-| --------------- | ------ | ---------------------------------------------------------------------------- |
-| type            | string | Type of tile feature. Currently supported options are `button` and `slider`. |
-| value_attribute | string | The attribute to use to determine the value of the feature.                  |
+| Name            | Type   | Description                                                                      |
+| --------------- | ------ | -------------------------------------------------------------------------------- |
+| type            | string | Type of tile feature. Currently supported options are `button` and `slider`.     |
+| value_attribute | string | The attribute to use to determine the value of the feature. Defaults to `state`. |
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` is also supported.
 
@@ -62,7 +62,7 @@ To better understand entity attributes, use the states Developer Tool found in H
 
 #### Value
 
-Use `VALUE` to interpolate whatever is set in `value_attribute`, whether it is an entity's state or attribute.
+Use `VALUE` to interpolate whatever is set in `value_attribute`, whether it is an entity's state (default) or attribute.
 
 ```yaml
 type: custom:service-call
