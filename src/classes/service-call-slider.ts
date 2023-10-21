@@ -77,12 +77,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			);
 		}
 		if (this.entry.background_opacity) {
-			backgroundStyle.opacity =
-				parseFloat(
-					this.setValueInStyleFields(
-						this.entry.background_opacity?.toString(),
-					) || '0.2',
-				) || 0.2;
+			backgroundStyle.opacity = this.entry.background_opacity;
 		}
 		const background = html`<div
 			class="slider-background"
@@ -126,12 +121,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			);
 		}
 		if (this.entry.opacity) {
-			style['--slider-opacity'] =
-				parseFloat(
-					this.setValueInStyleFields(
-						this.entry.opacity?.toString(),
-					) || '1',
-				) || 1;
+			style['--slider-opacity'] = this.entry.opacity?.toString();
 		}
 
 		return html`<div class="container" style=${styleMap(style)}>

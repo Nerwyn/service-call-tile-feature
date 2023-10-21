@@ -27,13 +27,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				this.entry.color,
 			);
 		}
-		if (this.entry.opacity) {
-			style.opacity =
-				parseFloat(
-					this.setValueInStyleFields(
-						this.entry.opacity?.toString(),
-					) || '0.2',
-				) || '0.2';
+		if (this.entry.opacity || this.entry.opacity == 0) {
+			style.opacity = this.entry.opacity;
 		}
 
 		const button = html`<button

@@ -129,14 +129,14 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Global Style Options
 
-| Name        | Type   | Description                                              |
-| ----------- | ------ | -------------------------------------------------------- |
-| color       | string | Custom color for the button.                             |
-| opacity     | float  | Opacity of the feature background. Defaults to 0.2.      |
-| icon        | string | Material design icon to use.                             |
-| icon_color  | string | Custom color for the icon.                               |
-| label       | string | String label to place underneath the icon, or by itself. |
-| label_color | string | Custom color for the string label.                       |
+| Name        | Type   | Description                                                                        |
+| ----------- | ------ | ---------------------------------------------------------------------------------- |
+| color       | string | Custom color for the button.                                                       |
+| opacity     | float  | Opacity of the feature background. Defaults to 0.2. Cannot be string interpolated. |
+| icon        | string | Material design icon to use.                                                       |
+| icon_color  | string | Custom color for the icon.                                                         |
+| label       | string | String label to place underneath the icon, or by itself.                           |
+| label_color | string | Custom color for the string label.                                                 |
 
 String interpolation can be used for any of these values.
 
@@ -147,7 +147,7 @@ String interpolation can be used for any of these values.
 | range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                              |
 | thumb              | string | The slider thumb style. `default` is like a light brightness slider and `line` is like a light temperature slider. |
 | background_color   | string | Custom color for the background of the slider.                                                                     |
-| background_opacity | number | Opacity of the button background. Defaults to 0.2.                                                                 |
+| background_opacity | number | Opacity of the button background. Defaults to 0.2. Cannot be string interpolated.                                  |
 
 # Examples
 
