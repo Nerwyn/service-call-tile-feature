@@ -6,7 +6,7 @@ import { property } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 
-import { IConfig, IEntry } from './models/interfaces';
+import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 
@@ -48,6 +48,7 @@ class ServiceCallTileFeature extends LitElement {
 				config as Record<'buttons', IEntry[]>
 			).buttons as IEntry[];
 		}
+
 		for (const entry of config.entries) {
 			// Merge target and data fields
 			entry.data = {
@@ -56,9 +57,14 @@ class ServiceCallTileFeature extends LitElement {
 			};
 
 			// Set entry type to button if not present
-			if (!('type' in entry)) {
-				(entry as IEntry).type = 'button';
-			}
+			entry.type = (
+				entry.type ?? 'button'
+			).toLowerCase() as TileFeatureType;
+
+			// Set value attribute to state as default
+			entry.value_attribute = (
+				entry.value_attribute ?? 'state'
+			).toLowerCase();
 		}
 
 		this.config = config;
