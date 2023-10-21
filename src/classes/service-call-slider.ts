@@ -76,7 +76,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.entry.background_color,
 			);
 		}
-		if (this.entry.background_opacity) {
+		if (this.entry.background_opacity || this.entry.background_opacity == 0) {
 			backgroundStyle.opacity = this.entry.background_opacity;
 		}
 		const background = html`<div
@@ -120,7 +120,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.entry.color,
 			);
 		}
-		if (this.entry.opacity) {
+		if (this.entry.opacity || this.entry.opacity == 0) {
 			style['--slider-opacity'] = this.entry.opacity?.toString();
 		}
 
