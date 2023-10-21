@@ -297,7 +297,7 @@ type: tile
 entity: binary_sensor.sun_room
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/cd27af901165c46cfee537a4b35f1999c4626df5/assets/slider_tile.png" alt="slider_tile" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/dev/assets/slider_tile.png" alt="slider_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
