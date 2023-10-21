@@ -6,7 +6,6 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
-	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) newValue!: number;
 	@property({ attribute: false }) inputEnd: boolean = true;
 	@property({ attribute: false }) step: number = 1;
@@ -21,7 +20,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const start = this.oldValue ?? 0;
+		const start = (this.value as number) ?? 0;
 		const end = parseInt(slider.value ?? start);
 		this.newValue = end;
 		slider.value = start.toString();
@@ -51,7 +50,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		this.oldValue = end;
+		this.value = end;
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
@@ -76,7 +75,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.entry.background_color,
 			);
 		}
-		if (this.entry.background_opacity || this.entry.background_opacity == 0) {
+		if (
+			this.entry.background_opacity ||
+			this.entry.background_opacity == 0
+		) {
 			backgroundStyle.opacity = this.entry.background_opacity;
 		}
 		const background = html`<div
