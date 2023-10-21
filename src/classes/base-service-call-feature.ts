@@ -17,7 +17,7 @@ export class BaseServiceCallFeature extends LitElement {
 		super();
 	}
 
-	setValueInStyleFields(text?: string): string {
+	setValueInStyleFields(text?: string): string | undefined {
 		if (text) {
 			if (text.includes('VALUE')) {
 				if (this.value) {
@@ -58,7 +58,7 @@ export class BaseServiceCallFeature extends LitElement {
 						break;
 					default:
 						if (value == undefined || value == null) {
-							return '';
+							return undefined;
 						}
 						break;
 				}

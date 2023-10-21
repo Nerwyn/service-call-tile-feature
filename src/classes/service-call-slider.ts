@@ -78,8 +78,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				parseFloat(
 					this.setValueInStyleFields(
 						this.entry.background_opacity?.toString(),
-					),
-				) || '',
+					) || '0.2',
+				) || 0.2,
 		};
 		const background = html`<div
 			class="slider-background"
@@ -120,8 +120,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			'--slider-color': this.setValueInStyleFields(this.entry.color),
 			'--slider-opacity':
 				parseFloat(
-					this.setValueInStyleFields(this.entry.opacity?.toString()),
-				) || '',
+					this.setValueInStyleFields(
+						this.entry.opacity?.toString(),
+					) || '1',
+				) || 1,
 		};
 
 		return html`<div class="container" style=${styleMap(style)}>
