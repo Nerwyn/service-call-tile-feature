@@ -6,6 +6,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
+	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) newValue!: number;
 	@property({ attribute: false }) inputEnd: boolean = true;
 	@property({ attribute: false }) step: number = 1;
@@ -20,7 +21,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const start = (this.value as number) ?? 0;
+		const start = this.oldValue ?? this.value ?? 0;
 		const end = parseInt(slider.value ?? start);
 		this.newValue = end;
 		slider.value = start.toString();
@@ -50,7 +51,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		}
 
-		this.value = end;
+		this.oldValue = end;
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
