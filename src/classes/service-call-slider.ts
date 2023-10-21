@@ -21,10 +21,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const start = this.oldValue ?? this.value ?? 0;
+		let start = this.oldValue ?? this.value ?? 0;
 		const end = parseInt(slider.value ?? start);
-		this.newValue = end;
+		if (start == 0 && end > 0) {
+			start = 1;
+		}
 		slider.value = start.toString();
+		this.newValue = end;
 
 		let i = start;
 		if (start > end) {
