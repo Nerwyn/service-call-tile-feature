@@ -43,13 +43,12 @@ export class BaseServiceCallFeature extends LitElement {
 					case 'brightness':
 						if (value) {
 							value = Math.round(
-								100 * (parseInt(value) / 255),
+								100 * (parseInt(value ?? 0) / 255),
 							).toString();
 						} else {
 							return '0';
 						}
 						break;
-					case 'color':
 					case 'rgb_color':
 						if (Array.isArray(value) && value.length == 3) {
 							value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
@@ -87,7 +86,7 @@ export class BaseServiceCallFeature extends LitElement {
 					value_attribute as string
 				];
 			if (value_attribute == 'brightness') {
-				value = Math.round(100 * (parseInt(value) / 255));
+				value = Math.round(100 * (parseInt(value ?? 0) / 255));
 			}
 			this.value = value;
 		}

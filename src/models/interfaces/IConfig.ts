@@ -5,6 +5,7 @@ export interface IConfig {
 
 export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
 	type: TileFeatureType;
+	value_attribute?: string;
 }
 
 export type TileFeatureType = 'button' | 'slider';
@@ -39,7 +40,6 @@ export type ThumbType = 'default' | 'line';
 export interface ISliderOptions {
 	range?: [number, number];
 	thumb?: ThumbType;
-	value_attribute?: string;
 	background_color?: string;
 	background_opacity?: number;
 }
