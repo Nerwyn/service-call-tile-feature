@@ -17,7 +17,7 @@ Call any service via tile features. This custom tile feature will let you create
 
 # How To Use
 
-The trade off of the level of customizability that this card offers is that it can be a bit confusing to use. I'll document all of the available features and options below. This card can be installed using HACS by adding it as a custom frontend repository.
+The trade off for the level of customizability that this card offers is that it can be a bit confusing to use. All of the available features and options are documented below. This card can be installed using HACS by adding it as a custom frontend repository.
 
 1. To start create a tile card. The entity ID can be anything you like.
 2. Click `ADD FEATURE` and then `Service Call`
@@ -73,7 +73,7 @@ entries:
     icon: mdi:curtains
     data:
       position: VALUE
-	target:
+    target:
       entity_id: cover.sunroom_curtains
 ```
 
@@ -98,16 +98,16 @@ Use `ATTRIBUTE[]` to interpolate an attribute of an entity, putting the attribut
 ```yaml
 type: custom:service-call
 entries:
-- type: slider
-	color: ATTRIBUTE[rgb_color]
-	label: VALUE%
-	value_attribute: brightness
-	icon: mdi:brightness-4
-	service: light.turn_on
-	opacity: 2
-	data:
-		brightness_pct: VALUE
-		entity_id: light.sunroom_ceiling
+  - type: slider
+    color: ATTRIBUTE[rgb_color]
+    label: VALUE%
+    value_attribute: brightness
+    icon: mdi:brightness-4
+    service: light.turn_on
+    opacity: 2
+    data:
+      brightness_pct: VALUE
+      entity_id: light.sunroom_ceiling
 ```
 
 Certain attributes will have additional parsing applied to them before being interpolated.
