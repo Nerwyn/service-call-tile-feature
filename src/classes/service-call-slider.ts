@@ -8,7 +8,6 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) newValue!: number;
-	@property({ attribute: false }) inputEnd: boolean = true;
 	@property({ attribute: false }) step: number = 1;
 
 	constructor() {
@@ -16,7 +15,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onInput(e: InputEvent) {
-		this.inputEnd = false;
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
@@ -35,7 +33,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				if (end >= i) {
 					clearInterval(id);
 					slider.value = end.toString();
-					this.inputEnd = true;
 				}
 			}, 1);
 		} else if (start < end) {
@@ -46,9 +43,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				if (end <= i) {
 					clearInterval(id);
 					slider.value = end.toString();
-					this.inputEnd = true;
 				}
 			}, 1);
+		} else {
+			slider.value = end.toString();
 		}
 
 		this.oldValue = end;
