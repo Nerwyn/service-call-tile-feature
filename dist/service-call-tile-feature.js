@@ -99,7 +99,6 @@
 					height: inherit;
 					background: var(--slider-color);
 					opacity: 0.2;
-					z-index: 0;
 				}
 
 				.slider,
@@ -113,7 +112,7 @@
 					width: inherit;
 					border-radius: 10px;
 					background: none;
-					z-index: 1;
+					overflow: hidden;
 				}
 
 				.slider::-webkit-slider-thumb {
