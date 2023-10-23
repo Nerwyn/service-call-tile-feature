@@ -72,6 +72,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
+		let [min, max] = [0, 100];
+		if (this.entry.range) {
+			[min, max] = this.entry.range!;
+		}
+		this.step = (max - min) / 50;
+
 		const backgroundStyle: StyleInfo = {};
 		if (this.entry.background_color) {
 			backgroundStyle.background = this.setValueInStyleFields(
@@ -84,16 +90,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		) {
 			backgroundStyle.opacity = this.entry.background_opacity;
 		}
+		if (this.value == max) {
+			// Dumb iOS fix because iOS webview sucks
+			backgroundStyle.opacity = 'var(--slider-opacity)';
+		}
 		const background = html`<div
 			class="slider-background"
 			style=${styleMap(backgroundStyle)}
 		></div>`;
-
-		let [min, max] = [0, 100];
-		if (this.entry.range) {
-			[min, max] = this.entry.range!;
-		}
-		this.step = (max - min) / 50;
 
 		let sliderClass = 'slider';
 		switch (this.entry.thumb) {
