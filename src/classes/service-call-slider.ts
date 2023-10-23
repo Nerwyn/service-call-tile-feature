@@ -90,11 +90,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		) {
 			backgroundStyle.opacity = this.entry.background_opacity;
 		}
-		if (this.value == max) {
-			// Dumb iOS fix because iOS webview sucks
-			backgroundStyle.background = 'var(--slider-color)';
-			backgroundStyle.opacity = 'var(--slider-opacity)';
-		}
 		const background = html`<div
 			class="slider-background"
 			style=${styleMap(backgroundStyle)}
