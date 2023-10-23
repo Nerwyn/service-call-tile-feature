@@ -148,6 +148,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					height: inherit;
 					background: var(--slider-color);
 					opacity: 0.2;
+					z-index: -1;
 				}
 
 				.slider,

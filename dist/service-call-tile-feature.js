@@ -25,6 +25,7 @@
 				.container {
 					all: inherit;
 					height: 100%;
+					overflow: hidden;
 				}
 
 				ha-icon {
@@ -96,6 +97,7 @@
 					height: inherit;
 					background: var(--slider-color);
 					opacity: 0.2;
+					z-index: -1;
 				}
 
 				.slider,
