@@ -159,7 +159,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					-moz-appearance: none;
 					height: inherit;
-					width: calc(100% - 10px);
+					width: inherit;
 					border-radius: 10px;
 					background: none;
 					z-index: 1;
@@ -177,6 +177,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
+					margin-left: -10px;
 				}
 
 				.slider::-moz-range-thumb {
