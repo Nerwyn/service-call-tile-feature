@@ -20,7 +20,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		const slider = e.currentTarget as HTMLInputElement;
 		const start = this.oldValue ?? this.value ?? 0;
-		const end = parseInt(slider.value ?? start);
+		const end = parseFloat(slider.value ?? start);
 		slider.value = start.toString();
 		this.newValue = end;
 
@@ -63,6 +63,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 		}
 		this.hass.callService(domain, service, data);
+		this.value = this.newValue;
 	}
 
 	render() {
@@ -90,6 +91,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			[min, max] = this.entry.range!;
 		}
 		this.step = (max - min) / 50;
+
 		let sliderClass = 'slider';
 		switch (this.entry.thumb) {
 			case 'line':
