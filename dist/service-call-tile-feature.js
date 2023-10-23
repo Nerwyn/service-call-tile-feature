@@ -113,7 +113,8 @@
 					background: none;
 				}
 
-				.slider {
+				.slider,
+				.slider-off {
 					width: inherit;
 					overflow: hidden;
 				}

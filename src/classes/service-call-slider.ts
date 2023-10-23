@@ -162,7 +162,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					background: none;
 				}
 
-				.slider {
+				.slider,
+				.slider-off {
 					width: inherit;
 					overflow: hidden;
 				}
