@@ -92,6 +92,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		if (this.value == max) {
 			// Dumb iOS fix because iOS webview sucks
+			backgroundStyle.background = 'var(--slider-color)';
 			backgroundStyle.opacity = 'var(--slider-opacity)';
 		}
 		const background = html`<div
