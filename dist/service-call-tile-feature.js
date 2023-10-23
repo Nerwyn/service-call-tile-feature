@@ -128,7 +128,7 @@
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
-					margin-left: -10px;
+					margin-left: -5px;
 				}
 
 				.slider::-moz-range-thumb {
@@ -143,6 +143,7 @@
 					box-shadow:
 						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
 						-6px 0 0 10px var(--slider-color);
+					margin-left: -5px;
 				}
 
 				.slider-line-thumb::-webkit-slider-thumb {
