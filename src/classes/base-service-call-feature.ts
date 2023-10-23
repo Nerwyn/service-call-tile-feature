@@ -146,7 +146,7 @@ export class BaseServiceCallFeature extends LitElement {
 				.container {
 					all: inherit;
 					height: 100%;
-					overflow: hidden;
+					overflow:hidden;
 				}
 
 				ha-icon {

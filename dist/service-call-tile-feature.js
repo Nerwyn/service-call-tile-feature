@@ -25,7 +25,7 @@
 				.container {
 					all: inherit;
 					height: 100%;
-					overflow: hidden;
+					overflow:hidden;
 				}
 
 				ha-icon {
@@ -97,7 +97,7 @@
 					height: inherit;
 					background: var(--slider-color);
 					opacity: 0.2;
-					z-index: -1;
+					z-index: 0;
 				}
 
 				.slider,
@@ -111,6 +111,7 @@
 					width: calc(100% - 10px);
 					border-radius: 10px;
 					background: none;
+					z-index: 1;
 				}
 
 				.slider::-webkit-slider-thumb {
