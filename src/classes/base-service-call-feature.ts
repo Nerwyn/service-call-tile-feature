@@ -146,7 +146,7 @@ export class BaseServiceCallFeature extends LitElement {
 				.container {
 					all: inherit;
 					height: 100%;
-					overflow:hidden;
+					overflow: hidden;
 				}
 
 				ha-icon {
@@ -155,6 +155,7 @@ export class BaseServiceCallFeature extends LitElement {
 					display: inline-flex;
 					flex-flow: column;
 					place-content: center;
+					z-index: 2;
 				}
 
 				.label {
@@ -167,6 +168,7 @@ export class BaseServiceCallFeature extends LitElement {
 					width: inherit;
 					font-family: inherit;
 					font-size: 12px;
+					z-index: 2;
 				}
 			`,
 		];

@@ -25,7 +25,7 @@
 				.container {
 					all: inherit;
 					height: 100%;
-					overflow:hidden;
+					overflow: hidden;
 				}
 
 				ha-icon {
@@ -34,6 +34,7 @@
 					display: inline-flex;
 					flex-flow: column;
 					place-content: center;
+					z-index: 2;
 				}
 
 				.label {
@@ -46,6 +47,7 @@
 					width: inherit;
 					font-family: inherit;
 					font-size: 12px;
+					z-index: 2;
 				}
 			`]}};e.BaseServiceCallFeature=l,s([(0,n.property)({attribute:!1})],l.prototype,"hass",void 0),s([(0,n.property)({attribute:!1})],l.prototype,"entry",void 0),s([(0,n.property)({attribute:!1})],l.prototype,"entity_id",void 0),s([(0,n.property)({attribute:!1})],l.prototype,"value",void 0),e.BaseServiceCallFeature=l=s([(0,n.customElement)("base-service-call-feature")],l)},827:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallButton=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);let a=class extends l.BaseServiceCallFeature{constructor(){super()}onClick(t){t.stopImmediatePropagation();const[e,i]=this.entry.service.split("."),s=this.entry.data||{};this.hass.callService(e,i,s)}render(){const t=super.render(),e={};this.entry.color&&(e["background-color"]=this.setValueInStyleFields(this.entry.color)),(this.entry.opacity||0==this.entry.opacity)&&(e.opacity=this.entry.opacity);const i=r.html`<button
 			class="button"
@@ -97,6 +99,7 @@
 					height: inherit;
 					background: var(--slider-color);
 					opacity: 0.2;
+					z-index: 0;
 				}
 
 				.slider,
@@ -110,6 +113,7 @@
 					width: calc(100% - 10px);
 					border-radius: 10px;
 					background: none;
+					z-index: 1;
 				}
 
 				.slider::-webkit-slider-thumb {
