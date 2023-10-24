@@ -145,6 +145,7 @@ String interpolation can be used for any of these values.
 | Name               | Type   | Description                                                                                                        |
 | ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ |
 | range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                              |
+| step               | number | The step size of the slider. Defaults to 1/100 of the range.                                                       |
 | thumb              | string | The slider thumb style. `default` is like a light brightness slider and `line` is like a light temperature slider. |
 | background_color   | string | Custom color for the background of the slider.                                                                     |
 | background_opacity | number | Opacity of the button background. Defaults to 0.2. Cannot be string interpolated.                                  |
@@ -281,6 +282,7 @@ features:
         range:
           - 153
           - 371
+        step: 1
         data:
           color_temp: VALUE
           entity_id: light.sunroom_ceiling
@@ -293,6 +295,20 @@ features:
         data:
           position: VALUE
           entity_id: cover.sunroom_curtains
+  - type: custom:service-call
+    entries:
+      - type: slider
+        service: media_player.volume_set
+        value_attribute: volume_level
+        icon: mdi:spotify
+        color: rgb(31, 223, 100)
+        label: ATTRIBUTE[media_title]
+        range:
+          - 0
+          - 1
+        data:
+          volume_level: VALUE
+          entity_id: media_player.spotify_nerwyn_singh
 type: tile
 entity: binary_sensor.sun_room
 ```
