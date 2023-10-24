@@ -120,6 +120,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			case 'line':
 				sliderClass = 'slider-line-thumb';
 				break;
+			case 'flat':
+				sliderClass = 'slider-flat-thumb';
+				break;
 			default:
 				sliderClass = 'slider';
 				break;
@@ -173,6 +176,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				.slider,
 				.slider-line-thumb,
+				.slider-flat-thumb,
 				.slider-off {
 					position: absolute;
 					appearance: none;
@@ -184,6 +188,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 
 				.slider,
+				.slider-flat-thumb,
 				.slider-off {
 					width: inherit;
 					overflow: hidden;
@@ -249,6 +254,29 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					box-shadow:
 						0 8px 0 3px #ffffff,
 						0 -8px 0 3px #ffffff;
+				}
+
+				.slider-flat-thumb::-webkit-slider-thumb {
+					appearance: none;
+					-webkit-appearance: none;
+					height: 20px;
+					width: 4px;
+					border-radius: 12px;
+					background: var(--slider-color);
+					cursor: pointer;
+					z-index: 1;
+					box-shadow: -100vw 0 0 100vw var(--slider-color);
+				}
+
+				.slider-flat-thumb::-moz-range-thumb {
+					appearance: none;
+					-moz-appearance: none;
+					height: 40px;
+					width: 8px;
+					background: var(--slider-color);
+					cursor: pointer;
+					z-index: 1;
+					box-shadow: -100vw 0 0 100vw var(--slider-color);
 				}
 
 				.slider-off::-webkit-slider-thumb {

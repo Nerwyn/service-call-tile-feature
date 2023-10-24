@@ -35,7 +35,7 @@ export interface IStyle {
 	label_color?: string;
 }
 
-export type ThumbType = 'default' | 'line';
+export type ThumbType = 'default' | 'line' | 'flat';
 
 export interface ISliderOptions {
 	range?: [number, number];

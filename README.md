@@ -142,13 +142,13 @@ String interpolation can be used for any of these values.
 
 ### Slider Specific Options
 
-| Name               | Type   | Description                                                                                                        |
-| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ |
-| range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                              |
-| step               | number | The step size of the slider. Defaults to 1/100 of the range.                                                       |
-| thumb              | string | The slider thumb style. `default` is like a light brightness slider and `line` is like a light temperature slider. |
-| background_color   | string | Custom color for the background of the slider.                                                                     |
-| background_opacity | number | Opacity of the button background. Defaults to 0.2. Cannot be string interpolated.                                  |
+| Name               | Type   | Description                                                                                                                                                         |
+| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                               |
+| step               | number | The step size of the slider. Defaults to 1/100 of the range.                                                                                                        |
+| thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider |
+| background_color   | string | Custom color for the background of the slider.                                                                                                                      |
+| background_opacity | number | Opacity of the button background. Defaults to 0.2. Cannot be string interpolated.                                                                                   |
 
 # Examples
 
