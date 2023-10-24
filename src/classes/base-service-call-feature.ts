@@ -21,7 +21,7 @@ export class BaseServiceCallFeature extends LitElement {
 		if (text) {
 			if (text.includes('VALUE')) {
 				if (this.value) {
-					text = text.replace('VALUE', this.value.toString());
+					text = text.replace(/VALUE/g, this.value.toString());
 				} else {
 					return '';
 				}
