@@ -47,7 +47,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else if (start < end) {
 			const id = setInterval(() => {
 				i = parseFloat(
-					(parseFloat(i as unknown as string) -
+					(parseFloat(i as unknown as string) +
 						parseFloat(
 							this.speed as unknown as string,
 						)) as number as unknown as string,
