@@ -309,7 +309,7 @@ features:
         thumb: flat
         data:
           volume_level: VALUE
-          entity_id: media_player.spotify_nerwyn_singh
+          entity_id: media_player.spotify
 type: tile
 entity: binary_sensor.sun_room
 ```
