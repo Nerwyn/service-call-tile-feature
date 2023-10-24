@@ -27,8 +27,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
-				i = (parseFloat(i as unknown as string) -
-					parseFloat(this.speed as unknown as string)) as number;
+				// This is dumb but browser js
+				// doing string concatenation with
+				// ints and floats is dumber
+				i = parseFloat(
+					(parseFloat(i as unknown as string) -
+						parseFloat(
+							this.speed as unknown as string,
+						)) as number as unknown as string,
+				);
 				console.log(i);
 				slider.value = i.toString();
 
@@ -39,10 +46,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				i = (parseFloat(i as unknown as string) +
-					parseFloat(this.speed as unknown as string)) as number;
-				console.log(i);
-				slider.value = i.toString();
+				i = parseFloat(
+					(parseFloat(i as unknown as string) -
+						parseFloat(
+							this.speed as unknown as string,
+						)) as number as unknown as string,
+				);
 
 				if (end <= i) {
 					clearInterval(id);
