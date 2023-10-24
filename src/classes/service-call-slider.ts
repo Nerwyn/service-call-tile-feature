@@ -27,7 +27,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
-				i -= this.step;
+				i -= this.step * 2;
 				slider.value = i.toString();
 
 				if (end >= i) {
@@ -37,7 +37,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				i += this.step;
+				i += this.step * 2;
 				slider.value = i.toString();
 
 				if (end <= i) {
@@ -57,6 +57,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const data = JSON.parse(JSON.stringify(this.entry.data));
 		if (!this.newValue && this.newValue != 0) {
 			this.newValue = this.value as number;
+		}
+		if (this.newValue % 1 == 0) {
+			this.newValue = Math.trunc(this.newValue);
 		}
 		for (const key in data) {
 			if (data[key].toString().includes('VALUE')) {
