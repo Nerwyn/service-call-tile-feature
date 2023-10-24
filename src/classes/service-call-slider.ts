@@ -36,7 +36,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 							this.speed as unknown as string,
 						)) as number as unknown as string,
 				);
-				console.log(i);
 				slider.value = i.toString();
 
 				if (end >= i) {
@@ -52,7 +51,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 							this.speed as unknown as string,
 						)) as number as unknown as string,
 				);
-				console.log(i);
 				slider.value = i.toString();
 
 				if (end <= i) {
