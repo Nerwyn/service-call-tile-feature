@@ -8,7 +8,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@property({ attribute: false }) oldValue!: number;
 	@property({ attribute: false }) newValue!: number;
-	@property({ attribute: false }) step: number = 1;
+	@property({ attribute: false }) speed: number = 2;
 
 	constructor() {
 		super();
@@ -27,7 +27,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
-				i -= this.step * 2;
+				i -= this.speed;
 				slider.value = i.toString();
 
 				if (end >= i) {
@@ -37,7 +37,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				i += this.step * 2;
+				i += this.speed;
 				slider.value = i.toString();
 
 				if (end <= i) {
@@ -79,11 +79,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.entry.range) {
 			[min, max] = this.entry.range!;
 		}
+		let step = (max - min) / 100;
 		if (this.entry.step) {
-			this.step = this.entry.step;
-		} else {
-			this.step = (max - min) / 100;
+			step = this.entry.step;
 		}
+		this.speed = (max - min) / 50;
 
 		const backgroundStyle: StyleInfo = {};
 		if (this.entry.background_color) {
@@ -120,7 +120,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
-				step=${this.step}
+				step=${step}
 				value="${this.value}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
