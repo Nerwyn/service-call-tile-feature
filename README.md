@@ -306,7 +306,7 @@ features:
         range:
           - 0
           - 1
-		thumb: flat
+        thumb: flat
         data:
           volume_level: VALUE
           entity_id: media_player.spotify_nerwyn_singh
