@@ -29,7 +29,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 			if (text.includes('STATE')) {
 				const state = this.hass.states[this.entity_id].state;
-				text = text.replace('STATE', state);
+				text = text.replace(/STATE/g, state);
 			}
 
 			const pattern = /ATTRIBUTE\[(.*?)\]/g;
