@@ -32,40 +32,46 @@ export class BaseServiceCallFeature extends LitElement {
 				text = text.replace('STATE', state);
 			}
 
-			const pattern = /ATTRIBUTE\[(.*?)\]/gm;
-			let match;
-			while ((match = pattern.exec(text)) != null) {
-				const attribute = match[1];
-				let value =
-					this.hass.states[this.entity_id].attributes[attribute];
+			const pattern = /ATTRIBUTE\[(.*?)\]/g;
+			const matches = text.match(pattern);
+			if (matches) {
+				for (const match of matches) {
+					const attribute = match
+						.replace('ATTRIBUTE[', '')
+						.replace(']', '');
+					let value =
+						this.hass.states[this.entity_id].attributes[attribute];
 
-				switch (attribute) {
-					case 'brightness':
-						if (value) {
-							value = Math.round(
-								100 * (parseInt(value ?? 0) / 255),
-							).toString();
-						} else {
-							return '0';
-						}
-						break;
-					case 'rgb_color':
-						if (Array.isArray(value) && value.length == 3) {
-							value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
-						} else {
-							value = 'var(--primary-text-color)';
-						}
-						break;
-					default:
-						if (value == undefined || value == null) {
-							return undefined;
-						}
-						break;
+					switch (attribute) {
+						case 'brightness':
+							if (value) {
+								value = Math.round(
+									100 * (parseInt(value ?? 0) / 255),
+								).toString();
+							} else {
+								return '0';
+							}
+							break;
+						case 'rgb_color':
+							if (Array.isArray(value) && value.length == 3) {
+								value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
+							} else {
+								value = 'var(--primary-text-color)';
+							}
+							break;
+						default:
+							if (value == undefined || value == null) {
+								return undefined;
+							}
+							break;
+					}
+
+					text = text.replace(`ATTRIBUTE[${attribute}]`, value);
 				}
-
-				text = text.replace(`ATTRIBUTE[${match[1]}]`, value);
+				return text;
+			} else {
+				return text;
 			}
-			return text;
 		} else {
 			return '';
 		}
