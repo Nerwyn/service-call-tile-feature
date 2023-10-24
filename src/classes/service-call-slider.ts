@@ -76,7 +76,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.entry.range) {
 			[min, max] = this.entry.range!;
 		}
-		this.step = (max - min) / 50;
+		if (this.entry.step) {
+			this.step = this.entry.step;
+		} else {
+			this.step = (max - min) / 100;
+		}
 
 		const backgroundStyle: StyleInfo = {};
 		if (this.entry.background_color) {
@@ -113,6 +117,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				class="${sliderClass}"
 				min="${min}"
 				max="${max}"
+				step=${this.step}
 				value="${this.value}"
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
