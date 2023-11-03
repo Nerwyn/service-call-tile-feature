@@ -6,6 +6,7 @@ export interface IConfig {
 export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
 	type: TileFeatureType;
 	value_attribute?: string;
+	entity_id?: string;
 }
 
 export type TileFeatureType = 'button' | 'slider';

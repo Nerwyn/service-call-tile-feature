@@ -79,11 +79,18 @@ class ServiceCallTileFeature extends LitElement {
 		for (const entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (
-				!('entity_id' in entry.data!) &&
-				!('device_id' in entry.data!) &&
-				!('area_id' in entry.data!)
+				entry.data &&
+				Object.keys(entry.data).length &&
+				!('entity_id' in entry.data) &&
+				!('device_id' in entry.data) &&
+				!('area_id' in entry.data)
 			) {
-				entry.data!['entity_id'] = this.stateObj.entity_id;
+				entry.data.entity_id =
+					entry.entity_id ?? this.stateObj.entity_id;
+			}
+			if (!('entity_id' in entry)) {
+				entry.entity_id = (entry.data?.entity_id ??
+					this.stateObj.entity_id) as string;
 			}
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
