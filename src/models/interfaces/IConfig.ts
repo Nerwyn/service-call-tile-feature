@@ -7,6 +7,7 @@ export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
 	type: TileFeatureType;
 	value_attribute?: string;
 	entity_id?: string;
+	autofill_entity_id?: boolean
 }
 
 export type TileFeatureType = 'button' | 'slider';
@@ -15,7 +16,6 @@ export interface IServiceCall {
 	service: string;
 	data?: IData;
 	target?: ITarget;
-	autofill_entity_id?: boolean
 }
 
 export interface IData {

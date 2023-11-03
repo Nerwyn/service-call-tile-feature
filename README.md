@@ -43,14 +43,18 @@ The custom service call feature is actually a row of entries, each of which have
 
 ### General Options
 
-| Name            | Type   | Description                                                                      |
-| --------------- | ------ | -------------------------------------------------------------------------------- |
-| type            | string | Type of tile feature. Currently supported options are `button` and `slider`.     |
-| value_attribute | string | The attribute to use to determine the value of the feature. Defaults to `state`. |
+| Name               | Type    | Description                                                                                                                                              |
+| ------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type               | string  | Type of tile feature. Currently supported options are `button` and `slider`.                                                                             |
+| value_attribute    | string  | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
+| entity_id          | string  | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
+| autofill_entity_id | boolean | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` is also supported.
 
 As of now `value_attribute` is only important for sliders, as it uses this field to determine the slider's default value on render. It can also be used for `VALUE` string interpolation as described below.
+
+If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
 ### String Interpolation
 
@@ -291,6 +295,8 @@ features:
         service: cover.set_cover_position
         value_attribute: current_position
         icon: mdi:curtains
+        icon_color: var(--disabled-color)
+        color: var(--tile-color)
         data:
           position: VALUE
           entity_id: cover.sunroom_curtains
@@ -311,6 +317,7 @@ features:
           entity_id: media_player.spotify
 type: tile
 entity: binary_sensor.sun_room
+color: accent
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/dev/assets/slider_tile.png" alt="slider_tile" width="600"/>
