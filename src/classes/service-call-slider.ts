@@ -19,7 +19,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		e.stopImmediatePropagation();
 
 		const slider = e.currentTarget as HTMLInputElement;
-		const start = this.oldValue ?? this.value ?? 0;
+		const start = parseFloat(
+			(this.oldValue as unknown as string) ?? this.value ?? '0',
+		);
 		const end = parseFloat(slider.value ?? start);
 		slider.value = start.toString();
 		this.newValue = end;
@@ -27,15 +29,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
-				// This is dumb but browser js
-				// doing string concatenation with
-				// ints and floats is dumber
-				i = parseFloat(
-					(parseFloat(i as unknown as string) -
-						parseFloat(
-							this.speed as unknown as string,
-						)) as number as unknown as string,
-				);
+				i -= this.speed;
 				slider.value = i.toString();
 
 				if (end >= i) {
@@ -45,12 +39,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}, 1);
 		} else if (start < end) {
 			const id = setInterval(() => {
-				i = parseFloat(
-					(parseFloat(i as unknown as string) +
-						parseFloat(
-							this.speed as unknown as string,
-						)) as number as unknown as string,
-				);
+				i += this.speed;
 				slider.value = i.toString();
 
 				if (end <= i) {
@@ -90,7 +79,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		let [min, max] = [0, 100];
 		if (this.entry.range) {
-			[min, max] = this.entry.range!;
+			[min, max] = this.entry.range;
 		}
 		let step = (max - min) / 100;
 		if (this.entry.step) {
