@@ -15,6 +15,7 @@ export interface IServiceCall {
 	service: string;
 	data?: IData;
 	target?: ITarget;
+	autofill_entity_id?: boolean
 }
 
 export interface IData {
