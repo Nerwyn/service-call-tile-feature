@@ -94,6 +94,7 @@ class ServiceCallTileFeature extends LitElement {
 						this.stateObj.entity_id) as string;
 				}
 			}
+			console.log(entry)
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
