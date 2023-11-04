@@ -132,26 +132,26 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Global Style Options
 
-| Name        | Type   | Description                                                                        |
-| ----------- | ------ | ---------------------------------------------------------------------------------- |
-| color       | string | Custom color for the button.                                                       |
-| opacity     | float  | Opacity of the feature background. Defaults to 0.2. Cannot be string interpolated. |
-| icon        | string | Material design icon to use.                                                       |
-| icon_color  | string | Custom color for the icon.                                                         |
-| label       | string | String label to place underneath the icon, or by itself.                           |
-| label_color | string | Custom color for the string label.                                                 |
+| Name        | Type   | Description                                                                             |
+| ----------- | ------ | --------------------------------------------------------------------------------------- |
+| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).          |
+| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated. |
+| icon        | string | Icon to use.                                                                            |
+| icon_color  | string | Custom color for the icon.                                                              |
+| label       | string | String label to place underneath the icon, or by itself.                                |
+| label_color | string | Custom color for the string label.                                                      |
 
-String interpolation can be used for any of these values.
+String interpolation can be used for any of these values except for opacity.
 
 ### Slider Specific Options
 
-| Name               | Type   | Description                                                                                                                                                         |
-| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                               |
-| step               | number | The step size of the slider. Defaults to 1/100 of the range.                                                                                                        |
-| thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider |
-| background_color   | string | Custom color for the background of the slider.                                                                                                                      |
-| background_opacity | number | Opacity of the slider background (behind the thumb). Defaults to 0.2. Cannot be string interpolated.                                                                |
+| Name               | Type   | Description                                                                                                                                                          |
+| ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                |
+| step               | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
+| thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
+| background_color   | string | Custom color for the background of the slider. Can also be a CSS function (see examples).                                                                           |
+| background_opacity | number | Opacity of the slider background (behind the thumb). Defaults to 0.2. Cannot be string interpolated.                                                                 |
 
 # Examples
 
