@@ -80,13 +80,11 @@ class ServiceCallTileFeature extends LitElement {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
 				if (
-					entry.data &&
-					Object.keys(entry.data).length &&
-					!('entity_id' in entry.data) &&
-					!('device_id' in entry.data) &&
-					!('area_id' in entry.data)
+					!('entity_id' in entry.data!) &&
+					!('device_id' in entry.data!) &&
+					!('area_id' in entry.data!)
 				) {
-					entry.data.entity_id =
+					entry.data!.entity_id =
 						entry.entity_id ?? this.stateObj.entity_id;
 				}
 				if (!('entity_id' in entry)) {
