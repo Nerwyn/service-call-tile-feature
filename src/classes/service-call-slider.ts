@@ -72,7 +72,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					.replace('VALUE', this.newValue);
 			}
 		}
-		console.log(data)
 		this.hass.callService(domain, service, data);
 		this.value = this.newValue;
 	}
