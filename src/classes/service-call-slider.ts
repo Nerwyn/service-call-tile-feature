@@ -64,12 +64,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = Math.trunc(this.newValue);
 		}
 		for (const key in data) {
-			if (data[key].toString().includes('VALUE')) {
+			if (data[key] == 'VALUE') {
+				data[key] = this.newValue;
+			} else if (data[key].toString().includes('VALUE')) {
 				data[key] = data[key]
 					.toString()
 					.replace('VALUE', this.newValue);
 			}
 		}
+		console.log(data)
 		this.hass.callService(domain, service, data);
 		this.value = this.newValue;
 	}
