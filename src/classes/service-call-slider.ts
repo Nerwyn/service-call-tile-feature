@@ -1,14 +1,16 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
-	@property({ attribute: false }) oldValue!: number;
-	@property({ attribute: false }) newValue!: number;
-	@property({ attribute: false }) speed: number = 2;
+	oldValue?: number;
+	newValue?: number;
+	speed: number = 2;
+	range: [number, number] = [0, 100];
+	class: string = 'slider';
 
 	constructor() {
 		super();
@@ -26,6 +28,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		slider.value = start.toString();
 		this.newValue = end;
 
+		if (end > this.range[0]) {
+			slider.className = this.class;
+		}
+
 		let i = start;
 		if (start > end) {
 			const id = setInterval(() => {
@@ -35,6 +41,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				if (end >= i) {
 					clearInterval(id);
 					slider.value = end.toString();
+					if (end <= this.range[0]) {
+						slider.className = 'slider-off';
+					}
 				}
 			}, 1);
 		} else if (start < end) {
@@ -79,15 +88,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		let [min, max] = [0, 100];
+		this.range = [0, 100];
 		if (this.entry.range) {
-			[min, max] = this.entry.range;
+			this.range = this.entry.range;
 		}
-		let step = (max - min) / 100;
+		let step = (this.range[1] - this.range[0]) / 100;
 		if (this.entry.step) {
 			step = this.entry.step;
 		}
-		this.speed = (max - min) / 50;
+		this.speed = (this.range[1] - this.range[0]) / 50;
 
 		const backgroundStyle: StyleInfo = {};
 		if (this.entry.background_color) {
@@ -106,27 +115,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			style=${styleMap(backgroundStyle)}
 		></div>`;
 
-		let sliderClass = 'slider';
+		this.class = 'slider';
 		switch (this.entry.thumb) {
 			case 'line':
-				sliderClass = 'slider-line-thumb';
+				this.class = 'slider-line-thumb';
 				break;
 			case 'flat':
-				sliderClass = 'slider-flat-thumb';
+				this.class = 'slider-flat-thumb';
 				break;
 			default:
-				sliderClass = 'slider';
+				this.class = 'slider';
 				break;
 		}
 		if (!this.value || this.value == 0) {
-			sliderClass = 'slider-off';
+			this.class = 'slider-off';
 		}
 		const slider = html`
 			<input
 				type="range"
-				class="${sliderClass}"
-				min="${min}"
-				max="${max}"
+				class="${this.class}"
+				min="${this.range[0]}"
+				max="${this.range[1]}"
 				step=${step}
 				value="${this.value}"
 				@input=${this.onInput}
