@@ -41,7 +41,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				if (end >= i) {
 					clearInterval(id);
 					slider.value = end.toString();
-					if (end <= this.range[0] && this.class != 'line') {
+					if (
+						end <= this.range[0] &&
+						this.class != 'slider-line-thumb'
+					) {
 						slider.className = 'slider-off';
 					}
 				}
@@ -135,7 +138,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		if (
 			this.value == undefined ||
-			(this.value == 0 && this.class != 'line')
+			(this.value == 0 && this.class != 'slider-line-thumb')
 		) {
 			this.class = 'slider-off';
 		}
