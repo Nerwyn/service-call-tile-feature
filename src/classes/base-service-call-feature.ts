@@ -87,7 +87,9 @@ export class BaseServiceCallFeature extends LitElement {
 				}
 			} else {
 				if ('text' in (this.entry.confirmation as IConfirmation)) {
-					text = (this.entry.confirmation as IConfirmation).text!;
+					text = this.setValueInStyleFields(
+						(this.entry.confirmation as IConfirmation).text!,
+					) as string;
 				}
 				if (
 					'exemptions' in (this.entry.confirmation as IConfirmation)
