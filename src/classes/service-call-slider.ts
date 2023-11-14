@@ -241,29 +241,35 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider-line-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 20px;
-					width: 4px;
+					height: 28px;
+					width: 10px;
+					border-style: solid;
+					border-color: #ffffff;
+					border-width: 3px;
 					border-radius: 12px;
 					background: #8a8c99;
 					cursor: pointer;
 					opacity: var(--slider-opacity);
 					box-shadow:
-						0 8px 0 3px #ffffff,
-						0 -8px 0 3px #ffffff;
+						0 7px 0 0 #ffffff,
+						0 -7px 0 0 #ffffff;
 				}
 
 				.slider-line-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 20px;
-					width: 4px;
+					height: 28px;
+					width: 10px;
+					border-style: solid;
+					border-color: #ffffff;
+					border-width: 3px;
 					border-radius: 12px;
-					background: #ffffff;
+					background: #8a8c99;
 					cursor: pointer;
 					opacity: var(--slider-opacity);
 					box-shadow:
-						0 8px 0 3px #ffffff,
-						0 -8px 0 3px #ffffff;
+						0 7px 0 0 #ffffff,
+						0 -7px 0 0 #ffffff;
 				}
 
 				.slider-flat-thumb::-webkit-slider-thumb {
