@@ -67,25 +67,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
-		const [domain, service] = this.entry.service.split('.');
-		const data = JSON.parse(JSON.stringify(this.entry.data));
 		if (!this.newValue && this.newValue != 0) {
 			this.newValue = this.value as number;
 		}
 		if (this.newValue % 1 == 0) {
 			this.newValue = Math.trunc(this.newValue);
 		}
-		for (const key in data) {
-			if (data[key] == 'VALUE') {
-				data[key] = this.newValue;
-			} else if (data[key].toString().includes('VALUE')) {
-				data[key] = data[key]
-					.toString()
-					.replace('VALUE', this.newValue);
-			}
-		}
-		this.hass.callService(domain, service, data);
-		this.value = this.newValue;
+
+		this.callService();
 	}
 
 	render() {

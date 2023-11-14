@@ -7,7 +7,8 @@ export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
 	type: TileFeatureType;
 	value_attribute?: string;
 	entity_id?: string;
-	autofill_entity_id?: boolean
+	autofill_entity_id?: boolean;
+	confirmation: boolean | IConfirmation;
 }
 
 export type TileFeatureType = 'button' | 'slider';
@@ -26,6 +27,15 @@ export interface ITarget {
 	entity_id?: string | string[];
 	device_id?: string | string[];
 	area_id?: string | string[];
+}
+
+export interface IConfirmation {
+	text?: string;
+	exemptions: IExemption[];
+}
+
+export interface IExemption {
+	user: string;
 }
 
 export interface IStyle {

@@ -4,7 +4,7 @@ import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
-import { IEntry } from '../models/interfaces';
+import { IEntry, IConfirmation } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -76,6 +76,51 @@ export class BaseServiceCallFeature extends LitElement {
 		} else {
 			return '';
 		}
+	}
+
+	callService() {
+		if ('confirmation' in this.entry) {
+			if (this.entry.confirmation == true) {
+				if (!confirm()) {
+					return;
+				}
+			} else {
+				let text = `Are you sure you want to run action '${this.entry.service}'?`;
+				if ('text' in (this.entry.confirmation as IConfirmation)) {
+					text = (this.entry.confirmation as IConfirmation).text!;
+				}
+
+				if (
+					'exemptions' in (this.entry.confirmation as IConfirmation)
+				) {
+					if (
+						!(this.entry.confirmation as IConfirmation).exemptions
+							.map((e) => e.user)
+							.includes(this.hass.user.id)
+					) {
+						if (!confirm(text)) {
+							return;
+						}
+					}
+				} else if (!confirm(text)) {
+					return;
+				}
+			}
+		}
+
+		const [domain, service] = this.entry.service.split('.');
+		const data = JSON.parse(JSON.stringify(this.entry.data));
+		for (const key in data) {
+			if (data[key] == 'VALUE') {
+				data[key] = this.value;
+			} else if (data[key].toString().includes('VALUE')) {
+				data[key] = data[key]
+					.toString()
+					.replace('VALUE', this.value as string);
+			}
+		}
+
+		this.hass.callService(domain, service, data);
 	}
 
 	render() {

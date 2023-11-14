@@ -12,10 +12,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 	onClick(e: MouseEvent) {
 		e.stopImmediatePropagation();
-		const [domain, service] = this.entry.service.split('.');
-		const data = this.entry.data || {};
 
-		this.hass.callService(domain, service, data);
+		this.callService();
 	}
 
 	render() {
