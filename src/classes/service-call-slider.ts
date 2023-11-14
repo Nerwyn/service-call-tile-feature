@@ -207,31 +207,31 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 20px;
-					width: 4px;
-					border-radius: 12px;
+					height: 40px;
+					width: 24px;
+					border-width: 10px 4px 10px 16px;
+					border-radius: 10px;
+					border-color: var(--slider-color);
 					background: #ffffff;
 					cursor: pointer;
 					opacity: var(--slider-opacity);
-					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
-						-6px 0 0 10px var(--slider-color);
-					margin-left: -5px;
+					box-shadow: calc(-100vw - 6px) 0 0 calc(100vw - 8px)
+						var(--slider-color);
 				}
 
 				.slider::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 20px;
-					width: 4px;
-					border-radius: 12px;
+					height: 40px;
+					width: 24px;
+					border-width: 10px 4px 10px 16px;
+					border-radius: 10px;
+					border-color: var(--slider-color);
 					background: #ffffff;
 					cursor: pointer;
 					opacity: var(--slider-opacity);
-					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
-						-6px 0 0 10px var(--slider-color);
-					margin-left: -5px;
+					box-shadow: calc(-100vw - 6px) 0 0 calc(100vw - 8px)
+						var(--slider-color);
 				}
 
 				.slider-line-thumb::-webkit-slider-thumb {
