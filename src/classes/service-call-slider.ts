@@ -88,7 +88,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		this.range = [0, 100];
+		if (this.oldValue == undefined) {
+			this.oldValue = parseFloat(this.value as string);
+		}
+		if (this.newValue == undefined) {
+			this.newValue = parseFloat(this.value as string);
+		}
+
 		if (this.entry.range) {
 			this.range = this.entry.range;
 		}
