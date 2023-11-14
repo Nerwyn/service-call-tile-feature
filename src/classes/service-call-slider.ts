@@ -145,7 +145,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				step=${step}
 				value="${this.value}"
 				@input=${this.onInput}
-				@touchstart=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>

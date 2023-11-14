@@ -85,7 +85,6 @@
 				step=${i}
 				value="${this.value}"
 				@input=${this.onInput}
-				@touchstart=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
