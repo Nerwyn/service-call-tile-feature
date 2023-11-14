@@ -73,6 +73,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.newValue % 1 == 0) {
 			this.newValue = Math.trunc(this.newValue);
 		}
+		this.value = this.newValue;
 
 		this.callService();
 	}
