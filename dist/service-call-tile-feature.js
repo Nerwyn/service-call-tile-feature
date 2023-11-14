@@ -85,6 +85,7 @@
 				step=${i}
 				value="${this.value}"
 				@input=${this.onInput}
+				@touchstart=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
 			/>
@@ -187,9 +188,8 @@
 				.slider-flat-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 20px;
-					width: 4px;
-					border-radius: 12px;
+					height: 40px;
+					width: 24px;
 					background: var(--slider-color);
 					cursor: pointer;
 					z-index: 1;
@@ -200,7 +200,7 @@
 					appearance: none;
 					-moz-appearance: none;
 					height: 40px;
-					width: 8px;
+					width: 24px;
 					background: var(--slider-color);
 					cursor: pointer;
 					z-index: 1;
