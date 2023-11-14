@@ -79,17 +79,16 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	callService() {
-		if ('confirmation' in this.entry) {
+		if ('confirmation' in this.entry && this.entry.confirmation != false) {
+			let text = `Are you sure you want to run action '${this.entry.service}'?`;
 			if (this.entry.confirmation == true) {
-				if (!confirm()) {
+				if (!confirm(text)) {
 					return;
 				}
 			} else {
-				let text = `Are you sure you want to run action '${this.entry.service}'?`;
 				if ('text' in (this.entry.confirmation as IConfirmation)) {
 					text = (this.entry.confirmation as IConfirmation).text!;
 				}
-
 				if (
 					'exemptions' in (this.entry.confirmation as IConfirmation)
 				) {
