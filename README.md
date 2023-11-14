@@ -45,18 +45,21 @@ The custom service call feature is actually a row of entries, each of which have
 
 ### General Options
 
-| Name               | Type    | Description                                                                                                                                              |
-| ------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type               | string  | Type of tile feature. Currently supported options are `button` and `slider`.                                                                             |
-| value_attribute    | string  | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
-| entity_id          | string  | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
-| autofill_entity_id | boolean | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
+| Name               | Type                  | Description                                                                                                                                              |
+| ------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type               | string                | Type of tile feature. Currently supported options are `button` and `slider`.                                                                             |
+| value_attribute    | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
+| entity_id          | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
+| autofill_entity_id | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
+| confirmation       | boolean, Confirmation | Opens a browser popup asking you to confirm your action.                                                                                                 |
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` is also supported.
 
 As of now `value_attribute` is only important for sliders, as it uses this field to determine the slider's default value on render. It can also be used for `VALUE` string interpolation as described below.
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
+
+More information on Home Assistant action confirmations can be found [here](https://www.home-assistant.io/dashboards/actions/#options-for-confirmation).
 
 ### String Interpolation
 
@@ -152,7 +155,7 @@ String interpolation can be used for any of these values except for opacity.
 | range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                |
 | step               | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
 | thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
-| background_color   | string | Custom color for the background of the slider. Can also be a CSS function (see examples).                                                                           |
+| background_color   | string | Custom color for the background of the slider. Can also be a CSS function (see examples).                                                                            |
 | background_opacity | number | Opacity of the slider background (behind the thumb). Defaults to 0.2. Cannot be string interpolated.                                                                 |
 
 # Examples
