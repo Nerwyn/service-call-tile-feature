@@ -131,6 +131,7 @@
 					-webkit-appearance: none;
 					height: 40px;
 					width: 24px;
+					border-style: solid;
 					border-width: 10px 4px 10px 16px;
 					border-radius: 10px;
 					border-color: var(--slider-color);
@@ -146,6 +147,7 @@
 					-moz-appearance: none;
 					height: 40px;
 					width: 24px;
+					border-style: solid;
 					border-width: 10px 4px 10px 16px;
 					border-radius: 10px;
 					border-color: var(--slider-color);
