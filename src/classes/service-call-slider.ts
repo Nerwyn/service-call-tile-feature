@@ -12,10 +12,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	range: [number, number] = [0, 100];
 	class: string = 'slider';
 
-	constructor() {
-		super();
-	}
-
 	onInput(e: InputEvent) {
 		e.preventDefault();
 		e.stopImmediatePropagation();

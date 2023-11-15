@@ -12,10 +12,6 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 	@property({ attribute: false }) value: string | number = 0;
 
-	constructor() {
-		super();
-	}
-
 	setValueInStyleFields(text?: string): string | undefined {
 		if (text) {
 			if (text.includes('VALUE')) {
@@ -95,8 +91,8 @@ export class BaseServiceCallFeature extends LitElement {
 					'exemptions' in (this.entry.confirmation as IConfirmation)
 				) {
 					if (
-						!(this.entry.confirmation as IConfirmation).exemptions
-							.map((e) => e.user)
+						!(this.entry.confirmation as IConfirmation)
+							.exemptions!.map((e) => e.user)
 							.includes(this.hass.user.id)
 					) {
 						if (!confirm(text)) {
@@ -109,19 +105,21 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
-		const [domain, service] = this.entry.service.split('.');
-		const data = JSON.parse(JSON.stringify(this.entry.data));
-		for (const key in data) {
-			if (data[key] == 'VALUE') {
-				data[key] = this.value;
-			} else if (data[key].toString().includes('VALUE')) {
-				data[key] = data[key]
-					.toString()
-					.replace('VALUE', this.value as string);
+		if ('service' in this.entry) {
+			const [domain, service] = this.entry.service!.split('.');
+			const data = JSON.parse(JSON.stringify(this.entry.data));
+			for (const key in data) {
+				if (data[key] == 'VALUE') {
+					data[key] = this.value;
+				} else if (data[key].toString().includes('VALUE')) {
+					data[key] = data[key]
+						.toString()
+						.replace('VALUE', this.value as string);
+				}
 			}
-		}
 
-		this.hass.callService(domain, service, data);
+			this.hass.callService(domain, service, data);
+		}
 	}
 
 	render() {

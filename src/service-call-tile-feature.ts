@@ -65,6 +65,24 @@ class ServiceCallTileFeature extends LitElement {
 			entry.value_attribute = (
 				entry.value_attribute ?? 'state'
 			).toLowerCase();
+
+			for (const option of entry.options ?? []) {
+				// Merge target and data fields
+				option.data = {
+					...(option.data || {}),
+					...(option.target || {}),
+				};
+
+				// Set entry type to button if not present
+				option.type = (
+					option.type ?? 'button'
+				).toLowerCase() as TileFeatureType;
+
+				// Set value attribute to state as default
+				option.value_attribute = (
+					option.value_attribute ?? 'state'
+				).toLowerCase();
+			}
 		}
 
 		this.config = config;
@@ -91,6 +109,21 @@ class ServiceCallTileFeature extends LitElement {
 					entry.entity_id = (entry.data?.entity_id ??
 						this.stateObj.entity_id) as string;
 				}
+
+				for (const option of entry.options ?? []) {
+					if (
+						!('entity_id' in option.data!) &&
+						!('device_id' in option.data!) &&
+						!('area_id' in option.data!)
+					) {
+						option.data!.entity_id =
+							option.entity_id ?? this.stateObj.entity_id;
+					}
+					if (!('entity_id' in option)) {
+						option.entity_id = (option.data?.entity_id ??
+							this.stateObj.entity_id) as string;
+					}
+				}
 			}
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
@@ -98,6 +131,14 @@ class ServiceCallTileFeature extends LitElement {
 				case 'slider':
 					row.push(
 						html`<service-call-slider
+							.hass=${this.hass}
+							.entry=${entry}
+						/>`,
+					);
+					break;
+				case 'selector':
+					row.push(
+						html`<service-call-selector
 							.hass=${this.hass}
 							.entry=${entry}
 						/>`,

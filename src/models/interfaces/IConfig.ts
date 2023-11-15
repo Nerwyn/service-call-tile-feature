@@ -3,18 +3,22 @@ export interface IConfig {
 	entries: IEntry[];
 }
 
-export interface IEntry extends IServiceCall, IStyle, ISliderOptions {
-	type: TileFeatureType;
+export interface IEntry
+	extends IServiceCall,
+		IStyle,
+		ISliderOptions,
+		ISelectorOptions {
+	type?: TileFeatureType;
 	value_attribute?: string;
 	entity_id?: string;
 	autofill_entity_id?: boolean;
-	confirmation: boolean | IConfirmation;
+	confirmation?: boolean | IConfirmation;
 }
 
-export type TileFeatureType = 'button' | 'slider';
+export type TileFeatureType = 'button' | 'slider' | 'selector';
 
 export interface IServiceCall {
-	service: string;
+	service?: string;
 	data?: IData;
 	target?: ITarget;
 }
@@ -31,7 +35,7 @@ export interface ITarget {
 
 export interface IConfirmation {
 	text?: string;
-	exemptions: IExemption[];
+	exemptions?: IExemption[];
 }
 
 export interface IExemption {
@@ -55,4 +59,8 @@ export interface ISliderOptions {
 	thumb?: ThumbType;
 	background_color?: string;
 	background_opacity?: number;
+}
+
+export interface ISelectorOptions {
+	options?: IEntry[];
 }

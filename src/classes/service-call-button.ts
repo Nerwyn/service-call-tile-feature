@@ -6,10 +6,6 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
-	constructor() {
-		super();
-	}
-
 	onClick(e: MouseEvent) {
 		e.stopImmediatePropagation();
 
