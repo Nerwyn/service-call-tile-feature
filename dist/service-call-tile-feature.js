@@ -98,12 +98,12 @@
 				@media (hover: hover) {
 					.button:hover {
 						opacity: 0.3 !important;
-						background-color: var(--selection-color);
+						background-color: var(--selection-color) !important;
 					}
 				}
 				.button:active {
 					opacity: 0.3 !important;
-					background-color: var(--selection-color);
+					background-color: var(--selection-color) !important;
 				}
 			`]}};e.ServiceCallSelector=a,e.ServiceCallSelector=a=s([(0,n.customElement)("service-call-selector")],a)},719:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSlider=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);let a=class extends l.BaseServiceCallFeature{constructor(){super(...arguments),this.speed=2,this.range=[0,100],this.class="slider"}onInput(t){var e,i,s;t.preventDefault(),t.stopImmediatePropagation();const r=t.currentTarget,n=parseFloat(null!==(i=null!==(e=this.oldValue)&&void 0!==e?e:this.value)&&void 0!==i?i:"0"),o=parseFloat(null!==(s=r.value)&&void 0!==s?s:n);r.value=n.toString(),this.newValue=o,o>this.range[0]&&(r.className=this.class);let l=n;if(n>o){const t=setInterval((()=>{l-=this.speed,r.value=l.toString(),o>=l&&(clearInterval(t),r.value=o.toString(),o<=this.range[0]&&"slider-line-thumb"!=this.class&&(r.className="slider-off"))}),1)}else if(n<o){const t=setInterval((()=>{l+=this.speed,r.value=l.toString(),o<=l&&(clearInterval(t),r.value=o.toString())}),1)}else r.value=o.toString();this.oldValue=o}onEnd(t){this.newValue||0==this.newValue||(this.newValue=this.value),this.newValue%1==0&&(this.newValue=Math.trunc(this.newValue)),this.value=this.newValue,this.callService()}render(){var t;const e=super.render();null==this.oldValue&&(this.oldValue=parseFloat(this.value)),null==this.newValue&&(this.newValue=parseFloat(this.value)),this.entry.range&&(this.range=this.entry.range);let i=(this.range[1]-this.range[0])/100;this.entry.step&&(i=this.entry.step),this.speed=(this.range[1]-this.range[0])/50;const s={};this.entry.background_color&&(s.background=this.setValueInStyleFields(this.entry.background_color)),(this.entry.background_opacity||0==this.entry.background_opacity)&&(s.opacity=this.entry.background_opacity);const n=r.html`<div
 			class="slider-background"
