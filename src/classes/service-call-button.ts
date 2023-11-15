@@ -39,7 +39,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				.button {
 					background-color: var(--disabled-color);
 					opacity: 0.2;
-					transition: background-color 180ms ease-in-out;
+					transition:
+						background-color 180ms ease-in-out 0s,
+						opacity 180ms ease-in-out 0s;
 					position: absolute;
 					cursor: pointer;
 					height: inherit;
@@ -50,12 +52,18 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				@media (hover: hover) {
 					.button:hover {
 						opacity: 0.3 !important;
-						background-color: var(--selection-color) !important;
+						background-color: var(
+							--selection-color,
+							var(--disabled-color)
+						) !important;
 					}
 				}
 				.button:active {
 					opacity: 0.3 !important;
-					background-color: var(--selection-color) !important;
+					background-color: var(
+						--selection-color,
+						var(--disabled-color)
+					) !important;
 				}
 			`,
 		];
