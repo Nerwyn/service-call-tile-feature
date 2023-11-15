@@ -9,6 +9,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
+import './classes/service-call-selector';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -49,39 +50,10 @@ class ServiceCallTileFeature extends LitElement {
 			).buttons as IEntry[];
 		}
 
-		for (const entry of config.entries) {
-			// Merge target and data fields
-			entry.data = {
-				...(entry.data || {}),
-				...(entry.target || {}),
-			};
-
-			// Set entry type to button if not present
-			entry.type = (
-				entry.type ?? 'button'
-			).toLowerCase() as TileFeatureType;
-
-			// Set value attribute to state as default
-			entry.value_attribute = (
-				entry.value_attribute ?? 'state'
-			).toLowerCase();
-
-			for (const option of entry.options ?? []) {
-				// Merge target and data fields
-				option.data = {
-					...(option.data || {}),
-					...(option.target || {}),
-				};
-
-				// Set entry type to button if not present
-				option.type = (
-					option.type ?? 'button'
-				).toLowerCase() as TileFeatureType;
-
-				// Set value attribute to state as default
-				option.value_attribute = (
-					option.value_attribute ?? 'state'
-				).toLowerCase();
+		for (let entry of config.entries) {
+			entry = this.updateDeprecatedEntryFields(entry);
+			for (let option of entry.options ?? []) {
+				option = this.updateDeprecatedEntryFields(option);
 			}
 		}
 
@@ -94,35 +66,13 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		for (const entry of this.config.entries) {
+		for (let entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
-				if (
-					!('entity_id' in entry.data!) &&
-					!('device_id' in entry.data!) &&
-					!('area_id' in entry.data!)
-				) {
-					entry.data!.entity_id =
-						entry.entity_id ?? this.stateObj.entity_id;
-				}
-				if (!('entity_id' in entry)) {
-					entry.entity_id = (entry.data?.entity_id ??
-						this.stateObj.entity_id) as string;
-				}
+				entry = this.populateMissingEntityId(entry);
 
-				for (const option of entry.options ?? []) {
-					if (
-						!('entity_id' in option.data!) &&
-						!('device_id' in option.data!) &&
-						!('area_id' in option.data!)
-					) {
-						option.data!.entity_id =
-							option.entity_id ?? this.stateObj.entity_id;
-					}
-					if (!('entity_id' in option)) {
-						option.entity_id = (option.data?.entity_id ??
-							this.stateObj.entity_id) as string;
-					}
+				for (let option of entry.options ?? []) {
+					option = this.populateMissingEntityId(option);
 				}
 			}
 
@@ -157,6 +107,38 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		return html`<div class="row">${row}</div>`;
+	}
+
+	updateDeprecatedEntryFields(entry: IEntry) {
+		// Merge target and data fields
+		entry.data = {
+			...(entry.data || {}),
+			...(entry.target || {}),
+		};
+
+		// Set entry type to button if not present
+		entry.type = (entry.type ?? 'button').toLowerCase() as TileFeatureType;
+
+		// Set value attribute to state as default
+		entry.value_attribute = (
+			entry.value_attribute ?? 'state'
+		).toLowerCase();
+		return entry;
+	}
+
+	populateMissingEntityId(entry: IEntry) {
+		if (
+			!('entity_id' in entry.data!) &&
+			!('device_id' in entry.data!) &&
+			!('area_id' in entry.data!)
+		) {
+			entry.data!.entity_id = entry.entity_id ?? this.stateObj.entity_id;
+		}
+		if (!('entity_id' in entry)) {
+			entry.entity_id = (entry.data?.entity_id ??
+				this.stateObj.entity_id) as string;
+		}
+		return entry;
 	}
 
 	static get styles() {
