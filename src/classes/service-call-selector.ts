@@ -59,7 +59,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			style['--selection-color'] = this.entry.color;
 		}
 		if (this.entry.opacity || this.entry.opacity == 0) {
-			style['--seleciotn-opacity'] = this.entry.opacity;
+			style['--selection-opacity'] = this.entry.opacity;
 		}
 
 		return html`<div class="container" style=${styleMap(style)}>

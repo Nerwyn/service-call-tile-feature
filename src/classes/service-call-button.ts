@@ -6,9 +6,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
-	onClick(e: MouseEvent) {
-		e.stopImmediatePropagation();
-
+	onClick(_e: MouseEvent) {
 		this.callService();
 	}
 
@@ -51,11 +49,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				}
 				@media (hover: hover) {
 					.button:hover {
-						opacity: 0.3;
+						opacity: 0.3 !important;
 					}
 				}
 				.button:active {
-					opacity: 0.3;
+					opacity: 0.3 !important;
 				}
 			`,
 		];
