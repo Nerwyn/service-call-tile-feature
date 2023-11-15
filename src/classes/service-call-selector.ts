@@ -45,6 +45,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if (currentOption == options[i]) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
+			} else {
+				style.backgroundColor = '';
+				style.opacity = '';
 			}
 
 			selector.push(
@@ -85,6 +88,17 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					height: inherit;
 					background: var(--disabled-color);
 					opacity: 0.2;
+				}
+
+				@media (hover: hover) {
+					.button:hover {
+						opacity: 0.3 !important;
+						background-color: var(--tile-color);
+					}
+				}
+				.button:active {
+					opacity: 0.3 !important;
+					background-color: var(--tile-color);
 				}
 			`,
 		];
