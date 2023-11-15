@@ -11,8 +11,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		const options = (e.currentTarget as HTMLElement).parentElement!
 			.children;
 		for (const option of options) {
-			(option as HTMLElement).style.backgroundColor = '';
-			(option as HTMLElement).style.opacity = '0';
+			if (option.className != 'selector-background') {
+				(option as HTMLElement).style.backgroundColor = '';
+				(option as HTMLElement).style.opacity = '0';
+			}
 		}
 
 		(e.currentTarget as HTMLElement).style.backgroundColor =
