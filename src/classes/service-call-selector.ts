@@ -7,22 +7,21 @@ import './service-call-button';
 
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {
-	// onClick(e: MouseEvent) {
-	// 	const options = (e.currentTarget as HTMLElement).parentElement!
-	// 		.children;
-	// 	for (const option of options) {
-	// 		if (option.tagName.toLowerCase() == 'service-call-button') {
-	// 			(option as HTMLElement).style.backgroundColor = '';
-	// 			(option as HTMLElement).style.opacity = '';
-	// 		}
-	// 	}
+	onClick(e: MouseEvent) {
+		const options = (e.currentTarget as HTMLElement).parentElement!
+			.children;
+		for (const option of options) {
+			if (option.tagName.toLowerCase() == 'service-call-button') {
+				(option as HTMLElement).style.backgroundColor = '';
+				(option as HTMLElement).style.opacity = '';
+			}
+		}
 
-	// 	(e.currentTarget as HTMLElement).style.backgroundColor =
-	// 		'var(--selection-color)';
-	// 	(e.currentTarget as HTMLElement).style.opacity =
-	// 		'var(--selection-opacity)';
-
-	// }
+		(e.currentTarget as HTMLElement).style.backgroundColor =
+			'var(--selection-color)';
+		(e.currentTarget as HTMLElement).style.opacity =
+			'var(--selection-opacity)';
+	}
 
 	render() {
 		const entity = this.hass.states[this.entry.entity_id!];
@@ -50,11 +49,13 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				style.backgroundColor = '';
 				style.opacity = '';
 			}
+			console.log(entry);
 
 			selector.push(
 				html`<service-call-button
 					.hass=${this.hass}
 					.entry=${entry}
+					@click=${this.onClick}
 					style=${styleMap(style)}
 				/>`,
 			);
