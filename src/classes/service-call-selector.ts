@@ -40,7 +40,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			);
 		}
 
-		return html``;
+		return html`${selector}`;
 	}
 
 	static get styles() {
