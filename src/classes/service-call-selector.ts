@@ -24,6 +24,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	}
 
 	render() {
+		super.render();
+
 		const options = this.hass.states[this.entry.entity_id!].attributes
 			.options as string[];
 
@@ -41,8 +43,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				entry.opacity = 0;
 			}
 			const style: StyleInfo = {};
-			console.log(this.value)
-			console.log(options[i])
+			console.log(this.value);
+			console.log(options[i]);
 			if (this.value == options[i] && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
