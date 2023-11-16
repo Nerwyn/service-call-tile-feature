@@ -137,19 +137,17 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Global Style Options
 
-| Name        | Type   | Description                                                                                         |
-| ----------- | ------ | --------------------------------------------------------------------------------------------------- |
-| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).                      |
-| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.             |
-| icon        | string | Icon to use.                                                                                        |
-| icon_color  | string | Custom color for the icon.                                                                          |
-| label       | string | String label to place underneath the icon, or by itself.                                            |
-| label_color | string | Custom color for the string label.                                                                  |
-| flex_basis  | string | Percentage of the row the the feature should populate relative to it's default. Defaults to `100%`. |
+| Name        | Type   | Description                                                                                          |
+| ----------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).                       |
+| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
+| icon        | string | Icon to use.                                                                                         |
+| icon_color  | string | Custom color for the icon.                                                                           |
+| label       | string | String label to place underneath the icon, or by itself.                                             |
+| label_color | string | Custom color for the string label.                                                                   |
+| flex_basis  | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
 String interpolation can be used for any of these values except for opacity.
-
-`flex_basis` is a CSS property used to determine how much an element in a flex box takes up relative to others. It can be used to make entries in a tile feature row larger or smaller than it's sibling elements.
 
 ### Slider Specific Options
 
@@ -167,6 +165,12 @@ String interpolation can be used for any of these values except for opacity.
 | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | options | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
 | option  | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
+
+# Feature Types
+
+## Buttons
+
+Buttons are the most basic type of custom tile feature, being an improved version of the example provided in the Home Assistant developer documentation.
 
 # Examples
 

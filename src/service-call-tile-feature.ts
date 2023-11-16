@@ -32,7 +32,6 @@ class ServiceCallTileFeature extends LitElement {
 			entries: [
 				{
 					type: 'button',
-					service: '',
 				},
 			],
 		};
