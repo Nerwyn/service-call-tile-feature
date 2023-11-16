@@ -29,7 +29,6 @@ The trade off for the level of customizability that this card offers is that it 
 type: custom:service-call
 entries:
   - type: button
-    service: ''
 ```
 
 ## Base Config
@@ -63,7 +62,7 @@ More information on Home Assistant action confirmations can be found [here](http
 
 ### String Interpolation
 
-Many fields such as colors and labels can have the entity state or attributes interpolated, or can accept CSS variables.
+Many fields such as colors and labels can have the entity state or attributes interpolated, or can accept CSS variables and functions.
 
 If any of these values returns an empty string or undefined value, an empty string is returned for the entire string, not just the interpolation. Labels will also not be generated so icons will be properly centered.
 
@@ -131,7 +130,7 @@ Certain attributes will have additional parsing applied to them before being int
 | target  | object | The entity IDs, device IDs, or area IDs to call the service on. |
 | data    | object | Additional data to pass to the service call.                    |
 
-If no target is provided, the tile card's entity ID will be used instead. This entity ID is also used for string interpolation.
+If no target is provided, the tile card's entity ID will be used instead.
 
 To better understand service calls, use the services Developer Tool found in Home Assistant.
 
@@ -139,8 +138,8 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 | Name               | Type   | Description                                                                                          |
 | ------------------ | ------ | ---------------------------------------------------------------------------------------------------- |
-| color              | string | Custom color for the tile feature. Can also see a CSS function (see examples).                       |
-| opacity            | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
+| color              | string | Custom color for the tile feature. Can also be a CSS function (see examples).                        |
+| opacity            | float  | Opacity of the tile feature. Defaults to 0.2. Cannot be string interpolated.                         |
 | icon               | string | Icon to use.                                                                                         |
 | icon_color         | string | Custom color for the icon.                                                                           |
 | label              | string | String label to place underneath the icon, or by itself.                                             |
@@ -245,7 +244,7 @@ entries:
 
 This card is set up to work with Home Assistant `input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
 
-Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The current option highlight color defaults to tile color, but can be changed by setting `color` to a different value.
+Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
 
 # Examples
 
@@ -323,6 +322,7 @@ features:
       - type: selector
         entity_id: light.chandelier
         value_attribute: rgb_color
+        background_color: rgb(VALUE)
         options:
           - service: light.turn_on
             option: 255,0,0
