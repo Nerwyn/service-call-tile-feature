@@ -177,7 +177,7 @@ To create a button, add a Service Call tile feature to your tile and edit it. By
 type: custom:service-call
 entries:
   - type: button
-	service: light.toggle
+    service: light.toggle
 ```
 
 As explained above, the entity ID of the feature and service call data is autofilled with the tile entity ID.
@@ -286,7 +286,7 @@ features:
       - service: light.toggle
         icon: mdi:ceiling-light
         icon_color: red
-		    flex_basis: 200%
+		flex_basis: 200%
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: orange
@@ -357,7 +357,7 @@ type: tile
 entity: light.chandelier
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/cd27af901165c46cfee537a4b35f1999c4626df5/assets/light_tile.png" alt="light_tile" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/light_tile.png" alt="light_tile" width="600"/>
 
 ## Example 3
 
