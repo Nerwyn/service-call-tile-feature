@@ -82,7 +82,7 @@ class ServiceCallTileFeature extends LitElement {
 
 			const style: StyleInfo = {};
 			if ('flex_basis' in entry) {
-				style.flex_basis = entry.flex_basis;
+				style['flex-basis'] = entry.flex_basis;
 			}
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
