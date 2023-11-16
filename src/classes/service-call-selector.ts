@@ -48,7 +48,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		}
 		const selector = [
 			html`<div
-				class="selector-background style=${styleMap(backgroundStyle)}"
+				class="selector-background"
+				style=${styleMap(backgroundStyle)}
 			></div>`,
 		];
 
