@@ -59,6 +59,7 @@ class ServiceCallTileFeature extends LitElement {
 				option = this.updateDeprecatedEntryFields(option);
 			}
 		}
+		console.log(config)
 
 		this.config = config;
 	}
