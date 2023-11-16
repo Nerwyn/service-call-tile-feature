@@ -26,11 +26,16 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		super.render();
 
-		const options = this.hass.states[this.entry.entity_id!].attributes
-			.options as string[];
+		const entries = this.entry.options ?? [];
+		let options =
+			(this.hass.states[this.entry.entity_id!].attributes
+				.options as string[]) ?? new Array<string>(entries.length);
+		if (options.length < entries.length) {
+			options = Object.assign(new Array(entries.length), options);
+		}
 
 		const selector = [html`<div class="selector-background"></div>`];
-		for (const i in this.entry.options ?? []) {
+		for (const i in entries) {
 			const entry = this.entry.options![i];
 			if (!('service' in entry)) {
 				entry.service = 'input_select.select_option';
