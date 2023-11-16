@@ -13,7 +13,7 @@
 
 <a href="https://www.buymeacoffee.com/nerwyn" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-Call any service via tile features. This custom tile feature will let you create super customizable tile buttons and sliders. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
+Call any service via tile features. This custom tile feature will let you create super customizable tile buttons, sliders, and selectors. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -53,9 +53,9 @@ The custom service call feature is actually a row of entries, each of which have
 | autofill_entity_id | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
 | confirmation       | boolean, Confirmation | Opens a browser popup asking you to confirm your action.                                                                                                 |
 
-By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` is also supported.
+By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
 
-As of now `value_attribute` is only important for sliders, as it uses this field to determine the slider's default value on render. It can also be used for `VALUE` string interpolation as described below.
+The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used for `VALUE` string interpolation as described below.
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
@@ -137,16 +137,19 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Global Style Options
 
-| Name        | Type   | Description                                                                             |
-| ----------- | ------ | --------------------------------------------------------------------------------------- |
-| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).          |
-| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated. |
-| icon        | string | Icon to use.                                                                            |
-| icon_color  | string | Custom color for the icon.                                                              |
-| label       | string | String label to place underneath the icon, or by itself.                                |
-| label_color | string | Custom color for the string label.                                                      |
+| Name        | Type   | Description                                                                                         |
+| ----------- | ------ | --------------------------------------------------------------------------------------------------- |
+| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).                      |
+| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.             |
+| icon        | string | Icon to use.                                                                                        |
+| icon_color  | string | Custom color for the icon.                                                                          |
+| label       | string | String label to place underneath the icon, or by itself.                                            |
+| label_color | string | Custom color for the string label.                                                                  |
+| flex_basis  | string | Percentage of the row the the feature should populate relative to it's default. Defaults to `100%`. |
 
 String interpolation can be used for any of these values except for opacity.
+
+`flex_basis` is a CSS property used to determine how much an element in a flex box takes up relative to others. It can be used to make entries in a tile feature row larger or smaller than it's sibling elements.
 
 ### Slider Specific Options
 
@@ -157,6 +160,13 @@ String interpolation can be used for any of these values except for opacity.
 | thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
 | background_color   | string | Custom color for the background of the slider. Can also be a CSS function (see examples).                                                                            |
 | background_opacity | number | Opacity of the slider background (behind the thumb). Defaults to 0.2. Cannot be string interpolated.                                                                 |
+
+### Selector Specific Options
+
+| Name    | Type     | Description                                                                                                                             |
+| ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| options | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
+| option  | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
 
 # Examples
 

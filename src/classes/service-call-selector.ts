@@ -59,6 +59,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if ('color' in entry) {
 				style['--selection-color'] = entry.color;
 			}
+			if ('flex_basis' in entry) {
+				style['flex-basis'] = entry.flex_basis;
+			}
 
 			selector.push(
 				html`<service-call-button
