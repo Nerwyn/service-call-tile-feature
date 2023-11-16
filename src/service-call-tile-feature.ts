@@ -60,6 +60,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
+		console.log(config);
 		this.config = config;
 	}
 

@@ -259,7 +259,7 @@ show_entity_picture: false
 vertical: true
 features:
   - type: custom:service-call
-    buttons:
+    entries:
       - service: lock.lock
         icon: mdi:lock
       - service: lock.unlock
@@ -282,7 +282,7 @@ A light tile with a button for each bulb and a color selector, with emphasis on 
 ```yaml
 features:
   - type: custom:service-call
-    buttons:
+    entries:
       - service: light.toggle
         icon: mdi:ceiling-light
         icon_color: red
