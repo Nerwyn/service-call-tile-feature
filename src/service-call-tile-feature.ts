@@ -2,6 +2,7 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -79,6 +80,11 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
+			const style: StyleInfo = {};
+			if ('flex_basis' in entry) {
+				style.flex_basis = entry.flex_basis;
+			}
+
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
 				case 'slider':
@@ -86,6 +92,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;
@@ -94,6 +101,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-selector
 							.hass=${this.hass}
 							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;
@@ -103,6 +111,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-button
 							.hass=${this.hass}
 							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;

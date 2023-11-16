@@ -49,6 +49,7 @@ export interface IStyle {
 	icon_color?: string;
 	label?: string;
 	label_color?: string;
+	flex_basis?: string;
 }
 
 export type ThumbType = 'default' | 'line' | 'flat';
