@@ -62,6 +62,10 @@ export interface ISliderOptions {
 	background_opacity?: number;
 }
 
+export interface IOption extends IEntry {
+	option?: string;
+}
+
 export interface ISelectorOptions {
-	options?: IEntry[];
+	options?: IOption[];
 }

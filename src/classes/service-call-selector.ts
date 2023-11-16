@@ -48,7 +48,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				entry.opacity = 0;
 			}
 			const style: StyleInfo = {};
-			if (this.value == options[i] && this.value != undefined) {
+			const option = entry.option ?? options[i];
+			if (this.value == option && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
 			} else {
