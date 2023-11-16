@@ -286,7 +286,7 @@ features:
       - service: light.toggle
         icon: mdi:ceiling-light
         icon_color: red
-		flex_basis: 200%
+        flex_basis: 200%
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: orange
