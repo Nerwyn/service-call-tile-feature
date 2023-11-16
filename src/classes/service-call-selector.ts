@@ -50,6 +50,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				style.backgroundColor = '';
 				style.opacity = '';
 			}
+			if ('color' in entry) {
+				style['--selection-color'] = entry.color;
+			}
 
 			selector.push(
 				html`<service-call-button
