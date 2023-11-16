@@ -135,7 +135,7 @@ If no target is provided, the tile card's entity ID will be used instead. This e
 
 To better understand service calls, use the services Developer Tool found in Home Assistant.
 
-### Global Style Options
+### Style Options
 
 | Name        | Type   | Description                                                                                          |
 | ----------- | ------ | ---------------------------------------------------------------------------------------------------- |
@@ -170,11 +170,88 @@ String interpolation can be used for any of these values except for opacity.
 
 ## Buttons
 
-Buttons are the most basic type of custom tile feature, being an improved version of the example provided in the Home Assistant developer documentation.
+Buttons are the most basic type of custom tile feature, being based on the example provided in the Home Assistant developer documentation.
+
+To create a button, add a Service Call tile feature to your tile and edit it. By default type will be set to button. In order for this button to actually do anything you need to give it a `service` to call, like so:
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+	service: light.toggle
+```
+
+As explained above, the entity ID of the feature and service call data is autofilled with the tile entity ID.
+
+All basic style options work with service call buttons as show in [example 2](#Example-2)
+
+## Sliders
+
+Sliders allow you to create Home Assistant styled input range sliders, similar to those available for light brightness and temperature. But these sliders can be used for any service call.
+
+To create a slider, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `slider`. By default this will look like a normal tile light brightness or cover position slider, but you can change this to a couple of other thumb styles as shown in [example 3](#Example-3) using the `thumb` option.
+
+Similarly to buttons, you have to set `service` to a service call for the slider to actually do anything.
+
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. This works just like string interpolation as described above.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    service: light.turn_on
+    value_attribute: brightness
+    data:
+      brightness_pct: VALUE
+```
+
+To better understand the attributes of Home Assistant entities, use the states tab in Home Assistant Developer tools. Remember, that you can also change the entity of the slider by setting `entity_id` either at the entry level or within the `data` or `target` objects (NOT at the root of the feature config).
+
+By default the slider's range will be from 0 to 1, with a step size of 0.01. You will need to adjust this depending on the service you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn` with `color_temp`), make sure to set step size to a whole number.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    thumb: line
+    background_color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+    background_opacity: 1
+    value_attribute: color_temp
+    service: light.turn_on
+    range:
+      - 153
+      - 371
+    step: 1
+    data:
+      color_temp: VALUE
+```
+
+## Selectors
+
+Selectors allow you to create a row of service call buttons which with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. But like all features in this project it can be used for any service calls.
+
+To create a selector, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `selector`. At first you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a service call button as described above. For now let's use the options field to give each selector option an icon:
+
+```yaml
+type: custom:service-call
+entries:
+  - type: selector
+    entity_id: input_select.listening_mode
+    options:
+      - icon: mdi:dolby
+      - icon: mdi:music
+      - icon: mdi:microsoft-xbox-controller
+```
+
+This card is set up to work with Home Assistant `input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
+
+Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2)
 
 # Examples
 
-## A lock tile with lock and unlock buttons
+## Example 1
+
+A lock tile with lock and unlock buttons
 
 ```yaml
 type: tile
@@ -199,7 +276,9 @@ card_mod:
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/lock_tile.png" alt="lock_tile" width="600"/>
 
-## A light tile with a button for each bulb and color buttons
+## Example 2
+
+A light tile with a button for each bulb and a color selector, with emphasis on certain options.
 
 ```yaml
 features:
@@ -208,6 +287,7 @@ features:
       - service: light.toggle
         icon: mdi:ceiling-light
         icon_color: red
+		    flex_basis: 200%
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: orange
@@ -239,38 +319,49 @@ features:
         target:
           entity_id: light.chandelier_bulb_5
   - type: custom:service-call
-    buttons:
-      - service: light.turn_on
-        color: red
-        label: Red
-        label_color: red
-        data:
-          color_name: red
-      - service: light.turn_on
-        color: green
-        label: Green
-        label_color: green
-        data:
-          color_name: green
-      - service: light.turn_on
-        color: blue
-        label: Blue
-        label_color: blue
-        data:
-          color_name: blue
-      - service: light.turn_on
-        color: white
-        label: White
-        label_color: white
-        data:
-          color_temp: 500
+    entries:
+      - type: selector
+        entity_id: light.chandelier
+        value_attribute: rgb_color
+        options:
+          - service: light.turn_on
+            option: 255,0,0
+            color: red
+            label: Red
+            label_color: red
+            data:
+              color_name: red
+          - service: light.turn_on
+            option: 0,128,0
+            color: green
+            label: Green
+            label_color: green
+            data:
+              color_name: green
+          - service: light.turn_on
+            option: 0,0,255
+            color: blue
+            label: Blue
+            label_color: blue
+            data:
+              color_name: blue
+          - service: light.turn_on
+            option: 255,166,86
+            color: white
+            label: White
+            label_color: white
+            flex_basis: 300%
+            data:
+              color_temp: 500
 type: tile
 entity: light.chandelier
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/cd27af901165c46cfee537a4b35f1999c4626df5/assets/light_tile.png" alt="light_tile" width="600"/>
 
-## Multiple sliders for a room's light and curtains
+## Example 3
+
+Multiple sliders for a room's light and curtains.
 
 ```yaml
 features:
@@ -339,7 +430,48 @@ entity: binary_sensor.sun_room
 color: accent
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/dev/assets/slider_tile.png" alt="slider_tile" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
+
+## Example 4
+
+Selectors for input ranges.
+
+```yaml
+features:
+  - type: custom:service-call
+    entries:
+      - type: selector
+        entity_id: input_select.lounge_tv_theater_mode
+        color: var(--blue-color)
+        flex_basis: 140%
+        options:
+          - icon: mdi:movie
+          - icon: mdi:movie-off
+          - icon: mdi:movie-outline
+          - icon: mdi:movie-off-outline
+      - type: selector
+        entity_id: input_select.lounge_tv_listening_mode
+        options:
+          - icon: mdi:dolby
+          - icon: mdi:music
+          - icon: mdi:microsoft-xbox-controller
+  - type: custom:service-call
+    entries:
+      - type: selector
+        entity_id: input_select.lounge_tv_source
+        color: var(--red-color)
+        options:
+          - icon: mdi:television-box
+          - icon: mdi:microsoft-windows
+          - icon: mdi:vhs
+          - icon: mdi:record-player
+          - icon: mdi:video-input-hdmi
+type: tile
+entity: input_select.lounge_tv_listening_mode
+color: green
+```
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
