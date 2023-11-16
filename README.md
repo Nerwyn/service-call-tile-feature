@@ -137,27 +137,27 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Style Options
 
-| Name        | Type   | Description                                                                                          |
-| ----------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| color       | string | Custom color for the tile feature. Can also see a CSS function (see examples).                       |
-| opacity     | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
-| icon        | string | Icon to use.                                                                                         |
-| icon_color  | string | Custom color for the icon.                                                                           |
-| label       | string | String label to place underneath the icon, or by itself.                                             |
-| label_color | string | Custom color for the string label.                                                                   |
-| flex_basis  | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
+| Name               | Type   | Description                                                                                          |
+| ------------------ | ------ | ---------------------------------------------------------------------------------------------------- |
+| color              | string | Custom color for the tile feature. Can also see a CSS function (see examples).                       |
+| opacity            | float  | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
+| icon               | string | Icon to use.                                                                                         |
+| icon_color         | string | Custom color for the icon.                                                                           |
+| label              | string | String label to place underneath the icon, or by itself.                                             |
+| label_color        | string | Custom color for the string label.                                                                   |
+| background_color   | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
+| background_opacity | number | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
+| flex_basis         | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
 String interpolation can be used for any of these values except for opacity.
 
 ### Slider Specific Options
 
-| Name               | Type   | Description                                                                                                                                                          |
-| ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| range              | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                |
-| step               | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
-| thumb              | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
-| background_color   | string | Custom color for the background of the slider. Can also be a CSS function (see examples).                                                                            |
-| background_opacity | number | Opacity of the slider background (behind the thumb). Defaults to 0.2. Cannot be string interpolated.                                                                 |
+| Name  | Type   | Description                                                                                                                                                          |
+| ----- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                |
+| step  | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
+| thumb | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
 
 ### Selector Specific Options
 
@@ -245,7 +245,7 @@ entries:
 
 This card is set up to work with Home Assistant `input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
 
-Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2)
+Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The current option highlight color defaults to tile color, but can be changed by setting `color` to a different value.
 
 # Examples
 
@@ -434,7 +434,7 @@ color: accent
 
 ## Example 4
 
-Selectors for input ranges.
+Selectors for input ranges. Note that the opacity of selector buttons is set to 0 by default, so they are completely transparent against the selector background.
 
 ```yaml
 features:

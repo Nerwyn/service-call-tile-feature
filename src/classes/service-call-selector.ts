@@ -34,7 +34,24 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			options = Object.assign(new Array(entries.length), options);
 		}
 
-		const selector = [html`<div class="selector-background"></div>`];
+		const backgroundStyle: StyleInfo = {};
+		if (this.entry.background_color) {
+			backgroundStyle.background = this.setValueInStyleFields(
+				this.entry.background_color,
+			);
+		}
+		if (
+			this.entry.background_opacity ||
+			this.entry.background_opacity == 0
+		) {
+			backgroundStyle.opacity = this.entry.background_opacity;
+		}
+		const selector = [
+			html`<div
+				class="selector-background style=${styleMap(backgroundStyle)}"
+			></div>`,
+		];
+
 		for (const i in entries) {
 			const entry = this.entry.options![i];
 			if (!('service' in entry)) {

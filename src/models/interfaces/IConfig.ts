@@ -49,6 +49,8 @@ export interface IStyle {
 	icon_color?: string;
 	label?: string;
 	label_color?: string;
+	background_color?: string;
+	background_opacity?: number;
 	flex_basis?: string;
 }
 
@@ -58,8 +60,6 @@ export interface ISliderOptions {
 	range?: [number, number];
 	step?: number;
 	thumb?: ThumbType;
-	background_color?: string;
-	background_opacity?: number;
 }
 
 export interface IOption extends IEntry {
