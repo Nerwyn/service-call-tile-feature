@@ -24,12 +24,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	}
 
 	render() {
-		const entity = this.hass.states[this.entry.entity_id!];
-		const options = entity.attributes.options as string[];
-		const currentOption = entity.state;
+		const options = this.hass.states[this.entry.entity_id!].attributes
+			.options as string[];
 
 		const selector = [html`<div class="selector-background"></div>`];
-		for (const i in options) {
+		for (const i in this.entry.options ?? []) {
 			const entry = this.entry.options![i];
 			if (!('service' in entry)) {
 				entry.service = 'input_select.select_option';
@@ -42,14 +41,13 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				entry.opacity = 0;
 			}
 			const style: StyleInfo = {};
-			if (currentOption == options[i]) {
+			if (this.value == options[i] && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
 			} else {
 				style.backgroundColor = '';
 				style.opacity = '';
 			}
-			console.log(entry);
 
 			selector.push(
 				html`<service-call-button
