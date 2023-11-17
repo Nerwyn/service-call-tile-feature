@@ -64,8 +64,12 @@ export interface ISliderOptions {
 
 export interface IOption extends IEntry {
 	option?: string;
+	invert_icon?: boolean;
+	invert_label?: boolean;
 }
 
 export interface ISelectorOptions {
 	options?: IOption[];
+	invert_icon?: boolean;
+	invert_label?: boolean;
 }

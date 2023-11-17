@@ -188,6 +188,7 @@ export class BaseServiceCallFeature extends LitElement {
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
+					--inverted: 0;
 				}
 
 				.container {
@@ -203,6 +204,7 @@ export class BaseServiceCallFeature extends LitElement {
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
+					filter: invert(var(--inverted));
 				}
 
 				.label {
@@ -216,6 +218,7 @@ export class BaseServiceCallFeature extends LitElement {
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
+					filter: invert(var(--inverted));
 				}
 			`,
 		];

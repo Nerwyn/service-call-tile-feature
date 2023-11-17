@@ -12,19 +12,36 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			.children;
 		for (const option of options) {
 			if (option.tagName.toLowerCase() == 'service-call-button') {
-				(option as HTMLElement).style.backgroundColor = '';
-				(option as HTMLElement).style.opacity = '';
+				(option as HTMLElement).style.removeProperty(
+					'background-color',
+				);
+				(option as HTMLElement).style.removeProperty('opacity');
+				(option as HTMLElement).style.setProperty('--inverted', '0');
 			}
 		}
 
-		(e.currentTarget as HTMLElement).style.backgroundColor =
-			'var(--selection-color)';
-		(e.currentTarget as HTMLElement).style.opacity =
-			'var(--selection-opacity)';
+		(e.currentTarget as HTMLElement).style.setProperty(
+			'background-color',
+			'var(--selection-color)',
+		);
+		(e.currentTarget as HTMLElement).style.setProperty(
+			'opacity',
+			'var(--selection-opacity)',
+		);
+
+		(e.currentTarget as HTMLElement).style.setProperty('--inverted', '1');
+		// for (const element of (e.currentTarget as HTMLElement).children) {
+		// 	if (element.className == 'label') {
+
+		// 	} else if (element.tagName.toLowerCase() == 'ha-icon') {
+
+		// 	}
+		// }
 	}
 
 	render() {
 		super.render();
+		console.log(this.entry); // DEBUG
 
 		const entries = this.entry.options ?? [];
 		let options =
@@ -80,6 +97,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if ('flex_basis' in entry) {
 				style['flex-basis'] = entry.flex_basis;
 			}
+			style['--inverted'] = '0';
 
 			selector.push(
 				html`<service-call-button
