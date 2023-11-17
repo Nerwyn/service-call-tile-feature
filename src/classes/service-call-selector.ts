@@ -16,7 +16,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					'background-color',
 				);
 				(option as HTMLElement).style.removeProperty('opacity');
-				(option as HTMLElement).style.setProperty('--inverted', '0');
+
+				if ((option as HTMLElement).style)
+					(option as HTMLElement).style.setProperty(
+						'--inverted',
+						'0',
+					);
 			}
 		}
 
@@ -82,14 +87,18 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if (!('opacity' in entry)) {
 				entry.opacity = 0;
 			}
-			const style: StyleInfo = {};
 			const option = entry.option ?? options[i];
+			const style: StyleInfo = {};
 			if (this.value == option && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
+				style['--invert-icon'] = '1';
+				style['--invert-label'] = '1';
 			} else {
 				style.backgroundColor = '';
 				style.opacity = '';
+				style['--invert-icon'] = '0';
+				style['--invert-label'] = '0';
 			}
 			if ('color' in entry) {
 				style['--selection-color'] = entry.color;
@@ -97,7 +106,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if ('flex_basis' in entry) {
 				style['flex-basis'] = entry.flex_basis;
 			}
-			style['--inverted'] = '0';
 
 			selector.push(
 				html`<service-call-button

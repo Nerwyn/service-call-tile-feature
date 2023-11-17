@@ -21,7 +21,8 @@
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
-					--inverted: 0;
+					--invert-icon: 0;
+					--invert-label: 0;
 				}
 
 				.container {
@@ -37,7 +38,7 @@
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
-					filter: invert(var(--inverted));
+					filter: invert(var(--invert-icon));
 				}
 
 				.label {
@@ -51,7 +52,7 @@
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
-					filter: invert(var(--inverted));
+					filter: invert(var(--invert-label));
 				}
 			`]}};e.BaseServiceCallFeature=l,s([(0,n.property)({attribute:!1})],l.prototype,"hass",void 0),s([(0,n.property)({attribute:!1})],l.prototype,"entry",void 0),s([(0,n.property)({attribute:!1})],l.prototype,"value",void 0),e.BaseServiceCallFeature=l=s([(0,n.customElement)("base-service-call-feature")],l)},827:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallButton=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);let a=class extends l.BaseServiceCallFeature{onClick(t){this.callService()}render(){const t=super.render(),e={};this.entry.color&&(e["background-color"]=this.setValueInStyleFields(this.entry.color)),(this.entry.opacity||0==this.entry.opacity)&&(e.opacity=this.entry.opacity);const i=r.html`<button
 			class="button"
@@ -87,14 +88,14 @@
 						var(--disabled-color)
 					);
 				}
-			`]}};e.ServiceCallButton=a,e.ServiceCallButton=a=s([(0,n.customElement)("service-call-button")],a)},369:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSelector=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);i(827);let a=class extends l.BaseServiceCallFeature{onClick(t){const e=t.currentTarget.parentElement.children;for(const t of e)"service-call-button"==t.tagName.toLowerCase()&&(t.style.removeProperty("background-color"),t.style.removeProperty("opacity"),t.style.setProperty("--inverted","0"));t.currentTarget.style.setProperty("background-color","var(--selection-color)"),t.currentTarget.style.setProperty("opacity","var(--selection-opacity)"),t.currentTarget.style.setProperty("--inverted","1")}render(){var t,e,i;super.render(),console.log(this.entry);const s=null!==(t=this.entry.options)&&void 0!==t?t:[];let n=null!==(e=this.hass.states[this.entry.entity_id].attributes.options)&&void 0!==e?e:new Array(s.length);n.length<s.length&&(n=Object.assign(new Array(s.length),n));const l={};this.entry.background_color&&(l.background=this.setValueInStyleFields(this.entry.background_color)),(this.entry.background_opacity||0==this.entry.background_opacity)&&(l.opacity=this.entry.background_opacity);const a=[r.html`<div
+			`]}};e.ServiceCallButton=a,e.ServiceCallButton=a=s([(0,n.customElement)("service-call-button")],a)},369:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0}),e.ServiceCallSelector=void 0;const r=i(677),n=i(595),o=i(921),l=i(393);i(827);let a=class extends l.BaseServiceCallFeature{onClick(t){const e=t.currentTarget.parentElement.children;for(const t of e)"service-call-button"==t.tagName.toLowerCase()&&(t.style.removeProperty("background-color"),t.style.removeProperty("opacity"),t.style&&t.style.setProperty("--inverted","0"));t.currentTarget.style.setProperty("background-color","var(--selection-color)"),t.currentTarget.style.setProperty("opacity","var(--selection-opacity)"),t.currentTarget.style.setProperty("--inverted","1")}render(){var t,e,i;super.render(),console.log(this.entry);const s=null!==(t=this.entry.options)&&void 0!==t?t:[];let n=null!==(e=this.hass.states[this.entry.entity_id].attributes.options)&&void 0!==e?e:new Array(s.length);n.length<s.length&&(n=Object.assign(new Array(s.length),n));const l={};this.entry.background_color&&(l.background=this.setValueInStyleFields(this.entry.background_color)),(this.entry.background_opacity||0==this.entry.background_opacity)&&(l.opacity=this.entry.background_opacity);const a=[r.html`<div
 				class="selector-background"
 				style=${(0,o.styleMap)(l)}
-			></div>`];for(const t in s){const e=this.entry.options[t];"service"in e||(e.service="input_select.select_option","option"in e.data||(e.data.option=n[t])),"opacity"in e||(e.opacity=0);const s={},l=null!==(i=e.option)&&void 0!==i?i:n[t];this.value==l&&null!=this.value?(s.backgroundColor="var(--selection-color)",s.opacity="var(--selection-opacity)"):(s.backgroundColor="",s.opacity=""),"color"in e&&(s["--selection-color"]=e.color),"flex_basis"in e&&(s["flex-basis"]=e.flex_basis),s["--inverted"]="0",a.push(r.html`<service-call-button
+			></div>`];for(const t in s){const e=this.entry.options[t];"service"in e||(e.service="input_select.select_option","option"in e.data||(e.data.option=n[t])),"opacity"in e||(e.opacity=0);const s=null!==(i=e.option)&&void 0!==i?i:n[t],l={};this.value==s&&null!=this.value?(l.backgroundColor="var(--selection-color)",l.opacity="var(--selection-opacity)",l["--invert-icon"]="1",l["--invert-label"]="1"):(l.backgroundColor="",l.opacity="",l["--invert-icon"]="0",l["--invert-label"]="0"),"color"in e&&(l["--selection-color"]=e.color),"flex_basis"in e&&(l["flex-basis"]=e.flex_basis),a.push(r.html`<service-call-button
 					.hass=${this.hass}
 					.entry=${e}
 					@click=${this.onClick}
-					style=${(0,o.styleMap)(s)}
+					style=${(0,o.styleMap)(l)}
 				/>`)}const c={};return this.entry.color&&(c["--selection-color"]=this.entry.color),(this.entry.opacity||0==this.entry.opacity)&&(c["--selection-opacity"]=this.entry.opacity),r.html`<div class="container" style=${(0,o.styleMap)(c)}>
 			${a}
 		</div>`}static get styles(){return[super.styles,r.css`
@@ -261,7 +262,7 @@
 				.slider-off::-moz-range-thumb {
 					visibility: hidden;
 				}
-			`]}};e.ServiceCallSlider=a,e.ServiceCallSlider=a=s([(0,n.customElement)("service-call-slider")],a)},114:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0});const r=i(147),n=i(677),o=i(595),l=i(921);i(827),i(719),i(369),console.info(`%c SERVICE-CALL-TILE-FEATURE v${r.version}`,"color: white; font-weight: bold; background: cornflowerblue");class a extends n.LitElement{constructor(){super()}static getStubConfig(){return{type:"custom:service-call",entries:[{type:"button"}]}}setConfig(t){var e;if(!t)throw new Error("Invalid configuration");"buttons"in(t=JSON.parse(JSON.stringify(t)))&&!("entries"in t)&&(t.entries=t.buttons);for(let i of t.entries){i=this.updateDeprecatedEntryFields(i);for(let t of null!==(e=i.options)&&void 0!==e?e:[])"entity_id"in t||(t.entity_id=i.entity_id),t=this.updateDeprecatedEntryFields(t)}this.config=t}render(){var t,e,i;if(!this.config||!this.hass||!this.stateObj)return null;const s=[];for(let r of this.config.entries){if(null===(t=r.autofill_entity_id)||void 0===t||t){r=this.populateMissingEntityId(r);for(let t of null!==(e=r.options)&&void 0!==e?e:[])t=this.populateMissingEntityId(t)}const o={};switch("flex_basis"in r&&(o["flex-basis"]=r.flex_basis),(null!==(i=r.type)&&void 0!==i?i:"button").toLowerCase()){case"slider":s.push(n.html`<service-call-slider
+			`]}};e.ServiceCallSlider=a,e.ServiceCallSlider=a=s([(0,n.customElement)("service-call-slider")],a)},114:function(t,e,i){var s=this&&this.__decorate||function(t,e,i,s){var r,n=arguments.length,o=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,s);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(o=(n<3?r(o):n>3?r(e,i,o):r(e,i))||o);return n>3&&o&&Object.defineProperty(e,i,o),o};Object.defineProperty(e,"__esModule",{value:!0});const r=i(147),n=i(677),o=i(595),l=i(921);i(827),i(719),i(369),console.info(`%c SERVICE-CALL-TILE-FEATURE v${r.version}`,"color: white; font-weight: bold; background: cornflowerblue");class a extends n.LitElement{constructor(){super()}static getStubConfig(){return{type:"custom:service-call",entries:[{type:"button"}]}}setConfig(t){var e;if(!t)throw new Error("Invalid configuration");"buttons"in(t=JSON.parse(JSON.stringify(t)))&&!("entries"in t)&&(t.entries=t.buttons);for(let i of t.entries){i=this.updateDeprecatedEntryFields(i);for(let t of null!==(e=i.options)&&void 0!==e?e:[])"entity_id"in t||(t.entity_id=i.entity_id),t=this.updateDeprecatedEntryFields(t)}this.config=t}render(){var t,e,i;if(!this.config||!this.hass||!this.stateObj)return null;const s=[];for(let r of this.config.entries){if(null===(t=r.autofill_entity_id)||void 0===t||t){r=this.populateMissingEntityId(r,this.stateObj.entity_id);for(let t of null!==(e=r.options)&&void 0!==e?e:[])t=this.populateMissingEntityId(t,r.entity_id)}const o={};switch("flex_basis"in r&&(o["flex-basis"]=r.flex_basis),(null!==(i=r.type)&&void 0!==i?i:"button").toLowerCase()){case"slider":s.push(n.html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${r}
 							style=${(0,l.styleMap)(o)}
@@ -273,7 +274,7 @@
 							.hass=${this.hass}
 							.entry=${r}
 							style=${(0,l.styleMap)(o)}
-						/>`)}}return n.html`<div class="row">${s}</div>`}updateDeprecatedEntryFields(t){var e,i;return t.data=Object.assign(Object.assign({},t.data||{}),t.target||{}),t.type=(null!==(e=t.type)&&void 0!==e?e:"button").toLowerCase(),t.value_attribute=(null!==(i=t.value_attribute)&&void 0!==i?i:"state").toLowerCase(),t}populateMissingEntityId(t){var e,i,s;return"entity_id"in t.data||"device_id"in t.data||"area_id"in t.data||(t.data.entity_id=null!==(e=t.entity_id)&&void 0!==e?e:this.stateObj.entity_id),"entity_id"in t||(t.entity_id=null!==(s=null===(i=t.data)||void 0===i?void 0:i.entity_id)&&void 0!==s?s:this.stateObj.entity_id),t}static get styles(){return n.css`
+						/>`)}}return n.html`<div class="row">${s}</div>`}updateDeprecatedEntryFields(t){var e,i;return t.data=Object.assign(Object.assign({},t.data||{}),t.target||{}),t.type=(null!==(e=t.type)&&void 0!==e?e:"button").toLowerCase(),t.value_attribute=(null!==(i=t.value_attribute)&&void 0!==i?i:"state").toLowerCase(),t}populateMissingEntityId(t,e){var i,s,r;return"entity_id"in t.data||"device_id"in t.data||"area_id"in t.data||(t.data.entity_id=null!==(i=t.entity_id)&&void 0!==i?i:e),"entity_id"in t||(t.entity_id=null!==(r=null===(s=t.data)||void 0===s?void 0:s.entity_id)&&void 0!==r?r:e),t}static get styles(){return n.css`
 			.row {
 				display: flex;
 				flex-flow: row;

@@ -72,10 +72,16 @@ class ServiceCallTileFeature extends LitElement {
 		for (let entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
-				entry = this.populateMissingEntityId(entry);
+				entry = this.populateMissingEntityId(
+					entry,
+					this.stateObj.entity_id,
+				);
 
 				for (let option of entry.options ?? []) {
-					option = this.populateMissingEntityId(option);
+					option = this.populateMissingEntityId(
+						option,
+						entry.entity_id!,
+					);
 				}
 			}
 
@@ -137,17 +143,17 @@ class ServiceCallTileFeature extends LitElement {
 		return entry;
 	}
 
-	populateMissingEntityId(entry: IEntry) {
+	populateMissingEntityId(entry: IEntry, parentEntityId: string) {
 		if (
 			!('entity_id' in entry.data!) &&
 			!('device_id' in entry.data!) &&
 			!('area_id' in entry.data!)
 		) {
-			entry.data!.entity_id = entry.entity_id ?? this.stateObj.entity_id;
+			entry.data!.entity_id = entry.entity_id ?? parentEntityId;
 		}
 		if (!('entity_id' in entry)) {
 			entry.entity_id = (entry.data?.entity_id ??
-				this.stateObj.entity_id) as string;
+				parentEntityId) as string;
 		}
 		return entry;
 	}
