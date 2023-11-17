@@ -188,8 +188,6 @@ export class BaseServiceCallFeature extends LitElement {
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
-					--invert-icon: 0;
-					--invert-label: 0;
 				}
 
 				.container {

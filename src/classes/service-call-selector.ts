@@ -12,36 +12,29 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			.children;
 		for (const option of options) {
 			if (option.tagName.toLowerCase() == 'service-call-button') {
-				(option as HTMLElement).style.removeProperty(
-					'background-color',
-				);
-				(option as HTMLElement).style.removeProperty('opacity');
+				const style = (option as HTMLElement).style;
+				style.removeProperty('background-color');
+				style.removeProperty('opacity');
 
-				if ((option as HTMLElement).style)
-					(option as HTMLElement).style.setProperty(
-						'--inverted',
-						'0',
-					);
+				if (style.getPropertyValue('--invert-icon') == '1') {
+					style.setProperty('--invert-icon', '0');
+				}
+				if (style.getPropertyValue('--invert-label') == '1') {
+					style.setProperty('--invert-label', '0');
+				}
 			}
 		}
 
-		(e.currentTarget as HTMLElement).style.setProperty(
-			'background-color',
-			'var(--selection-color)',
-		);
-		(e.currentTarget as HTMLElement).style.setProperty(
-			'opacity',
-			'var(--selection-opacity)',
-		);
+		const style = (e.currentTarget as HTMLElement).style;
+		style.setProperty('background-color', 'var(--selection-color)');
+		style.setProperty('opacity', 'var(--selection-opacity)');
 
-		(e.currentTarget as HTMLElement).style.setProperty('--inverted', '1');
-		// for (const element of (e.currentTarget as HTMLElement).children) {
-		// 	if (element.className == 'label') {
-
-		// 	} else if (element.tagName.toLowerCase() == 'ha-icon') {
-
-		// 	}
-		// }
+		if (style.getPropertyValue('--invert-icon') == '1') {
+			style.setProperty('--invert-icon', '0');
+		}
+		if (style.getPropertyValue('--invert-label') == '1') {
+			style.setProperty('--invert-label', '0');
+		}
 	}
 
 	render() {
@@ -74,8 +67,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			></div>`,
 		];
 
+		const gInvertIcon = this.entry.invert_icon == true;
+		const gInvertLabel = this.entry.invert_label == true;
 		for (const i in entries) {
 			const entry = this.entry.options![i];
+
 			if (!('service' in entry)) {
 				entry.service = 'input_select.select_option';
 				if (!('option' in entry.data!)) {
@@ -87,17 +83,38 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				entry.opacity = 0;
 			}
 			const option = entry.option ?? options[i];
+			let invertIcon: boolean;
+			if ('invert_icon' in entry) {
+				invertIcon = entry.invert_icon == true;
+			} else {
+				invertIcon = gInvertIcon;
+			}
+			let invertLabel: boolean;
+			if ('invert_icon' in entry) {
+				invertLabel = entry.invert_label == true;
+			} else {
+				invertLabel = gInvertLabel;
+			}
+
 			const style: StyleInfo = {};
 			if (this.value == option && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
-				style['--invert-icon'] = '1';
-				style['--invert-label'] = '1';
+				if (invertIcon) {
+					style['--invert-icon'] = '1';
+				}
+				if (invertLabel) {
+					style['--invert-label'] = '1';
+				}
 			} else {
 				style.backgroundColor = '';
 				style.opacity = '';
-				style['--invert-icon'] = '0';
-				style['--invert-label'] = '0';
+				if (invertIcon) {
+					style['--invert-icon'] = '0';
+				}
+				if (invertLabel) {
+					style['--invert-label'] = '0';
+				}
 			}
 			if ('color' in entry) {
 				style['--selection-color'] = entry.color;
