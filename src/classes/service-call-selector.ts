@@ -29,11 +29,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		style.setProperty('background-color', 'var(--selection-color)');
 		style.setProperty('opacity', 'var(--selection-opacity)');
 
-		if (style.getPropertyValue('--invert-icon') == '1') {
-			style.setProperty('--invert-icon', '0');
+		if (style.getPropertyValue('--invert-icon') == '0') {
+			style.setProperty('--invert-icon', '1');
 		}
-		if (style.getPropertyValue('--invert-label') == '1') {
-			style.setProperty('--invert-label', '0');
+		if (style.getPropertyValue('--invert-label') == '0') {
+			style.setProperty('--invert-label', '1');
 		}
 	}
 
