@@ -46,7 +46,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 	render() {
 		super.render();
-		console.log(this.entry); // DEBUG
 
 		const entries = this.entry.options ?? [];
 		let options =
