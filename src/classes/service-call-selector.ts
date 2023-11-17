@@ -90,7 +90,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				invertIcon = gInvertIcon;
 			}
 			let invertLabel: boolean;
-			if ('invert_icon' in entry) {
+			if ('invert_label' in entry) {
 				invertLabel = entry.invert_label == true;
 			} else {
 				invertLabel = gInvertLabel;
