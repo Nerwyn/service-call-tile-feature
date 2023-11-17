@@ -160,10 +160,12 @@ String interpolation can be used for any of these values except for opacity.
 
 ### Selector Specific Options
 
-| Name    | Type     | Description                                                                                                                             |
-| ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| options | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
-| option  | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
+| Name         | Type     | Description                                                                                                                             |
+| ------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| options      | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
+| option       | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
+| invert_icon  | boolean  | Toggle to enable inverting of icon color when option is selected. Defaults to false.                                                    |
+| invert_label | boolean  | Toggle to enable inverting of label color when option is selected. Defaults to false.                                                   |
 
 # Feature Types
 
@@ -245,6 +247,8 @@ entries:
 This card is set up to work with Home Assistant `input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
 
 Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
+
+You can enable inverting of selected option icons and labels by setting `invert_icon` and or `invert_label` to true at either the entry or option level, with the former applying to all options and the latter applying to a single option and overriding the parent level setting.
 
 # Examples
 
