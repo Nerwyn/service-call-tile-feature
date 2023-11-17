@@ -53,9 +53,6 @@ class ServiceCallTileFeature extends LitElement {
 		for (let entry of config.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);
 			for (let option of entry.options ?? []) {
-				if (!('entity_id' in option)) {
-					option.entity_id = entry.entity_id;
-				}
 				option = this.updateDeprecatedEntryFields(option);
 			}
 		}
@@ -89,7 +86,6 @@ class ServiceCallTileFeature extends LitElement {
 			if ('flex_basis' in entry) {
 				style['flex-basis'] = entry.flex_basis;
 			}
-			console.log(entry); // DEBUG
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
