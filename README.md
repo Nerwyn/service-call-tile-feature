@@ -46,7 +46,7 @@ The custom service call feature is actually a row of entries, each of which have
 
 | Name               | Type                  | Description                                                                                                                                              |
 | ------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type               | string                | Type of tile feature. Currently supported options are `button` and `slider`.                                                                             |
+| type               | string                | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
 | value_attribute    | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
 | entity_id          | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
 | autofill_entity_id | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
