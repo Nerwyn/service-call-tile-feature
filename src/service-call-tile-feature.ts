@@ -61,11 +61,7 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	setTemplates(entry: IEntry | string): IEntry | string {
-		if (
-			typeof entry == 'object' &&
-			!Array.isArray(entry) &&
-			entry != null
-		) {
+		if (typeof entry == 'object' && entry != null) {
 			for (const key in entry) {
 				(entry as Record<string, string>)[key] = this.setTemplates(
 					(entry as Record<string, string>)[key],
