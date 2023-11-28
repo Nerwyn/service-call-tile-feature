@@ -136,23 +136,25 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		for (let entry of this.config.entries) {
+		for (let entry0 of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
-			if (entry.autofill_entity_id ?? true) {
-				entry = this.populateMissingEntityId(
-					entry,
+			if (entry0.autofill_entity_id ?? true) {
+				entry0 = this.populateMissingEntityId(
+					entry0,
 					this.stateObj.entity_id,
 				);
 
-				for (let option of entry.options ?? []) {
+				for (let option of entry0.options ?? []) {
 					option = this.populateMissingEntityId(
 						option,
-						entry.entity_id!,
+						entry0.entity_id!,
 					);
 				}
 			}
 
-			entry = this.setTemplates(entry) as IEntry;
+			const entry = this.setTemplates(
+				JSON.parse(JSON.stringify(entry0)),
+			) as IEntry;
 
 			const style: StyleInfo = {};
 			if ('flex_basis' in entry) {
