@@ -72,67 +72,65 @@ class ServiceCallTileFeature extends LitElement {
 				) as string;
 			}
 			return entry;
-		} else if (typeof entry == 'string') {
-			if (!(entry.includes('{{') || entry.includes('{%'))) {
-				return entry;
-			}
+		}
 
-			// Define template functions
-			const hass = this.hass;
-
-			/* eslint-disable */
-			function states(entity_id: string) {
-				return hass.states[entity_id].state;
-			}
-
-			function is_state(entity_id: string, value: string) {
-				return states(entity_id) == value;
-			}
-
-			function state_attr(entity_id: string, attribute: string) {
-				return hass.states[entity_id].attributes[attribute];
-			}
-
-			function is_state_attr(
-				entity_id: string,
-				attribute: string,
-				value: string,
-			) {
-				return state_attr(entity_id, attribute) == value;
-			}
-
-			function has_value(entity_id: string) {
-				try {
-					const state = states(entity_id);
-					if ([false, 0, -0, ''].includes(state)) {
-						return true;
-					} else {
-						return Boolean(state);
-					}
-				} catch {
-					return false;
-				}
-			}
-			/* eslint-enable */
-
-			const templates = entry.match(/{{.*?}}/g);
-			if (templates) {
-				for (const template of templates) {
-					const code = template.replace(/{{|}}/g, '').trim();
-					let executed: string;
-					try {
-						executed = eval(code);
-					} catch {
-						executed = '';
-					}
-					entry = entry.replace(template, executed);
-				}
-			}
-
+		if (!(entry.includes('{{') || entry.includes('{%'))) {
 			return entry;
 		}
 
-		return '';
+		// Define template functions
+		const hass = this.hass;
+
+		/* eslint-disable */
+		function states(entity_id: string) {
+			return hass.states[entity_id].state;
+		}
+
+		function is_state(entity_id: string, value: string) {
+			return states(entity_id) == value;
+		}
+
+		function state_attr(entity_id: string, attribute: string) {
+			return hass.states[entity_id].attributes[attribute];
+		}
+
+		function is_state_attr(
+			entity_id: string,
+			attribute: string,
+			value: string,
+		) {
+			return state_attr(entity_id, attribute) == value;
+		}
+
+		function has_value(entity_id: string) {
+			try {
+				const state = states(entity_id);
+				if ([false, 0, -0, ''].includes(state)) {
+					return true;
+				} else {
+					return Boolean(state);
+				}
+			} catch {
+				return false;
+			}
+		}
+		/* eslint-enable */
+
+		const templates = (entry as string).match(/{{.*?}}/g);
+		if (templates) {
+			for (const template of templates) {
+				const code = template.replace(/{{|}}/g, '').trim();
+				let executed: string;
+				try {
+					executed = eval(code);
+				} catch {
+					executed = '';
+				}
+				entry = (entry as string).replace(template, executed);
+			}
+		}
+
+		return entry;
 	}
 
 	render() {
