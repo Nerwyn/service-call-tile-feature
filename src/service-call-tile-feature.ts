@@ -70,10 +70,7 @@ class ServiceCallTileFeature extends LitElement {
 			return entry;
 		}
 
-		if (
-			typeof entry == 'string' &&
-			(entry.includes('{{') || entry.includes('{%'))
-		) {
+		if (typeof entry == 'string' && entry.includes('{{')) {
 			// Define template functions
 			const hass = this.hass;
 
@@ -112,17 +109,20 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			/* eslint-enable */
 
-			const templates = (entry as string).match(/{{.*?}}/g);
+			const templates = (entry as string).match(/{{(.|\n)*?}}/gm);
 			if (templates) {
 				for (const template of templates) {
-					const code = template.replace(/{{|}}/g, '').trim();
+					const code = template.replace(/{{|}}|\n/gm, '').trim();
 					let executed: string;
 					try {
 						executed = eval(code);
-					} catch {
+					} catch (e) {
+						console.error(`Error evaluating ${template}:\n${e}`);
 						executed = '';
 					}
-					entry = (entry as string).replace(template, executed);
+					entry = (entry as string)
+						.replace(template, executed)
+						.trim();
 				}
 			}
 		}
