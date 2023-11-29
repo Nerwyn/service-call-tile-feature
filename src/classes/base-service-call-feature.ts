@@ -1,6 +1,6 @@
 import { HomeAssistant } from 'custom-card-helpers';
 
-import { installJinjaCompat, renderString } from 'nunjucks';
+import { renderString } from 'nunjucks';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -278,8 +278,6 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
-		installJinjaCompat();
-
 		this.evalEntry = this.processNunjucks(
 			JSON.parse(JSON.stringify(this.entry)),
 		) as IEntry;
