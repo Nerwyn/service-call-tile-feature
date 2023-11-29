@@ -146,14 +146,14 @@ export class BaseServiceCallFeature extends LitElement {
 			state_attr,
 			is_state_attr,
 			has_value,
-			'state.entity': this.entry.entity_id,
 		};
 
 		if (
 			typeof entry == 'string' &&
 			(entry.includes('{{') || entry.includes('{%'))
 		) {
-			entry = renderString(entry, context);
+			entry = renderString(entry, context).trim();
+			console.log(entry)
 		}
 
 		if (entry == undefined || entry == null) {
