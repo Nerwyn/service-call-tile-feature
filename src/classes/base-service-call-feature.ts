@@ -27,10 +27,13 @@ export class BaseServiceCallFeature extends LitElement {
 			typeof entry == 'string' &&
 			(entry.includes('{{') || entry.includes('{%'))
 		) {
-			// Define template functions
-			const hass = this.hass;
-
 			/* eslint-disable */
+			const hass = this.hass;
+			const VALUE = this.value;
+			const config = {
+				entity: this.entry.entity_id,
+			};
+
 			function states(entity_id: string) {
 				return hass.states[entity_id].state;
 			}
