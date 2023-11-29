@@ -24,8 +24,8 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		if (
-			(typeof entry == 'string' && entry.includes('{{')) ||
-			entry.includes('{%')
+			typeof entry == 'string' &&
+			(entry.includes('{{') || entry.includes('{%'))
 		) {
 			// Define template functions
 			const hass = this.hass;
