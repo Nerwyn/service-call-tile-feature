@@ -167,7 +167,7 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('label' in this.evalEntry) {
 			let text = this.evalEntry.label;
 			if (text) {
-				text += this.evalEntry.unit_of_measurement;
+				text += this.evalEntry.unit_of_measurement ?? '';
 				const style: StyleInfo = {};
 				if (this.evalEntry.label_color) {
 					style.color = this.evalEntry.label_color;
