@@ -98,7 +98,7 @@ export class BaseServiceCallFeature extends LitElement {
 	processNunjucks(entry: IEntry | string): IEntry | string {
 		if (typeof entry == 'object' && entry != null) {
 			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.setTemplates(
+				(entry as Record<string, string>)[key] = this.processNunjucks(
 					(entry as Record<string, string>)[key],
 				) as string;
 			}
