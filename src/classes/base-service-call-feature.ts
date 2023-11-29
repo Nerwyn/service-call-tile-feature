@@ -15,11 +15,6 @@ export class BaseServiceCallFeature extends LitElement {
 	evalEntry!: IEntry;
 	value: string | number = 0;
 
-	constructor() {
-		super();
-		installJinjaCompat();
-	}
-
 	setTemplates(entry: IEntry | string): IEntry | string {
 		if (typeof entry == 'object' && entry != null) {
 			for (const key in entry) {
@@ -283,6 +278,8 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
+		installJinjaCompat();
+
 		this.evalEntry = this.processNunjucks(
 			JSON.parse(JSON.stringify(this.entry)),
 		) as IEntry;
