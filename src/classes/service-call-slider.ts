@@ -95,9 +95,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		const backgroundStyle: StyleInfo = {};
 		if (this.evalEntry.background_color) {
-			backgroundStyle.background = this.setValueInStyleFields(
-				this.evalEntry.background_color,
-			);
+			backgroundStyle.background = this.evalEntry.background_color;
 		}
 		if (
 			this.evalEntry.background_opacity ||
@@ -144,9 +142,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		const style: StyleInfo = {};
 		if (this.evalEntry.color) {
-			style['--slider-color'] = this.setValueInStyleFields(
-				this.evalEntry.color,
-			);
+			style['--slider-color'] = this.evalEntry.color;
 		}
 		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
 			style['--slider-opacity'] = this.evalEntry.opacity?.toString();

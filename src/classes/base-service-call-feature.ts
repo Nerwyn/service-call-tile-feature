@@ -15,86 +15,6 @@ export class BaseServiceCallFeature extends LitElement {
 	evalEntry!: IEntry;
 	value: string | number = 0;
 
-	setTemplates(entry: IEntry | string): IEntry | string {
-		if (typeof entry == 'object' && entry != null) {
-			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.setTemplates(
-					(entry as Record<string, string>)[key],
-				) as string;
-			}
-			return entry;
-		}
-
-		if (
-			typeof entry == 'string' &&
-			(entry.includes('{{') || entry.includes('{%'))
-		) {
-			/* eslint-disable */
-			const hass = this.hass;
-
-			function states(entity_id: string) {
-				return hass.states[entity_id].state;
-			}
-
-			function is_state(entity_id: string, value: string) {
-				return states(entity_id) == value;
-			}
-
-			function state_attr(entity_id: string, attribute: string) {
-				return hass.states[entity_id].attributes[attribute];
-			}
-
-			function is_state_attr(
-				entity_id: string,
-				attribute: string,
-				value: string,
-			) {
-				return state_attr(entity_id, attribute) == value;
-			}
-
-			function has_value(entity_id: string) {
-				try {
-					const state = states(entity_id);
-					if ([false, 0, -0, ''].includes(state)) {
-						return true;
-					} else {
-						return Boolean(state);
-					}
-				} catch {
-					return false;
-				}
-			}
-			/* eslint-enable */
-
-			const templates = (entry as string).match(/{{(.|\n)*?}}/gm);
-			if (templates) {
-				for (const template of templates) {
-					const code = template.replace(/{{|}}|\n/gm, '').trim();
-					let executed: string | undefined;
-					try {
-						executed = eval(code);
-						if (executed != undefined || executed != null) {
-							entry = (entry as string)
-								.replace(template, executed)
-								.trim();
-						} else {
-							entry = '';
-						}
-					} catch (e) {
-						console.error(`Error evaluating ${template}:\n${e}`);
-						executed = undefined;
-					}
-				}
-			}
-		}
-
-		if (entry == undefined || entry == null) {
-			entry = '';
-		}
-
-		return entry;
-	}
-
 	processNunjucks(entry: IEntry | string): IEntry | string {
 		if (typeof entry == 'object' && entry != null) {
 			for (const key in entry) {
@@ -146,6 +66,9 @@ export class BaseServiceCallFeature extends LitElement {
 			state_attr,
 			is_state_attr,
 			has_value,
+			True: true,
+			False: false,
+			None: null,
 		};
 
 		if (
@@ -153,7 +76,6 @@ export class BaseServiceCallFeature extends LitElement {
 			(entry.includes('{{') || entry.includes('{%'))
 		) {
 			entry = renderString(entry, context).trim();
-			console.log(entry)
 		}
 
 		if (entry == undefined || entry == null) {
@@ -163,84 +85,17 @@ export class BaseServiceCallFeature extends LitElement {
 		return entry;
 	}
 
-	setValueInStyleFields(text?: string): string | undefined {
-		if (text) {
-			if (text.includes('VALUE')) {
-				if (this.value) {
-					text = text.replace(/VALUE/g, this.value.toString());
-				} else {
-					return '';
-				}
-			}
-
-			if (text.includes('STATE')) {
-				const state = this.hass.states[this.entry.entity_id!].state;
-				text = text.replace(/STATE/g, state);
-			}
-
-			const pattern = /ATTRIBUTE\[(.*?)\]/g;
-			const matches = text.match(pattern);
-			if (matches) {
-				for (const match of matches) {
-					const attribute = match
-						.replace('ATTRIBUTE[', '')
-						.replace(']', '');
-					let value =
-						this.hass.states[this.entry.entity_id!].attributes[
-							attribute
-						];
-
-					switch (attribute) {
-						case 'brightness':
-							if (value) {
-								value = Math.round(
-									100 * (parseInt(value ?? 0) / 255),
-								).toString();
-							} else {
-								return '0';
-							}
-							break;
-						case 'rgb_color':
-							if (Array.isArray(value) && value.length == 3) {
-								value = `rgb(${value[0]}, ${value[1]}, ${value[2]})`;
-							} else {
-								value = 'var(--primary-text-color)';
-							}
-							break;
-						default:
-							if (value == undefined || value == null) {
-								return undefined;
-							}
-							break;
-					}
-
-					text = text.replace(`ATTRIBUTE[${attribute}]`, value);
-				}
-				return text;
-			} else {
-				return text;
-			}
-		} else {
-			return '';
-		}
-	}
-
 	callService() {
 		if (
 			'confirmation' in this.evalEntry &&
 			this.evalEntry.confirmation != false
 		) {
-			let text = `Are you sure you want to run action '${this.evalEntry.service}'?`;
+			const text = `Are you sure you want to run action '${this.evalEntry.service}'?`;
 			if (this.evalEntry.confirmation == true) {
 				if (!confirm(text)) {
 					return;
 				}
 			} else {
-				if ('text' in (this.evalEntry.confirmation as IConfirmation)) {
-					text = this.setValueInStyleFields(
-						(this.evalEntry.confirmation as IConfirmation).text!,
-					) as string;
-				}
 				if (
 					'exemptions' in
 					(this.evalEntry.confirmation as IConfirmation)
@@ -300,25 +155,21 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('icon' in this.evalEntry) {
 			const style: StyleInfo = {};
 			if (this.evalEntry.icon_color) {
-				style.color = this.setValueInStyleFields(
-					this.evalEntry.icon_color,
-				);
+				style.color = this.evalEntry.icon_color;
 			}
 			icon = html`<ha-icon
-				.icon=${this.setValueInStyleFields(this.evalEntry.icon)}
+				.icon=${this.evalEntry.icon}
 				style="${styleMap(style)}"
 			></ha-icon>`;
 		}
 
 		let label = html``;
 		if ('label' in this.evalEntry) {
-			const text = this.setValueInStyleFields(this.evalEntry.label);
+			const text = this.evalEntry.label;
 			if (text) {
 				const style: StyleInfo = {};
 				if (this.evalEntry.label_color) {
-					style.color = this.setValueInStyleFields(
-						this.evalEntry.label_color,
-					);
+					style.color = this.evalEntry.label_color;
 				}
 				// prettier-ignore
 				label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;

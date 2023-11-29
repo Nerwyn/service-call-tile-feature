@@ -15,9 +15,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		const style: StyleInfo = {};
 		if (this.evalEntry.color) {
-			style['background-color'] = this.setValueInStyleFields(
-				this.evalEntry.color,
-			);
+			style['background-color'] = this.evalEntry.color;
 		}
 		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
 			style.opacity = this.evalEntry.opacity;

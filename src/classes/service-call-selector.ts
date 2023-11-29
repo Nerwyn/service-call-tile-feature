@@ -50,9 +50,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 		const backgroundStyle: StyleInfo = {};
 		if (this.evalEntry.background_color) {
-			backgroundStyle.background = this.setValueInStyleFields(
-				this.evalEntry.background_color,
-			);
+			backgroundStyle.background = this.evalEntry.background_color;
 		}
 		if (
 			this.evalEntry.background_opacity ||
