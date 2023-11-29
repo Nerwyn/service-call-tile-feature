@@ -15,16 +15,18 @@ export class BaseServiceCallFeature extends LitElement {
 	evalEntry!: IEntry;
 	value: string | number = 0;
 
-	processNunjucks(entry: IEntry | string): IEntry | string {
+	renderTemplate(entry: IEntry | string): IEntry | string {
+		// Recursion!
 		if (typeof entry == 'object' && entry != null) {
 			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.processNunjucks(
+				(entry as Record<string, string>)[key] = this.renderTemplate(
 					(entry as Record<string, string>)[key],
 				) as string;
 			}
 			return entry;
 		}
 
+		// Define Home Assistant templating functions for nunjucks context
 		const hass = this.hass;
 
 		function states(entity_id: string) {
@@ -61,14 +63,15 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		const context = {
+			True: true,
+			False: false,
+			None: null,
+			eval,
 			states,
 			is_state,
 			state_attr,
 			is_state_attr,
 			has_value,
-			True: true,
-			False: false,
-			None: null,
 		};
 
 		if (
@@ -133,7 +136,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
-		this.evalEntry = this.processNunjucks(
+		this.evalEntry = this.renderTemplate(
 			JSON.parse(JSON.stringify(this.entry)),
 		) as IEntry;
 
