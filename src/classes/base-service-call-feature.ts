@@ -1,5 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 
+import { installJinjaCompat, renderString } from 'nunjucks';
+
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
@@ -12,6 +14,11 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 	evalEntry!: IEntry;
 	value: string | number = 0;
+
+	constructor() {
+		super();
+		installJinjaCompat();
+	}
 
 	setTemplates(entry: IEntry | string): IEntry | string {
 		if (typeof entry == 'object' && entry != null) {
@@ -29,10 +36,6 @@ export class BaseServiceCallFeature extends LitElement {
 		) {
 			/* eslint-disable */
 			const hass = this.hass;
-			const VALUE = this.value;
-			const config = {
-				entity: this.entry.entity_id,
-			};
 
 			function states(entity_id: string) {
 				return hass.states[entity_id].state;
@@ -88,6 +91,74 @@ export class BaseServiceCallFeature extends LitElement {
 					}
 				}
 			}
+		}
+
+		if (entry == undefined || entry == null) {
+			entry = '';
+		}
+
+		return entry;
+	}
+
+	processNunjucks(entry: IEntry | string): IEntry | string {
+		if (typeof entry == 'object' && entry != null) {
+			for (const key in entry) {
+				(entry as Record<string, string>)[key] = this.setTemplates(
+					(entry as Record<string, string>)[key],
+				) as string;
+			}
+			return entry;
+		}
+
+		const hass = this.hass;
+
+		function states(entity_id: string) {
+			return hass.states[entity_id].state;
+		}
+
+		function is_state(entity_id: string, value: string) {
+			return states(entity_id) == value;
+		}
+
+		function state_attr(entity_id: string, attribute: string) {
+			return hass.states[entity_id].attributes[attribute];
+		}
+
+		function is_state_attr(
+			entity_id: string,
+			attribute: string,
+			value: string,
+		) {
+			return state_attr(entity_id, attribute) == value;
+		}
+
+		function has_value(entity_id: string) {
+			try {
+				const state = states(entity_id);
+				if ([false, 0, -0, ''].includes(state)) {
+					return true;
+				} else {
+					return Boolean(state);
+				}
+			} catch {
+				return false;
+			}
+		}
+
+		const context = {
+			states,
+			is_state,
+			state_attr,
+			is_state_attr,
+			has_value,
+			'state.entity': this.entry.entity_id,
+		};
+
+		if (
+			typeof entry == 'string' &&
+			(entry.includes('{{') || entry.includes('{%'))
+		) {
+			entry = renderString(entry, context);
 		}
 
 		if (entry == undefined || entry == null) {
@@ -212,7 +283,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
-		this.evalEntry = this.setTemplates(
+		this.evalEntry = this.processNunjucks(
 			JSON.parse(JSON.stringify(this.entry)),
 		) as IEntry;
 
