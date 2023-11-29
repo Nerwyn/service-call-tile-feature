@@ -49,6 +49,7 @@ export interface IStyle {
 	icon_color?: string;
 	label?: string;
 	label_color?: string;
+	unit_of_measurement?: string;
 	background_color?: string;
 	background_opacity?: number;
 	flex_basis?: string;
