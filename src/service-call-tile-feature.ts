@@ -60,101 +60,27 @@ class ServiceCallTileFeature extends LitElement {
 		this.config = config;
 	}
 
-	setTemplates(entry: IEntry | string): IEntry | string {
-		if (typeof entry == 'object' && entry != null) {
-			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.setTemplates(
-					(entry as Record<string, string>)[key],
-				) as string;
-			}
-			return entry;
-		}
-
-		if (typeof entry == 'string' && entry.includes('{{')) {
-			// Define template functions
-			const hass = this.hass;
-
-			/* eslint-disable */
-			function states(entity_id: string) {
-				return hass.states[entity_id].state;
-			}
-
-			function is_state(entity_id: string, value: string) {
-				return states(entity_id) == value;
-			}
-
-			function state_attr(entity_id: string, attribute: string) {
-				return hass.states[entity_id].attributes[attribute];
-			}
-
-			function is_state_attr(
-				entity_id: string,
-				attribute: string,
-				value: string,
-			) {
-				return state_attr(entity_id, attribute) == value;
-			}
-
-			function has_value(entity_id: string) {
-				try {
-					const state = states(entity_id);
-					if ([false, 0, -0, ''].includes(state)) {
-						return true;
-					} else {
-						return Boolean(state);
-					}
-				} catch {
-					return false;
-				}
-			}
-			/* eslint-enable */
-
-			const templates = (entry as string).match(/{{(.|\n)*?}}/gm);
-			if (templates) {
-				for (const template of templates) {
-					const code = template.replace(/{{|}}|\n/gm, '').trim();
-					let executed: string;
-					try {
-						executed = eval(code);
-					} catch (e) {
-						console.error(`Error evaluating ${template}:\n${e}`);
-						executed = '';
-					}
-					entry = (entry as string)
-						.replace(template, executed)
-						.trim();
-				}
-			}
-		}
-
-		return entry;
-	}
-
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
 		}
 
 		const row: TemplateResult[] = [];
-		for (let entry0 of this.config.entries) {
+		for (let entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
-			if (entry0.autofill_entity_id ?? true) {
-				entry0 = this.populateMissingEntityId(
-					entry0,
+			if (entry.autofill_entity_id ?? true) {
+				entry = this.populateMissingEntityId(
+					entry,
 					this.stateObj.entity_id,
 				);
 
-				for (let option of entry0.options ?? []) {
+				for (let option of entry.options ?? []) {
 					option = this.populateMissingEntityId(
 						option,
-						entry0.entity_id!,
+						entry.entity_id!,
 					);
 				}
 			}
-
-			const entry = this.setTemplates(
-				JSON.parse(JSON.stringify(entry0)),
-			) as IEntry;
 
 			const style: StyleInfo = {};
 			if ('flex_basis' in entry) {

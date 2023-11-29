@@ -10,7 +10,89 @@ import { IEntry, IConfirmation } from '../models/interfaces';
 export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
-	@property({ attribute: false }) value: string | number = 0;
+	evalEntry!: IEntry;
+	value: string | number = 0;
+
+	setTemplates(entry: IEntry | string): IEntry | string {
+		if (typeof entry == 'object' && entry != null) {
+			for (const key in entry) {
+				(entry as Record<string, string>)[key] = this.setTemplates(
+					(entry as Record<string, string>)[key],
+				) as string;
+			}
+			return entry;
+		}
+
+		if (
+			(typeof entry == 'string' && entry.includes('{{')) ||
+			entry.includes('{%')
+		) {
+			// Define template functions
+			const hass = this.hass;
+
+			/* eslint-disable */
+			function states(entity_id: string) {
+				return hass.states[entity_id].state;
+			}
+
+			function is_state(entity_id: string, value: string) {
+				return states(entity_id) == value;
+			}
+
+			function state_attr(entity_id: string, attribute: string) {
+				return hass.states[entity_id].attributes[attribute];
+			}
+
+			function is_state_attr(
+				entity_id: string,
+				attribute: string,
+				value: string,
+			) {
+				return state_attr(entity_id, attribute) == value;
+			}
+
+			function has_value(entity_id: string) {
+				try {
+					const state = states(entity_id);
+					if ([false, 0, -0, ''].includes(state)) {
+						return true;
+					} else {
+						return Boolean(state);
+					}
+				} catch {
+					return false;
+				}
+			}
+			/* eslint-enable */
+
+			const templates = (entry as string).match(/{{(.|\n)*?}}/gm);
+			if (templates) {
+				for (const template of templates) {
+					const code = template.replace(/{{|}}|\n/gm, '').trim();
+					let executed: string | undefined;
+					try {
+						executed = eval(code);
+						if (executed != undefined || executed != null) {
+							entry = (entry as string)
+								.replace(template, executed)
+								.trim();
+						} else {
+							entry = '';
+						}
+					} catch (e) {
+						console.error(`Error evaluating ${template}:\n${e}`);
+						executed = undefined;
+					}
+				}
+			}
+		}
+
+		if (entry == undefined || entry == null) {
+			entry = '';
+		}
+
+		return entry;
+	}
 
 	setValueInStyleFields(text?: string): string | undefined {
 		if (text) {
@@ -75,23 +157,27 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	callService() {
-		if ('confirmation' in this.entry && this.entry.confirmation != false) {
-			let text = `Are you sure you want to run action '${this.entry.service}'?`;
-			if (this.entry.confirmation == true) {
+		if (
+			'confirmation' in this.evalEntry &&
+			this.evalEntry.confirmation != false
+		) {
+			let text = `Are you sure you want to run action '${this.evalEntry.service}'?`;
+			if (this.evalEntry.confirmation == true) {
 				if (!confirm(text)) {
 					return;
 				}
 			} else {
-				if ('text' in (this.entry.confirmation as IConfirmation)) {
+				if ('text' in (this.evalEntry.confirmation as IConfirmation)) {
 					text = this.setValueInStyleFields(
-						(this.entry.confirmation as IConfirmation).text!,
+						(this.evalEntry.confirmation as IConfirmation).text!,
 					) as string;
 				}
 				if (
-					'exemptions' in (this.entry.confirmation as IConfirmation)
+					'exemptions' in
+					(this.evalEntry.confirmation as IConfirmation)
 				) {
 					if (
-						!(this.entry.confirmation as IConfirmation)
+						!(this.evalEntry.confirmation as IConfirmation)
 							.exemptions!.map((e) => e.user)
 							.includes(this.hass.user.id)
 					) {
@@ -105,9 +191,9 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
-		if ('service' in this.entry) {
-			const [domain, service] = this.entry.service!.split('.');
-			const data = JSON.parse(JSON.stringify(this.entry.data));
+		if ('service' in this.evalEntry) {
+			const [domain, service] = this.evalEntry.service!.split('.');
+			const data = JSON.parse(JSON.stringify(this.evalEntry.data));
 			for (const key in data) {
 				if (data[key] == 'VALUE') {
 					data[key] = this.value;
@@ -123,12 +209,16 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
-		const value_attribute = this.entry.value_attribute;
+		this.evalEntry = this.setTemplates(
+			JSON.parse(JSON.stringify(this.entry)),
+		) as IEntry;
+
+		const value_attribute = this.evalEntry.value_attribute;
 		if (value_attribute == 'state') {
-			this.value = this.hass.states[this.entry.entity_id!].state;
+			this.value = this.hass.states[this.evalEntry.entity_id!].state;
 		} else {
 			let value =
-				this.hass.states[this.entry.entity_id!].attributes[
+				this.hass.states[this.evalEntry.entity_id!].attributes[
 					value_attribute as string
 				];
 			if (value_attribute == 'brightness') {
@@ -138,25 +228,27 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		let icon = html``;
-		if ('icon' in this.entry) {
+		if ('icon' in this.evalEntry) {
 			const style: StyleInfo = {};
-			if (this.entry.icon_color) {
-				style.color = this.setValueInStyleFields(this.entry.icon_color);
+			if (this.evalEntry.icon_color) {
+				style.color = this.setValueInStyleFields(
+					this.evalEntry.icon_color,
+				);
 			}
 			icon = html`<ha-icon
-				.icon=${this.setValueInStyleFields(this.entry.icon)}
+				.icon=${this.setValueInStyleFields(this.evalEntry.icon)}
 				style="${styleMap(style)}"
 			></ha-icon>`;
 		}
 
 		let label = html``;
-		if ('label' in this.entry) {
-			const text = this.setValueInStyleFields(this.entry.label);
+		if ('label' in this.evalEntry) {
+			const text = this.setValueInStyleFields(this.evalEntry.label);
 			if (text) {
 				const style: StyleInfo = {};
-				if (this.entry.label_color) {
+				if (this.evalEntry.label_color) {
 					style.color = this.setValueInStyleFields(
-						this.entry.label_color,
+						this.evalEntry.label_color,
 					);
 				}
 				// prettier-ignore

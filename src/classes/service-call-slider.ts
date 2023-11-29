@@ -84,26 +84,26 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = parseFloat(this.value as string);
 		}
 
-		if (this.entry.range) {
-			this.range = this.entry.range;
+		if (this.evalEntry.range) {
+			this.range = this.evalEntry.range;
 		}
 		let step = (this.range[1] - this.range[0]) / 100;
-		if (this.entry.step) {
-			step = this.entry.step;
+		if (this.evalEntry.step) {
+			step = this.evalEntry.step;
 		}
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
 		const backgroundStyle: StyleInfo = {};
-		if (this.entry.background_color) {
+		if (this.evalEntry.background_color) {
 			backgroundStyle.background = this.setValueInStyleFields(
-				this.entry.background_color,
+				this.evalEntry.background_color,
 			);
 		}
 		if (
-			this.entry.background_opacity ||
-			this.entry.background_opacity == 0
+			this.evalEntry.background_opacity ||
+			this.evalEntry.background_opacity == 0
 		) {
-			backgroundStyle.opacity = this.entry.background_opacity;
+			backgroundStyle.opacity = this.evalEntry.background_opacity;
 		}
 		const background = html`<div
 			class="slider-background"
@@ -111,7 +111,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		></div>`;
 
 		this.class = 'slider';
-		switch (this.entry.thumb) {
+		switch (this.evalEntry.thumb) {
 			case 'line':
 				this.class = 'slider-line-thumb';
 				break;
@@ -143,13 +143,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const style: StyleInfo = {};
-		if (this.entry.color) {
+		if (this.evalEntry.color) {
 			style['--slider-color'] = this.setValueInStyleFields(
-				this.entry.color,
+				this.evalEntry.color,
 			);
 		}
-		if (this.entry.opacity || this.entry.opacity == 0) {
-			style['--slider-opacity'] = this.entry.opacity?.toString();
+		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
+			style['--slider-opacity'] = this.evalEntry.opacity?.toString();
 		}
 
 		return html`<div class="container" style=${styleMap(style)}>

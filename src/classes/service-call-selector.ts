@@ -40,25 +40,25 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		super.render();
 
-		const entries = this.entry.options ?? [];
+		const entries = this.evalEntry.options ?? [];
 		let options =
-			(this.hass.states[this.entry.entity_id!].attributes
+			(this.hass.states[this.evalEntry.entity_id!].attributes
 				.options as string[]) ?? new Array<string>(entries.length);
 		if (options.length < entries.length) {
 			options = Object.assign(new Array(entries.length), options);
 		}
 
 		const backgroundStyle: StyleInfo = {};
-		if (this.entry.background_color) {
+		if (this.evalEntry.background_color) {
 			backgroundStyle.background = this.setValueInStyleFields(
-				this.entry.background_color,
+				this.evalEntry.background_color,
 			);
 		}
 		if (
-			this.entry.background_opacity ||
-			this.entry.background_opacity == 0
+			this.evalEntry.background_opacity ||
+			this.evalEntry.background_opacity == 0
 		) {
-			backgroundStyle.opacity = this.entry.background_opacity;
+			backgroundStyle.opacity = this.evalEntry.background_opacity;
 		}
 		const selector = [
 			html`<div
@@ -67,10 +67,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			></div>`,
 		];
 
-		const gInvertIcon = this.entry.invert_icon == true;
-		const gInvertLabel = this.entry.invert_label == true;
+		const gInvertIcon = this.evalEntry.invert_icon == true;
+		const gInvertLabel = this.evalEntry.invert_label == true;
 		for (const i in entries) {
-			const entry = this.entry.options![i];
+			const entry = this.evalEntry.options![i];
 
 			if (!('service' in entry)) {
 				entry.service = 'input_select.select_option';
@@ -133,11 +133,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			);
 		}
 		const style: StyleInfo = {};
-		if (this.entry.color) {
-			style['--selection-color'] = this.entry.color;
+		if (this.evalEntry.color) {
+			style['--selection-color'] = this.evalEntry.color;
 		}
-		if (this.entry.opacity || this.entry.opacity == 0) {
-			style['--selection-opacity'] = this.entry.opacity;
+		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
+			style['--selection-opacity'] = this.evalEntry.opacity;
 		}
 
 		return html`<div class="container" style=${styleMap(style)}>

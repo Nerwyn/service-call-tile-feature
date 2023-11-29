@@ -14,13 +14,13 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		const icon_label = super.render();
 
 		const style: StyleInfo = {};
-		if (this.entry.color) {
+		if (this.evalEntry.color) {
 			style['background-color'] = this.setValueInStyleFields(
-				this.entry.color,
+				this.evalEntry.color,
 			);
 		}
-		if (this.entry.opacity || this.entry.opacity == 0) {
-			style.opacity = this.entry.opacity;
+		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
+			style.opacity = this.evalEntry.opacity;
 		}
 
 		const button = html`<button
