@@ -8,7 +8,7 @@ import './service-call-button';
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {
 	onClick(e: MouseEvent) {
-		const options = (e.currentTarget as HTMLElement).parentElement!
+		const options = (e.currentTarget as HTMLElement).parentNode!
 			.children;
 		for (const option of options) {
 			if (option.tagName.toLowerCase() == 'service-call-button') {
