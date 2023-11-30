@@ -1,6 +1,5 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -84,19 +83,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = parseFloat(this.value as string);
 		}
 
-		if (this.evalEntry.range) {
-			this.range = this.evalEntry.range;
+		if (this.entry.range) {
+			this.range = this.entry.range;
 		}
 		let step = (this.range[1] - this.range[0]) / 100;
-		if (this.evalEntry.step) {
-			step = this.evalEntry.step;
+		if (this.entry.step) {
+			step = this.entry.step;
 		}
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
 		const background = html`<div class="slider-background"></div>`;
 
 		this.class = 'slider';
-		switch (this.evalEntry.thumb) {
+		switch (this.entry.thumb) {
 			case 'line':
 				this.class = 'slider-line-thumb';
 				break;
@@ -127,17 +126,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		const style = styleMap(this.evalEntry.style ?? {});
-		return html`<div class="container" style=${style}>
-			${background}${slider}${icon_label}
-		</div>`;
+		return html`${background}${slider}${icon_label}`;
 	}
 
 	static get styles() {
 		return [
 			super.styles as CSSResult,
 			css`
-				.container {
+				:host {
 					--background: var(--primary-text-color);
 					--background-height: inherit;
 					--background-opacity: 0.2;

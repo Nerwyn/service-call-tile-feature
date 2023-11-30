@@ -2,6 +2,9 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
+
+import { renderString } from 'nunjucks';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -59,6 +62,84 @@ class ServiceCallTileFeature extends LitElement {
 		this.config = config;
 	}
 
+	renderTemplate(entry: IEntry | string): IEntry | string {
+		// Recursion!
+		if (typeof entry == 'object' && entry != null) {
+			for (const key in entry) {
+				(entry as Record<string, string>)[key] = this.renderTemplate(
+					(entry as Record<string, string>)[key],
+				) as string;
+			}
+			return entry;
+		}
+
+		// Define Home Assistant templating functions for nunjucks context
+		const hass = this.hass;
+
+		function states(entity_id: string) {
+			return hass.states[entity_id].state;
+		}
+
+		function is_state(entity_id: string, value: string | string[]) {
+			if (typeof value == 'string') {
+				value = [value];
+			}
+			return value.includes(states(entity_id));
+		}
+
+		function state_attr(entity_id: string, attribute: string) {
+			return hass.states[entity_id].attributes[attribute];
+		}
+
+		function is_state_attr(
+			entity_id: string,
+			attribute: string,
+			value: string | string[],
+		) {
+			if (typeof value == 'string') {
+				value = [value];
+			}
+			return value.includes(state_attr(entity_id, attribute));
+		}
+
+		function has_value(entity_id: string) {
+			try {
+				const state = states(entity_id);
+				if ([false, 0, -0, ''].includes(state)) {
+					return true;
+				} else {
+					return Boolean(state);
+				}
+			} catch {
+				return false;
+			}
+		}
+
+		const context = {
+			True: true,
+			False: false,
+			None: null,
+			states,
+			is_state,
+			state_attr,
+			is_state_attr,
+			has_value,
+		};
+
+		if (
+			typeof entry == 'string' &&
+			(entry.includes('{{') || entry.includes('{%'))
+		) {
+			entry = renderString(entry, context).trim();
+		}
+
+		if (entry == undefined || entry == null) {
+			entry = '';
+		}
+
+		return entry;
+	}
+
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -81,13 +162,20 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const entryType = (entry.type ?? 'button').toLowerCase();
+			const evalutedEntry = this.renderTemplate(
+				JSON.parse(JSON.stringify(entry)),
+			) as IEntry;
+
+			const style = styleMap(evalutedEntry.style!);
+
+			const entryType = (evalutedEntry.type ?? 'button').toLowerCase();
 			switch (entryType) {
 				case 'slider':
 					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
-							.entry=${entry}
+							.entry=${evalutedEntry}
+							style=${style}
 						/>`,
 					);
 					break;
@@ -95,7 +183,8 @@ class ServiceCallTileFeature extends LitElement {
 					row.push(
 						html`<service-call-selector
 							.hass=${this.hass}
-							.entry=${entry}
+							.entry=${evalutedEntry}
+							style=${style}
 						/>`,
 					);
 					break;
@@ -104,7 +193,8 @@ class ServiceCallTileFeature extends LitElement {
 					row.push(
 						html`<service-call-button
 							.hass=${this.hass}
-							.entry=${entry}
+							.entry=${evalutedEntry}
+							style=${style}
 						/>`,
 					);
 					break;

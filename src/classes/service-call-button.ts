@@ -1,6 +1,5 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -18,17 +17,14 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@click=${this.onClick}
 		></button>`;
 
-		const style = styleMap(this.evalEntry.style ?? {});
-		return html`<div class="container" style=${style}>
-			${button}${icon_label}
-		</div>`;
+		return html`${button}${icon_label}`;
 	}
 
 	static get styles() {
 		return [
 			super.styles as CSSResult,
 			css`
-				.container {
+				:host {
 					--opacity: 0.2;
 					--selection-color: unset;
 					--selection-opacity: 0.3;

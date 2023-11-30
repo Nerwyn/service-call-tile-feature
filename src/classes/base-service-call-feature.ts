@@ -1,7 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
 
-import { renderString } from 'nunjucks';
-
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -11,109 +9,26 @@ import { IEntry, IConfirmation } from '../models/interfaces';
 export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
-	evalEntry!: IEntry;
 	value: string | number = 0;
 
-	renderTemplate(entry: IEntry | string): IEntry | string {
-		// Recursion!
-		if (typeof entry == 'object' && entry != null) {
-			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.renderTemplate(
-					(entry as Record<string, string>)[key],
-				) as string;
-			}
-			return entry;
-		}
-
-		// Define Home Assistant templating functions for nunjucks context
-		const hass = this.hass;
-
-		function states(entity_id: string) {
-			return hass.states[entity_id].state;
-		}
-
-		function is_state(entity_id: string, value: string | string[]) {
-			if (typeof value == 'string') {
-				value = [value];
-			}
-			return value.includes(states(entity_id));
-		}
-
-		function state_attr(entity_id: string, attribute: string) {
-			return hass.states[entity_id].attributes[attribute];
-		}
-
-		function is_state_attr(
-			entity_id: string,
-			attribute: string,
-			value: string | string[],
-		) {
-			if (typeof value == 'string') {
-				value = [value];
-			}
-			return value.includes(state_attr(entity_id, attribute));
-		}
-
-		function has_value(entity_id: string) {
-			try {
-				const state = states(entity_id);
-				if ([false, 0, -0, ''].includes(state)) {
-					return true;
-				} else {
-					return Boolean(state);
-				}
-			} catch {
-				return false;
-			}
-		}
-
-		const context = {
-			True: true,
-			False: false,
-			None: null,
-			states,
-			is_state,
-			state_attr,
-			is_state_attr,
-			has_value,
-		};
-
-		if (
-			typeof entry == 'string' &&
-			(entry.includes('{{') || entry.includes('{%'))
-		) {
-			entry = renderString(entry, context).trim();
-		}
-
-		if (entry == undefined || entry == null) {
-			entry = '';
-		}
-
-		return entry;
-	}
-
 	callService() {
-		if (
-			'confirmation' in this.evalEntry &&
-			this.evalEntry.confirmation != false
-		) {
+		if ('confirmation' in this.entry && this.entry.confirmation != false) {
 			let text: string;
-			if ('text' in (this.evalEntry.confirmation as IConfirmation)) {
-				text = (this.evalEntry.confirmation as IConfirmation).text!;
+			if ('text' in (this.entry.confirmation as IConfirmation)) {
+				text = (this.entry.confirmation as IConfirmation).text!;
 			} else {
-				text = `Are you sure you want to run action '${this.evalEntry.service}'?`;
+				text = `Are you sure you want to run action '${this.entry.service}'?`;
 			}
-			if (this.evalEntry.confirmation == true) {
+			if (this.entry.confirmation == true) {
 				if (!confirm(text)) {
 					return;
 				}
 			} else {
 				if (
-					'exemptions' in
-					(this.evalEntry.confirmation as IConfirmation)
+					'exemptions' in (this.entry.confirmation as IConfirmation)
 				) {
 					if (
-						!(this.evalEntry.confirmation as IConfirmation)
+						!(this.entry.confirmation as IConfirmation)
 							.exemptions!.map((e) => e.user)
 							.includes(this.hass.user.id)
 					) {
@@ -127,9 +42,9 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
-		if ('service' in this.evalEntry) {
-			const [domain, service] = this.evalEntry.service!.split('.');
-			const data = JSON.parse(JSON.stringify(this.evalEntry.data));
+		if ('service' in this.entry) {
+			const [domain, service] = this.entry.service!.split('.');
+			const data = JSON.parse(JSON.stringify(this.entry.data));
 			for (const key in data) {
 				if (data[key] == 'VALUE') {
 					data[key] = this.value;
@@ -145,30 +60,26 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	render() {
-		this.evalEntry = this.renderTemplate(
-			JSON.parse(JSON.stringify(this.entry)),
-		) as IEntry;
-
-		const value_attribute = this.evalEntry.value_attribute;
+		const value_attribute = this.entry.value_attribute;
 		if (value_attribute == 'state') {
-			this.value = this.hass.states[this.evalEntry.entity_id!].state;
+			this.value = this.hass.states[this.entry.entity_id!].state;
 		} else {
 			this.value =
-				this.hass.states[this.evalEntry.entity_id!].attributes[
+				this.hass.states[this.entry.entity_id!].attributes[
 					value_attribute as string
 				];
 		}
 
 		let icon = html``;
-		if ('icon' in this.evalEntry) {
-			icon = html`<ha-icon .icon=${this.evalEntry.icon}></ha-icon>`;
+		if ('icon' in this.entry) {
+			icon = html`<ha-icon .icon=${this.entry.icon}></ha-icon>`;
 		}
 
 		let label = html``;
-		if ('label' in this.evalEntry) {
-			let text = this.evalEntry.label;
+		if ('label' in this.entry) {
+			let text = this.entry.label;
 			if (text) {
-				text += this.evalEntry.unit_of_measurement ?? '';
+				text += this.entry.unit_of_measurement ?? '';
 				label = html`<div class="label">${text}</div>`;
 			}
 		}
@@ -197,18 +108,18 @@ export class BaseServiceCallFeature extends LitElement {
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
-				}
-
-				.container {
-					all: inherit;
-					height: 100%;
-					overflow: hidden;
 
 					--color: unset;
 					--icon-color: inherit;
 					--icon-filter: none;
 					--label-color: inherit;
 					--label-filter: none;
+				}
+
+				.container {
+					all: inherit;
+					height: 100%;
+					overflow: hidden;
 				}
 
 				ha-icon {

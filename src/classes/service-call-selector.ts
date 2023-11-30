@@ -26,9 +26,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		super.render();
 
-		const entries = this.evalEntry.options ?? [];
+		const entries = this.entry.options ?? [];
 		let options =
-			(this.hass.states[this.evalEntry.entity_id!].attributes
+			(this.hass.states[this.entry.entity_id!].attributes
 				.options as string[]) ?? new Array<string>(entries.length);
 		if (options.length < entries.length) {
 			options = Object.assign(new Array(entries.length), options);
@@ -37,7 +37,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		const selector = [html`<div class="selector-background"></div>`];
 
 		for (const i in entries) {
-			const entry = this.evalEntry.options![i];
+			const entry = this.entry.options![i];
 
 			if (!('service' in entry)) {
 				entry.service = 'input_select.select_option';
@@ -48,13 +48,13 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			const option = entry.option ?? options[i];
 
-			const optionStyle: StyleInfo = entry.style ?? {};
+			const style: StyleInfo = entry.style ?? {};
 			if (this.value == option && this.value != undefined) {
-				optionStyle.backgroundColor = 'var(--selection-color)';
-				optionStyle.opacity = 'var(--selection-opacity)';
+				style.backgroundColor = 'var(--selection-color)';
+				style.opacity = 'var(--selection-opacity)';
 			}
-			if (!('opacity' in optionStyle)) {
-				optionStyle.opacity = 0;
+			if (!('opacity' in style)) {
+				style.opacity = 0;
 			}
 
 			selector.push(
@@ -62,13 +62,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					.hass=${this.hass}
 					.entry=${entry}
 					@click=${this.onClick}
-					style=${styleMap(optionStyle)}
+					style=${styleMap(style)}
 				/>`,
 			);
 		}
 
-		const style = styleMap(this.evalEntry.style ?? {});
-		return html`<div class="container" style=${style}>${selector}</div>`;
+		return html`${selector}`;
 	}
 
 	static get styles() {
@@ -77,9 +76,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			css`
 				:host {
 					flex-flow: row;
-				}
 
-				.container {
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
 					--selection-opacity: 1;
