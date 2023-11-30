@@ -1,18 +1,20 @@
+import { StyleInfo } from 'lit/directives/style-map.js';
+
 export interface IConfig {
 	type: string;
 	entries: IEntry[];
 }
 
-export interface IEntry
-	extends IServiceCall,
-		IStyle,
-		ISliderOptions,
-		ISelectorOptions {
+export interface IEntry extends IServiceCall, ISliderOptions, ISelectorOptions {
 	type?: TileFeatureType;
 	value_attribute?: string;
 	entity_id?: string;
 	autofill_entity_id?: boolean;
 	confirmation?: boolean | IConfirmation;
+	icon?: string;
+	label?: string;
+	unit_of_measurement?: string;
+	style?: StyleInfo;
 }
 
 export type TileFeatureType = 'button' | 'slider' | 'selector';
@@ -40,19 +42,6 @@ export interface IConfirmation {
 
 export interface IExemption {
 	user: string;
-}
-
-export interface IStyle {
-	color?: string;
-	opacity?: number;
-	icon?: string;
-	icon_color?: string;
-	label?: string;
-	label_color?: string;
-	unit_of_measurement?: string;
-	background_color?: string;
-	background_opacity?: number;
-	flex_basis?: string;
 }
 
 export type ThumbType = 'default' | 'line' | 'flat';

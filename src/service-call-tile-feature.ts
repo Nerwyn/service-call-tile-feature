@@ -2,7 +2,7 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -82,10 +82,7 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const style: StyleInfo = {};
-			if ('flex_basis' in entry) {
-				style['flex-basis'] = entry.flex_basis;
-			}
+			const style = styleMap(entry.style!);
 
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
@@ -94,7 +91,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${styleMap(style)}
+							style=${style}
 						/>`,
 					);
 					break;
@@ -103,7 +100,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-selector
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${styleMap(style)}
+							style=${style}
 						/>`,
 					);
 					break;
@@ -113,7 +110,7 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-button
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${styleMap(style)}
+							style=${style}
 						/>`,
 					);
 					break;
@@ -137,6 +134,25 @@ class ServiceCallTileFeature extends LitElement {
 		entry.value_attribute = (
 			entry.value_attribute ?? 'state'
 		).toLowerCase();
+
+		// Move style fields to style object
+		const deprecatedStyleFields: Record<string, string> = {
+			color: '--color',
+			opacity: '--opacity',
+			icon_color: '--icon-color',
+			label_color: '--label-color',
+			background_color: '--background',
+			background_opacity: '--background-opacity',
+			flex_basis: 'flex-basis',
+		};
+		const style = entry.style ?? {};
+		for (const field in deprecatedStyleFields) {
+			style[deprecatedStyleFields[field]] = entry[
+				field as keyof IEntry
+			] as string;
+		}
+		entry.style = style;
+
 		return entry;
 	}
 

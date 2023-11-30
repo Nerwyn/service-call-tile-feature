@@ -1,6 +1,5 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -13,18 +12,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		const style: StyleInfo = {};
-		if (this.evalEntry.color) {
-			style['background-color'] = this.evalEntry.color;
-		}
-		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
-			style.opacity = this.evalEntry.opacity;
-		}
-
 		const button = html`<button
 			class="button"
 			@click=${this.onClick}
-			style=${styleMap(style)}
 		></button>`;
 
 		return html`${button}${icon_label}`;
@@ -34,9 +24,15 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		return [
 			super.styles as CSSResult,
 			css`
+				:host {
+					--opacity: 0.2;
+					--selection-color: unset;
+					--selection-opacity: 0.3;
+				}
+
 				.button {
-					background-color: var(--disabled-color);
-					opacity: 0.2;
+					background: var(--color, var(--disabled-color));
+					opacity: var(--opacity);
 					transition:
 						background-color 180ms ease-in-out 0s,
 						opacity 180ms ease-in-out 0s;
@@ -49,7 +45,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				}
 				@media (hover: hover) {
 					.button:hover {
-						opacity: 0.3 !important;
+						opacity: var(--selection-opacity) !important;
 						background-color: var(
 							--selection-color,
 							var(--disabled-color)
@@ -57,7 +53,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					}
 				}
 				.button:active {
-					opacity: 0.3 !important;
+					opacity: var(--selection-opacity) !important;
 					background-color: var(
 						--selection-color,
 						var(--disabled-color)

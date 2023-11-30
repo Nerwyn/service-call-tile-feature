@@ -1,6 +1,5 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -93,20 +92,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
-		const backgroundStyle: StyleInfo = {};
-		if (this.evalEntry.background_color) {
-			backgroundStyle.background = this.evalEntry.background_color;
-		}
-		if (
-			this.evalEntry.background_opacity ||
-			this.evalEntry.background_opacity == 0
-		) {
-			backgroundStyle.opacity = this.evalEntry.background_opacity;
-		}
-		const background = html`<div
-			class="slider-background"
-			style=${styleMap(backgroundStyle)}
-		></div>`;
+		const background = html`<div class="slider-background"></div>`;
 
 		this.class = 'slider';
 		switch (this.evalEntry.thumb) {
@@ -140,15 +126,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		const style: StyleInfo = {};
-		if (this.evalEntry.color) {
-			style['--slider-color'] = this.evalEntry.color;
-		}
-		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
-			style['--slider-opacity'] = this.evalEntry.opacity?.toString();
-		}
-
-		return html`<div class="container" style=${styleMap(style)}>
+		return html`<div class="container">
 			${background}${slider}${icon_label}
 		</div>`;
 	}
@@ -158,14 +136,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
-					--slider-opacity: 1;
+					--background: var(--primary-text-color);
+					--background-height: inherit;
+					--background-opacity: 0.2;
+					--opacity: 1;
 				}
+
 				.slider-background {
 					position: absolute;
 					width: inherit;
-					height: inherit;
-					background: var(--primary-text-color);
-					opacity: 0.2;
+					height: var(--background-height);
+					background: var(--background);
+					opacity: var(--background-opacity);
 				}
 
 				.slider,
@@ -200,13 +182,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: 12px;
-					border-color: var(--slider-color);
+					border-color: var(--color);
 					background: #ffffff;
 					cursor: pointer;
-					opacity: var(--slider-opacity);
+					opacity: var(--opacity);
 					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
-						-4px 0 0 6px var(--slider-color);
+						calc(-100vw - 6px) 0 0 100vw var(--color),
+						-4px 0 0 6px var(--color);
 				}
 
 				.slider::-moz-range-thumb {
@@ -217,13 +199,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: 12px;
-					border-color: var(--slider-color);
+					border-color: var(--color);
 					background: #ffffff;
 					cursor: pointer;
-					opacity: var(--slider-opacity);
+					opacity: var(--opacity);
 					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--slider-color),
-						-4px 0 0 6px var(--slider-color);
+						calc(-100vw - 6px) 0 0 100vw var(--color),
+						-4px 0 0 6px var(--color);
 				}
 
 				.slider-line-thumb::-webkit-slider-thumb {
@@ -237,7 +219,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #8a8c99;
 					cursor: pointer;
-					opacity: var(--slider-opacity);
+					opacity: var(--opacity);
 					box-shadow:
 						0 7px 0 0 #ffffff,
 						0 -7px 0 0 #ffffff;
@@ -254,7 +236,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: 12px;
 					background: #8a8c99;
 					cursor: pointer;
-					opacity: var(--slider-opacity);
+					opacity: var(--opacity);
 					box-shadow:
 						0 7px 0 0 #ffffff,
 						0 -7px 0 0 #ffffff;
@@ -265,10 +247,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					height: 40px;
 					width: 24px;
-					background: var(--slider-color);
+					background: var(--color);
 					cursor: pointer;
 					z-index: 1;
-					box-shadow: -100vw 0 0 100vw var(--slider-color);
+					box-shadow: -100vw 0 0 100vw var(--color);
 				}
 
 				.slider-flat-thumb::-moz-range-thumb {
@@ -276,10 +258,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-moz-appearance: none;
 					height: 40px;
 					width: 24px;
-					background: var(--slider-color);
+					background: var(--color);
 					cursor: pointer;
 					z-index: 1;
-					box-shadow: -100vw 0 0 100vw var(--slider-color);
+					box-shadow: -100vw 0 0 100vw var(--color);
 				}
 
 				.slider-off::-webkit-slider-thumb {

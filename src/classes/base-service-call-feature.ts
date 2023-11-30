@@ -4,7 +4,6 @@ import { renderString } from 'nunjucks';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 
 import { IEntry, IConfirmation } from '../models/interfaces';
 
@@ -162,14 +161,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let icon = html``;
 		if ('icon' in this.evalEntry) {
-			const style: StyleInfo = {};
-			if (this.evalEntry.icon_color) {
-				style.color = this.evalEntry.icon_color;
-			}
-			icon = html`<ha-icon
-				.icon=${this.evalEntry.icon}
-				style="${styleMap(style)}"
-			></ha-icon>`;
+			icon = html`<ha-icon .icon=${this.evalEntry.icon}></ha-icon>`;
 		}
 
 		let label = html``;
@@ -177,12 +169,7 @@ export class BaseServiceCallFeature extends LitElement {
 			let text = this.evalEntry.label;
 			if (text) {
 				text += this.evalEntry.unit_of_measurement ?? '';
-				const style: StyleInfo = {};
-				if (this.evalEntry.label_color) {
-					style.color = this.evalEntry.label_color;
-				}
-				// prettier-ignore
-				label = html`<div class="label" style="${styleMap(style)}">${text}</div>`;
+				label = html`<div class="label">${text}</div>`;
 			}
 		}
 
@@ -211,7 +198,10 @@ export class BaseServiceCallFeature extends LitElement {
 					color: inherit;
 					flex-basis: 100%;
 
+					--color: unset;
+					--icon-color: inherit;
 					--icon-filter: none;
+					--label-color: inherit;
 					--label-filter: none;
 				}
 
@@ -228,6 +218,7 @@ export class BaseServiceCallFeature extends LitElement {
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
+					color: --icon-color;
 					filter: --icon-filter;
 				}
 
@@ -242,6 +233,7 @@ export class BaseServiceCallFeature extends LitElement {
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
+					color: --label-color;
 					filter: --label-filter;
 				}
 			`,

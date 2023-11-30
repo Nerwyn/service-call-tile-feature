@@ -34,22 +34,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			options = Object.assign(new Array(entries.length), options);
 		}
 
-		const backgroundStyle: StyleInfo = {};
-		if (this.evalEntry.background_color) {
-			backgroundStyle.background = this.evalEntry.background_color;
-		}
-		if (
-			this.evalEntry.background_opacity ||
-			this.evalEntry.background_opacity == 0
-		) {
-			backgroundStyle.opacity = this.evalEntry.background_opacity;
-		}
-		const selector = [
-			html`<div
-				class="selector-background"
-				style=${styleMap(backgroundStyle)}
-			></div>`,
-		];
+		const selector = [html`<div class="selector-background"></div>`];
 
 		for (const i in entries) {
 			const entry = this.evalEntry.options![i];
@@ -61,24 +46,15 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				}
 			}
 
-			if (!('opacity' in entry)) {
-				entry.opacity = 0;
-			}
 			const option = entry.option ?? options[i];
 
-			const style: StyleInfo = {};
+			const style: StyleInfo = entry.style ?? {};
 			if (this.value == option && this.value != undefined) {
 				style.backgroundColor = 'var(--selection-color)';
 				style.opacity = 'var(--selection-opacity)';
-			} else {
-				style.backgroundColor = '';
-				style.opacity = '';
 			}
-			if ('color' in entry) {
-				style['--selection-color'] = entry.color;
-			}
-			if ('flex_basis' in entry) {
-				style['flex-basis'] = entry.flex_basis;
+			if (!('opacity' in style)) {
+				style.opacity = 0;
 			}
 
 			selector.push(
@@ -90,17 +66,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				/>`,
 			);
 		}
-		const style: StyleInfo = {};
-		if (this.evalEntry.color) {
-			style['--selection-color'] = this.evalEntry.color;
-		}
-		if (this.evalEntry.opacity || this.evalEntry.opacity == 0) {
-			style['--selection-opacity'] = this.evalEntry.opacity;
-		}
 
-		return html`<div class="container" style=${styleMap(style)}>
-			${selector}
-		</div>`;
+		return html`<div class="container">${selector}</div>`;
 	}
 
 	static get styles() {
@@ -109,6 +76,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			css`
 				:host {
 					flex-flow: row;
+
+					--background: var(--disabled-color);
+					--background-opacity: 0.2;
 					--selection-opacity: 1;
 					--selection-color: var(--tile-color);
 				}
@@ -117,8 +87,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					position: absolute;
 					width: inherit;
 					height: inherit;
-					background: var(--disabled-color);
-					opacity: 0.2;
+					background: var(--background);
+					opacity: var(--background-opacity);
 				}
 			`,
 		];
