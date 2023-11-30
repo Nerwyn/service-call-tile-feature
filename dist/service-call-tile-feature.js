@@ -39,8 +39,8 @@
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
-					color: --icon-color;
-					filter: --icon-filter;
+					color: var(--icon-color);
+					filter: var(--icon-filter);
 				}
 
 				.label {
@@ -54,8 +54,8 @@
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
-					color: --label-color;
-					filter: --label-filter;
+					color: var(--label-color);
+					filter: var(--label-filter);
 				}
 			`]}};t.BaseServiceCallFeature=a,i([(0,s.property)({attribute:!1})],a.prototype,"hass",void 0),i([(0,s.property)({attribute:!1})],a.prototype,"entry",void 0),t.BaseServiceCallFeature=a=i([(0,s.customElement)("base-service-call-feature")],a)},827:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallButton=void 0;const r=n(677),o=n(595),s=n(921),a=n(393);let l=class extends a.BaseServiceCallFeature{onClick(e){this.callService()}render(){var e;const t=super.render(),n=r.html`<button
 			class="button"

@@ -218,8 +218,8 @@ export class BaseServiceCallFeature extends LitElement {
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
-					color: --icon-color;
-					filter: --icon-filter;
+					color: var(--icon-color);
+					filter: var(--icon-filter);
 				}
 
 				.label {
@@ -233,8 +233,8 @@ export class BaseServiceCallFeature extends LitElement {
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
-					color: --label-color;
-					filter: --label-filter;
+					color: var(--label-color);
+					filter: var(--label-filter);
 				}
 			`,
 		];
