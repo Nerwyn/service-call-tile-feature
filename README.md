@@ -44,13 +44,17 @@ The custom service call feature is actually a row of entries, each of which have
 
 ### General Options
 
-| Name               | Type                  | Description                                                                                                                                              |
-| ------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type               | string                | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
-| value_attribute    | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
-| entity_id          | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
-| autofill_entity_id | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
-| confirmation       | boolean, Confirmation | Opens a browser popup asking you to confirm your action.                                                                                                 |
+| Name                | Type                  | Description                                                                                                                                              |
+| ------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type                | string                | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
+| value_attribute     | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
+| entity_id           | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
+| autofill_entity_id  | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
+| confirmation        | boolean, Confirmation | Opens a browser popup asking you to confirm your action.                                                                                                 |
+| icon                | string                | The name of the icon to use.                                                                                                                             |
+| label               | string                | A string to place either underneath the icon or by itself.                                                                                               |
+| unit_of_measurement | string                | A string to append to the end of the label, if it exists.                                                                                                |
+| style               | StyleInfo             | CSS style properties to set to the feature, further explained below.                                                                                     |
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
 
@@ -95,18 +99,22 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Style Options
 
-| Name                | Type   | Description                                                                                          |
-| ------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| color               | string | Custom color for the tile feature. Can also be a CSS function (see examples).                        |
-| opacity             | float  | Opacity of the tile feature. Defaults to 0.2. Cannot be string interpolated.                         |
-| icon                | string | Icon to use.                                                                                         |
-| icon_color          | string | Custom color for the icon.                                                                           |
-| label               | string | String label to place underneath the icon, or by itself.                                             |
-| label_color         | string | Custom color for the string label.                                                                   |
-| unit_of_measurement | string | String to append to the end of the label if the label is not empty.                                  |
-| background_color    | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
-| background_opacity  | number | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
-| flex_basis          | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
+While any CSS property can be used, these values are internal CSS variables designed to be set by the user.
+
+| Name                 | Type   | Description                                                                                          |
+| -------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| --color              | string | Custom color for the tile feature. Can also be a CSS function (see examples).                        |
+| --opacity            | float  | Opacity of the tile feature. Defaults to 0.2.                                                        |
+| --icon-color         | string | Custom color for the icon.                                                                           |
+| --label-color        | string | Custom color for the string label.                                                                   |
+| --icon-filter        | string | Filter to apply to the icon.                                                                         |
+| --label-filter       | string | Filter to apply to the string label.                                                                 |
+| --background         | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
+| --background-opacity | number | Opacity of the tile feature background. Defaults to 0.2.                                             |
+| --selection-color    | string | Color to use when hovering over a selector option and to use to highlight an option.                 |
+| --selection-opacity  | string | Opacity to use on a selected option.                                                                 |
+| --hover-opacity      | string | Opacity to use when hovering over a selector option.                                                 |
+| flex-basis           | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
 ### Slider Specific Options
 

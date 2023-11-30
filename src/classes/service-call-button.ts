@@ -27,7 +27,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				:host {
 					--opacity: 0.2;
 					--selection-color: unset;
-					--selection-opacity: 0.3;
+					--hover-opacity: 0.3;
 				}
 
 				.button {
@@ -45,7 +45,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				}
 				@media (hover: hover) {
 					.button:hover {
-						opacity: var(--selection-opacity) !important;
+						opacity: var(--hover-opacity) !important;
 						background-color: var(
 							--selection-color,
 							var(--disabled-color)
@@ -53,7 +53,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					}
 				}
 				.button:active {
-					opacity: var(--selection-opacity) !important;
+					opacity: var(--hover-opacity) !important;
 					background-color: var(
 						--selection-color,
 						var(--disabled-color)
