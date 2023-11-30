@@ -133,7 +133,7 @@
 		`;return r.html`${n}${i}${e}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--background: var(--primary-text-color);
-					--background-height: inherit;
+					--background-height: 100%;
 					--background-opacity: 0.2;
 					--opacity: 1;
 				}
