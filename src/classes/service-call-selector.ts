@@ -8,8 +8,10 @@ import './service-call-button';
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {
 	onClick(e: MouseEvent) {
-		const options = (e.currentTarget as HTMLElement).parentNode!
-			.children;
+		// Get all selection options
+		const options = (e.currentTarget as HTMLElement).parentNode!.children;
+
+		// Reset styles of all selection options to unselected
 		for (const option of options) {
 			if (option.tagName.toLowerCase() == 'service-call-button') {
 				const style = (option as HTMLElement).style;
@@ -18,6 +20,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			}
 		}
 
+		// Set style of selected option
 		const style = (e.currentTarget as HTMLElement).style;
 		style.setProperty('background-color', 'var(--selection-color)');
 		style.setProperty('opacity', 'var(--selection-opacity)');
@@ -79,8 +82,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
-					--selection-opacity: 1;
 					--selection-color: var(--tile-color);
+					--selection-opacity: 1;
 				}
 
 				.selector-background {

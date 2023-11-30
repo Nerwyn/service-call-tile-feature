@@ -107,8 +107,8 @@
 
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
-					--selection-opacity: 1;
 					--selection-color: var(--tile-color);
+					--selection-opacity: 1;
 				}
 
 				.selector-background {
@@ -132,7 +132,8 @@
 			/>
 		`;return r.html`${n}${i}${e}`}static get styles(){return[super.styles,r.css`
 				:host {
-					--background: var(--primary-text-color);
+					--color: var(--tile-color);
+					--background: var(--color, var(--state-inactive-color));
 					--background-height: 100%;
 					--background-opacity: 0.2;
 					--opacity: 1;
