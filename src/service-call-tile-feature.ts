@@ -81,10 +81,11 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		function is_state(entity_id: string, value: string | string[]) {
+			const state = states(entity_id);
 			if (typeof value == 'string') {
-				value = [value];
+				return state == value;
 			}
-			return value.includes(states(entity_id));
+			return value.includes(state);
 		}
 
 		function state_attr(entity_id: string, attribute: string) {
@@ -96,10 +97,11 @@ class ServiceCallTileFeature extends LitElement {
 			attribute: string,
 			value: string | string[],
 		) {
+			const stateAttr = state_attr(entity_id, attribute);
 			if (typeof value == 'string') {
-				value = [value];
+				return stateAttr == value;
 			}
-			return value.includes(state_attr(entity_id, attribute));
+			return value.includes(stateAttr);
 		}
 
 		function has_value(entity_id: string) {
