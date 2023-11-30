@@ -179,8 +179,6 @@ type: custom:service-call
 entries:
   - type: slider
     thumb: line
-    background_color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-    background_opacity: 1
     value_attribute: color_temp
     service: light.turn_on
     range:
@@ -189,6 +187,9 @@ entries:
     step: 1
     data:
       color_temp: VALUE
+	style:
+      --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+      --background-opacity: 1
 ```
 
 ## Selectors
@@ -226,13 +227,16 @@ features:
         entity_id: lock.front_door_ble
         options:
           - icon: mdi:lock
-            color: var(--green-color)
             option: locked
             service: lock.lock
+			style:
+			  --selection-color: var(--green-color)
           - icon: mdi:lock-open-outline
-            color: var(--red-color)
             option: unlocked
             service: lock.unlock
+			style:
+              --selection-color: var(--red-color)
+
 type: tile
 entity: lock.front_door_ble
 show_entity_picture: false
@@ -257,17 +261,11 @@ features:
   - type: custom:service-call
     entries:
       - service: light.toggle
-        icon_color: red
-        flex_basis: 200%
         icon: |
           {% if is_state("light.chandelier", "on") %}
             mdi:ceiling-light
           {% else %}
             mdi:ceiling-light-outline
-          {% endif %}
-        color: |
-          {% if is_state("light.chandelier", "on") %}
-            rgb({{ state_attr("light.chandelier", "rgb_color") }})
           {% endif %}
         label: >-
           {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
@@ -277,6 +275,13 @@ features:
           text: >-
             Are you sure you want to turn the light {{ 'on' if
             is_state('light.chandelier', 'off') else 'off' }}?
+        style:
+          flex-basis: 200%
+          '--icon-color': red
+          '--color': |
+            {% if is_state("light.chandelier", "on") %}
+              rgb({{ state_attr("light.chandelier", "rgb_color") }})
+            {% endif %}
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: orange
@@ -312,47 +317,68 @@ features:
       - type: selector
         entity_id: light.chandelier
         value_attribute: rgb_color
-        background_color: rgb({{ state_attr("light.chandelier", "rgb_color") }})
+        style:
+          '--background-color': |
+            {% if is_state("light.chandelier", "on") %}
+              rgb({{ state_attr("light.chandelier", "rgb_color") }})
+            {% endif %}
         invert_label: true
         options:
           - service: light.turn_on
             option: 255,0,0
-            color: red
             label: Red
-            label_color: red
             icon: mdi:alpha-r
             data:
               color_name: red
+            style:
+              '--label-color': red
+              '--selection-color': red
+              '--label-filter': >-
+                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
+                or []).join(',') == '255,0,0' }}
           - service: light.turn_on
             option: 0,128,0
-            color: green
             label: Green
-            label_color: green
             icon: mdi:alpha-g
             data:
               color_name: green
+            style:
+              '--label-color': green
+              '--selection-color': green
+              '--label-filter': >-
+                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
+                or []).join(',') == '0,128,0' }}
           - service: light.turn_on
             option: 0,0,255
-            color: blue
             label: Blue
-            label_color: blue
             icon: mdi:alpha-b
             data:
               color_name: blue
+            style:
+              '--label-color': blue
+              '--selection-color': blue
+              '--label-filter': >-
+                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
+                or []).join(',') == '0,0,255' }}
           - service: light.turn_on
             option: 255,166,86
-            color: white
             label: White
-            label_color: white
             icon: mdi:alpha-w
-            flex_basis: 300%
-            invert_icon: true
             data:
               color_temp: 500
+            style:
+              '--label-color': white
+              '--selection-color': white
+              flex-basis: 300%
+              '--icon-filter': >-
+                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
+                or []).join(',') == '255,166,86' }}
+              '--label-filter': >-
+                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
+                or []).join(',') == '255,166,86' }}
   - type: custom:service-call
     entries:
       - type: slider
-        color: rgb({{ state_attr("light.chandelier", "rgb_color") or (0, 0, 0) }})
         label: >-
           {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
           undefined}}
@@ -360,18 +386,16 @@ features:
         value_attribute: brightness
         icon: mdi:brightness-4
         service: light.turn_on
-        flex_basis: 200%
         data:
           brightness_pct: VALUE
+        style:
+          flex-basis: 200%
       - type: slider
         thumb: line
-        background_color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-        background_opacity: 1
         value_attribute: color_temp
         service: light.turn_on
         label: '{{ state_attr("light.chandelier", "color_temp") }}'
         unit_of_measurement: ' Mireds'
-        label_color: var(--disabled-color)
         icon: mdi:thermometer
         range:
           - 153
@@ -379,6 +403,10 @@ features:
         step: 1
         data:
           color_temp: VALUE
+        style:
+          --label-color: var(--disabled-color)
+          --background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+          --background-opacity: 1
 type: tile
 entity: light.chandelier
 ```
@@ -396,16 +424,16 @@ features:
       - service: light.toggle
         icon: mdi:power
         label: '{{ states("light.sunroom_ceiling") }}'
-        color: |
-          {% if is_state("light.sunroom_ceiling", "on") %}
-            rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-          {% endif %}
+        style:
+          '--color': |-
+            {% if is_state("light.sunroom_ceiling", ["on"]) %}
+              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+            {% endif %}
         data:
           entity_id: light.sunroom_ceiling
   - type: custom:service-call
     entries:
       - type: slider
-        color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
         label: >
           {{ (100*state_attr("light.sunroom_ceiling", "brightness")/255) | round
           or '' }}
@@ -416,14 +444,16 @@ features:
         data:
           brightness_pct: VALUE
           entity_id: light.sunroom_ceiling
+        style:
+          '--color': |
+            {% if is_state("light.sunroom_ceiling", "on") %}
+              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+            {% endif %}
       - type: slider
         thumb: line
-        background_color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-        background_opacity: 1
         value_attribute: color_temp
         service: light.turn_on
         label: '{{ state_attr("light.sunroom_ceiling", "color_temp") }}'
-        label_color: var(--disabled-color)
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -433,24 +463,28 @@ features:
         data:
           color_temp: VALUE
           entity_id: light.sunroom_ceiling
+        style:
+          '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+          '--background-opacity': 1
+          '--label-color': var(--disabled-color)
   - type: custom:service-call
     entries:
       - type: slider
         service: cover.set_cover_position
         value_attribute: current_position
         icon: mdi:curtains
-        icon_color: var(--disabled-color)
-        color: var(--tile-color)
         data:
           position: VALUE
           entity_id: cover.sunroom_curtains
+        style:
+          '--color': var(--tile-color)
+          '--icon-color': var(--disabled-color)
   - type: custom:service-call
     entries:
       - type: slider
         service: media_player.volume_set
         value_attribute: volume_level
         icon: mdi:spotify
-        color: rgb(31, 223, 100)
         label: '{{ state_attr("media_player.spotify_nerwyn_singh", "media_title") }}'
         range:
           - 0
@@ -459,6 +493,8 @@ features:
         data:
           volume_level: VALUE
           entity_id: media_player.spotify_nerwyn_singh
+        style:
+          '--color': rgb(31, 223, 100)
 type: tile
 entity: binary_sensor.sun_room
 color: accent

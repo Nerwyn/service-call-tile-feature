@@ -48,7 +48,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 						opacity: var(--hover-opacity) !important;
 						background-color: var(
 							--selection-color,
-							var(--disabled-color)
+							var(--color, var(--disabled-color))
 						);
 					}
 				}
@@ -56,7 +56,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					opacity: var(--hover-opacity) !important;
 					background-color: var(
 						--selection-color,
-						var(--disabled-color)
+						var(--color, var(--disabled-color))
 					);
 				}
 			`,
