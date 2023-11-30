@@ -54,73 +54,32 @@ The custom service call feature is actually a row of entries, each of which have
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
 
-The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used for `VALUE` string interpolation as described below.
+The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `VALUE`, such as for sliders.
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
 More information on Home Assistant action confirmations can be found [here](https://www.home-assistant.io/dashboards/actions/#options-for-confirmation). Confirmation text supports string interpolation as described below.
 
-### String Interpolation
+### Templating
 
-Many fields such as colors and labels can have the entity state or attributes interpolated, or can accept CSS variables and functions.
+All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful.
 
-If any of these values returns an empty string or undefined value, an empty string is returned for the entire string, not just the interpolation. Labels will also not be generated so icons will be properly centered.
+#### Functions
 
-To better understand entity attributes, use the states Developer Tool found in Home Assistant.
+I've recreated a subset of the Home Assistant template functions for you to use as defined by the [Home Assistant templating documentation](https://www.home-assistant.io/docs/configuration/templating/), along with some other useful variables. If there are additional functions that you want implemented, please make a feature request.
 
-#### Value
+| Name          | Arguments                   | Description                                                                                        |
+| ------------- | --------------------------- | -------------------------------------------------------------------------------------------------- |
+| True          |                             | Python `True` equivalent to JavaScript `true`.                                                     |
+| False         |                             | Python `False` equivalent to JavaScript `false`.                                                   |
+| None          |                             | Python `None` equivalent to JavaScript `null`.                                                     |
+| states        | entity_id                   | Returns the state string of the given entity.                                                      |
+| is_state      | entity_id, value            | Compares an entity's state with a specified state or list of states and returns `true` or `false`. |
+| state_attr    | entity_id, attribute        | Returns the value of the attribute or `undefined` if it doesn't exist.                             |
+| is_state_attr | entity_id, attribute, value | Tests if the given entity attribute is the specified value.                                        |
+| has_value     | entity_id                   | Tests if the given entity is not unknown or unavailable.                                           |
 
-Use `VALUE` to interpolate whatever is set in `value_attribute`, whether it is an entity's state (default) or attribute.
-
-```yaml
-type: custom:service-call
-entries:
-  - type: slider
-    service: cover.set_cover_position
-    value_attribute: current_position
-    icon: mdi:curtains
-    data:
-      position: VALUE
-    target:
-      entity_id: cover.sunroom_curtains
-```
-
-#### State
-
-Use `STATE` in a field to interpolate the state of an entity.
-
-```yaml
-type: custom:service-call
-entries:
-  - service: light.toggle
-    icon: mdi:power
-    label: STATE
-    target:
-      entity_id: light.sunroom_ceiling
-```
-
-#### Attributes
-
-Use `ATTRIBUTE[]` to interpolate an attribute of an entity, putting the attribute name between the square brackets.
-
-```yaml
-type: custom:service-call
-entries:
-  - type: slider
-    color: ATTRIBUTE[rgb_color]
-    label: VALUE%
-    value_attribute: brightness
-    icon: mdi:brightness-4
-    service: light.turn_on
-    data:
-      brightness_pct: VALUE
-      entity_id: light.sunroom_ceiling
-```
-
-Certain attributes will have additional parsing applied to them before being interpolated.
-
-- `brightness` gets converted from an 8 bit (0-255) value to a whole number percentage (0-100).
-- `rgb_color` gets converted from an array of three values e.g. `[255, 128, 0]` to a CSS rgb function `rgb(255, 128, 0)`.
+To better understand entity states and attributes, use the states Developer Tool found in Home Assistant.
 
 ### Service Call Options
 
@@ -136,19 +95,18 @@ To better understand service calls, use the services Developer Tool found in Hom
 
 ### Style Options
 
-| Name               | Type   | Description                                                                                          |
-| ------------------ | ------ | ---------------------------------------------------------------------------------------------------- |
-| color              | string | Custom color for the tile feature. Can also be a CSS function (see examples).                        |
-| opacity            | float  | Opacity of the tile feature. Defaults to 0.2. Cannot be string interpolated.                         |
-| icon               | string | Icon to use.                                                                                         |
-| icon_color         | string | Custom color for the icon.                                                                           |
-| label              | string | String label to place underneath the icon, or by itself.                                             |
-| label_color        | string | Custom color for the string label.                                                                   |
-| background_color   | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
-| background_opacity | number | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
-| flex_basis         | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
-
-String interpolation can be used for any of these values except for opacity.
+| Name                | Type   | Description                                                                                          |
+| ------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| color               | string | Custom color for the tile feature. Can also be a CSS function (see examples).                        |
+| opacity             | float  | Opacity of the tile feature. Defaults to 0.2. Cannot be string interpolated.                         |
+| icon                | string | Icon to use.                                                                                         |
+| icon_color          | string | Custom color for the icon.                                                                           |
+| label               | string | String label to place underneath the icon, or by itself.                                             |
+| label_color         | string | Custom color for the string label.                                                                   |
+| unit_of_measurement | string | String to append to the end of the label if the label is not empty.                                  |
+| background_color    | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
+| background_opacity  | number | Opacity of the tile feature background. Defaults to 0.2. Cannot be string interpolated.              |
+| flex_basis          | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
 ### Slider Specific Options
 
@@ -160,12 +118,10 @@ String interpolation can be used for any of these values except for opacity.
 
 ### Selector Specific Options
 
-| Name         | Type     | Description                                                                                                                             |
-| ------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| options      | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
-| option       | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
-| invert_icon  | boolean  | Toggle to enable inverting of icon color when option is selected. Defaults to false.                                                    |
-| invert_label | boolean  | Toggle to enable inverting of label color when option is selected. Defaults to false.                                                   |
+| Name             | Type     | Description                                                                                                                             |
+| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| options          | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
+| options.i.option | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
 
 # Feature Types
 
@@ -194,7 +150,7 @@ To create a slider, add a Service Call tile feature to your tile and edit it. Ch
 
 Similarly to buttons, you have to set `service` to a service call for the slider to actually do anything.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. This works just like string interpolation as described above.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. **DO NOT use templating to set value**, it will pull a stale value from the Home Assistant frontend states object rather than the updated slider value.
 
 ```yaml
 type: custom:service-call
@@ -248,26 +204,31 @@ This card is set up to work with Home Assistant `input_select` entities out of t
 
 Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
 
-You can enable inverting of selected option icons and labels by setting `invert_icon` and or `invert_label` to true at either the entry or option level, with the former applying to all options and the latter applying to a single option and overriding the parent level setting.
-
 # Examples
 
 ## Example 1
 
-A lock tile with lock and unlock buttons
+A lock tile with lock and unlock selector options
 
 ```yaml
+features:
+  - type: custom:service-call
+    entries:
+      - type: selector
+        entity_id: lock.front_door_ble
+        options:
+          - icon: mdi:lock
+            color: var(--green-color)
+            option: locked
+            service: lock.lock
+          - icon: mdi:lock-open-outline
+            color: var(--red-color)
+            option: unlocked
+            service: lock.unlock
 type: tile
 entity: lock.front_door_ble
 show_entity_picture: false
 vertical: true
-features:
-  - type: custom:service-call
-    entries:
-      - service: lock.lock
-        icon: mdi:lock
-      - service: lock.unlock
-        icon: mdi:lock-open
 card_mod:
   style:
     ha-tile-info$: |
@@ -281,16 +242,33 @@ card_mod:
 
 ## Example 2
 
-A light tile with a button for each bulb and a color selector, with emphasis on certain options.
+A light tile with a button for each bulb, a color selector, and brightness and temperature sliders, with emphasis on certain options.
 
 ```yaml
 features:
   - type: custom:service-call
     entries:
       - service: light.toggle
-        icon: mdi:ceiling-light
         icon_color: red
         flex_basis: 200%
+        icon: |
+          {% if is_state("light.chandelier", "on") %}
+            mdi:ceiling-light
+          {% else %}
+            mdi:ceiling-light-outline
+          {% endif %}
+        color: |
+          {% if is_state("light.chandelier", "on") %}
+            rgb({{ state_attr("light.chandelier", "rgb_color") }})
+          {% endif %}
+        label: >-
+          {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
+          undefined }}
+        unit_of_measurement: '%'
+        confirmation:
+          text: >-
+            Are you sure you want to turn the light {{ 'on' if
+            is_state('light.chandelier', 'off') else 'off' }}?
       - service: light.toggle
         icon: mdi:lightbulb
         icon_color: orange
@@ -326,13 +304,15 @@ features:
       - type: selector
         entity_id: light.chandelier
         value_attribute: rgb_color
-        background_color: rgb(VALUE)
+        background_color: rgb({{ state_attr("light.chandelier", "rgb_color") }})
+        invert_label: true
         options:
           - service: light.turn_on
             option: 255,0,0
             color: red
             label: Red
             label_color: red
+            icon: mdi:alpha-r
             data:
               color_name: red
           - service: light.turn_on
@@ -340,6 +320,7 @@ features:
             color: green
             label: Green
             label_color: green
+            icon: mdi:alpha-g
             data:
               color_name: green
           - service: light.turn_on
@@ -347,6 +328,7 @@ features:
             color: blue
             label: Blue
             label_color: blue
+            icon: mdi:alpha-b
             data:
               color_name: blue
           - service: light.turn_on
@@ -354,14 +336,46 @@ features:
             color: white
             label: White
             label_color: white
+            icon: mdi:alpha-w
             flex_basis: 300%
+            invert_icon: true
             data:
               color_temp: 500
+  - type: custom:service-call
+    entries:
+      - type: slider
+        color: rgb({{ state_attr("light.chandelier", "rgb_color") or (0, 0, 0) }})
+        label: >-
+          {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
+          undefined}}
+        unit_of_measurement: '%'
+        value_attribute: brightness
+        icon: mdi:brightness-4
+        service: light.turn_on
+        flex_basis: 200%
+        data:
+          brightness_pct: VALUE
+      - type: slider
+        thumb: line
+        background_color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+        background_opacity: 1
+        value_attribute: color_temp
+        service: light.turn_on
+        label: '{{ state_attr("light.chandelier", "color_temp") }}'
+        unit_of_measurement: ' Mireds'
+        label_color: var(--disabled-color)
+        icon: mdi:thermometer
+        range:
+          - 153
+          - 371
+        step: 1
+        data:
+          color_temp: VALUE
 type: tile
 entity: light.chandelier
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/light_tile.png" alt="light_tile" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
 
 ## Example 3
 
@@ -373,14 +387,21 @@ features:
     entries:
       - service: light.toggle
         icon: mdi:power
-        label: STATE
+        label: '{{ states("light.sunroom_ceiling") }}'
+        color: |
+          {% if is_state("light.sunroom_ceiling", "on") %}
+            rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+          {% endif %}
         data:
           entity_id: light.sunroom_ceiling
   - type: custom:service-call
     entries:
       - type: slider
-        color: ATTRIBUTE[rgb_color]
-        label: VALUE%
+        color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+        label: >
+          {{ (100*state_attr("light.sunroom_ceiling", "brightness")/255) | round
+          or '' }}
+        unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
         service: light.turn_on
@@ -393,8 +414,9 @@ features:
         background_opacity: 1
         value_attribute: color_temp
         service: light.turn_on
-        label: ATTRIBUTE[color_temp] Mireds
+        label: '{{ state_attr("light.sunroom_ceiling", "color_temp") }}'
         label_color: var(--disabled-color)
+        unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
           - 153
@@ -421,14 +443,14 @@ features:
         value_attribute: volume_level
         icon: mdi:spotify
         color: rgb(31, 223, 100)
-        label: ATTRIBUTE[media_title]
+        label: '{{ state_attr("media_player.spotify_nerwyn_singh", "media_title") }}'
         range:
           - 0
           - 1
         thumb: flat
         data:
           volume_level: VALUE
-          entity_id: media_player.spotify
+          entity_id: media_player.spotify_nerwyn_singh
 type: tile
 entity: binary_sensor.sun_room
 color: accent

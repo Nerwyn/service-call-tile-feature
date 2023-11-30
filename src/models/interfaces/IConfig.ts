@@ -69,6 +69,4 @@ export interface IOption extends IEntry {
 
 export interface ISelectorOptions {
 	options?: IOption[];
-	invert_icon?: boolean;
-	invert_label?: boolean;
 }

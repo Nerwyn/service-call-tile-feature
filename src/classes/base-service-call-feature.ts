@@ -33,8 +33,11 @@ export class BaseServiceCallFeature extends LitElement {
 			return hass.states[entity_id].state;
 		}
 
-		function is_state(entity_id: string, value: string) {
-			return states(entity_id) == value;
+		function is_state(entity_id: string, value: string | string[]) {
+			if (typeof value == 'string') {
+				value = [value];
+			}
+			return value.includes(states(entity_id));
 		}
 
 		function state_attr(entity_id: string, attribute: string) {
@@ -44,9 +47,12 @@ export class BaseServiceCallFeature extends LitElement {
 		function is_state_attr(
 			entity_id: string,
 			attribute: string,
-			value: string,
+			value: string | string[],
 		) {
-			return state_attr(entity_id, attribute) == value;
+			if (typeof value == 'string') {
+				value = [value];
+			}
+			return value.includes(state_attr(entity_id, attribute));
 		}
 
 		function has_value(entity_id: string) {
@@ -66,7 +72,6 @@ export class BaseServiceCallFeature extends LitElement {
 			True: true,
 			False: false,
 			None: null,
-			eval,
 			states,
 			is_state,
 			state_attr,
@@ -205,6 +210,9 @@ export class BaseServiceCallFeature extends LitElement {
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
+
+					--icon-filter: none;
+					--label-filter: none;
 				}
 
 				.container {
@@ -220,7 +228,7 @@ export class BaseServiceCallFeature extends LitElement {
 					flex-flow: column;
 					place-content: center;
 					z-index: 2;
-					filter: invert(var(--invert-icon));
+					filter: --icon-filter;
 				}
 
 				.label {
@@ -234,7 +242,7 @@ export class BaseServiceCallFeature extends LitElement {
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
-					filter: invert(var(--invert-label));
+					filter: --label-filter;
 				}
 			`,
 		];
