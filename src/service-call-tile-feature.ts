@@ -2,7 +2,6 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -82,8 +81,6 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const style = styleMap(entry.style!);
-
 			const entryType = (entry.type ?? 'button').toLowerCase();
 			switch (entryType) {
 				case 'slider':
@@ -91,7 +88,6 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-slider
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${style}
 						/>`,
 					);
 					break;
@@ -100,7 +96,6 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-selector
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${style}
 						/>`,
 					);
 					break;
@@ -110,7 +105,6 @@ class ServiceCallTileFeature extends LitElement {
 						html`<service-call-button
 							.hass=${this.hass}
 							.entry=${entry}
-							style=${style}
 						/>`,
 					);
 					break;
@@ -147,9 +141,11 @@ class ServiceCallTileFeature extends LitElement {
 		};
 		const style = entry.style ?? {};
 		for (const field in deprecatedStyleFields) {
-			style[deprecatedStyleFields[field]] = entry[
-				field as keyof IEntry
-			] as string;
+			if (field in entry) {
+				style[deprecatedStyleFields[field]] = entry[
+					field as keyof IEntry
+				] as string;
+			}
 		}
 		entry.style = style;
 

@@ -48,13 +48,13 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			const option = entry.option ?? options[i];
 
-			const style: StyleInfo = entry.style ?? {};
+			const optionStyle: StyleInfo = entry.style ?? {};
 			if (this.value == option && this.value != undefined) {
-				style.backgroundColor = 'var(--selection-color)';
-				style.opacity = 'var(--selection-opacity)';
+				optionStyle.backgroundColor = 'var(--selection-color)';
+				optionStyle.opacity = 'var(--selection-opacity)';
 			}
-			if (!('opacity' in style)) {
-				style.opacity = 0;
+			if (!('opacity' in optionStyle)) {
+				optionStyle.opacity = 0;
 			}
 
 			selector.push(
@@ -62,12 +62,13 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					.hass=${this.hass}
 					.entry=${entry}
 					@click=${this.onClick}
-					style=${styleMap(style)}
+					style=${styleMap(optionStyle)}
 				/>`,
 			);
 		}
 
-		return html`<div class="container">${selector}</div>`;
+		const style = styleMap(this.evalEntry.style ?? {});
+		return html`<div class="container" style=${style}>${selector}</div>`;
 	}
 
 	static get styles() {
@@ -76,7 +77,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			css`
 				:host {
 					flex-flow: row;
+				}
 
+				.container {
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
 					--selection-opacity: 1;

@@ -197,18 +197,18 @@ export class BaseServiceCallFeature extends LitElement {
 					font-size: inherit;
 					color: inherit;
 					flex-basis: 100%;
-
-					--color: unset;
-					--icon-color: inherit;
-					--icon-filter: none;
-					--label-color: inherit;
-					--label-filter: none;
 				}
 
 				.container {
 					all: inherit;
 					height: 100%;
 					overflow: hidden;
+
+					--color: unset;
+					--icon-color: inherit;
+					--icon-filter: none;
+					--label-color: inherit;
+					--label-filter: none;
 				}
 
 				ha-icon {

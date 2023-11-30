@@ -1,5 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -126,7 +127,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		return html`<div class="container">
+		const style = styleMap(this.evalEntry.style ?? {});
+		return html`<div class="container" style=${style}>
 			${background}${slider}${icon_label}
 		</div>`;
 	}
@@ -135,7 +137,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		return [
 			super.styles as CSSResult,
 			css`
-				:host {
+				.container {
 					--background: var(--primary-text-color);
 					--background-height: inherit;
 					--background-opacity: 0.2;
