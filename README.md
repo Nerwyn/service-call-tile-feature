@@ -281,6 +281,8 @@ features:
           '--color': |
             {% if is_state("light.chandelier", "on") %}
               rgb({{ state_attr("light.chandelier", "rgb_color") }})
+			{% else %}
+			  initial
             {% endif %}
       - service: light.toggle
         icon: mdi:lightbulb
@@ -321,6 +323,8 @@ features:
           '--background-color': |
             {% if is_state("light.chandelier", "on") %}
               rgb({{ state_attr("light.chandelier", "rgb_color") }})
+			{% else %}
+			  initial
             {% endif %}
         invert_label: true
         options:
@@ -428,6 +432,8 @@ features:
           '--color': |-
             {% if is_state("light.sunroom_ceiling", ["on"]) %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+			{% else %}
+			  initial
             {% endif %}
         data:
           entity_id: light.sunroom_ceiling
@@ -448,6 +454,8 @@ features:
           '--color': |
             {% if is_state("light.sunroom_ceiling", "on") %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+			{% else %}
+			  initial
             {% endif %}
       - type: slider
         thumb: line
@@ -512,13 +520,14 @@ features:
     entries:
       - type: selector
         entity_id: input_select.lounge_tv_theater_mode
-        color: var(--blue-color)
-        flex_basis: 140%
         options:
           - icon: mdi:movie
           - icon: mdi:movie-off
           - icon: mdi:movie-outline
           - icon: mdi:movie-off-outline
+        style:
+          --selection-color: var(--blue-color)
+          flex-basis: 140%
       - type: selector
         entity_id: input_select.lounge_tv_listening_mode
         options:
@@ -529,13 +538,14 @@ features:
     entries:
       - type: selector
         entity_id: input_select.lounge_tv_source
-        color: var(--red-color)
         options:
           - icon: mdi:television-box
           - icon: mdi:microsoft-windows
           - icon: mdi:vhs
           - icon: mdi:record-player
           - icon: mdi:video-input-hdmi
+        style:
+          --selection-color: var(--red-color)
 type: tile
 entity: input_select.lounge_tv_listening_mode
 color: green
