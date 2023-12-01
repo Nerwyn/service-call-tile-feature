@@ -100,6 +100,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 				.selected-option {
 					--opacity: 1;
+					--hover-opacity: 1;
 				}
 			`,
 		];
