@@ -4,8 +4,6 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { renderString } from 'nunjucks';
-
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 
@@ -13,6 +11,7 @@ import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
+import { renderTemplates } from './utils';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -62,86 +61,6 @@ class ServiceCallTileFeature extends LitElement {
 		this.config = config;
 	}
 
-	renderTemplate(entry: IEntry | string): IEntry | string {
-		// Recursion!
-		if (typeof entry == 'object' && entry != null) {
-			for (const key in entry) {
-				(entry as Record<string, string>)[key] = this.renderTemplate(
-					(entry as Record<string, string>)[key],
-				) as string;
-			}
-			return entry;
-		}
-
-		// Define Home Assistant templating functions for nunjucks context
-		const hass = this.hass;
-
-		function states(entity_id: string) {
-			return hass.states[entity_id].state;
-		}
-
-		function is_state(entity_id: string, value: string | string[]) {
-			const state = states(entity_id);
-			if (typeof value == 'string') {
-				return state == value;
-			}
-			return value.includes(state);
-		}
-
-		function state_attr(entity_id: string, attribute: string) {
-			return hass.states[entity_id].attributes[attribute];
-		}
-
-		function is_state_attr(
-			entity_id: string,
-			attribute: string,
-			value: string | string[],
-		) {
-			const stateAttr = state_attr(entity_id, attribute);
-			if (typeof value == 'string') {
-				return stateAttr == value;
-			}
-			return value.includes(stateAttr);
-		}
-
-		function has_value(entity_id: string) {
-			try {
-				const state = states(entity_id);
-				if ([false, 0, -0, ''].includes(state)) {
-					return true;
-				} else {
-					return Boolean(state);
-				}
-			} catch {
-				return false;
-			}
-		}
-
-		const context = {
-			True: true,
-			False: false,
-			None: null,
-			states,
-			is_state,
-			state_attr,
-			is_state_attr,
-			has_value,
-		};
-
-		if (
-			typeof entry == 'string' &&
-			(entry.includes('{{') || entry.includes('{%'))
-		) {
-			entry = renderString(entry, context).trim();
-		}
-
-		if (entry == undefined || entry == null) {
-			entry = '';
-		}
-
-		return entry;
-	}
-
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -164,8 +83,9 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const evalutedEntry = this.renderTemplate(
+			const evalutedEntry = renderTemplates(
 				JSON.parse(JSON.stringify(entry)),
+				this.hass,
 			) as IEntry;
 
 			const style = styleMap(evalutedEntry.style!);
