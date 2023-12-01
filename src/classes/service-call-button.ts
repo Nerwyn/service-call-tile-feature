@@ -1,5 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -12,8 +13,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
+		const style = styleMap(this.entry.background_style ?? {});
+
 		const button = html`<button
 			class="button"
+			style=${style}
 			@click=${this.onClick}
 		></button>`;
 

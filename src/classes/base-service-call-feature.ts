@@ -2,6 +2,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry, IConfirmation } from '../models/interfaces';
 
@@ -72,7 +73,11 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let icon = html``;
 		if ('icon' in this.entry) {
-			icon = html`<ha-icon .icon=${this.entry.icon}></ha-icon>`;
+			const style = styleMap(this.entry.icon_style ?? {});
+			icon = html`<ha-icon
+				.icon=${this.entry.icon}
+				style=${style}
+			></ha-icon>`;
 		}
 
 		let label = html``;
@@ -80,7 +85,8 @@ export class BaseServiceCallFeature extends LitElement {
 			let text = this.entry.label;
 			if (text) {
 				text += this.entry.unit_of_measurement ?? '';
-				label = html`<div class="label">${text}</div>`;
+				const style = styleMap(this.entry.label_style ?? {});
+				label = html`<div class="label" style=${style}>${text}</div>`;
 			}
 		}
 

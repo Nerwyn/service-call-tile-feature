@@ -1,5 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -92,7 +93,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
-		const background = html`<div class="slider-background"></div>`;
+		const background_style = styleMap(this.entry.background_style ?? {});
+		const background = html`<div
+			class="slider-background"
+			style=${background_style}
+		></div>`;
 
 		this.class = 'slider';
 		switch (this.entry.thumb) {
@@ -112,10 +117,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		) {
 			this.class = 'slider-off';
 		}
+		const slider_style = styleMap(this.entry.slider_style ?? {});
 		const slider = html`
 			<input
 				type="range"
 				class="${this.class}"
+				style=${slider_style}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
 				step=${step}

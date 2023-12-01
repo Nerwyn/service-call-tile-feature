@@ -187,7 +187,7 @@ entries:
     step: 1
     data:
       color_temp: VALUE
-	style:
+    style:
       --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
       --background-opacity: 1
 ```
@@ -229,12 +229,12 @@ features:
           - icon: mdi:lock
             option: locked
             service: lock.lock
-			style:
-			  --selection-color: var(--green-color)
+            style:
+              --selection-color: var(--green-color)
           - icon: mdi:lock-open-outline
             option: unlocked
             service: lock.unlock
-			style:
+            style:
               --selection-color: var(--red-color)
 
 type: tile
@@ -281,8 +281,8 @@ features:
           '--color': |
             {% if is_state("light.chandelier", "on") %}
               rgb({{ state_attr("light.chandelier", "rgb_color") }})
-			{% else %}
-			  initial
+            {% else %}
+              initial
             {% endif %}
       - service: light.toggle
         icon: mdi:lightbulb
@@ -320,11 +320,11 @@ features:
         entity_id: light.chandelier
         value_attribute: rgb_color
         style:
-          '--background-color': |
+          '--background': |
             {% if is_state("light.chandelier", "on") %}
-              rgb({{ state_attr("light.chandelier", "rgb_color") }})
-			{% else %}
-			  initial
+            rgb({{ state_attr("light.chandelier", "rgb_color") }})
+            {% else %}
+            initial
             {% endif %}
         invert_label: true
         options:
@@ -432,8 +432,8 @@ features:
           '--color': |-
             {% if is_state("light.sunroom_ceiling", ["on"]) %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-			{% else %}
-			  initial
+            {% else %}
+              initial
             {% endif %}
         data:
           entity_id: light.sunroom_ceiling
@@ -454,8 +454,8 @@ features:
           '--color': |
             {% if is_state("light.sunroom_ceiling", "on") %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-			{% else %}
-			  initial
+            {% else %}
+              initial
             {% endif %}
       - type: slider
         thumb: line

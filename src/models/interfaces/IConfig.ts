@@ -15,6 +15,10 @@ export interface IEntry extends IServiceCall, ISliderOptions, ISelectorOptions {
 	label?: string;
 	unit_of_measurement?: string;
 	style?: StyleInfo;
+	icon_style?: StyleInfo;
+	label_style?: StyleInfo;
+	background_style?: StyleInfo;
+	slider_style?: StyleInfo;
 }
 
 export type TileFeatureType = 'button' | 'slider' | 'selector';
