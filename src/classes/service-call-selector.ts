@@ -59,9 +59,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			}
 
 			const style: StyleInfo = entry.style ?? {};
-			if (!('--opacity' in style)) {
-				style['--opacity'] = 0;
-			}
 
 			selector.push(
 				html`<service-call-button
@@ -86,8 +83,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
-					--selection-color: var(--tile-color);
-					--selection-opacity: 1;
+					--color: var(--tile-color);
 				}
 
 				.selector-background {
@@ -99,13 +95,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				}
 
 				.option {
-					background: none;
-					opacity: 0;
+					--opacity: 0;
 				}
 
 				.selected-option {
-					background: var(--selection-color);
-					opacity: var(--selection-opacity);
+					--opacity: 1;
 				}
 			`,
 		];

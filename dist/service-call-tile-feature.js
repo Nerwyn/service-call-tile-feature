@@ -67,7 +67,6 @@
 		></button>`;return r.html`${i}${t}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--opacity: 0.2;
-					--selection-color: unset;
 					--hover-opacity: 0.3;
 				}
 
@@ -87,23 +86,17 @@
 				@media (hover: hover) {
 					.button:hover {
 						opacity: var(--hover-opacity) !important;
-						background-color: var(
-							--selection-color,
-							var(--color, var(--disabled-color))
-						);
+						background-color: var(--color, var(--disabled-color));
 					}
 				}
 				.button:active {
 					opacity: var(--hover-opacity) !important;
-					background-color: var(
-						--selection-color,
-						var(--color, var(--disabled-color))
-					);
+					background-color: var(--color, var(--disabled-color));
 				}
 			`]}};t.ServiceCallButton=l,t.ServiceCallButton=l=i([(0,o.customElement)("service-call-button")],l)},369:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallSelector=void 0;const r=n(677),o=n(595),s=n(921),a=n(393);n(827);let l=class extends a.BaseServiceCallFeature{onClick(e){const t=e.currentTarget.parentNode.children;for(const e of t)"service-call-button"==e.tagName.toLowerCase()&&(e.className="option");e.currentTarget.className="selected-option"}render(){var e,t,n,i,o;super.render();const a=null!==(e=this.entry.options)&&void 0!==e?e:[];let l=null!==(t=this.hass.states[this.entry.entity_id].attributes.options)&&void 0!==t?t:new Array(a.length);l.length<a.length&&(l=Object.assign(new Array(a.length),l));const c=(0,s.styleMap)(null!==(n=this.entry.background_style)&&void 0!==n?n:{}),u=[r.html`<div
 				class="selector-background"
 				style=${c}
-			></div>`];for(const e in a){const t=this.entry.options[e];"service"in t||(t.service="input_select.select_option","option"in t.data||(t.data.option=l[e]));const n=null!==(i=t.option)&&void 0!==i?i:l[e];let a="option";this.value==n&&null!=this.value&&(a="selected-option");const c=null!==(o=t.style)&&void 0!==o?o:{};"--opacity"in c||(c["--opacity"]=0),u.push(r.html`<service-call-button
+			></div>`];for(const e in a){const t=this.entry.options[e];"service"in t||(t.service="input_select.select_option","option"in t.data||(t.data.option=l[e]));const n=null!==(i=t.option)&&void 0!==i?i:l[e];let a="option";this.value==n&&null!=this.value&&(a="selected-option");const c=null!==(o=t.style)&&void 0!==o?o:{};u.push(r.html`<service-call-button
 					class=${a}
 					.hass=${this.hass}
 					.entry=${t}
@@ -115,8 +108,7 @@
 
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
-					--selection-color: var(--tile-color);
-					--selection-opacity: 1;
+					--color: var(--tile-color);
 				}
 
 				.selector-background {
@@ -128,13 +120,11 @@
 				}
 
 				.option {
-					background: none;
-					opacity: 0;
+					--opacity: 0;
 				}
 
 				.selected-option {
-					background: var(--selection-color);
-					opacity: var(--selection-opacity);
+					--opacity: 1;
 				}
 			`]}};t.ServiceCallSelector=l,t.ServiceCallSelector=l=i([(0,o.customElement)("service-call-selector")],l)},719:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallSlider=void 0;const r=n(677),o=n(595),s=n(921),a=n(393);let l=class extends a.BaseServiceCallFeature{constructor(){super(...arguments),this.speed=2,this.range=[0,100],this.class="slider"}onInput(e){var t,n,i;e.preventDefault(),e.stopImmediatePropagation();const r=e.currentTarget,o=parseFloat(null!==(n=null!==(t=this.oldValue)&&void 0!==t?t:this.value)&&void 0!==n?n:"0"),s=parseFloat(null!==(i=r.value)&&void 0!==i?i:o);r.value=o.toString(),this.newValue=s,s>this.range[0]&&(r.className=this.class);let a=o;if(o>s){const e=setInterval((()=>{a-=this.speed,r.value=a.toString(),s>=a&&(clearInterval(e),r.value=s.toString(),s<=this.range[0]&&"slider-line-thumb"!=this.class&&(r.className="slider-off"))}),1)}else if(o<s){const e=setInterval((()=>{a+=this.speed,r.value=a.toString(),s<=a&&(clearInterval(e),r.value=s.toString())}),1)}else r.value=s.toString();this.oldValue=s}onEnd(e){this.newValue||0==this.newValue||(this.newValue=this.value),this.newValue%1==0&&(this.newValue=Math.trunc(this.newValue)),this.value=this.newValue,this.callService()}render(){var e,t;const n=super.render();null==this.oldValue&&(this.oldValue=parseFloat(this.value)),null==this.newValue&&(this.newValue=parseFloat(this.value)),this.entry.range&&(this.range=this.entry.range);let i=(this.range[1]-this.range[0])/100;this.entry.step&&(i=this.entry.step),this.speed=(this.range[1]-this.range[0])/50;const o=(0,s.styleMap)(null!==(e=this.entry.background_style)&&void 0!==e?e:{}),a=r.html`<div
 			class="slider-background"

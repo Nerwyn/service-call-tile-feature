@@ -111,8 +111,6 @@ While any CSS property can be used, these values are internal CSS variables desi
 | --label-filter       | string | Filter to apply to the string label.                                                                 |
 | --background         | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
 | --background-opacity | number | Opacity of the tile feature background. Defaults to 0.2.                                             |
-| --selection-color    | string | Color to use when hovering over a selector option and to use to highlight an option.                 |
-| --selection-opacity  | string | Opacity to use on a selected option.                                                                 |
 | --hover-opacity      | string | Opacity to use when hovering over a selector option.                                                 |
 | flex-basis           | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
