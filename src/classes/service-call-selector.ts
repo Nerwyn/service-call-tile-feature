@@ -11,19 +11,15 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		// Get all selection options
 		const options = (e.currentTarget as HTMLElement).parentNode!.children;
 
-		// Reset styles of all selection options to unselected
+		// Set class of all selection options to default
 		for (const option of options) {
 			if (option.tagName.toLowerCase() == 'service-call-button') {
-				const style = (option as HTMLElement).style;
-				style.removeProperty('background-color');
-				style.removeProperty('opacity');
+				option.className = 'option';
 			}
 		}
 
-		// Set style of selected option
-		const style = (e.currentTarget as HTMLElement).style;
-		style.setProperty('background-color', 'var(--selection-color)');
-		style.setProperty('opacity', 'var(--selection-opacity)');
+		// Set selected option class
+		(e.currentTarget as HTMLElement).className = 'selected-option';
 	}
 
 	render() {
@@ -51,17 +47,19 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			const option = entry.option ?? options[i];
 
-			const style: StyleInfo = entry.style ?? {};
+			let optionClass = 'option';
 			if (this.value == option && this.value != undefined) {
-				style.backgroundColor = 'var(--selection-color)';
-				style.opacity = 1;
+				optionClass = 'selected-option';
 			}
+
+			const style: StyleInfo = entry.style ?? {};
 			if (!('--opacity' in style)) {
 				style['--opacity'] = 0;
 			}
 
 			selector.push(
 				html`<service-call-button
+					class=${optionClass}
 					.hass=${this.hass}
 					.entry=${entry}
 					@click=${this.onClick}
@@ -92,6 +90,16 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					height: inherit;
 					background: var(--background);
 					opacity: var(--background-opacity);
+				}
+
+				.option {
+					background: none;
+					opacity: 0;
+				}
+
+				.selected-option {
+					background: var(--selection-color);
+					opacity: var(--selection-opacity);
 				}
 			`,
 		];
