@@ -11,7 +11,7 @@ import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
-import { renderTemplates } from './utils';
+import { renderTemplate } from './utils';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -83,9 +83,9 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const evalutedEntry = renderTemplates(
-				JSON.parse(JSON.stringify(entry)),
+			const evalutedEntry = renderTemplate(
 				this.hass,
+				JSON.parse(JSON.stringify(entry)),
 			) as IEntry;
 
 			const style = styleMap(evalutedEntry.style!);
