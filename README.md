@@ -114,6 +114,8 @@ While any CSS property can be used, these values are internal CSS variables desi
 | --hover-opacity      | string | Opacity to use when hovering over a selector option.                                                 |
 | flex-basis           | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
+If you want to apply additional styles to subelements, you can also use the options `icon_style`, `label_style`, `background_style`, and `slider_style`.
+
 ### Slider Specific Options
 
 | Name  | Type   | Description                                                                                                                                                          |
@@ -228,13 +230,12 @@ features:
             option: locked
             service: lock.lock
             style:
-              --selection-color: var(--green-color)
+              '--color': var(--green-color)
           - icon: mdi:lock-open-outline
             option: unlocked
             service: lock.unlock
             style:
-              --selection-color: var(--red-color)
-
+              '--color': var(--red-color)
 type: tile
 entity: lock.front_door_ble
 show_entity_picture: false
@@ -276,7 +277,7 @@ features:
         style:
           flex-basis: 200%
           '--icon-color': red
-          '--color': |
+          '--background': |
             {% if is_state("light.chandelier", "on") %}
               rgb({{ state_attr("light.chandelier", "rgb_color") }})
             {% else %}
@@ -320,9 +321,9 @@ features:
         style:
           '--background': |
             {% if is_state("light.chandelier", "on") %}
-            rgb({{ state_attr("light.chandelier", "rgb_color") }})
+              rgb({{ state_attr("light.chandelier", "rgb_color") }})
             {% else %}
-            initial
+              initial
             {% endif %}
         invert_label: true
         options:
@@ -334,7 +335,7 @@ features:
               color_name: red
             style:
               '--label-color': red
-              '--selection-color': red
+              '--color': red
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '255,0,0' }}
@@ -346,7 +347,7 @@ features:
               color_name: green
             style:
               '--label-color': green
-              '--selection-color': green
+              '--color': green
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '0,128,0' }}
@@ -358,7 +359,7 @@ features:
               color_name: blue
             style:
               '--label-color': blue
-              '--selection-color': blue
+              '--color': blue
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '0,0,255' }}
@@ -370,7 +371,7 @@ features:
               color_temp: 500
             style:
               '--label-color': white
-              '--selection-color': white
+              '--color': white
               flex-basis: 300%
               '--icon-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
@@ -406,9 +407,9 @@ features:
         data:
           color_temp: VALUE
         style:
-          --label-color: var(--disabled-color)
-          --background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-          --background-opacity: 1
+          '--label-color': var(--disabled-color)
+          '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+          '--background-opacity': 1
 type: tile
 entity: light.chandelier
 ```
@@ -491,14 +492,14 @@ features:
         service: media_player.volume_set
         value_attribute: volume_level
         icon: mdi:spotify
-        label: '{{ state_attr("media_player.spotify_nerwyn_singh", "media_title") }}'
+        label: '{{ state_attr("media_player.spotify", "media_title") }}'
         range:
           - 0
           - 1
         thumb: flat
         data:
           volume_level: VALUE
-          entity_id: media_player.spotify_nerwyn_singh
+          entity_id: media_player.spotify
         style:
           '--color': rgb(31, 223, 100)
 type: tile
@@ -510,7 +511,7 @@ color: accent
 
 ## Example 4
 
-Selectors for input ranges. Note that the opacity of selector buttons is set to 0 by default, so they are completely transparent against the selector background.
+Selectors for input selects. Note that the opacity of selector buttons is set to 0 by default, so they are completely transparent against the selector background.
 
 ```yaml
 features:
@@ -524,7 +525,7 @@ features:
           - icon: mdi:movie-outline
           - icon: mdi:movie-off-outline
         style:
-          --selection-color: var(--blue-color)
+          '--color': var(--blue-color)
           flex-basis: 140%
       - type: selector
         entity_id: input_select.lounge_tv_listening_mode
@@ -543,7 +544,7 @@ features:
           - icon: mdi:record-player
           - icon: mdi:video-input-hdmi
         style:
-          --selection-color: var(--red-color)
+          '--color': var(--red-color)
 type: tile
 entity: input_select.lounge_tv_listening_mode
 color: green
