@@ -113,7 +113,7 @@ export class BaseServiceCallFeature extends LitElement {
 				style[key] = renderTemplate(this.hass, style[key] as string);
 			}
 			icon = html`<ha-icon
-				.icon=${this.entry.icon}
+				.icon=${renderTemplate(this.hass, this.entry.icon as string)}
 				style=${styleMap(style)}
 			></ha-icon>`;
 		}
