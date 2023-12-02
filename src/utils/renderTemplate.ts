@@ -37,10 +37,10 @@ export function renderTemplate(hass: HomeAssistant, str: string): string {
 		};
 
 		str = renderString(structuredClone(str), context).trim();
-	}
 
-	if (str == undefined || str == null) {
-		str = '';
+		if (str == undefined || str == null) {
+			str = '';
+		}
 	}
 
 	return str;
