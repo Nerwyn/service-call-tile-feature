@@ -2,32 +2,40 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { renderString } from 'nunjucks';
 
 export function renderTemplate(hass: HomeAssistant, str: string): string {
-	if (typeof str != 'string') {
-		return str;
-	}
+	if (
+		typeof str == 'string' &&
+		((str.includes('{{') && str.includes('}}')) ||
+			(str.includes('{%') && str.includes('%}')))
+	) {
+		const context = {
+			True: true,
+			False: false,
+			None: null,
+			states(entity_id: string) {
+				return _states(hass, entity_id);
+			},
+			is_state(entity_id: string, value: string) {
+				return _is_state(hass, entity_id, value);
+			},
+			state_attr(entity_id: string, attribute: string) {
+				return _state_attr(hass, entity_id, attribute);
+			},
+			is_state_attr(entity_id: string, attribute: string, value: string) {
+				return _is_state_attr(hass, entity_id, attribute, value);
+			},
+			has_value(entity_id: string) {
+				return _has_value(hass, entity_id);
+			},
+			iif(
+				condition: string,
+				ifTrue: string,
+				ifFalse?: string,
+				ifNone?: string,
+			) {
+				return _iif(hass, condition, ifTrue, ifFalse, ifNone);
+			},
+		};
 
-	const context = {
-		True: true,
-		False: false,
-		None: null,
-		states(entity_id: string) {
-			return _states(hass, entity_id);
-		},
-		is_state(entity_id: string, value: string) {
-			return _is_state(hass, entity_id, value);
-		},
-		state_attr(entity_id: string, attribute: string) {
-			return _state_attr(hass, entity_id, attribute);
-		},
-		is_state_attr(entity_id: string, attribute: string, value: string) {
-			return _is_state_attr(hass, entity_id, attribute, value);
-		},
-		has_value(entity_id: string) {
-			return _has_value(hass, entity_id);
-		},
-	};
-
-	if (str.includes('{{') || str.includes('{%')) {
 		str = renderString(structuredClone(str), context).trim();
 	}
 
@@ -86,4 +94,22 @@ function _has_value(hass: HomeAssistant, entity_id: string) {
 	} catch {
 		return false;
 	}
+}
+
+function _iif(
+	hass: HomeAssistant,
+	condition: string,
+	ifTrue: string,
+	ifFalse?: string,
+	ifNone?: string,
+) {
+	condition = renderTemplate(hass, `{{ ${condition} }}`);
+	if (condition == '' && ifNone) {
+		return ifNone;
+	} else if (condition) {
+		return ifTrue;
+	} else if (ifFalse) {
+		return ifFalse;
+	}
+	return '';
 }
