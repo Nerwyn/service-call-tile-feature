@@ -117,7 +117,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					position: absolute;
 					width: inherit;
 					height: inherit;
-					background: var(--background);
+					background: var(--background, var(--disabled-color));
 					opacity: var(--background-opacity);
 				}
 
