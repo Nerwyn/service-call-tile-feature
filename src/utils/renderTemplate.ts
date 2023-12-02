@@ -103,13 +103,18 @@ function _iif(
 	ifFalse?: string,
 	ifNone?: string,
 ) {
-	condition = renderTemplate(hass, `{{ ${condition} }}`);
-	if (condition == '' && ifNone) {
+	const template = `
+		{% if ${condition} %}
+		${ifTrue}
+		{% else %}
+		${ifFalse}
+		{% endif %}
+	`;
+
+	const rendered = renderTemplate(hass, template);
+	if (rendered == '' && ifNone) {
 		return ifNone;
-	} else if (condition) {
-		return ifTrue;
-	} else if (ifFalse) {
-		return ifFalse;
+	} else {
+		return rendered;
 	}
-	return '';
 }
