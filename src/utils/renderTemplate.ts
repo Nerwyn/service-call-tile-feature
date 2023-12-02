@@ -2,17 +2,6 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { renderString } from 'nunjucks';
 
 export function renderTemplate(hass: HomeAssistant, str: string): string {
-	// Recursion!
-	if (typeof str == 'object' && str != null) {
-		for (const key in str as Record<string, string>) {
-			(str as Record<string, string>)[key] = renderTemplate(
-				hass,
-				str[key],
-			);
-		}
-		return str;
-	}
-
 	if (typeof str != 'string') {
 		return str;
 	}
@@ -39,7 +28,7 @@ export function renderTemplate(hass: HomeAssistant, str: string): string {
 	};
 
 	if (str.includes('{{') || str.includes('{%')) {
-		str = renderString(str, context).trim();
+		str = renderString(structuredClone(str), context).trim();
 	}
 
 	if (str == undefined || str == null) {

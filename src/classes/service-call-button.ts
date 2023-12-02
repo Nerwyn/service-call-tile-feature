@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
+import { renderTemplate } from '../utils';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
@@ -13,11 +14,14 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		const style = styleMap(this.entry.background_style ?? {});
+		const style = structuredClone(this.entry.background_style ?? {});
+		for (const key in style) {
+			style[key] = renderTemplate(this.hass, style[key] as string);
+		}
 
 		const button = html`<button
 			class="button"
-			style=${style}
+			style=${styleMap(style)}
 			@click=${this.onClick}
 		></button>`;
 

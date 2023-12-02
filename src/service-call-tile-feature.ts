@@ -2,7 +2,7 @@ import { version } from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -42,7 +42,7 @@ class ServiceCallTileFeature extends LitElement {
 		if (!config) {
 			throw new Error('Invalid configuration');
 		}
-		config = JSON.parse(JSON.stringify(config));
+		config = structuredClone(config);
 
 		// Rename buttons to entries
 		if ('buttons' in config && !('entries' in config)) {
@@ -83,21 +83,24 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
-			const evalutedEntry = renderTemplate(
-				this.hass,
-				JSON.parse(JSON.stringify(entry)),
-			) as IEntry;
+			const style: StyleInfo = {};
+			for (const key in entry.style ?? {}) {
+				style[key] = renderTemplate(
+					this.hass,
+					entry.style![key] as string,
+				);
+			}
 
-			const style = styleMap(evalutedEntry.style!);
-
-			const entryType = (evalutedEntry.type ?? 'button').toLowerCase();
+			const entryType = (
+				renderTemplate(this.hass, entry.type as string) ?? 'button'
+			).toLowerCase();
 			switch (entryType) {
 				case 'slider':
 					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
-							.entry=${evalutedEntry}
-							style=${style}
+							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;
@@ -105,8 +108,8 @@ class ServiceCallTileFeature extends LitElement {
 					row.push(
 						html`<service-call-selector
 							.hass=${this.hass}
-							.entry=${evalutedEntry}
-							style=${style}
+							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;
@@ -115,8 +118,8 @@ class ServiceCallTileFeature extends LitElement {
 					row.push(
 						html`<service-call-button
 							.hass=${this.hass}
-							.entry=${evalutedEntry}
-							style=${style}
+							.entry=${entry}
+							style=${styleMap(style)}
 						/>`,
 					);
 					break;
