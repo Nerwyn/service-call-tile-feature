@@ -86,7 +86,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 
 		if (this.entry.range) {
-			this.range = this.entry.range;
+			this.range = [
+				parseFloat(
+					renderTemplate(
+						this.hass,
+						this.entry.range[0] as unknown as string,
+					),
+				),
+				parseFloat(
+					renderTemplate(
+						this.hass,
+						this.entry.range[1] as unknown as string,
+					),
+				),
+			];
 		}
 		let step = (this.range[1] - this.range[0]) / 100;
 		if (this.entry.step) {

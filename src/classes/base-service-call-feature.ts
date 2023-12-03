@@ -14,6 +14,11 @@ export class BaseServiceCallFeature extends LitElement {
 	value: string | number = 0;
 
 	callService() {
+		const domainService = renderTemplate(
+			this.hass,
+			this.entry.service as string,
+		);
+
 		if ('confirmation' in this.entry) {
 			let confirmation = this.entry.confirmation;
 			if (typeof confirmation == 'string') {
@@ -31,10 +36,7 @@ export class BaseServiceCallFeature extends LitElement {
 							.text as string,
 					);
 				} else {
-					text = `Are you sure you want to run action '${renderTemplate(
-						this.hass,
-						this.entry.service as string,
-					)}'?`;
+					text = `Are you sure you want to run action '${domainService}'?`;
 				}
 				if (this.entry.confirmation == true) {
 					if (!confirm(text)) {
@@ -64,10 +66,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		if ('service' in this.entry) {
-			const [domain, service] = renderTemplate(
-				this.hass,
-				this.entry.service as string,
-			).split('.');
+			const [domain, service] = domainService.split('.');
 			const data = structuredClone(this.entry.data);
 			for (const key in data) {
 				data[key] = renderTemplate(this.hass, data[key] as string);
