@@ -28,11 +28,11 @@ export function renderTemplate(hass: HomeAssistant, str: string): string {
 			},
 			iif(
 				condition: string,
-				ifTrue: string,
-				ifFalse?: string,
-				ifNone?: string,
+				if_true: string,
+				if_false?: string,
+				if_none?: string,
 			) {
-				return _iif(hass, condition, ifTrue, ifFalse, ifNone);
+				return _iif(hass, condition, if_true, if_false, if_none);
 			},
 		};
 
@@ -99,21 +99,21 @@ function _has_value(hass: HomeAssistant, entity_id: string) {
 function _iif(
 	hass: HomeAssistant,
 	condition: string,
-	ifTrue: string,
-	ifFalse?: string,
-	ifNone?: string,
+	if_true?: string,
+	if_false?: string,
+	if_none?: string,
 ) {
 	const template = `
 		{% if ${condition} %}
-		${ifTrue}
+		${if_true ?? true}
 		{% else %}
-		${ifFalse}
+		${if_false ?? false}
 		{% endif %}
 	`;
 
 	const rendered = renderTemplate(hass, template);
-	if (rendered == '' && ifNone) {
-		return ifNone;
+	if (rendered == '' && if_none) {
+		return if_none;
 	} else {
 		return rendered;
 	}
