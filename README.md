@@ -261,12 +261,9 @@ features:
   - type: custom:service-call
     entries:
       - service: light.toggle
-        icon: |
-          {% if is_state("light.chandelier", "on") %}
-            mdi:ceiling-light
-          {% else %}
-            mdi:ceiling-light-outline
-          {% endif %}
+        icon: >-
+          {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
+          "mdi:ceiling-light-outline") }}
         label: >-
           {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
           undefined }}
@@ -402,8 +399,8 @@ features:
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
-          - 153
-          - 371
+          - '{{ state_attr("light.chandelier", "min_mireds") }}'
+          - '{{ state_attr("light.chandelier", "max_mireds") }}'
         step: 1
         data:
           color_temp: VALUE
@@ -465,8 +462,8 @@ features:
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
-          - 153
-          - 371
+          - '{{ state_attr("light.sunroom_ceiling", "min_mireds") }}'
+          - '{{ state_attr("light.sunroom_ceiling", "max_mireds") }}'
         step: 1
         data:
           color_temp: VALUE
