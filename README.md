@@ -83,6 +83,7 @@ I've recreated a subset of the Home Assistant template functions for you to use 
 | is_state_attr | entity_id, attribute, value           | Tests if the given entity attribute is the specified value.                                                                                                                                                                                                          |
 | has_value     | entity_id                             | Tests if the given entity is not unknown or unavailable.                                                                                                                                                                                                             |
 | iif           | condition, if_true, if_false, if_none | Immediate if. Returns the value of `if_true` if the condition is true, the value of `if_false` if it's false, and the value of `if_none` if it's `undefined`, `null`, or an empty string. All arguments except `condition` are optional. Cannot be used as a filter. |
+| match_media   | mediaquery                            | Returns the boolean result of the provided [CSS media query](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries).                                                                                                                |
 
 To better understand entity states and attributes, use the states Developer Tool found in Home Assistant.
 
