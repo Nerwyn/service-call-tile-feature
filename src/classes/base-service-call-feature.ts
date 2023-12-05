@@ -3,9 +3,9 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { renderTemplate } from 'ha-nunjucks';
 
 import { IEntry, IConfirmation } from '../models/interfaces';
-import { renderTemplate } from '../utils';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {

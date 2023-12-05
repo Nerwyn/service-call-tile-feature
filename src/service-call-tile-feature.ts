@@ -6,12 +6,12 @@ import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { renderTemplate } from 'ha-nunjucks';
 
 import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
-import { renderTemplate } from './utils';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,

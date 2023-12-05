@@ -1,10 +1,10 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { renderTemplate } from 'ha-nunjucks';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
-import { renderTemplate } from '../utils';
 
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {

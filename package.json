@@ -1,6 +1,6 @@
 {
 	"name": "service-call-tile-feature",
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"description": "Service Call Tile Feature for Home Assistant Tile Card",
 	"main": "./dist/service-call-tile-feature.js",
 	"scripts": {
@@ -29,10 +29,9 @@
 		}
 	},
 	"dependencies": {
-		"@types/nunjucks": "^3.2.6",
 		"custom-card-helpers": "^1.9.0",
-		"lit": "^2.8.0",
-		"nunjucks": "^3.2.4"
+		"ha-nunjucks": "^0.0.6",
+		"lit": "^2.8.0"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^6.6.0",
