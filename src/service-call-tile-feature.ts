@@ -92,8 +92,9 @@ class ServiceCallTileFeature extends LitElement {
 			}
 
 			const entryType = (
-				(renderTemplate(this.hass, entry.type as string) ?? 'button'
-			) as string).toLowerCase();
+				(renderTemplate(this.hass, entry.type as string) ??
+					'button') as string
+			).toLowerCase();
 			switch (entryType) {
 				case 'slider':
 					row.push(
