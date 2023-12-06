@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"custom-card-helpers": "^1.9.0",
-		"ha-nunjucks": "^1.1.0-alpha.3",
+		"ha-nunjucks": "^1.1.0",
 		"lit": "^2.8.0"
 	},
 	"devDependencies": {
