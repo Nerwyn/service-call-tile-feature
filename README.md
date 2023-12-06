@@ -276,7 +276,7 @@ features:
         style:
           flex-basis: 200%
           '--icon-color': red
-          '--background': |
+          '--color': |
             {% if is_state("light.chandelier", "on") %}
               rgb({{ state_attr("light.chandelier", "rgb_color") }})
             {% else %}
