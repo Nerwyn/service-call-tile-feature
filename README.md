@@ -66,26 +66,7 @@ More information on Home Assistant action confirmations can be found [here](http
 
 ### Templating
 
-All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful.
-
-#### Functions
-
-I've recreated a subset of the Home Assistant template functions for you to use as defined by the [Home Assistant templating documentation](https://www.home-assistant.io/docs/configuration/templating/), along with some other useful variables. If there are additional functions that you want implemented, please make a feature request.
-
-| Name          | Arguments                             | Description                                                                                                                                                                                                                                                          |
-| ------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| True          |                                       | Python `True` equivalent to JavaScript `true`.                                                                                                                                                                                                                       |
-| False         |                                       | Python `False` equivalent to JavaScript `false`.                                                                                                                                                                                                                     |
-| None          |                                       | Python `None` equivalent to JavaScript `null`.                                                                                                                                                                                                                       |
-| states        | entity_id                             | Returns the state string of the given entity.                                                                                                                                                                                                                        |
-| is_state      | entity_id, value                      | Compares an entity's state with a specified state or list of states and returns `true` or `false`.                                                                                                                                                                   |
-| state_attr    | entity_id, attribute                  | Returns the value of the attribute or `undefined` if it doesn't exist.                                                                                                                                                                                               |
-| is_state_attr | entity_id, attribute, value           | Tests if the given entity attribute is the specified value.                                                                                                                                                                                                          |
-| has_value     | entity_id                             | Tests if the given entity is not unknown or unavailable.                                                                                                                                                                                                             |
-| iif           | condition, if_true, if_false, if_none | Immediate if. Returns the value of `if_true` if the condition is true, the value of `if_false` if it's false, and the value of `if_none` if it's `undefined`, `null`, or an empty string. All arguments except `condition` are optional. Cannot be used as a filter. |
-| match_media   | mediaquery                            | Returns the boolean result of the provided [CSS media query](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries).                                                                                                                |
-
-To better understand entity states and attributes, use the states Developer Tool found in Home Assistant.
+All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
 ### Service Call Options
 
