@@ -91,13 +91,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					renderTemplate(
 						this.hass,
 						this.entry.range[0] as unknown as string,
-					),
+					) as string,
 				),
 				parseFloat(
 					renderTemplate(
 						this.hass,
 						this.entry.range[1] as unknown as string,
-					),
+					) as string,
 				),
 			];
 		}
@@ -114,7 +114,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			background_style[key] = renderTemplate(
 				this.hass,
 				background_style[key] as string,
-			);
+			) as string;
 		}
 		const background = html`<div
 			class="slider-background"
@@ -144,7 +144,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			slider_style[key] = renderTemplate(
 				this.hass,
 				slider_style[key] as string,
-			);
+			) as string;
 		}
 
 		const slider = html`

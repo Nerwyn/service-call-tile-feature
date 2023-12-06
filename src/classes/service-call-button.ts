@@ -16,7 +16,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		const style = structuredClone(this.entry.background_style ?? {});
 		for (const key in style) {
-			style[key] = renderTemplate(this.hass, style[key] as string);
+			style[key] = renderTemplate(
+				this.hass,
+				style[key] as string,
+			) as string;
 		}
 
 		const button = html`<button

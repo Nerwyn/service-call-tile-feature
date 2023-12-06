@@ -29,7 +29,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		const entity_id = renderTemplate(
 			this.hass,
 			this.entry.entity_id as string,
-		);
+		) as string;
 		const entries = this.entry.options ?? [];
 		let options =
 			(this.hass.states[entity_id].attributes.options as string[]) ??
@@ -45,7 +45,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			background_style[key] = renderTemplate(
 				this.hass,
 				background_style[key] as string,
-			);
+			) as string;
 		}
 		const selector = [
 			html`<div
@@ -84,7 +84,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			const style = structuredClone(entry.style ?? {});
 			for (const key in style) {
-				style[key] = renderTemplate(this.hass, style[key] as string);
+				style[key] = renderTemplate(
+					this.hass,
+					style[key] as string,
+				) as string;
 			}
 
 			selector.push(

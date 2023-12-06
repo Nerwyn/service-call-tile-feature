@@ -17,7 +17,7 @@ export class BaseServiceCallFeature extends LitElement {
 		const domainService = renderTemplate(
 			this.hass,
 			this.entry.service as string,
-		);
+		) as string;
 
 		if ('confirmation' in this.entry) {
 			let confirmation = this.entry.confirmation;
@@ -34,7 +34,7 @@ export class BaseServiceCallFeature extends LitElement {
 						this.hass,
 						(this.entry.confirmation as IConfirmation)
 							.text as string,
-					);
+					) as string;
 				} else {
 					text = `Are you sure you want to run action '${domainService}'?`;
 				}
@@ -91,7 +91,7 @@ export class BaseServiceCallFeature extends LitElement {
 		const entity_id = renderTemplate(
 			this.hass,
 			this.entry.entity_id as string,
-		);
+		) as string;
 		if (value_attribute == 'state') {
 			this.value = this.hass.states[entity_id].state;
 		} else {
@@ -109,7 +109,10 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('icon' in this.entry) {
 			const style = structuredClone(this.entry.icon_style ?? {});
 			for (const key in style) {
-				style[key] = renderTemplate(this.hass, style[key] as string);
+				style[key] = renderTemplate(
+					this.hass,
+					style[key] as string,
+				) as string;
 			}
 			icon = html`<ha-icon
 				.icon=${renderTemplate(this.hass, this.entry.icon as string)}
@@ -122,16 +125,16 @@ export class BaseServiceCallFeature extends LitElement {
 			let text = renderTemplate(this.hass, this.entry.label as string);
 			if (text) {
 				text +=
-					renderTemplate(
+					(renderTemplate(
 						this.hass,
 						this.entry.unit_of_measurement as string,
-					) ?? '';
+					) as string) ?? '';
 				const style = structuredClone(this.entry.label_style ?? {});
 				for (const key in style) {
 					style[key] = renderTemplate(
 						this.hass,
 						style[key] as string,
-					);
+					) as string;
 				}
 				// prettier-ignore
 				label = html`<div class="label" style=${styleMap(style)}>${text}</div>`;
