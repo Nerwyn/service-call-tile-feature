@@ -78,11 +78,11 @@
 		</button>`;return r.html`${a}${n}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--opacity: 0.2;
-					--mdc-ripple-color: var(--color, var(--tile-color));
+					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
 				button {
-					background: var(--color, var(--disabled-color));
+					background: 0px 0px;
 					opacity: var(--opacity);
 					transition:
 						background-color 180ms ease-in-out 0s,
@@ -93,6 +93,10 @@
 					width: inherit;
 					border-radius: 10px;
 					border: none;
+				}
+
+				button::before {
+					background: var(--color, var(--disabled-color));
 				}
 
 				@media (hover: hover) {

@@ -63,11 +63,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			css`
 				:host {
 					--opacity: 0.2;
-					--mdc-ripple-color: var(--color, var(--tile-color));
+					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
 				button {
-					background: var(--color, var(--disabled-color));
+					background: 0px 0px;
 					opacity: var(--opacity);
 					transition:
 						background-color 180ms ease-in-out 0s,
@@ -78,6 +78,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					width: inherit;
 					border-radius: 10px;
 					border: none;
+				}
+
+				button::before {
+					background: var(--color, var(--disabled-color));
 				}
 
 				@media (hover: hover) {
