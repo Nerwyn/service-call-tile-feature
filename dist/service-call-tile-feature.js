@@ -81,7 +81,7 @@
 					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
-				button {
+				ha-control-button {
 					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity);
 					transition:
