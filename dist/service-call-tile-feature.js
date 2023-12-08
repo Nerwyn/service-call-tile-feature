@@ -61,7 +61,6 @@
 					filter: var(--label-filter);
 				}
 			`]}};t.BaseServiceCallFeature=l,i([(0,o.property)({attribute:!1})],l.prototype,"hass",void 0),i([(0,o.property)({attribute:!1})],l.prototype,"entry",void 0),t.BaseServiceCallFeature=l=i([(0,o.customElement)("base-service-call-feature")],l)},827:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallButton=void 0;const r=n(677),o=n(595),s=n(921),a=n(263),l=n(839),c=n(393);let u=class extends c.BaseServiceCallFeature{constructor(){super(...arguments),this._shouldRenderRipple=!0,this._rippleHandlers=new a.RippleHandlers((()=>this._ripple))}onClick(e){this.callService()}render(){var e;const t=super.render(),n=structuredClone(null!==(e=this.entry.background_style)&&void 0!==e?e:{});for(const e in n)n[e]=(0,l.renderTemplate)(this.hass,n[e]);const i=this._shouldRenderRipple?r.html`<mwc-ripple></mwc-ripple>`:r.html``,o=r.html`<button
-			class="button"
 			style=${(0,s.styleMap)(n)}
 			@click=${this.onClick}
 			@focus=${this._rippleHandlers.startFocus}
@@ -78,10 +77,10 @@
 		</button>`;return r.html`${o}${t}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--opacity: 0.2;
-					--hover-opacity: 0.3;
+					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
-				.button {
+				button {
 					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity);
 					transition:
@@ -93,16 +92,6 @@
 					width: inherit;
 					border-radius: 10px;
 					border: none;
-				}
-				@media (hover: hover) {
-					.xbutton:hover {
-						opacity: var(--hover-opacity) !important;
-						background-color: var(--color, var(--disabled-color));
-					}
-				}
-				.xbutton:active {
-					opacity: var(--hover-opacity) !important;
-					background-color: var(--color, var(--disabled-color));
 				}
 			`]}};t.ServiceCallButton=u,i([(0,o.property)({attribute:!1})],u.prototype,"_shouldRenderRipple",void 0),i([(0,o.queryAsync)("mwc-ripple")],u.prototype,"_ripple",void 0),t.ServiceCallButton=u=i([(0,o.customElement)("service-call-button")],u)},369:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallSelector=void 0;const r=n(677),o=n(595),s=n(921),a=n(839),l=n(393);n(827);let c=class extends l.BaseServiceCallFeature{onClick(e){const t=e.currentTarget.parentNode.children;for(const e of t)"service-call-button"==e.tagName.toLowerCase()&&(e.className="option");e.currentTarget.className="selected-option"}render(){var e,t,n,i,o;super.render();const l=(0,a.renderTemplate)(this.hass,this.entry.entity_id),c=null!==(e=this.entry.options)&&void 0!==e?e:[];let u=null!==(t=this.hass.states[l].attributes.options)&&void 0!==t?t:new Array(c.length);u.length<c.length&&(u=Object.assign(new Array(c.length),u));const h=structuredClone(null!==(n=this.entry.background_style)&&void 0!==n?n:{});for(const e in h)h[e]=(0,a.renderTemplate)(this.hass,h[e]);const p=[r.html`<div
 				class="selector-background"
@@ -121,6 +110,7 @@
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
 					--color: var(--tile-color);
+					--hover-opacity: 0.3;
 				}
 
 				.selector-background {
@@ -138,6 +128,17 @@
 				.selected-option {
 					--opacity: 1;
 					--hover-opacity: 1;
+				}
+
+				@media (hover: hover) {
+					button:hover {
+						opacity: var(--hover-opacity) !important;
+						background-color: var(--color, var(--disabled-color));
+					}
+				}
+				button:active {
+					opacity: var(--hover-opacity) !important;
+					background-color: var(--color, var(--disabled-color));
 				}
 			`]}};t.ServiceCallSelector=c,t.ServiceCallSelector=c=i([(0,o.customElement)("service-call-selector")],c)},719:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallSlider=void 0;const r=n(677),o=n(595),s=n(921),a=n(839),l=n(393);let c=class extends l.BaseServiceCallFeature{constructor(){super(...arguments),this.speed=2,this.range=[0,100],this.class="slider"}onInput(e){var t,n,i;e.preventDefault(),e.stopImmediatePropagation();const r=e.currentTarget,o=parseFloat(null!==(n=null!==(t=this.oldValue)&&void 0!==t?t:this.value)&&void 0!==n?n:"0"),s=parseFloat(null!==(i=r.value)&&void 0!==i?i:o);r.value=o.toString(),this.newValue=s,s>this.range[0]&&(r.className=this.class);let a=o;if(o>s){const e=setInterval((()=>{a-=this.speed,r.value=a.toString(),s>=a&&(clearInterval(e),r.value=s.toString(),s<=this.range[0]&&"slider-line-thumb"!=this.class&&(r.className="slider-off"))}),1)}else if(o<s){const e=setInterval((()=>{a+=this.speed,r.value=a.toString(),s<=a&&(clearInterval(e),r.value=s.toString())}),1)}else r.value=s.toString();this.oldValue=s}onEnd(e){this.newValue||0==this.newValue||(this.newValue=this.value),this.newValue%1==0&&(this.newValue=Math.trunc(this.newValue)),this.value=this.newValue,this.callService()}render(){var e,t;const n=super.render();null==this.oldValue&&(this.oldValue=parseFloat(this.value)),null==this.newValue&&(this.newValue=parseFloat(this.value)),this.entry.range&&(this.range=[parseFloat((0,a.renderTemplate)(this.hass,this.entry.range[0])),parseFloat((0,a.renderTemplate)(this.hass,this.entry.range[1]))]);let i=(this.range[1]-this.range[0])/100;this.entry.step&&(i=this.entry.step),this.speed=(this.range[1]-this.range[0])/50;const o=structuredClone(null!==(e=this.entry.background_style)&&void 0!==e?e:{});for(const e in o)o[e]=(0,a.renderTemplate)(this.hass,o[e]);const l=r.html`<div
 			class="slider-background"

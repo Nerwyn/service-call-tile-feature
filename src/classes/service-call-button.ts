@@ -38,7 +38,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			: html``;
 
 		const button = html`<button
-			class="button"
 			style=${styleMap(style)}
 			@click=${this.onClick}
 			@focus=${this._rippleHandlers.startFocus}
@@ -63,10 +62,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			css`
 				:host {
 					--opacity: 0.2;
-					--hover-opacity: 0.3;
+					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
-				.button {
+				button {
 					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity);
 					transition:
@@ -78,16 +77,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					width: inherit;
 					border-radius: 10px;
 					border: none;
-				}
-				@media (hover: hover) {
-					.xbutton:hover {
-						opacity: var(--hover-opacity) !important;
-						background-color: var(--color, var(--disabled-color));
-					}
-				}
-				.xbutton:active {
-					opacity: var(--hover-opacity) !important;
-					background-color: var(--color, var(--disabled-color));
 				}
 			`,
 		];

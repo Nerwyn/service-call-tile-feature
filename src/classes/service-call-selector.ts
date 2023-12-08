@@ -115,6 +115,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					--background: var(--disabled-color);
 					--background-opacity: 0.2;
 					--color: var(--tile-color);
+					--hover-opacity: 0.3;
 				}
 
 				.selector-background {
@@ -132,6 +133,17 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				.selected-option {
 					--opacity: 1;
 					--hover-opacity: 1;
+				}
+
+				@media (hover: hover) {
+					button:hover {
+						opacity: var(--hover-opacity) !important;
+						background-color: var(--color, var(--disabled-color));
+					}
+				}
+				button:active {
+					opacity: var(--hover-opacity) !important;
+					background-color: var(--color, var(--disabled-color));
 				}
 			`,
 		];
