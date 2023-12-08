@@ -77,7 +77,7 @@
 		</button>`;return r.html`${o}${t}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--opacity: 0.2;
-					--mdc-ripple-color: var(--color, var(--disabled-color));
+					--mdc-ripple-color: var(--color, var(--tile-color));
 				}
 
 				button {
@@ -131,12 +131,12 @@
 				}
 
 				@media (hover: hover) {
-					button:hover {
+					service-call-button:hover {
 						opacity: var(--hover-opacity) !important;
 						background-color: var(--color, var(--disabled-color));
 					}
 				}
-				button:active {
+				service-call-button:active {
 					opacity: var(--hover-opacity) !important;
 					background-color: var(--color, var(--disabled-color));
 				}

@@ -136,12 +136,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				}
 
 				@media (hover: hover) {
-					button:hover {
+					service-call-button:hover {
 						opacity: var(--hover-opacity) !important;
 						background-color: var(--color, var(--disabled-color));
 					}
 				}
-				button:active {
+				service-call-button:active {
 					opacity: var(--hover-opacity) !important;
 					background-color: var(--color, var(--disabled-color));
 				}

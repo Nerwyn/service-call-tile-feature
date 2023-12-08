@@ -62,7 +62,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			css`
 				:host {
 					--opacity: 0.2;
-					--mdc-ripple-color: var(--color, var(--disabled-color));
+					--mdc-ripple-color: var(--color, var(--tile-color));
 				}
 
 				button {
