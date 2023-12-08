@@ -78,6 +78,17 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					border-radius: 10px;
 					border: none;
 				}
+
+				@media (hover: hover) {
+					.option:hover {
+						opacity: var(--hover-opacity) !important;
+						background-color: var(--color, var(--disabled-color));
+					}
+				}
+				.option:active {
+					opacity: var(--hover-opacity) !important;
+					background-color: var(--color, var(--disabled-color));
+				}
 			`,
 		];
 	}
