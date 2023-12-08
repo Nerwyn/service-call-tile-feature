@@ -1,4 +1,3 @@
-import '@material/mwc-ripple';
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
