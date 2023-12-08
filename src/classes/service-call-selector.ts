@@ -95,6 +95,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					class=${optionClass}
 					.hass=${this.hass}
 					.entry=${entry}
+					._shouldRenderRipple=${false}
 					@click=${this.onClick}
 					style=${styleMap(style)}
 				/>`,
