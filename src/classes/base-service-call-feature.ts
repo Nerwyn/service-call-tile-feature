@@ -68,8 +68,13 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('service' in this.entry) {
 			const [domain, service] = domainService.split('.');
 			const data = structuredClone(this.entry.data);
+			const context = { value: this.value };
 			for (const key in data) {
-				data[key] = renderTemplate(this.hass, data[key] as string);
+				data[key] = renderTemplate(
+					this.hass,
+					data[key] as string,
+					context,
+				);
 				if (data[key] == 'VALUE') {
 					data[key] = this.value;
 				} else if (data[key].toString().includes('VALUE')) {
