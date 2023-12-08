@@ -77,16 +77,13 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					z-index: 0;
 				}
 				button::before {
-					content: "";
+					content: '';
 					position: absolute;
 					top: 0px;
 					left: 0px;
 					height: 100%;
 					width: 100%;
 					background: var(--color, var(--disabled-color));
-					transition:
-						background-color 180ms ease-in-out 0s,
-						opacity 180ms ease-in-out 0s;
 					opacity: var(--opacity);
 				}
 
