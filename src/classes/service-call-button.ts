@@ -75,6 +75,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					border-radius: 10px;
 					border: none;
 					z-index: 0;
+					overflow: hidden;
 				}
 				button::before {
 					content: '';
