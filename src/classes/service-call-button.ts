@@ -38,6 +38,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			: html``;
 
 		const button = html`<button
+			class=${this.className ?? ''}
 			style=${styleMap(style)}
 			@click=${this.onClick}
 			@focus=${this._rippleHandlers.startFocus}
