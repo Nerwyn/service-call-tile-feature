@@ -67,7 +67,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				}
 
 				button {
-					background: 0px 0px;
+					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity);
 					transition:
 						background-color 180ms ease-in-out 0s,
@@ -78,10 +78,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					width: inherit;
 					border-radius: 10px;
 					border: none;
-				}
-
-				button::before {
-					background: var(--color, var(--disabled-color));
 				}
 
 				@media (hover: hover) {
