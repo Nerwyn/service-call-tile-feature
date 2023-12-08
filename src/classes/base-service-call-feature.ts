@@ -83,8 +83,6 @@ export class BaseServiceCallFeature extends LitElement {
 						.replace('VALUE', this.value as string);
 				}
 			}
-			console.log("Why the fuck isn't this showing up?");
-			console.dir(data);
 
 			this.hass.callService(domain, service, data);
 		}
