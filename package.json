@@ -1,6 +1,6 @@
 {
 	"name": "service-call-tile-feature",
-	"version": "3.0.4",
+	"version": "3.0.5",
 	"description": "Service Call Tile Feature for Home Assistant Tile Card",
 	"main": "./dist/service-call-tile-feature.js",
 	"scripts": {
@@ -29,6 +29,7 @@
 		}
 	},
 	"dependencies": {
+		"@material/mwc-ripple": "^0.27.0",
 		"custom-card-helpers": "^1.9.0",
 		"ha-nunjucks": "^1.2.0",
 		"lit": "^2.8.0"

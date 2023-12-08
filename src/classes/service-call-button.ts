@@ -1,3 +1,4 @@
+import '@material/mwc-ripple';
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -28,7 +29,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@click=${this.onClick}
 		></button>`;
 
-		return html`${button}${icon_label}`;
+		return html`${button}${icon_label}<mwc-ripple></mwc-ripple>`;
 	}
 
 	static get styles() {
