@@ -60,7 +60,7 @@
 					color: var(--label-color);
 					filter: var(--label-filter);
 				}
-			`]}};t.BaseServiceCallFeature=l,i([(0,o.property)({attribute:!1})],l.prototype,"hass",void 0),i([(0,o.property)({attribute:!1})],l.prototype,"entry",void 0),t.BaseServiceCallFeature=l=i([(0,o.customElement)("base-service-call-feature")],l)},827:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallButton=void 0;const r=n(677),o=n(595),s=n(921),a=n(263),l=n(839),c=n(393);let u=class extends c.BaseServiceCallFeature{constructor(){super(...arguments),this._shouldRenderRipple=!0,this._rippleHandlers=new a.RippleHandlers((()=>this._ripple))}onClick(e){this.callService()}render(){var e,t;const n=super.render(),i=structuredClone(null!==(e=this.entry.background_style)&&void 0!==e?e:{});for(const e in i)i[e]=(0,l.renderTemplate)(this.hass,i[e]);const o=this._shouldRenderRipple?r.html`<mwc-ripple></mwc-ripple>`:r.html``,a=r.html`<button
+			`]}};t.BaseServiceCallFeature=l,i([(0,o.property)({attribute:!1})],l.prototype,"hass",void 0),i([(0,o.property)({attribute:!1})],l.prototype,"entry",void 0),t.BaseServiceCallFeature=l=i([(0,o.customElement)("base-service-call-feature")],l)},827:function(e,t,n){"use strict";var i=this&&this.__decorate||function(e,t,n,i){var r,o=arguments.length,s=o<3?t:null===i?i=Object.getOwnPropertyDescriptor(t,n):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,n,i);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(o<3?r(s):o>3?r(t,n,s):r(t,n))||s);return o>3&&s&&Object.defineProperty(t,n,s),s};Object.defineProperty(t,"__esModule",{value:!0}),t.ServiceCallButton=void 0;const r=n(677),o=n(595),s=n(921),a=n(263),l=n(839),c=n(393);let u=class extends c.BaseServiceCallFeature{constructor(){super(...arguments),this._shouldRenderRipple=!0,this._rippleHandlers=new a.RippleHandlers((()=>this._ripple))}onClick(e){this.callService()}render(){var e,t;const n=super.render(),i=structuredClone(null!==(e=this.entry.background_style)&&void 0!==e?e:{});for(const e in i)i[e]=(0,l.renderTemplate)(this.hass,i[e]);const o=this._shouldRenderRipple?r.html`<mwc-ripple></mwc-ripple>`:r.html``,a=r.html`<ha-control-button
 			class=${null!==(t=this.className)&&void 0!==t?t:""}
 			style=${(0,s.styleMap)(i)}
 			@click=${this.onClick}
@@ -75,7 +75,7 @@
 			@touchcancel=${this._rippleHandlers.endPress}
 		>
 			${o}
-		</button>`;return r.html`${a}${n}`}static get styles(){return[super.styles,r.css`
+		</ha-control-button>`;return r.html`${a}${n}`}static get styles(){return[super.styles,r.css`
 				:host {
 					--opacity: 0.2;
 					--mdc-ripple-color: var(--color, var(--disabled-color));

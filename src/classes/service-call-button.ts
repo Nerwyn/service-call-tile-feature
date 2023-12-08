@@ -37,7 +37,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
 
-		const button = html`<button
+		const button = html`<ha-control-button
 			class=${this.className ?? ''}
 			style=${styleMap(style)}
 			@click=${this.onClick}
@@ -52,7 +52,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@touchcancel=${this._rippleHandlers.endPress}
 		>
 			${ripple}
-		</button>`;
+		</ha-control-button>`;
 
 		return html`${button}${icon_label}`;
 	}
