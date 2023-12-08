@@ -89,8 +89,10 @@
 					width: inherit;
 					border-radius: 10px;
 					border: none;
+					z-index: 0;
 				}
 				button::before {
+					content: "";
 					position: absolute;
 					top: 0px;
 					left: 0px;
