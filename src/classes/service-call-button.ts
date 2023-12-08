@@ -37,7 +37,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
 
-		const button = html`<ha-control-button
+		const button = html`<button
 			class=${this.className ?? ''}
 			style=${styleMap(style)}
 			@click=${this.onClick}
@@ -52,7 +52,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@touchcancel=${this._rippleHandlers.endPress}
 		>
 			${ripple}
-		</ha-control-button>`;
+		</button>`;
 
 		return html`${button}${icon_label}`;
 	}
@@ -66,18 +66,26 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					--mdc-ripple-color: var(--color, var(--disabled-color));
 				}
 
-				ha-control-button {
-					background: var(--color, var(--disabled-color));
-					opacity: var(--opacity);
-					transition:
-						background-color 180ms ease-in-out 0s,
-						opacity 180ms ease-in-out 0s;
+				button {
+					background: 0px 0px;
 					position: absolute;
 					cursor: pointer;
 					height: inherit;
 					width: inherit;
 					border-radius: 10px;
 					border: none;
+				}
+				button::before {
+					position: absolute;
+					top: 0px;
+					left: 0px;
+					height: 100%;
+					width: 100%;
+					background: var(--color, var(--disabled-color));
+					transition:
+						background-color 180ms ease-in-out 0s,
+						opacity 180ms ease-in-out 0s;
+					opacity: var(--opacity);
 				}
 
 				@media (hover: hover) {
