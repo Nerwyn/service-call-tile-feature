@@ -1,5 +1,10 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement, property, queryAsync } from 'lit/decorators.js';
+import {
+	customElement,
+	eventOptions,
+	property,
+	queryAsync,
+} from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { Ripple } from '@material/mwc-ripple';
@@ -20,6 +25,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 	onClick(_e: MouseEvent) {
 		this.callService();
+	}
+
+	@eventOptions({ passive: true })
+	onHoldStart(e: TouchEvent | MouseEvent) {
+		this._rippleHandlers.startPress(e);
 	}
 
 	render() {
@@ -47,7 +57,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@mouseup=${this._rippleHandlers.endPress}
 			@mouseenter=${this._rippleHandlers.startHover}
 			@mouseleave=${this._rippleHandlers.endHover}
-			@touchstart=${this._rippleHandlers.startPress}
+			@touchstart=${this.onHoldStart}
 			@touchend=${this._rippleHandlers.endPress}
 			@touchcancel=${this._rippleHandlers.endPress}
 		>
