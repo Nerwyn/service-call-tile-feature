@@ -100,7 +100,17 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					) as string,
 				),
 			];
+		} else if (
+			['number', 'input_number'].includes(
+				(this.entry.entity_id ?? '').split('.')[0],
+			)
+		) {
+			this.range = [
+				this.hass.states[this.entry.entity_id!].attributes.min,
+				this.hass.states[this.entry.entity_id!].attributes.max,
+			];
 		}
+
 		let step = (this.range[1] - this.range[0]) / 100;
 		if (this.entry.step) {
 			step = this.entry.step;
