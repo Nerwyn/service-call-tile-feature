@@ -31,9 +31,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			this.entry.entity_id as string,
 		) as string;
 		const entries = this.entry.options ?? [];
-		let options =
-			(this.hass.states[entity_id].attributes.options as string[]) ??
-			new Array<string>(entries.length);
+		let options: string[] = [];
+		if (entity_id) {
+			options =
+				(this.hass.states[entity_id].attributes.options as string[]) ??
+				new Array<string>(entries.length);
+		}
 		if (options.length < entries.length) {
 			options = Object.assign(new Array(entries.length), options);
 		}
