@@ -145,7 +145,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		if (
 			this.value == undefined ||
-			(this.value == 0 && this.class != 'slider-line-thumb')
+			(this.value == this.range[0] && this.class != 'slider-line-thumb')
 		) {
 			this.class = 'slider-off';
 		}
