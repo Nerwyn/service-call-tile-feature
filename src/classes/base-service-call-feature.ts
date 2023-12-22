@@ -75,12 +75,14 @@ export class BaseServiceCallFeature extends LitElement {
 					data[key] as string,
 					context,
 				);
-				if (data[key] == 'VALUE') {
-					data[key] = this.value;
-				} else if (data[key].toString().includes('VALUE')) {
-					data[key] = data[key]
-						.toString()
-						.replace('VALUE', this.value as string);
+				if (data[key]) {
+					if (data[key] == 'VALUE') {
+						data[key] = this.value;
+					} else if (data[key].toString().includes('VALUE')) {
+						data[key] = data[key]
+							.toString()
+							.replace('VALUE', this.value as string);
+					}
 				}
 			}
 
