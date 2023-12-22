@@ -97,17 +97,19 @@ export class BaseServiceCallFeature extends LitElement {
 			this.hass,
 			this.entry.entity_id as string,
 		) as string;
-		if (value_attribute == 'state') {
-			this.value = this.hass.states[entity_id].state;
-		} else {
-			let value =
-				this.hass.states[entity_id].attributes[
-					value_attribute as string
-				];
-			if (value_attribute == 'brightness') {
-				value = Math.round((100 * parseInt(value ?? 0)) / 255);
+		if (entity_id) {
+			if (value_attribute == 'state') {
+				this.value = this.hass.states[entity_id].state;
+			} else {
+				let value =
+					this.hass.states[entity_id].attributes[
+						value_attribute as string
+					];
+				if (value_attribute == 'brightness') {
+					value = Math.round((100 * parseInt(value ?? 0)) / 255);
+				}
+				this.value = value;
 			}
-			this.value = value;
 		}
 
 		let icon = html``;
