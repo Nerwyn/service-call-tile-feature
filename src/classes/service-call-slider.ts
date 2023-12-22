@@ -111,11 +111,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			];
 		}
 
-		let step = (this.range[1] - this.range[0]) / 100;
+		this.speed = (this.range[1] - this.range[0]) / 50;
+
+		let step: number;
 		if (this.entry.step) {
 			step = this.entry.step;
+		} else if (
+			['number', 'input_number'].includes(
+				(this.entry.entity_id ?? '').split('.')[0],
+			)
+		) {
+			step = this.hass.states[this.entry.entity_id!].attributes.step;
+		} else {
+			step = (this.range[1] - this.range[0]) / 100;
 		}
-		this.speed = (this.range[1] - this.range[0]) / 50;
 
 		const background_style = structuredClone(
 			this.entry.background_style ?? {},
