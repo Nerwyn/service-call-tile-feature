@@ -81,7 +81,7 @@ export class BaseServiceCallFeature extends LitElement {
 					} else if (data[key].toString().includes('VALUE')) {
 						data[key] = data[key]
 							.toString()
-							.replace(/VALUE/g, this.value as string);
+							.replace(/VALUE/g, (this.value ?? '').toString());
 					}
 				}
 			}
@@ -134,7 +134,10 @@ export class BaseServiceCallFeature extends LitElement {
 			let text = renderTemplate(this.hass, this.entry.label as string);
 			if (text) {
 				if (typeof text == 'string' && text.includes('VALUE')) {
-					text = text.replace(/VALUE/g, this.value.toString());
+					text = text.replace(
+						/VALUE/g,
+						(this.value ?? '').toString(),
+					);
 				}
 				text +=
 					(renderTemplate(
