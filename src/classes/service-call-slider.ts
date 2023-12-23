@@ -114,8 +114,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			];
 		}
 
-		if (!('service' in this.entry)) {
-			const tap_action = this.entry.tap_action ?? ({} as IAction);
+		if (!('tap_action' in this.entry)) {
+			const tap_action = {} as IAction;
+			tap_action.action = 'call-service';
 			switch (domain) {
 				case 'number':
 					tap_action.service = 'number.set_value';

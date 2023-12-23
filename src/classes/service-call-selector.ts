@@ -61,9 +61,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		for (const i in entries) {
 			const entry = this.entry.options![i];
 
-			if (!('service' in entry)) {
+			if (!('tap_action' in entry)) {
 				const [domain, _service] = (entity_id ?? '').split('.');
-				const tap_action = entry.tap_action ?? ({} as IAction);
+				const tap_action = {} as IAction;
+				tap_action.action = 'call-service';
 				switch (domain) {
 					case 'select':
 						tap_action.service = 'select.select_option';
