@@ -85,6 +85,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = parseFloat(this.value as string);
 		}
 
+		const entity_id = renderTemplate(
+			this.hass,
+			this.entry.entity_id as string,
+		) as string;
+		const [domain, _service] = (entity_id ?? '').split('.');
+
 		if (this.entry.range) {
 			this.range = [
 				parseFloat(
@@ -100,15 +106,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					) as string,
 				),
 			];
-		} else if (
-			['number', 'input_number'].includes(
-				(this.entry.entity_id ?? '').split('.')[0],
-			)
-		) {
+		} else if (['number', 'input_number'].includes(domain)) {
 			this.range = [
-				this.hass.states[this.entry.entity_id!].attributes.min,
-				this.hass.states[this.entry.entity_id!].attributes.max,
+				this.hass.states[entity_id].attributes.min,
+				this.hass.states[entity_id].attributes.max,
 			];
+		}
+
+		if (!('service' in this.entry)) {
+			switch (domain) {
+				case 'number':
+					this.entry.service = 'number.set_value';
+					break;
+				case 'input_number':
+				default:
+					this.entry.service = 'input_number.set_value';
+					break;
+			}
+
+			if (!('value' in this.entry.data!)) {
+				this.entry.data!.value = 'VALUE';
+			}
 		}
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
@@ -116,12 +134,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		let step: number;
 		if (this.entry.step) {
 			step = this.entry.step;
-		} else if (
-			['number', 'input_number'].includes(
-				(this.entry.entity_id ?? '').split('.')[0],
-			)
-		) {
-			step = this.hass.states[this.entry.entity_id!].attributes.step;
+		} else if (['number', 'input_number'].includes(domain)) {
+			step = this.hass.states[entity_id].attributes.step;
 		} else {
 			step = (this.range[1] - this.range[0]) / 100;
 		}
