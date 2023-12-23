@@ -19,50 +19,8 @@ export class BaseServiceCallFeature extends LitElement {
 			this.entry.service as string,
 		) as string;
 
-		if ('confirmation' in this.entry) {
-			let confirmation = this.entry.confirmation;
-			if (typeof confirmation == 'string') {
-				confirmation = renderTemplate(
-					this.hass,
-					this.entry.confirmation as string,
-				) as unknown as boolean;
-			}
-			if (confirmation != false) {
-				let text: string;
-				if ('text' in (this.entry.confirmation as IConfirmation)) {
-					text = renderTemplate(
-						this.hass,
-						(this.entry.confirmation as IConfirmation)
-							.text as string,
-					) as string;
-				} else {
-					text = `Are you sure you want to run action '${domainService}'?`;
-				}
-				if (this.entry.confirmation == true) {
-					if (!confirm(text)) {
-						return;
-					}
-				} else {
-					if (
-						'exemptions' in
-						(this.entry.confirmation as IConfirmation)
-					) {
-						if (
-							!(this.entry.confirmation as IConfirmation)
-								.exemptions!.map((exemption) =>
-									renderTemplate(this.hass, exemption.user),
-								)
-								.includes(this.hass.user.id)
-						) {
-							if (!confirm(text)) {
-								return;
-							}
-						}
-					} else if (!confirm(text)) {
-						return;
-					}
-				}
-			}
+		if (!this.handleConfirmation()) {
+			return;
 		}
 
 		if ('service' in this.entry) {
@@ -88,6 +46,58 @@ export class BaseServiceCallFeature extends LitElement {
 
 			this.hass.callService(domain, service, data);
 		}
+	}
+
+	handleConfirmation() {
+		if ('confirmation' in this.entry) {
+			let confirmation = this.entry.confirmation;
+			if (typeof confirmation == 'string') {
+				confirmation = renderTemplate(
+					this.hass,
+					this.entry.confirmation as string,
+				) as unknown as boolean;
+			}
+			if (confirmation != false) {
+				let text: string;
+				if ('text' in (this.entry.confirmation as IConfirmation)) {
+					text = renderTemplate(
+						this.hass,
+						(this.entry.confirmation as IConfirmation)
+							.text as string,
+					) as string;
+				} else {
+					text = `Are you sure you want to run action '${renderTemplate(
+						this.hass,
+						this.entry.service as string,
+					)}'?`;
+				}
+				if (this.entry.confirmation == true) {
+					if (!confirm(text)) {
+						return false;
+					}
+				} else {
+					if (
+						'exemptions' in
+						(this.entry.confirmation as IConfirmation)
+					) {
+						if (
+							!(this.entry.confirmation as IConfirmation)
+								.exemptions!.map((exemption) =>
+									renderTemplate(this.hass, exemption.user),
+								)
+								.includes(this.hass.user.id)
+						) {
+							if (!confirm(text)) {
+								return false;
+							}
+						}
+					} else if (!confirm(text)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	render() {

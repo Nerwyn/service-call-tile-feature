@@ -1,6 +1,6 @@
 {
 	"name": "service-call-tile-feature",
-	"version": "3.0.9",
+	"version": "3.1.0",
 	"description": "Service Call Tile Feature for Home Assistant Tile Card",
 	"main": "./dist/service-call-tile-feature.js",
 	"scripts": {
