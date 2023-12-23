@@ -129,6 +129,8 @@ class ServiceCallTileFeature extends LitElement {
 
 		if (renderTemplate(this.hass, this.config.hide as unknown as string)) {
 			this.style.setProperty('display', 'none');
+		} else {
+			this.style.removeProperty('display');
 		}
 
 		return html`<div class="row">${row}</div>`;
