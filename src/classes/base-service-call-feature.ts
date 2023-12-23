@@ -23,7 +23,7 @@ export class BaseServiceCallFeature extends LitElement {
 			return;
 		}
 
-		if ('service' in this.entry) {
+		if ('service' in action) {
 			const [domain, service] = domainService.split('.');
 			const data = structuredClone(action.data);
 			const context = { value: this.value };
