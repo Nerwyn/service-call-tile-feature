@@ -308,6 +308,7 @@ export class BaseServiceCallFeature extends LitElement {
 					margin: 0;
 					font-family: inherit;
 					font-size: 12px;
+					font-weight: bold;
 					z-index: 2;
 					color: var(--label-color);
 					filter: var(--label-filter);
