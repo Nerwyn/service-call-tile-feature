@@ -67,10 +67,14 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	onHoldStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
 
-		this.holdTimer = setTimeout(() => {
-			this.hold = true;
-			this.clickAction('hold_action');
-		}, 500);
+		if (
+			'hold_action' in this.entry &&
+			this.entry.hold_action!.action != 'none'
+		) {
+			this.holdTimer = setTimeout(() => {
+				this.hold = true;
+			}, 500);
+		}
 	}
 
 	onHoldEnd(e: TouchEvent | MouseEvent) {
@@ -84,6 +88,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			this.hold = false;
 			e.stopImmediatePropagation();
 			e.preventDefault();
+			this.clickAction('hold_action');
 		} else {
 			// Hold action is not triggered, fire tap action
 			this.onClick(e);

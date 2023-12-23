@@ -31,7 +31,7 @@ export class BaseServiceCallFeature extends LitElement {
 				action = actions.hold_action ?? actions.tap_action!;
 				break;
 			case 'double_tap_action':
-				action = actions.double_tap_action ?? actions.tap_action!;
+				action = actions.double_tap_action! ?? actions.tap_action!;
 				break;
 			case 'tap_action':
 			default:
