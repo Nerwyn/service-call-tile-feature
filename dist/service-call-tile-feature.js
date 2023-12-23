@@ -15,7 +15,6 @@
 					border: none;
 					padding: 0px;
 					box-sizing: border-box;
-					line-height: 0;
 					outline: 0px;
 					overflow: hidden;
 					font-size: inherit;
@@ -54,6 +53,7 @@
 					align-items: center;
 					height: 15px;
 					width: inherit;
+					margin: 0;
 					font-family: inherit;
 					font-size: 12px;
 					z-index: 2;
