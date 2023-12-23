@@ -226,7 +226,7 @@
 				.slider::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 22;
+					height: 22px;
 					width: 4px;
 					border-style: solid;
 					border-width: 4px;
