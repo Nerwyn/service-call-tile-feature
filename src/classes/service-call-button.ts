@@ -1,4 +1,4 @@
-import { html, css, CSSResult } from 'lit';
+import { html, css, CSSResult, TemplateResult } from 'lit';
 import {
 	customElement,
 	eventOptions,
@@ -12,6 +12,7 @@ import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
 
 import { renderTemplate } from 'ha-nunjucks';
 
+import { ActionType } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
@@ -23,13 +24,73 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		return this._ripple;
 	});
 
-	onClick(_e: MouseEvent) {
-		this.sendAction('tap_action');
+	clickTimer?: ReturnType<typeof setTimeout>;
+	clickCount: number = 0;
+
+	holdTimer?: ReturnType<typeof setTimeout>;
+	holdInterval?: ReturnType<typeof setInterval>;
+	hold: boolean = false;
+
+	clickAction(actionType: ActionType) {
+		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
+		this.clickTimer = undefined;
+		this.clickCount = 0;
+
+		this.sendAction(actionType);
+	}
+
+	onClick(e: TouchEvent | MouseEvent) {
+		e.stopImmediatePropagation();
+		this.clickCount++;
+
+		if (
+			'double_tap_action' in this.entry &&
+			this.entry.double_tap_action!.action != 'none'
+		) {
+			// Double tap action is defined
+			if (this.clickCount > 1) {
+				// Double tap action is triggered
+				this.clickAction('double_tap_action');
+			} else {
+				// Single tap action is triggered if double tap is not within 200ms
+				this.clickTimer = setTimeout(() => {
+					this.clickAction('tap_action');
+				}, 200);
+			}
+		} else {
+			// No double tap action defiend, tap action is triggered
+			this.clickAction('tap_action');
+		}
 	}
 
 	@eventOptions({ passive: true })
 	onHoldStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
+
+		this.holdTimer = setTimeout(() => {
+			this.hold = true;
+			this.clickAction('hold_action');
+		}, 500);
+	}
+
+	onHoldEnd(e: TouchEvent | MouseEvent) {
+		this._rippleHandlers.endPress();
+
+		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
+		clearInterval(this.holdInterval as ReturnType<typeof setInterval>);
+
+		if (this.hold) {
+			// Hold action is triggered
+			this.hold = false;
+			e.stopImmediatePropagation();
+			e.preventDefault();
+		} else {
+			// Hold action is not triggered, fire tap action
+			this.onClick(e);
+		}
+
+		this.holdTimer = undefined;
+		this.holdInterval = undefined;
 	}
 
 	render() {
@@ -47,22 +108,36 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
 
-		const button = html`<button
-			class=${this.className ?? ''}
-			style=${styleMap(style)}
-			@click=${this.onClick}
-			@focus=${this._rippleHandlers.startFocus}
-			@blur=${this._rippleHandlers.endFocus}
-			@mousedown=${this._rippleHandlers.startPress}
-			@mouseup=${this._rippleHandlers.endPress}
-			@mouseenter=${this._rippleHandlers.startHover}
-			@mouseleave=${this._rippleHandlers.endHover}
-			@touchstart=${this.onHoldStart}
-			@touchend=${this._rippleHandlers.endPress}
-			@touchcancel=${this._rippleHandlers.endPress}
-		>
-			${ripple}
-		</button>`;
+		let button: TemplateResult<1>;
+		if (this.touchscreen) {
+			button = html`<button
+				class=${this.className ?? ''}
+				style=${styleMap(style)}
+				@touchstart=${this.onHoldStart}
+				@touchend=${this.onHoldEnd}
+				@touchcancel=${this._rippleHandlers.endPress}
+				@mouseenter=${this._rippleHandlers.startHover}
+				@mouseleave=${this._rippleHandlers.endHover}
+				@focus=${this._rippleHandlers.startFocus}
+				@blur=${this._rippleHandlers.endFocus}
+			>
+				${ripple}
+			</button>`;
+		} else {
+			button = html`<button
+				class=${this.className ?? ''}
+				style=${styleMap(style)}
+				@mousedown=${this.onHoldStart}
+				@mouseup=${this.onHoldEnd}
+				@touchcancel=${this._rippleHandlers.endPress}
+				@mouseenter=${this._rippleHandlers.startHover}
+				@mouseleave=${this._rippleHandlers.endHover}
+				@focus=${this._rippleHandlers.startFocus}
+				@blur=${this._rippleHandlers.endFocus}
+			>
+				${ripple}
+			</button>`;
+		}
 
 		return html`${button}${icon_label}`;
 	}
