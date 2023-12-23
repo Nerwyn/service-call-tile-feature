@@ -12,7 +12,6 @@ import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
 
 import { renderTemplate } from 'ha-nunjucks';
 
-import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
@@ -25,12 +24,12 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	});
 
 	onClick(_e: MouseEvent) {
-		this.callService(this.entry.tap_action ?? ({} as IAction));
+		this.sendAction('tap_action');
 	}
 
 	@eventOptions({ passive: true })
 	onHoldStart(e: TouchEvent | MouseEvent) {
-		this._rippleHandlers.startPress(e);
+		this._rippleHandlers.startPress(e as unknown as Event);
 	}
 
 	render() {

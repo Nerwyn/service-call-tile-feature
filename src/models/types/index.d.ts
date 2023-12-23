@@ -11,4 +11,14 @@ declare global {
 		supported?: boolean;
 		configurable?: boolean;
 	}
+
+	interface Event {
+		detail?: Record<
+			string,
+			| string
+			| number
+			| boolean
+			| Record<string, string | number | boolean>
+		>;
+	}
 }

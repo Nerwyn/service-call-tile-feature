@@ -5,13 +5,62 @@ import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
-import { IEntry, IConfirmation, IAction } from '../models/interfaces';
+import {
+	IEntry,
+	IConfirmation,
+	IAction,
+	IActions,
+	ActionType,
+} from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
+
 	value: string | number = 0;
+	touchscreen = 'ontouchstart' in document.documentElement;
+
+	sendAction(
+		actionType: ActionType,
+		actions: IActions = this.entry as IActions,
+	) {
+		let action;
+		switch (actionType) {
+			case 'hold_action':
+				action = actions.hold_action ?? actions.tap_action!;
+				break;
+			case 'double_tap_action':
+				action = actions.double_tap_action ?? actions.tap_action!;
+				break;
+			case 'tap_action':
+			default:
+				action = actions.tap_action!;
+				break;
+		}
+
+		if (!this.handleConfirmation(action)) {
+			return;
+		}
+
+		switch (action.action) {
+			case 'call-service':
+				this.callService(action);
+				break;
+			case 'navigate':
+				this.navigate(action);
+				break;
+			case 'url':
+				this.toUrl(action);
+				break;
+			case 'assist':
+				this.assist(action);
+				break;
+			case 'none':
+			default:
+				break;
+		}
+	}
 
 	callService(action: IAction) {
 		const domainService = renderTemplate(
@@ -19,33 +68,68 @@ export class BaseServiceCallFeature extends LitElement {
 			action.service as string,
 		) as string;
 
-		if (!this.handleConfirmation(action)) {
-			return;
-		}
-
-		if ('service' in action) {
-			const [domain, service] = domainService.split('.');
-			const data = structuredClone(action.data);
-			const context = { value: this.value };
-			for (const key in data) {
-				data[key] = renderTemplate(
-					this.hass,
-					data[key] as string,
-					context,
-				);
-				if (data[key]) {
-					if (data[key] == 'VALUE') {
-						data[key] = this.value;
-					} else if (data[key].toString().includes('VALUE')) {
-						data[key] = data[key]
-							.toString()
-							.replace(/VALUE/g, (this.value ?? '').toString());
-					}
+		const [domain, service] = domainService.split('.');
+		const data = structuredClone(action.data);
+		const context = { value: this.value };
+		for (const key in data) {
+			data[key] = renderTemplate(this.hass, data[key] as string, context);
+			if (data[key]) {
+				if (data[key] == 'VALUE') {
+					data[key] = this.value;
+				} else if (data[key].toString().includes('VALUE')) {
+					data[key] = data[key]
+						.toString()
+						.replace(/VALUE/g, (this.value ?? '').toString());
 				}
 			}
-
-			this.hass.callService(domain, service, data);
 		}
+
+		this.hass.callService(domain, service, data);
+	}
+
+	navigate(action: IAction) {
+		const path =
+			(renderTemplate(this.hass, action.navigation_path!) as string) ??
+			'';
+		const replace =
+			(renderTemplate(
+				this.hass,
+				(action.navigation_replace as unknown as string)!,
+			) as boolean) ?? false;
+		if (path.includes('//')) {
+			console.error(
+				'Protocol detected in navigation path. To navigate to another website use the action "url" with the key "url_path" instead.',
+			);
+			return;
+		}
+		if (replace == true) {
+			window.history.replaceState(
+				window.history.state?.root ? { root: true } : null,
+				'',
+				path,
+			);
+		} else {
+			window.history.pushState(null, '', path);
+		}
+		const event = new Event('location-changed', {
+			bubbles: false,
+			cancelable: true,
+			composed: false,
+		});
+		event.detail = { replace: replace == true };
+		window.dispatchEvent(event);
+	}
+
+	toUrl(action: IAction) {
+		let url = (renderTemplate(this.hass, action.url_path!) as string) ?? '';
+		if (!url.includes('//')) {
+			url = `https://${url}`;
+		}
+		window.location.assign(url);
+	}
+
+	assist(_action: IAction) {
+		console.error('Assist has not been implemented');
 	}
 
 	handleConfirmation(action: IAction) {
