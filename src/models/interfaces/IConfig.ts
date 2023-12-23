@@ -2,6 +2,7 @@ import { StyleInfo } from 'lit/directives/style-map.js';
 
 export interface IConfig {
 	type: string;
+	hide: boolean;
 	entries: IEntry[];
 }
 
