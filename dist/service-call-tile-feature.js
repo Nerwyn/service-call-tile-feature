@@ -226,8 +226,8 @@
 				.slider::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 30px;
-					width: 12px;
+					height: 22;
+					width: 4px;
 					border-style: solid;
 					border-width: 4px;
 					border-radius: 12px;
@@ -260,8 +260,8 @@
 				.slider-line-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 28px;
-					width: 10px;
+					height: 24px;
+					width: 4px;
 					border-style: solid;
 					border-color: #ffffff;
 					border-width: 3px;
@@ -281,6 +281,7 @@
 					width: 24px;
 					background: var(--color);
 					cursor: pointer;
+					opacity: var(--opacity);
 					z-index: 1;
 					box-shadow: -100vw 0 0 100vw var(--color);
 				}
@@ -292,6 +293,7 @@
 					width: 24px;
 					background: var(--color);
 					cursor: pointer;
+					opacity: var(--opacity);
 					z-index: 1;
 					box-shadow: -100vw 0 0 100vw var(--color);
 				}
