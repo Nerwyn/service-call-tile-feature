@@ -5,7 +5,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
-import { IEntry, IConfirmation } from '../models/interfaces';
+import { IEntry, IConfirmation, IAction } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -13,19 +13,19 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 	value: string | number = 0;
 
-	callService() {
+	callService(action: IAction) {
 		const domainService = renderTemplate(
 			this.hass,
-			this.entry.service as string,
+			action.service as string,
 		) as string;
 
-		if (!this.handleConfirmation()) {
+		if (!this.handleConfirmation(action)) {
 			return;
 		}
 
 		if ('service' in this.entry) {
 			const [domain, service] = domainService.split('.');
-			const data = structuredClone(this.entry.data);
+			const data = structuredClone(action.data);
 			const context = { value: this.value };
 			for (const key in data) {
 				data[key] = renderTemplate(
@@ -48,40 +48,39 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
-	handleConfirmation() {
-		if ('confirmation' in this.entry) {
-			let confirmation = this.entry.confirmation;
+	handleConfirmation(action: IAction) {
+		if ('confirmation' in action) {
+			let confirmation = action.confirmation;
 			if (typeof confirmation == 'string') {
 				confirmation = renderTemplate(
 					this.hass,
-					this.entry.confirmation as string,
+					action.confirmation as string,
 				) as unknown as boolean;
 			}
 			if (confirmation != false) {
 				let text: string;
-				if ('text' in (this.entry.confirmation as IConfirmation)) {
+				if (
+					confirmation != true &&
+					'text' in (confirmation as IConfirmation)
+				) {
 					text = renderTemplate(
 						this.hass,
-						(this.entry.confirmation as IConfirmation)
-							.text as string,
+						(confirmation as IConfirmation).text as string,
 					) as string;
 				} else {
 					text = `Are you sure you want to run action '${renderTemplate(
 						this.hass,
-						this.entry.service as string,
+						action.service as string,
 					)}'?`;
 				}
-				if (this.entry.confirmation == true) {
+				if (confirmation == true) {
 					if (!confirm(text)) {
 						return false;
 					}
 				} else {
-					if (
-						'exemptions' in
-						(this.entry.confirmation as IConfirmation)
-					) {
+					if ('exemptions' in (confirmation as IConfirmation)) {
 						if (
-							!(this.entry.confirmation as IConfirmation)
+							!(confirmation as IConfirmation)
 								.exemptions!.map((exemption) =>
 									renderTemplate(this.hass, exemption.user),
 								)

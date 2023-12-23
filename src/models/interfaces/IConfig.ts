@@ -1,53 +1,34 @@
 import { StyleInfo } from 'lit/directives/style-map.js';
 
+import { IActions } from './IActions';
+
 export interface IConfig {
 	type: string;
 	hide: boolean;
 	entries: IEntry[];
 }
 
-export interface IEntry extends IServiceCall, ISliderOptions, ISelectorOptions {
+export interface IEntry extends IActions, ISliderOptions, ISelectorOptions {
 	type?: TileFeatureType;
 	value_attribute?: string;
+
 	entity_id?: string;
 	autofill_entity_id?: boolean;
-	confirmation?: boolean | IConfirmation;
+
 	icon?: string;
 	label?: string;
 	unit_of_measurement?: string;
+
 	style?: StyleInfo;
+	background_style?: StyleInfo;
+
 	icon_style?: StyleInfo;
 	label_style?: StyleInfo;
-	background_style?: StyleInfo;
+
 	slider_style?: StyleInfo;
 }
 
 export type TileFeatureType = 'button' | 'slider' | 'selector';
-
-export interface IServiceCall {
-	service?: string;
-	data?: IData;
-	target?: ITarget;
-}
-
-export interface IData {
-	[key: string]: string | string[] | number | boolean;
-}
-
-export interface ITarget {
-	entity_id?: string | string[];
-	device_id?: string | string[];
-	area_id?: string | string[];
-}
-
-export interface IConfirmation {
-	text?: string;
-	exemptions?: IExemption[];
-}
-
-export interface IExemption {
-	user: string;
-}
 
 export type ThumbType = 'default' | 'line' | 'flat';
 

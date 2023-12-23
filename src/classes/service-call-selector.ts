@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
+import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
 
@@ -62,19 +63,23 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			if (!('service' in entry)) {
 				const [domain, _service] = (entity_id ?? '').split('.');
+				const tap_action = entry.tap_action ?? ({} as IAction);
 				switch (domain) {
 					case 'select':
-						entry.service = 'select.select_option';
+						tap_action.service = 'select.select_option';
 						break;
 					case 'input_select':
 					default:
-						entry.service = 'input_select.select_option';
+						tap_action.service = 'input_select.select_option';
 						break;
 				}
 
-				if (!('option' in entry.data!)) {
-					entry.data!.option = options[i];
+				const data = tap_action.data ?? {};
+				if (!('option' in data!)) {
+					data.option = options[i];
+					tap_action.data = data;
 				}
+				entry.tap_action = tap_action;
 			}
 
 			const option =

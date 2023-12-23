@@ -8,7 +8,14 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { renderTemplate } from 'ha-nunjucks';
 
-import { IConfig, IEntry, TileFeatureType } from './models/interfaces';
+import {
+	IConfig,
+	IEntry,
+	TileFeatureType,
+	IActions,
+	IAction,
+	IData,
+} from './models/interfaces';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
@@ -137,11 +144,70 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	updateDeprecatedEntryFields(entry: IEntry) {
-		// Merge target and data fields
-		entry.data = {
-			...(entry.data || {}),
-			...(entry.target || {}),
-		};
+		// Copy action fields to tap_action
+		const actionKeys = [
+			'service',
+			'service_data',
+			'data',
+			'target',
+			'navigation_path',
+			'navigation_replace',
+			'url_path',
+			'confirmation',
+			'pipeline_id',
+			'start_listening',
+		];
+		const tapAction = entry.tap_action ?? ({} as IAction);
+		let updateTapAction = false;
+		for (const actionKey of actionKeys) {
+			if (actionKey in entry) {
+				updateTapAction = true;
+				(tapAction as unknown as Record<string, string>)[actionKey] =
+					entry[actionKey as keyof IEntry] as string;
+			}
+		}
+		if (updateTapAction) {
+			entry.tap_action = tapAction as IAction;
+		}
+
+		// For each type of action
+		const actionTypes = ['tap_action', 'hold_action', 'double_tap_action'];
+		for (const actionType of actionTypes) {
+			if (actionType in entry) {
+				const action = entry[actionType as keyof IActions] as IAction;
+				if ('service' in action) {
+					// Merge service_data, target, and data fields
+					action.data = {
+						...action.data,
+						...(
+							action as unknown as Record<
+								string,
+								IData | undefined
+							>
+						).service_data,
+						...action.target,
+					};
+				}
+
+				// Populate action field
+				if (!('action' in action)) {
+					if ('service' in action) {
+						(action as IAction).action = 'call-service';
+					} else if ('navigation_path' in action) {
+						(action as IAction).action = 'navigate';
+					} else if ('url_path' in action) {
+						(action as IAction).action = 'url';
+					} else if (
+						'pipeline_id' in action ||
+						'start_listening' in action
+					) {
+						(action as IAction).action = 'assist';
+					} else {
+						(action as IAction).action = 'none';
+					}
+				}
+			}
+		}
 
 		// Set entry type to button if not present
 		entry.type = (entry.type ?? 'button').toLowerCase() as TileFeatureType;
@@ -175,17 +241,31 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	populateMissingEntityId(entry: IEntry, parentEntityId: string) {
-		if (
-			!('entity_id' in entry.data!) &&
-			!('device_id' in entry.data!) &&
-			!('area_id' in entry.data!)
-		) {
-			entry.data!.entity_id = entry.entity_id ?? parentEntityId;
+		const actionTypes = ['tap_action', 'hold_action', 'double_tap_action'];
+		for (const actionType of actionTypes) {
+			if (actionType in entry) {
+				if (
+					!(
+						'entity_id' in
+						entry[actionType as keyof IActions]!.data!
+					) &&
+					!(
+						'device_id' in
+						entry[actionType as keyof IActions]!.data!
+					) &&
+					!('area_id' in entry[actionType as keyof IActions]!.data!)
+				) {
+					entry[actionType as keyof IActions]!.data!.entity_id =
+						entry.entity_id ?? parentEntityId;
+				}
+			}
 		}
+
 		if (!('entity_id' in entry)) {
-			entry.entity_id = (entry.data?.entity_id ??
+			entry.entity_id = (entry.tap_action?.data?.entity_id ??
 				parentEntityId) as string;
 		}
+
 		return entry;
 	}
 

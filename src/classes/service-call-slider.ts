@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
+import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
@@ -72,7 +73,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.value = this.newValue;
 
-		this.callService();
+		this.callService(this.entry.tap_action ?? ({} as IAction));
 	}
 
 	render() {
@@ -114,19 +115,23 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 
 		if (!('service' in this.entry)) {
+			const tap_action = this.entry.tap_action ?? ({} as IAction);
 			switch (domain) {
 				case 'number':
-					this.entry.service = 'number.set_value';
+					tap_action.service = 'number.set_value';
 					break;
 				case 'input_number':
 				default:
-					this.entry.service = 'input_number.set_value';
+					tap_action.service = 'input_number.set_value';
 					break;
 			}
 
-			if (!('value' in this.entry.data!)) {
-				this.entry.data!.value = 'VALUE';
+			const data = tap_action.data ?? {};
+			if (!('value' in data)) {
+				data.value = 'VALUE';
+				tap_action.data = data;
 			}
+			this.entry.tap_action = tap_action;
 		}
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
