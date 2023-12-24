@@ -134,12 +134,25 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		if (renderTemplate(this.hass, this.config.hide as unknown as string)) {
-			this.style.setProperty('display', 'none');
-		} else {
-			this.style.removeProperty('display');
+		// Hide and show checks
+		if ('hide' in this.config) {
+			if (
+				renderTemplate(this.hass, this.config.hide as unknown as string)
+			) {
+				this.style.setProperty('display', 'none');
+			} else {
+				this.style.removeProperty('display');
+			}
 		}
-
+		if ('show' in this.config) {
+			if (
+				renderTemplate(this.hass, this.config.show as unknown as string)
+			) {
+				this.style.removeProperty('display');
+			} else {
+				this.style.setProperty('display', 'none');
+			}
+		}
 		return html`<div class="row">${row}</div>`;
 	}
 

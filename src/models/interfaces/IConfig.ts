@@ -5,6 +5,7 @@ import { IActions } from './IActions';
 export interface IConfig {
 	type: string;
 	hide: boolean;
+	show: boolean;
 	entries: IEntry[];
 }
 

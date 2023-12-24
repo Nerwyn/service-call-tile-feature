@@ -33,11 +33,12 @@ entries:
 
 ## Base Config
 
-| Name    | Type    | Description/Value                                                                       |
-| ------- | ------- | --------------------------------------------------------------------------------------- |
-| type    | string  | `custom:service-call`                                                                   |
-| hide    | boolean | Whether to hide this row of entries. Should be set using a template. Defaults to false. |
-| entries | array   | List of entries to include in a tile features row.                                      |
+| Name    | Type    | Description/Value                                                                                               |
+| ------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| type    | string  | `custom:service-call`                                                                                           |
+| hide    | boolean | Whether to hide this row of entries. Should be set using a template. Defaults to false.                         |
+| show    | boolean | Whether to show this row of entries. Should be set using a template. Defaults to true. Supercedes hide if true. |
+| entries | array   | List of entries to include in a tile features row.                                                              |
 
 The custom service call feature is actually a row of entries, each of which have their own configuration. When you first add the `Service Call` feature to your tile card it creates a button to start. You can add more tile features to this row by adding more entries to the `entries` array.
 
