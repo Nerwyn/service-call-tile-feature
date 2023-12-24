@@ -1,4 +1,4 @@
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -55,6 +55,9 @@ export class BaseServiceCallFeature extends LitElement {
 				break;
 			case 'assist':
 				this.assist(action);
+				break;
+			case 'more-info':
+				this.moreInfo(action);
 				break;
 			case 'none':
 			default:
@@ -125,11 +128,40 @@ export class BaseServiceCallFeature extends LitElement {
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
-		window.location.assign(url);
+		window.open(url);
 	}
 
-	assist(_action: IAction) {
-		console.error('Assist has not been implemented');
+	assist(action: IAction) {
+		// eslint-disable-next-line
+		// @ts-ignore
+		if (this.hass?.auth?.external?.config?.hasAssist) {
+			// eslint-disable-next-line
+			// @ts-ignore
+			this.hass?.auth?.external?.fireMessage({
+				type: 'assist/show',
+				payload: {
+					pipeline_id: action.pipeline_id,
+					start_listening: action.start_listening,
+				},
+			});
+		} else {
+			window.open(`${window.location.href}?conversation=1`, '_self');
+		}
+	}
+
+	moreInfo(action: IAction) {
+		const entityId = renderTemplate(
+			this.hass,
+			action.data!.entity_id as string,
+		);
+
+		const event = new Event('hass-more-info', {
+			bubbles: true,
+			cancelable: true,
+			composed: true,
+		});
+		event.detail = { entityId };
+		this.dispatchEvent(event);
 	}
 
 	handleConfirmation(action: IAction) {
@@ -142,6 +174,8 @@ export class BaseServiceCallFeature extends LitElement {
 				) as unknown as boolean;
 			}
 			if (confirmation != false) {
+				forwardHaptic('warning');
+
 				let text: string;
 				if (
 					confirmation != true &&

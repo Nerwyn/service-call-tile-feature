@@ -1,4 +1,10 @@
-export type Action = 'call-service' | 'navigate' | 'url' | 'assist' | 'none';
+export type Action =
+	| 'call-service'
+	| 'navigate'
+	| 'url'
+	| 'assist'
+	| 'more-info'
+	| 'none';
 
 export interface IData {
 	[key: string]: string | string[] | number | number[] | boolean;
