@@ -140,8 +140,8 @@ export class BaseServiceCallFeature extends LitElement {
 			this.hass?.auth?.external?.fireMessage({
 				type: 'assist/show',
 				payload: {
-					pipeline_id: action.pipeline_id,
-					start_listening: action.start_listening,
+					pipeline_id: action.pipeline_id ?? 'last_used',
+					start_listening: action.start_listening ?? false,
 				},
 			});
 		} else {
