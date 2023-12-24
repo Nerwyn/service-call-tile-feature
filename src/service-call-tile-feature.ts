@@ -244,19 +244,19 @@ class ServiceCallTileFeature extends LitElement {
 		const actionTypes = ['tap_action', 'hold_action', 'double_tap_action'];
 		for (const actionType of actionTypes) {
 			if (actionType in entry) {
-				if (
-					!(
-						'entity_id' in
-						entry[actionType as keyof IActions]!.data!
-					) &&
-					!(
-						'device_id' in
-						entry[actionType as keyof IActions]!.data!
-					) &&
-					!('area_id' in entry[actionType as keyof IActions]!.data!)
-				) {
-					entry[actionType as keyof IActions]!.data!.entity_id =
-						entry.entity_id ?? parentEntityId;
+				const action =
+					entry[actionType as keyof IActions] ?? ({} as IAction);
+				if (['call-service', 'more-info'].includes(action.action)) {
+					const data = action.data ?? ({} as IData);
+					if (
+						!('entity_id' in data) &&
+						!('device_id' in data) &&
+						!('area_id' in data)
+					) {
+						data.entity_id = entry.entity_id ?? parentEntityId;
+						action.data = data;
+						entry[actionType as keyof IActions] = action;
+					}
 				}
 			}
 		}
