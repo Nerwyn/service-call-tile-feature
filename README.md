@@ -835,6 +835,81 @@ color: green
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
 
+## Example 5
+
+Using a selector to display different features.
+
+```yaml
+features:
+  - type: custom:service-call
+    entries:
+      - type: selector
+        options:
+          - option: A
+            icon: mdi:alpha-a
+            style:
+              '--icon-color': >-
+                {{ "var(--disabled-color)" if
+                is_state("input_select.test_select", "A") }}
+              '--color': var(--red-color)
+          - option: B
+            icon: mdi:alpha-b
+            style:
+              '--icon-color': >-
+                {{ "var(--disabled-color)" if
+                is_state("input_select.test_select", "B") }}
+              '--color': var(--green-color)
+          - option: C
+            icon: mdi:alpha-c
+            style:
+              '--icon-color': >-
+                {{ "var(--disabled-color)" if
+                is_state("input_select.test_select", "C") }}
+              '--color': var(--blue-color)
+  - type: custom:service-call
+    show: '{{ is_state("input_select.test_select", "A") }}'
+    entries:
+      - type: button
+        icon: mdi:youtube
+        tap_action:
+          action: url
+          url_path: youtube.com
+        double_tap_action:
+          action: url
+          url_path: play.spotify.com
+      - type: button
+        icon: mdi:view-dashboard
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/0
+        double_tap_action:
+          action: navigate
+          navigation_path: /lovelace-extra/0
+  - type: custom:service-call
+    show: '{{ is_state("input_select.test_select", "B") }}'
+    entries:
+      - type: button
+        icon: mdi:assistant
+        tap_action:
+          action: assist
+  - type: custom:service-call
+    show: '{{ is_state("input_select.test_select", "C") }}'
+    entries:
+      - type: slider
+        thumb: flat
+        entity_id: input_number.slider_test
+        label: VALUE
+        style:
+          '--label-color': var(--disabled-color)
+type: tile
+entity: input_select.test_select
+show_entity_picture: false
+vertical: false
+color: accent
+```
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
+
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
