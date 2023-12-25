@@ -792,10 +792,10 @@ features:
         style:
           '--color': rgb(31, 223, 100)
           flex-direction: row
-		icon_style:
-			padding: 8px
-		label_style:
-			left: '-16px'
+        icon_style:
+          padding: 8px
+        label_style:
+          left: '-16px'
 
 type: tile
 entity: binary_sensor.sun_room
