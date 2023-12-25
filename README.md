@@ -11,8 +11,6 @@
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
-<a href="https://www.buymeacoffee.com/nerwyn" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
 Call any service via tile features. This custom tile feature will let you create super customizable tile buttons, sliders, and selectors. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
@@ -40,6 +38,13 @@ entries:
 | show    | boolean | Whether to show this row of entries. Should be set using a template. Defaults to true. Supercedes hide if true. |
 | entries | array   | List of entries to include in a tile features row.                                                              |
 
+```yaml
+type: custom:service-call
+hide: '{{ is_state("light.lounge", "off") }}'
+show: '{{ is_state("light.lounge", "on") }}'
+entries: []
+```
+
 The custom service call feature is actually a row of entries, each of which have their own configuration. When you first add the `Service Call` feature to your tile card it creates a button to start. You can add more tile features to this row by adding more entries to the `entries` array.
 
 ## Entry Configs
@@ -52,11 +57,34 @@ The custom service call feature is actually a row of entries, each of which have
 | value_attribute     | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
 | entity_id           | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
 | autofill_entity_id  | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
-| confirmation        | boolean, Confirmation | Opens a browser popup asking you to confirm your action.                                                                                                 |
 | icon                | string                | The name of the icon to use.                                                                                                                             |
 | label               | string                | A string to place either underneath the icon or by itself.                                                                                               |
 | unit_of_measurement | string                | A string to append to the end of the label, if it exists.                                                                                                |
 | style               | StyleInfo             | CSS style properties to set to the feature, further explained below.                                                                                     |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    value_attribute: brightness
+    entity_id: light.lounge
+    autofill_entity_id: false
+    icon: >-
+      {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
+      "mdi:ceiling-light-outline") }}
+    label: >-
+      {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
+      undefined }}
+    unit_of_measurement: '%'
+    style:
+      --icon-color: yellow
+      --color: |
+        {% if is_state("light.chandelier", "on") %}
+          rgb({{ state_attr("light.chandelier", "rgb_color") }})
+        {% else %}
+          initial
+        {% endif %}
+```
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
 
@@ -66,21 +94,15 @@ If you find that the autofilling of the entity ID in the service call or tile fe
 
 More information on Home Assistant action confirmations can be found [here](https://www.home-assistant.io/dashboards/actions/#options-for-confirmation). Confirmation text supports string interpolation as described below.
 
+If the icon or label is empty, then the entire HTML element will not render. If the label is present, then `unit_of_measurement` is appended to the end of it.
+
 ### Templating
 
 All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
-### Service Call Options
+### Actions
 
-| Name    | Type   | Description                                                     |
-| ------- | ------ | --------------------------------------------------------------- |
-| service | string | The service call to make, e.g. `light.toggle` or `lock.unlock`. |
-| target  | object | The entity IDs, device IDs, or area IDs to call the service on. |
-| data    | object | Additional data to pass to the service call.                    |
-
-If no target is provided, the tile card's entity ID will be used instead.
-
-To better understand service calls, use the services Developer Tool found in Home Assistant.
+There are three types of action - tap, double tap, and hold. Buttons and selector options support all three, and sliders support just tap actions.
 
 ### Style Options
 

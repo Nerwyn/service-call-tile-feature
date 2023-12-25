@@ -22,10 +22,8 @@ export interface IEntry extends IActions, ISliderOptions, ISelectorOptions {
 
 	style?: StyleInfo;
 	background_style?: StyleInfo;
-
 	icon_style?: StyleInfo;
 	label_style?: StyleInfo;
-
 	slider_style?: StyleInfo;
 }
 
