@@ -60,24 +60,8 @@ class ServiceCallTileFeature extends LitElement {
 
 		for (let entry of config.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);
-
-			const entryType = (
-				(renderTemplate(this.hass, entry.type as string) ??
-					'button') as string
-			).toLowerCase();
-			switch (entryType) {
-				case 'slider':
-					entry = this.populateDefaultSliderActions(entry);
-					break;
-				case 'selector':
-					for (let option of entry.options ?? []) {
-						option = this.updateDeprecatedEntryFields(option);
-					}
-					entry = this.populateDefaultSelectorActions(entry);
-					break;
-				case 'button':
-				default:
-					break;
+			for (let option of entry.options ?? []) {
+				option = this.updateDeprecatedEntryFields(option);
 			}
 		}
 
@@ -325,6 +309,7 @@ class ServiceCallTileFeature extends LitElement {
 			).toLowerCase();
 			switch (entryType) {
 				case 'slider':
+					entry = this.populateDefaultSliderActions(entry);
 					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
@@ -334,6 +319,7 @@ class ServiceCallTileFeature extends LitElement {
 					);
 					break;
 				case 'selector':
+					entry = this.populateDefaultSelectorActions(entry);
 					row.push(
 						html`<service-call-selector
 							.hass=${this.hass}
