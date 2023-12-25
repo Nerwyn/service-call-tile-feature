@@ -29,7 +29,7 @@ entries:
   - type: button
 ```
 
-## Base Config
+# Base Config
 
 | Name    | Type    | Description/Value                                                                                               |
 | ------- | ------- | --------------------------------------------------------------------------------------------------------------- |
@@ -47,20 +47,20 @@ entries: []
 
 The custom service call feature is actually a row of entries, each of which have their own configuration. When you first add the `Service Call` feature to your tile card it creates a button to start. You can add more tile features to this row by adding more entries to the `entries` array.
 
-## Entry Configs
+# Entry Configs
 
-### General Options
+## General Options
 
-| Name                | Type                  | Description                                                                                                                                              |
-| ------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type                | string                | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
-| value_attribute     | string                | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
-| entity_id           | string                | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
-| autofill_entity_id  | boolean               | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
-| icon                | string                | The name of the icon to use.                                                                                                                             |
-| label               | string                | A string to place either underneath the icon or by itself.                                                                                               |
-| unit_of_measurement | string                | A string to append to the end of the label, if it exists.                                                                                                |
-| style               | StyleInfo             | CSS style properties to set to the feature, further explained below.                                                                                     |
+| Name                | Type      | Description                                                                                                                                              |
+| ------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type                | string    | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
+| value_attribute     | string    | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
+| entity_id           | string    | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
+| autofill_entity_id  | boolean   | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
+| icon                | string    | The name of the icon to use.                                                                                                                             |
+| label               | string    | A string to place either underneath the icon or by itself.                                                                                               |
+| unit_of_measurement | string    | A string to append to the end of the label, if it exists.                                                                                                |
+| style               | StyleInfo | CSS style properties to set to the feature, further explained below.                                                                                     |
 
 ```yaml
 type: custom:service-call
@@ -92,19 +92,60 @@ The `value_attribute` field is to set which entity attribute the feature should 
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
-More information on Home Assistant action confirmations can be found [here](https://www.home-assistant.io/dashboards/actions/#options-for-confirmation). Confirmation text supports string interpolation as described below.
-
 If the icon or label is empty, then the entire HTML element will not render. If the label is present, then `unit_of_measurement` is appended to the end of it.
 
-### Templating
+## Templating
 
 All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
-### Actions
+## Actions
 
-There are three types of action - tap, double tap, and hold. Buttons and selector options support all three, and sliders support just tap actions.
+There are three ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders support just tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
-### Style Options
+| Name              | Type   | Description                                                                                       |
+| ----------------- | ------ | ------------------------------------------------------------------------------------------------- |
+| tap_action        | object | Action to perform on single tap.                                                                  |
+| hold_action       | object | Action to perform when held.                                                                      |
+| double_tap_action | object | Action to perform when double tapped. Adding this introduces a 200ms delay to single tap actions. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:ceiling-light
+    tap_action:
+      action: call-service
+      service: light.toggle
+      target:
+        entity_id: light.lounge
+    double_tap_action:
+      action: url
+      url_path: youtube.com
+    hold_action:
+      action: assist
+```
+
+Each action also supports the `confirmation` field. More information on Home Assistant action confirmations can be found [here](https://www.home-assistant.io/dashboards/actions/#options-for-confirmation). Confirmation text supports string interpolation as described above.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:ceiling-light
+    tap_action:
+      action: call-service
+      service: light.toggle
+      target:
+        entity_id: light.lounge
+      confirmation:
+        text: >-
+          Are you sure you want to turn the light {{ 'on' if
+          is_state('light.lounge', 'off') else 'off' }}?
+```
+
+### Action Types
+
+## Style Options
 
 While any CSS property can be used, these values are internal CSS variables designed to be set by the user.
 
@@ -123,7 +164,7 @@ While any CSS property can be used, these values are internal CSS variables desi
 
 If you want to apply additional styles to subelements, you can also use the options `icon_style`, `label_style`, `background_style`, and `slider_style`.
 
-### Slider Specific Options
+## Slider Specific Options
 
 | Name  | Type   | Description                                                                                                                                                          |
 | ----- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -131,7 +172,7 @@ If you want to apply additional styles to subelements, you can also use the opti
 | step  | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
 | thumb | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
 
-### Selector Specific Options
+## Selector Specific Options
 
 | Name             | Type     | Description                                                                                                                             |
 | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
