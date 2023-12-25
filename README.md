@@ -699,18 +699,22 @@ features:
     entries:
       - tap_action:
           action: call-service
-          service: light.toggle
+          service: light.turn_on
           data:
             entity_id: light.sunroom_ceiling
-        icon: mdi:power
-        label: '{{ states("light.sunroom_ceiling") }}'
-        style:
-          '--color': |-
-            {% if is_state("light.sunroom_ceiling", ["on"]) %}
-              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-            {% else %}
-              initial
-            {% endif %}
+            color_name: red
+        double_tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            entity_id: light.sunroom_ceiling
+            color_name: green
+        hold_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            entity_id: light.sunroom_ceiling
+            color_name: blue
   - type: custom:service-call
     entries:
       - type: slider
@@ -778,13 +782,21 @@ features:
             entity_id: media_player.spotify
         value_attribute: volume_level
         icon: mdi:spotify
-        label: '{{ state_attr("media_player.spotify", "media_title") }}'
+        label: |
+          {{ state_attr("media_player.spotify", "media_title") }}
+          {{ state_attr("media_player.spotify", "media_artist") }}
         range:
           - 0
           - 1
         thumb: flat
         style:
           '--color': rgb(31, 223, 100)
+          flex-direction: row
+        icon_style:
+          left: 8px
+        label_style:
+          left: -8px
+
 type: tile
 entity: binary_sensor.sun_room
 color: accent
@@ -908,7 +920,7 @@ vertical: false
 color: accent
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
