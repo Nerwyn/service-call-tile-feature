@@ -477,12 +477,16 @@ features:
         options:
           - icon: mdi:lock
             option: locked
-            service: lock.lock
+            tap_action:
+              action: call-service
+              service: lock.lock
             style:
               '--color': var(--green-color)
           - icon: mdi:lock-open-outline
             option: unlocked
-            service: lock.unlock
+            tap_action:
+              action: call-service
+              service: lock.unlock
             style:
               '--color': var(--red-color)
 type: tile
@@ -508,7 +512,13 @@ A light tile with a button for each bulb, a color selector, and brightness and t
 features:
   - type: custom:service-call
     entries:
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          confirmation:
+            text: >-
+              Are you sure you want to turn the light {{ 'on' if
+              is_state('light.chandelier', 'off') else 'off' }}?
         icon: >-
           {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
           "mdi:ceiling-light-outline") }}
@@ -516,10 +526,6 @@ features:
           {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
           undefined }}
         unit_of_measurement: '%'
-        confirmation:
-          text: >-
-            Are you sure you want to turn the light {{ 'on' if
-            is_state('light.chandelier', 'off') else 'off' }}?
         style:
           flex-basis: 200%
           '--icon-color': red
@@ -529,36 +535,46 @@ features:
             {% else %}
               initial
             {% endif %}
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          target:
+            entity_id: light.chandelier_bulb_1
         icon: mdi:lightbulb
         icon_color: orange
         label: Bulb 1
-        target:
-          entity_id: light.chandelier_bulb_1
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          target:
+            entity_id: light.chandelier_bulb_2
         icon: mdi:lightbulb
         icon_color: yellow
         label: Bulb 2
-        target:
-          entity_id: light.chandelier_bulb_2
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          target:
+            entity_id: light.chandelier_bulb_3
         icon: mdi:lightbulb
         icon_color: green
         label: Bulb 3
-        target:
-          entity_id: light.chandelier_bulb_3
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          target:
+            entity_id: light.chandelier_bulb_4
         icon: mdi:lightbulb
         icon_color: blue
         label: Bulb 4
-        target:
-          entity_id: light.chandelier_bulb_4
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          target:
+            entity_id: light.chandelier_bulb_5
         icon: mdi:lightbulb
         icon_color: purple
         label: Bulb 5
-        target:
-          entity_id: light.chandelier_bulb_5
   - type: custom:service-call
     entries:
       - type: selector
@@ -571,50 +587,57 @@ features:
             {% else %}
               initial
             {% endif %}
-        invert_label: true
         options:
-          - service: light.turn_on
+          - tap_action:
+              action: call-service
+              service: light.turn_on
+              data:
+                color_name: red
             option: 255,0,0
             label: Red
             icon: mdi:alpha-r
-            data:
-              color_name: red
             style:
               '--label-color': red
               '--color': red
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '255,0,0' }}
-          - service: light.turn_on
+          - tap_action:
+              action: call-service
+              service: light.turn_on
+              data:
+                color_name: green
             option: 0,128,0
             label: Green
             icon: mdi:alpha-g
-            data:
-              color_name: green
             style:
               '--label-color': green
               '--color': green
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '0,128,0' }}
-          - service: light.turn_on
+          - tap_action:
+              action: call-service
+              service: light.turn_on
+              data:
+                color_name: blue
             option: 0,0,255
             label: Blue
             icon: mdi:alpha-b
-            data:
-              color_name: blue
             style:
               '--label-color': blue
               '--color': blue
               '--label-filter': >-
                 {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
                 or []).join(',') == '0,0,255' }}
-          - service: light.turn_on
+          - tap_action:
+              action: call-service
+              service: light.turn_on
+              data:
+                color_temp: 500
             option: 255,166,86
             label: White
             icon: mdi:alpha-w
-            data:
-              color_temp: 500
             style:
               '--label-color': white
               '--color': white
@@ -634,15 +657,21 @@ features:
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
-        service: light.turn_on
-        data:
-          brightness_pct: VALUE
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            brightness_pct: VALUE
         style:
           flex-basis: 200%
       - type: slider
         thumb: line
         value_attribute: color_temp
-        service: light.turn_on
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            color_temp: VALUE
         label: '{{ state_attr("light.chandelier", "color_temp") }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
@@ -650,8 +679,6 @@ features:
           - '{{ state_attr("light.chandelier", "min_mireds") }}'
           - '{{ state_attr("light.chandelier", "max_mireds") }}'
         step: 1
-        data:
-          color_temp: VALUE
         style:
           '--label-color': var(--disabled-color)
           '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
@@ -670,7 +697,11 @@ Multiple sliders for a room's light and curtains.
 features:
   - type: custom:service-call
     entries:
-      - service: light.toggle
+      - tap_action:
+          action: call-service
+          service: light.toggle
+          data:
+            entity_id: light.sunroom_ceiling
         icon: mdi:power
         label: '{{ states("light.sunroom_ceiling") }}'
         style:
@@ -680,8 +711,6 @@ features:
             {% else %}
               initial
             {% endif %}
-        data:
-          entity_id: light.sunroom_ceiling
   - type: custom:service-call
     entries:
       - type: slider
@@ -691,10 +720,12 @@ features:
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
-        service: light.turn_on
-        data:
-          brightness_pct: VALUE
-          entity_id: light.sunroom_ceiling
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            brightness_pct: VALUE
+            entity_id: light.sunroom_ceiling
         style:
           '--color': |
             {% if is_state("light.sunroom_ceiling", "on") %}
@@ -705,7 +736,12 @@ features:
       - type: slider
         thumb: line
         value_attribute: color_temp
-        service: light.turn_on
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            color_temp: VALUE
+            entity_id: light.sunroom_ceiling
         label: '{{ state_attr("light.sunroom_ceiling", "color_temp") }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
@@ -713,9 +749,6 @@ features:
           - '{{ state_attr("light.sunroom_ceiling", "min_mireds") }}'
           - '{{ state_attr("light.sunroom_ceiling", "max_mireds") }}'
         step: 1
-        data:
-          color_temp: VALUE
-          entity_id: light.sunroom_ceiling
         style:
           '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
           '--background-opacity': 1
@@ -723,19 +756,26 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        service: cover.set_cover_position
+        tap_action:
+          action: call-service
+          service: cover.set_cover_position
+          data:
+            position: VALUE
+            entity_id: cover.sunroom_curtains
         value_attribute: current_position
         icon: mdi:curtains
-        data:
-          position: VALUE
-          entity_id: cover.sunroom_curtains
         style:
           '--color': var(--tile-color)
           '--icon-color': var(--disabled-color)
   - type: custom:service-call
     entries:
       - type: slider
-        service: media_player.volume_set
+        tap_action:
+          action: call-service
+          service: media_player.volume_set
+          data:
+            volume_level: VALUE
+            entity_id: media_player.spotify
         value_attribute: volume_level
         icon: mdi:spotify
         label: '{{ state_attr("media_player.spotify", "media_title") }}'
@@ -743,9 +783,6 @@ features:
           - 0
           - 1
         thumb: flat
-        data:
-          volume_level: VALUE
-          entity_id: media_player.spotify
         style:
           '--color': rgb(31, 223, 100)
 type: tile
