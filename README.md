@@ -145,6 +145,123 @@ entries:
 
 ### Action Types
 
+Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashboards/actions/) syntax. Most Home Assistant actions are supported.
+
+| Action       | Description                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| call-service | Call any Home Assistant service.                                                             |
+| navigate     | Navigate to another Home Assistant page.                                                     |
+| url          | Navigate to an external URL.                                                                 |
+| assist       | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app. |
+| more-info    | Open the more info dialog.                                                                   |
+| none         | Explicilty set a command to do nothing.                                                      |
+
+Each action has a set of possible options associated with them. If `action` is not provided the card will guess which type of action it is by the options used.
+
+#### call-service
+
+| Name    | Description                                                                                                                                                      |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| service | The service to call. Use the format `domain.service`, e.g. `"light.turn_on"`.                                                                                    |
+| data    | Additional data to pass to the service call. See the Home Assistant documentation or go to Developer Tools > Services to see available options for each service. |
+| target  | The entity IDs, device IDs, or area IDs to call the service on.                                                                                                  |
+
+`data` and `target` get internally merged into one object since `hass.callService` only has a single data field. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
+
+If you include `VALUE` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    icon: mdi:brightness-4
+    value_attribute: brightness
+    tap_action:
+      action: call-service
+      service: light.turn_on
+      data:
+        brightness_pct: VALUE
+      target:
+        entity_id: light.lounge
+```
+
+#### navigate
+
+| Name               | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| navigation_path    | Home Assistant page to navigate to.                                  |
+| navigation_replace | Whether to replace the current page in the history with the new URL. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:view-dashboard
+    tap_action:
+      action: navigate
+      navigation_path: /lovelace/0
+      navigation_replace: true
+    double_tap_action:
+      action: navigate
+      navigation_path: /lovelace/1
+    hold_action:
+      action: navigate
+      navigation_path: /lovelace/2
+```
+
+#### url
+
+| Name     | Description                      |
+| -------- | -------------------------------- |
+| url_path | External website to navigate to. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:google
+    tap_action:
+      action: url
+      url_path: https://www.google.com
+```
+
+#### assist
+
+_The following options are only available in the mobile assist dialog._
+
+| Name            | Description                                                             |
+| --------------- | ----------------------------------------------------------------------- |
+| pipeline_id     | Assist pipeline id to use.                                              |
+| start_listening | If supported, listen for voice commands when opening the assist dialog. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:assistant
+    tap_action:
+      action: assist
+      pipeline_id: preferred
+      start_listening: true
+```
+
+#### more-info
+
+| Name           | Description                                     |
+| -------------- | ----------------------------------------------- |
+| data.entity_id | The entity ID to open the more info dialog for. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:cctv
+    tap_action:
+      action: more-info
+      data:
+        entity_id: camera.front_door
+```
+
 ## Style Options
 
 While any CSS property can be used, these values are internal CSS variables designed to be set by the user.
@@ -159,10 +276,37 @@ While any CSS property can be used, these values are internal CSS variables desi
 | --label-filter       | string | Filter to apply to the string label.                                                                 |
 | --background         | string | Custom color for the tile feature background. Can also be a CSS function (see examples).             |
 | --background-opacity | number | Opacity of the tile feature background. Defaults to 0.2.                                             |
-| --hover-opacity      | string | Opacity to use when hovering over a selector option.                                                 |
 | flex-basis           | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
 If you want to apply additional styles to subelements, you can also use the options `icon_style`, `label_style`, `background_style`, and `slider_style`.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:brightness-4
+    label: VALUE
+    value_attribute: brightness
+    tap_action:
+      action: call-service
+      service: light.toggle
+      target:
+        entity_id: light.lounge
+    style:
+      --color: |
+        {% if is_state("light.lounge", "on") %}
+          rgb({{ state_attr("light.lounge", "rgb_color") }})
+        {% else %}
+          initial
+        {% endif %}
+      --opacity: 1
+      --icon-color: white
+      --label-color: var(--disabled-color)
+      --icon-filter: blur(1px)
+      --label-filter: hue-rotate(90deg)
+      --background: gray
+      flex-basis: 200%
+```
 
 ## Slider Specific Options
 
@@ -172,12 +316,69 @@ If you want to apply additional styles to subelements, you can also use the opti
 | step  | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
 | thumb | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
 
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    icon: mdi:brightness-4
+    label: VALUE
+    thumb: flat
+    range:
+      - '{{ state_attr("light.lounge", "min_mireds") }}'
+      - '{{ state_attr("light.lounge", "max_mireds") }}'
+    step: 1
+    value_attribute: brightness
+    tap_action:
+      action: call-service
+      service: light.turn_on
+      target:
+        entity_id: light.lounge
+    style:
+      --color: |
+        {% if is_state("light.lounge", "on") %}
+          rgb({{ state_attr("light.lounge", "rgb_color") }})
+        {% else %}
+          initial
+        {% endif %}
+```
+
 ## Selector Specific Options
 
-| Name             | Type     | Description                                                                                                                             |
-| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| options          | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
-| options.i.option | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
+| Name                  | Type     | Description                                                                                                                             |
+| --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| options               | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
+| options.i.option      | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
+| style.--hover-opacity | number   | Opacity to use when hovering over a selector option.                                                                                    |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: selector
+    options:
+      - option: A
+        icon: mdi:alpha-a
+        style:
+          '--icon-color': >-
+            {{ "var(--disabled-color)" if is_state("input_select.test_select",
+            "A") }}
+          '--color': var(--red-color)
+      - option: B
+        icon: mdi:alpha-b
+        style:
+          '--icon-color': >-
+            {{ "var(--disabled-color)" if is_state("input_select.test_select",
+            "B") }}
+          '--color': var(--green-color)
+      - option: C
+        icon: mdi:alpha-c
+        style:
+          '--icon-color': >-
+            {{ "var(--disabled-color)" if is_state("input_select.test_select",
+            "C") }}
+          '--color': var(--blue-color)
+    style:
+      --hover-opacity: 0.4
+```
 
 # Feature Types
 
