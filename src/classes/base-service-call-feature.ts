@@ -88,6 +88,7 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
+		console.log(data)
 		this.hass.callService(domain, service, data);
 	}
 
