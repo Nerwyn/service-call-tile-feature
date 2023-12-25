@@ -60,43 +60,6 @@ class ServiceCallTileFeature extends LitElement {
 
 		for (let entry of config.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);
-			for (let option of entry.options ?? []) {
-				option = this.updateDeprecatedEntryFields(option);
-			}
-		}
-
-		this.config = config;
-	}
-
-	render() {
-		if (!this.config || !this.hass || !this.stateObj) {
-			return null;
-		}
-
-		const row: TemplateResult[] = [];
-		for (let entry of this.config.entries) {
-			// Set entity ID to tile card entity ID if no other ID is present
-			if (entry.autofill_entity_id ?? true) {
-				entry = this.populateMissingEntityId(
-					entry,
-					this.stateObj.entity_id,
-				);
-
-				for (let option of entry.options ?? []) {
-					option = this.populateMissingEntityId(
-						option,
-						entry.entity_id!,
-					);
-				}
-			}
-
-			const style: StyleInfo = {};
-			for (const key in entry.style ?? {}) {
-				style[key] = renderTemplate(
-					this.hass,
-					entry.style![key] as string,
-				) as string;
-			}
 
 			const entryType = (
 				(renderTemplate(this.hass, entry.type as string) ??
@@ -104,56 +67,21 @@ class ServiceCallTileFeature extends LitElement {
 			).toLowerCase();
 			switch (entryType) {
 				case 'slider':
-					row.push(
-						html`<service-call-slider
-							.hass=${this.hass}
-							.entry=${entry}
-							style=${styleMap(style)}
-						/>`,
-					);
+					entry = this.populateDefaultSliderActions(entry);
 					break;
 				case 'selector':
-					row.push(
-						html`<service-call-selector
-							.hass=${this.hass}
-							.entry=${entry}
-							style=${styleMap(style)}
-						/>`,
-					);
+					for (let option of entry.options ?? []) {
+						option = this.updateDeprecatedEntryFields(option);
+					}
+					entry = this.populateDefaultSelectorActions(entry);
 					break;
 				case 'button':
 				default:
-					row.push(
-						html`<service-call-button
-							.hass=${this.hass}
-							.entry=${entry}
-							style=${styleMap(style)}
-						/>`,
-					);
 					break;
 			}
 		}
 
-		// Hide and show checks
-		if ('hide' in this.config) {
-			if (
-				renderTemplate(this.hass, this.config.hide as unknown as string)
-			) {
-				this.style.setProperty('display', 'none');
-			} else {
-				this.style.removeProperty('display');
-			}
-		}
-		if ('show' in this.config) {
-			if (
-				renderTemplate(this.hass, this.config.show as unknown as string)
-			) {
-				this.style.removeProperty('display');
-			} else {
-				this.style.setProperty('display', 'none');
-			}
-		}
-		return html`<div class="row">${row}</div>`;
+		this.config = config;
 	}
 
 	updateDeprecatedEntryFields(entry: IEntry) {
@@ -280,6 +208,173 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		return entry;
+	}
+
+	populateDefaultSliderActions(entry: IEntry) {
+		const entity_id = renderTemplate(
+			this.hass,
+			entry.entity_id as string,
+		) as string;
+		const [domain, _service] = (entity_id ?? '').split('.');
+
+		if (!('tap_action' in entry)) {
+			const tap_action = {} as IAction;
+			tap_action.action = 'call-service';
+			switch (domain) {
+				case 'number':
+					tap_action.service = 'number.set_value';
+					break;
+				case 'input_number':
+				default:
+					tap_action.service = 'input_number.set_value';
+					break;
+			}
+
+			const data = tap_action.data ?? {};
+			if (!('value' in data)) {
+				data.value = 'VALUE';
+				tap_action.data = data;
+			}
+			entry.tap_action = tap_action;
+		}
+		return entry;
+	}
+
+	populateDefaultSelectorActions(entry: IEntry) {
+		const entity_id = renderTemplate(
+			this.hass,
+			entry.entity_id as string,
+		) as string;
+		const entries = entry.options ?? [];
+		let options: string[] = [];
+		if (entity_id) {
+			options =
+				(this.hass.states[entity_id].attributes.options as string[]) ??
+				new Array<string>(entries.length);
+		}
+		if (options.length < entries.length) {
+			options = Object.assign(new Array(entries.length), options);
+		}
+
+		for (const i in entries) {
+			const option = entry.options![i];
+
+			if (
+				!('tap_action' in option) &&
+				!('double_tap_action' in option) &&
+				!('hold_action' in option)
+			) {
+				const [domain, _service] = (entity_id ?? '').split('.');
+				const tap_action = {} as IAction;
+				tap_action.action = 'call-service';
+				switch (domain) {
+					case 'select':
+						tap_action.service = 'select.select_option';
+						break;
+					case 'input_select':
+					default:
+						tap_action.service = 'input_select.select_option';
+						break;
+				}
+
+				const data = tap_action.data ?? {};
+				if (!('option' in data!)) {
+					data.option = options[i];
+					tap_action.data = data;
+				}
+				option.tap_action = tap_action;
+				option.hold_action = tap_action;
+			}
+		}
+		return entry;
+	}
+
+	render() {
+		if (!this.config || !this.hass || !this.stateObj) {
+			return null;
+		}
+
+		const row: TemplateResult[] = [];
+		for (let entry of this.config.entries) {
+			// Set entity ID to tile card entity ID if no other ID is present
+			if (entry.autofill_entity_id ?? true) {
+				entry = this.populateMissingEntityId(
+					entry,
+					this.stateObj.entity_id,
+				);
+
+				for (let option of entry.options ?? []) {
+					option = this.populateMissingEntityId(
+						option,
+						entry.entity_id!,
+					);
+				}
+			}
+
+			const style: StyleInfo = {};
+			for (const key in entry.style ?? {}) {
+				style[key] = renderTemplate(
+					this.hass,
+					entry.style![key] as string,
+				) as string;
+			}
+
+			const entryType = (
+				(renderTemplate(this.hass, entry.type as string) ??
+					'button') as string
+			).toLowerCase();
+			switch (entryType) {
+				case 'slider':
+					row.push(
+						html`<service-call-slider
+							.hass=${this.hass}
+							.entry=${entry}
+							style=${styleMap(style)}
+						/>`,
+					);
+					break;
+				case 'selector':
+					row.push(
+						html`<service-call-selector
+							.hass=${this.hass}
+							.entry=${entry}
+							style=${styleMap(style)}
+						/>`,
+					);
+					break;
+				case 'button':
+				default:
+					row.push(
+						html`<service-call-button
+							.hass=${this.hass}
+							.entry=${entry}
+							style=${styleMap(style)}
+						/>`,
+					);
+					break;
+			}
+		}
+
+		// Hide and show checks
+		if ('hide' in this.config) {
+			if (
+				renderTemplate(this.hass, this.config.hide as unknown as string)
+			) {
+				this.style.setProperty('display', 'none');
+			} else {
+				this.style.removeProperty('display');
+			}
+		}
+		if ('show' in this.config) {
+			if (
+				renderTemplate(this.hass, this.config.show as unknown as string)
+			) {
+				this.style.removeProperty('display');
+			} else {
+				this.style.setProperty('display', 'none');
+			}
+		}
+		return html`<div class="row">${row}</div>`;
 	}
 
 	static get styles() {
