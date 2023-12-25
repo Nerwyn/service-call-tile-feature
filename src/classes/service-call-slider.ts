@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
+import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
@@ -111,6 +112,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.hass.states[entity_id].attributes.min,
 				this.hass.states[entity_id].attributes.max,
 			];
+		}
+
+		if (!('tap_action' in this.entry)) {
+			const tap_action = {} as IAction;
+			tap_action.action = 'call-service';
+			switch (domain) {
+				case 'number':
+					tap_action.service = 'number.set_value';
+					break;
+				case 'input_number':
+				default:
+					tap_action.service = 'input_number.set_value';
+					break;
+			}
+
+			const data = tap_action.data ?? {};
+			if (!('value' in data)) {
+				data.value = 'VALUE';
+				tap_action.data = data;
+			}
+			this.entry.tap_action = tap_action;
 		}
 
 		this.speed = (this.range[1] - this.range[0]) / 50;

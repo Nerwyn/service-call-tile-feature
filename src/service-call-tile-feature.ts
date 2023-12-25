@@ -194,85 +194,6 @@ class ServiceCallTileFeature extends LitElement {
 		return entry;
 	}
 
-	populateDefaultSliderActions(entry: IEntry) {
-		const entity_id = renderTemplate(
-			this.hass,
-			entry.entity_id as string,
-		) as string;
-		const [domain, _service] = (entity_id ?? '').split('.');
-
-		if (!('tap_action' in entry)) {
-			const tap_action = {} as IAction;
-			tap_action.action = 'call-service';
-			switch (domain) {
-				case 'number':
-					tap_action.service = 'number.set_value';
-					break;
-				case 'input_number':
-				default:
-					tap_action.service = 'input_number.set_value';
-					break;
-			}
-
-			const data = tap_action.data ?? {};
-			if (!('value' in data)) {
-				data.value = 'VALUE';
-				tap_action.data = data;
-			}
-			entry.tap_action = tap_action;
-		}
-		return entry;
-	}
-
-	populateDefaultSelectorActions(entry: IEntry) {
-		const entity_id = renderTemplate(
-			this.hass,
-			entry.entity_id as string,
-		) as string;
-		const entries = entry.options ?? [];
-		let options: string[] = [];
-		if (entity_id) {
-			options =
-				(this.hass.states[entity_id].attributes.options as string[]) ??
-				new Array<string>(entries.length);
-		}
-		if (options.length < entries.length) {
-			options = Object.assign(new Array(entries.length), options);
-		}
-
-		for (const i in entries) {
-			const option = entry.options![i];
-
-			if (
-				!('tap_action' in option) &&
-				!('double_tap_action' in option) &&
-				!('hold_action' in option)
-			) {
-				const [domain, _service] = (entity_id ?? '').split('.');
-				const tap_action = {} as IAction;
-				tap_action.action = 'call-service';
-				switch (domain) {
-					case 'select':
-						tap_action.service = 'select.select_option';
-						break;
-					case 'input_select':
-					default:
-						tap_action.service = 'input_select.select_option';
-						break;
-				}
-
-				const data = tap_action.data ?? {};
-				if (!('option' in data!)) {
-					data.option = options[i];
-					tap_action.data = data;
-				}
-				option.tap_action = tap_action;
-				option.hold_action = tap_action;
-			}
-		}
-		return entry;
-	}
-
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -309,7 +230,6 @@ class ServiceCallTileFeature extends LitElement {
 			).toLowerCase();
 			switch (entryType) {
 				case 'slider':
-					entry = this.populateDefaultSliderActions(entry);
 					row.push(
 						html`<service-call-slider
 							.hass=${this.hass}
@@ -319,7 +239,6 @@ class ServiceCallTileFeature extends LitElement {
 					);
 					break;
 				case 'selector':
-					entry = this.populateDefaultSelectorActions(entry);
 					row.push(
 						html`<service-call-selector
 							.hass=${this.hass}
