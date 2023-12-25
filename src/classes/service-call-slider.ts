@@ -132,6 +132,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				data.value = 'VALUE';
 				tap_action.data = data;
 			}
+			if (!('entity_id' in data)) {
+				data.entity_id = entity_id;
+				tap_action.data = data;
+			}
 			this.entry.tap_action = tap_action;
 		}
 

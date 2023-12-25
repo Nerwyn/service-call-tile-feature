@@ -84,6 +84,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					data.option = options[i];
 					tap_action.data = data;
 				}
+				if (!('entity_id' in data!)) {
+					data.entity_id = entity_id;
+					tap_action.data = data;
+				}
 				entry.tap_action = tap_action;
 				entry.hold_action = tap_action;
 			}
