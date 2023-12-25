@@ -209,10 +209,12 @@ class ServiceCallTileFeature extends LitElement {
 				);
 
 				for (let option of entry.options ?? []) {
-					option = this.populateMissingEntityId(
-						option,
-						entry.entity_id!,
-					);
+					if (option.autofill_entity_id ?? true) {
+						option = this.populateMissingEntityId(
+							option,
+							entry.entity_id!,
+						);
+					}
 				}
 			}
 
