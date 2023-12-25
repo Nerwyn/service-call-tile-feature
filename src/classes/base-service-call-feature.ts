@@ -38,6 +38,7 @@ export class BaseServiceCallFeature extends LitElement {
 				action = actions.tap_action!;
 				break;
 		}
+		console.log(action)
 
 		if (!this.handleConfirmation(action)) {
 			return;

@@ -103,7 +103,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					style[key] as string,
 				) as string;
 			}
-			console.log(entry);
 
 			selector.push(
 				html`<service-call-button
