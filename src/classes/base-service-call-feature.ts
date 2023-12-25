@@ -38,7 +38,7 @@ export class BaseServiceCallFeature extends LitElement {
 				action = actions.tap_action!;
 				break;
 		}
-		console.log(`00: ${action}`);
+		console.log(`00: ${JSON.stringify(action)}`);
 
 		if (!this.handleConfirmation(action)) {
 			return;
@@ -46,7 +46,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 		switch (action.action) {
 			case 'call-service':
-				console.log(`0: ${action}`);
+				console.log(`0: ${JSON.stringify(action)}`);
 				this.callService(action);
 				break;
 			case 'navigate':
@@ -68,7 +68,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	callService(action: IAction) {
-		console.log(`1: ${action}`);
+		console.log(`1: ${JSON.stringify(action)}`);
 		const domainService = renderTemplate(
 			this.hass,
 			action.service as string,
@@ -77,7 +77,7 @@ export class BaseServiceCallFeature extends LitElement {
 		const [domain, service] = domainService.split('.');
 		const data = structuredClone(action.data);
 		const context = { value: this.value };
-		console.log(`2: ${action}`);
+		console.log(`2: ${JSON.stringify(action)}`);
 		for (const key in data) {
 			data[key] = renderTemplate(this.hass, data[key] as string, context);
 
@@ -92,7 +92,7 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
-		console.log(`3: ${action}`);
+		console.log(`3: ${JSON.stringify(action)}`);
 		this.hass.callService(domain, service, data);
 	}
 
