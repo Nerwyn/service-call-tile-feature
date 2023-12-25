@@ -76,7 +76,10 @@ export class BaseServiceCallFeature extends LitElement {
 		const data = structuredClone(action.data);
 		const context = { value: this.value };
 		for (const key in data) {
+			console.log(`Original: ${data[key]}`)
 			data[key] = renderTemplate(this.hass, data[key] as string, context);
+			console.log(`Rendered: ${data[key]}`)
+
 			if (data[key]) {
 				if (data[key] == 'VALUE') {
 					data[key] = this.value;
@@ -85,6 +88,7 @@ export class BaseServiceCallFeature extends LitElement {
 						.toString()
 						.replace(/VALUE/g, (this.value ?? '').toString());
 				}
+				console.log(`Post VALUE: ${data[key]}`)
 			}
 		}
 
