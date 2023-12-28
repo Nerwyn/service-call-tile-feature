@@ -7,7 +7,7 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
-		filename: 'service-call-tile-feature.js',
+		filename: 'service-call-tile-feature.min.js',
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js'],
