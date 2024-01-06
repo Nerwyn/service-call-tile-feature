@@ -18,8 +18,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	scrolling: boolean = false;
 
 	onStart(e: TouchEvent | MouseEvent) {
-		e.preventDefault();
-
 		if (!this.scrolling) {
 			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
