@@ -77,6 +77,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.value = this.newValue;
 
 			this.sendAction('tap_action');
+		} else {
+			this.setValue();
+			this.oldValue = this.value as number;
+			this.newValue = this.value as number;
+			this.shadowRoot!.getElementById('slider')?.setAttribute(
+				'value',
+				this.value.toString(),
+			);
 		}
 		this.lastX = undefined;
 		this.scrolling = false;
@@ -215,6 +223,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			<input
 				type="range"
 				class="${this.class}"
+				id="slider"
 				style=${styleMap(slider_style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
