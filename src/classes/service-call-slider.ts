@@ -14,66 +14,90 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	range: [number, number] = [0, 100];
 	class: string = 'slider';
 
+	lastY?: number;
+	dragging: boolean = false;
+
 	onInput(e: InputEvent) {
-		e.preventDefault();
-		e.stopImmediatePropagation();
+		if (!this.dragging) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
 
-		const slider = e.currentTarget as HTMLInputElement;
-		const start = parseFloat(
-			(this.oldValue as unknown as string) ?? this.value ?? '0',
-		);
-		const end = parseFloat(slider.value ?? start);
-		slider.value = start.toString();
-		this.newValue = end;
+			const slider = e.currentTarget as HTMLInputElement;
+			const start = parseFloat(
+				(this.oldValue as unknown as string) ?? this.value ?? '0',
+			);
+			const end = parseFloat(slider.value ?? start);
+			slider.value = start.toString();
+			this.newValue = end;
 
-		if (end > this.range[0]) {
-			slider.className = this.class;
-		}
+			if (end > this.range[0]) {
+				slider.className = this.class;
+			}
 
-		let i = start;
-		if (start > end) {
-			const id = setInterval(() => {
-				i -= this.speed;
-				slider.value = i.toString();
+			let i = start;
+			if (start > end) {
+				const id = setInterval(() => {
+					i -= this.speed;
+					slider.value = i.toString();
 
-				if (end >= i) {
-					clearInterval(id);
-					slider.value = end.toString();
-					if (
-						end <= this.range[0] &&
-						this.class != 'slider-line-thumb'
-					) {
-						slider.className = 'slider-off';
+					if (end >= i) {
+						clearInterval(id);
+						slider.value = end.toString();
+						if (
+							end <= this.range[0] &&
+							this.class != 'slider-line-thumb'
+						) {
+							slider.className = 'slider-off';
+						}
 					}
-				}
-			}, 1);
-		} else if (start < end) {
-			const id = setInterval(() => {
-				i += this.speed;
-				slider.value = i.toString();
+				}, 1);
+			} else if (start < end) {
+				const id = setInterval(() => {
+					i += this.speed;
+					slider.value = i.toString();
 
-				if (end <= i) {
-					clearInterval(id);
-					slider.value = end.toString();
-				}
-			}, 1);
-		} else {
-			slider.value = end.toString();
+					if (end <= i) {
+						clearInterval(id);
+						slider.value = end.toString();
+					}
+				}, 1);
+			} else {
+				slider.value = end.toString();
+			}
+
+			this.oldValue = end;
 		}
-
-		this.oldValue = end;
 	}
 
-	onEnd(_e: MouseEvent | TouchEvent) {
-		if (!this.newValue && this.newValue != 0) {
-			this.newValue = this.value as number;
-		}
-		if (this.newValue % 1 == 0) {
-			this.newValue = Math.trunc(this.newValue);
-		}
-		this.value = this.newValue;
+	onEnd(_e: TouchEvent | MouseEvent) {
+		if (!this.dragging) {
+			if (!this.newValue && this.newValue != 0) {
+				this.newValue = this.value as number;
+			}
+			if (this.newValue % 1 == 0) {
+				this.newValue = Math.trunc(this.newValue);
+			}
+			this.value = this.newValue;
 
-		this.sendAction('tap_action');
+			this.sendAction('tap_action');
+		}
+		this.lastY = undefined;
+		this.dragging = false;
+	}
+
+	onHoldMove(e: TouchEvent | MouseEvent) {
+		let currentY: number;
+		if ('clientY' in e) {
+			currentY = e.clientY;
+		} else {
+			currentY = e.touches[0].clientY;
+		}
+
+		if (this.lastY == undefined) {
+			this.lastY = currentY;
+		} else if (currentY != this.lastY) {
+			this.dragging = true;
+		}
 	}
 
 	render() {
@@ -202,6 +226,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				@input=${this.onInput}
 				@mouseup=${this.onEnd}
 				@touchend=${this.onEnd}
+				@touchmove=${this.onHoldMove}
+				@mousemove=${this.onHoldMove}
 			/>
 		`;
 
