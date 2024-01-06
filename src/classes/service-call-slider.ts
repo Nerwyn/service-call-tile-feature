@@ -19,9 +19,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	onInput(e: InputEvent) {
 		if (!this.dragging) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
 			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
@@ -95,7 +92,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		if (this.lastY == undefined) {
 			this.lastY = currentY;
-		} else if (currentY != this.lastY) {
+		} else if (Math.abs(currentY - this.lastY) > 20) {
 			this.dragging = true;
 		}
 	}
