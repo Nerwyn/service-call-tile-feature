@@ -31,7 +31,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
-	dragging: boolean = false;
+	scrolling: boolean = false;
 
 	clickAction(actionType: ActionType) {
 		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
@@ -68,7 +68,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	@eventOptions({ passive: true })
 	onHoldStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
-		this.dragging = false;
+		this.scrolling = false;
 
 		if (
 			'hold_action' in this.entry &&
@@ -86,7 +86,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
 		clearInterval(this.holdInterval as ReturnType<typeof setInterval>);
 
-		if (!this.dragging) {
+		if (!this.scrolling) {
 			if (this.hold) {
 				// Hold action is triggered
 				this.hold = false;
@@ -101,11 +101,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		this.holdTimer = undefined;
 		this.holdInterval = undefined;
-		this.dragging = false;
+		this.scrolling = false;
 	}
 
 	onHoldMove(_e: TouchEvent | MouseEvent) {
-		this.dragging = true;
+		this.scrolling = true;
 	}
 
 	render() {

@@ -14,11 +14,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	range: [number, number] = [0, 100];
 	class: string = 'slider';
 
-	lastY?: number;
-	dragging: boolean = false;
+	lastX?: number;
+	scrolling: boolean = false;
 
 	onInput(e: InputEvent) {
-		if (!this.dragging) {
+		if (!this.scrolling) {
 			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
@@ -67,7 +67,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onEnd(_e: TouchEvent | MouseEvent) {
-		if (!this.dragging) {
+		if (!this.scrolling) {
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = this.value as number;
 			}
@@ -87,22 +87,22 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			);
 			this.requestUpdate();
 		}
-		this.lastY = undefined;
-		this.dragging = false;
+		this.lastX = undefined;
+		this.scrolling = false;
 	}
 
 	onHoldMove(e: TouchEvent | MouseEvent) {
-		let currentY: number;
-		if ('clientY' in e) {
-			currentY = e.clientY;
+		let currentX: number;
+		if ('clientX' in e) {
+			currentX = e.clientX;
 		} else {
-			currentY = e.touches[0].clientY;
+			currentX = e.touches[0].clientX;
 		}
 
-		if (this.lastY == undefined) {
-			this.lastY = currentY;
-		} else if (Math.abs(currentY - this.lastY) > 20) {
-			this.dragging = true;
+		if (this.lastX == undefined) {
+			this.lastX = currentX;
+		} else if (currentX == this.lastX) {
+			this.scrolling = true;
 		}
 	}
 
