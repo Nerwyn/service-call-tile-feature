@@ -218,7 +218,7 @@ export class BaseServiceCallFeature extends LitElement {
 		return true;
 	}
 
-	render() {
+	setValue() {
 		const value_attribute = renderTemplate(
 			this.hass,
 			this.entry.value_attribute as string,
@@ -241,6 +241,10 @@ export class BaseServiceCallFeature extends LitElement {
 				this.value = value;
 			}
 		}
+	}
+
+	render() {
+		this.setValue();
 
 		let icon = html``;
 		if ('icon' in this.entry) {
