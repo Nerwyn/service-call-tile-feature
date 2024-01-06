@@ -81,6 +81,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setValue();
 			this.oldValue = this.value as number;
 			this.newValue = this.value as number;
+			(this.shadowRoot!.children[1] as HTMLElement).setAttribute(
+				'value',
+				this.value.toString(),
+			);
 			this.requestUpdate();
 		}
 		this.lastY = undefined;
