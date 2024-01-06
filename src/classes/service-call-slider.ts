@@ -77,6 +77,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.value = this.newValue;
 
 			this.sendAction('tap_action');
+		} else {
+			this.requestUpdate();
 		}
 		this.lastY = undefined;
 		this.dragging = false;
