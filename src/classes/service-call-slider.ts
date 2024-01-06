@@ -1,4 +1,4 @@
-import { html, css, CSSResult } from 'lit';
+import { html, css, CSSResult, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
@@ -64,6 +64,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.oldValue = end;
 		}
+	}
+
+	onStart(e: TouchEvent | MouseEvent) {
+		e.preventDefault();
 	}
 
 	onEnd(_e: TouchEvent | MouseEvent) {
@@ -219,23 +223,42 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			) as string;
 		}
 
-		const slider = html`
-			<input
-				type="range"
-				class="${this.class}"
-				id="slider"
-				style=${styleMap(slider_style)}
-				min="${this.range[0]}"
-				max="${this.range[1]}"
-				step=${step}
-				value="${this.value}"
-				@input=${this.onInput}
-				@mouseup=${this.onEnd}
-				@touchend=${this.onEnd}
-				@touchmove=${this.onHoldMove}
-				@mousemove=${this.onHoldMove}
-			/>
-		`;
+		let slider: TemplateResult<1>;
+		if (this.touchscreen) {
+			slider = html`
+				<input
+					type="range"
+					class="${this.class}"
+					id="slider"
+					style=${styleMap(slider_style)}
+					min="${this.range[0]}"
+					max="${this.range[1]}"
+					step=${step}
+					value="${this.value}"
+					@input=${this.onInput}
+					@touchstart=${this.onStart}
+					@touchend=${this.onEnd}
+					@touchmove=${this.onHoldMove}
+				/>
+			`;
+		} else {
+			slider = html`
+				<input
+					type="range"
+					class="${this.class}"
+					id="slider"
+					style=${styleMap(slider_style)}
+					min="${this.range[0]}"
+					max="${this.range[1]}"
+					step=${step}
+					value="${this.value}"
+					@input=${this.onInput}
+					@mousedown=${this.onStart}
+					@mouseup=${this.onEnd}
+					@mousemove=${this.onHoldMove}
+				/>
+			`;
+		}
 
 		return html`${background}${slider}${icon_label}`;
 	}
