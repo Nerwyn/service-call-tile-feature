@@ -15,6 +15,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	class: string = 'slider';
 
 	lastX?: number;
+	lastY?: number;
 	scrolling: boolean = false;
 
 	onInput(e: InputEvent) {
@@ -79,6 +80,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.sendAction('tap_action');
 		}
 		this.lastX = undefined;
+		this.lastY = undefined;
 		this.scrolling = false;
 	}
 
@@ -89,10 +91,22 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			currentX = e.touches[0].clientX;
 		}
+		let currentY: number;
+		if ('clientY' in e) {
+			currentY = e.clientY;
+		} else {
+			currentY = e.touches[0].clientY;
+		}
 
+		if (this.lastY == undefined) {
+			this.lastY = currentY;
+		}
 		if (this.lastX == undefined) {
 			this.lastX = currentX;
-		} else if (Math.abs(currentX - this.lastX) < 10) {
+		} else if (
+			currentX == this.lastX &&
+			Math.abs(currentY - this.lastY) > 20
+		) {
 			this.scrolling = true;
 		}
 	}
@@ -269,6 +283,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				.slider-off {
 					width: inherit;
 					overflow: hidden;
+					touch-action: pan-y;
 				}
 
 				.slider-line-thumb {
