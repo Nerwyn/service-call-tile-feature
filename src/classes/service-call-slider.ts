@@ -82,7 +82,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.scrolling = false;
 	}
 
-	onHoldMove(e: TouchEvent | MouseEvent) {
+	onMove(e: TouchEvent | MouseEvent) {
 		let currentX: number;
 		if ('clientX' in e) {
 			currentX = e.clientX;
@@ -92,7 +92,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		if (this.lastX == undefined) {
 			this.lastX = currentX;
-		} else if (currentX == this.lastX) {
+		} else if (Math.abs(currentX - this.lastX) < 10) {
 			this.scrolling = true;
 		}
 	}
@@ -222,9 +222,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				value="${this.value}"
 				@input=${this.onInput}
 				@touchend=${this.onEnd}
-				@touchmove=${this.onHoldMove}
+				@touchmove=${this.onMove}
 				@mouseup=${this.onEnd}
-				@mousemove=${this.onHoldMove}
+				@mousemove=${this.onMove}
 			/>
 		`;
 
