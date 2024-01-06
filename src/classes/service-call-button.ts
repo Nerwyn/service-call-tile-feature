@@ -31,6 +31,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
+	dragging: boolean = false;
+
 	clickAction(actionType: ActionType) {
 		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
 		this.clickTimer = undefined;
@@ -66,6 +68,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	@eventOptions({ passive: true })
 	onHoldStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
+		this.dragging = false;
 
 		if (
 			'hold_action' in this.entry &&
@@ -83,19 +86,26 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
 		clearInterval(this.holdInterval as ReturnType<typeof setInterval>);
 
-		if (this.hold) {
-			// Hold action is triggered
-			this.hold = false;
-			e.stopImmediatePropagation();
-			e.preventDefault();
-			this.clickAction('hold_action');
-		} else {
-			// Hold action is not triggered, fire tap action
-			this.onClick(e);
+		if (!this.dragging) {
+			if (this.hold) {
+				// Hold action is triggered
+				this.hold = false;
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				this.clickAction('hold_action');
+			} else {
+				// Hold action is not triggered, fire tap action
+				this.onClick(e);
+			}
 		}
 
 		this.holdTimer = undefined;
 		this.holdInterval = undefined;
+		this.dragging = false;
+	}
+
+	onHoldMove(_e: TouchEvent | MouseEvent) {
+		this.dragging = true;
 	}
 
 	render() {
@@ -120,6 +130,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				style=${styleMap(style)}
 				@touchstart=${this.onHoldStart}
 				@touchend=${this.onHoldEnd}
+				@touchmove=${this.onHoldMove}
 				@touchcancel=${this._rippleHandlers.endPress}
 				@mouseenter=${this._rippleHandlers.startHover}
 				@mouseleave=${this._rippleHandlers.endHover}
@@ -134,6 +145,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				style=${styleMap(style)}
 				@mousedown=${this.onHoldStart}
 				@mouseup=${this.onHoldEnd}
+				@mousemove=${this.onHoldMove}
 				@touchcancel=${this._rippleHandlers.endPress}
 				@mouseenter=${this._rippleHandlers.startHover}
 				@mouseleave=${this._rippleHandlers.endHover}
