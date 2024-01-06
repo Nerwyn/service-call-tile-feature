@@ -17,7 +17,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	lastX?: number;
 	scrolling: boolean = false;
 
-	onInput(e: InputEvent) {
+	onStart(e: TouchEvent | MouseEvent) {
+		e.preventDefault();
+
 		if (!this.scrolling) {
 			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
@@ -64,10 +66,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.oldValue = end;
 		}
-	}
-
-	onStart(e: TouchEvent | MouseEvent) {
-		e.preventDefault();
 	}
 
 	onEnd(_e: TouchEvent | MouseEvent) {
@@ -235,7 +233,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					max="${this.range[1]}"
 					step=${step}
 					value="${this.value}"
-					@input=${this.onInput}
 					@touchstart=${this.onStart}
 					@touchend=${this.onEnd}
 					@touchmove=${this.onHoldMove}
@@ -252,7 +249,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					max="${this.range[1]}"
 					step=${step}
 					value="${this.value}"
-					@input=${this.onInput}
 					@mousedown=${this.onStart}
 					@mouseup=${this.onEnd}
 					@mousemove=${this.onHoldMove}
