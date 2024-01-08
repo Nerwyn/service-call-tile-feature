@@ -79,6 +79,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.sendAction('tap_action');
 		}
+
+		const slider = this.shadowRoot?.getElementById('slider');
+		console.log(slider?.getAttribute('value'));
+
 		this.lastX = undefined;
 		this.lastY = undefined;
 		this.scrolling = false;
@@ -229,6 +233,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			<input
 				type="range"
 				class="${this.class}"
+				id="slider"
 				style=${styleMap(slider_style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
