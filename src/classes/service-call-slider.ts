@@ -1,5 +1,5 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, eventOptions } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
@@ -84,6 +84,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.scrolling = false;
 	}
 
+	@eventOptions({ passive: true })
 	onMove(e: TouchEvent | MouseEvent) {
 		let currentX: number;
 		if ('clientX' in e) {

@@ -104,6 +104,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		this.scrolling = false;
 	}
 
+	@eventOptions({ passive: true })
 	onHoldMove(_e: TouchEvent | MouseEvent) {
 		this.scrolling = true;
 	}
