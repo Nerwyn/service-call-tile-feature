@@ -67,56 +67,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	onEnd(e: TouchEvent | MouseEvent) {
-		e.preventDefault();
-
+	onEnd(_e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
-			const slider = e.currentTarget as HTMLInputElement;
-			const start = parseFloat(
-				(this.oldValue as unknown as string) ?? this.value ?? '0',
-			);
-			const end = parseFloat(slider.value ?? start);
-			slider.value = start.toString();
-			this.newValue = end;
-
-			if (end > this.range[0]) {
-				slider.className = this.class;
-			}
-
-			let i = start;
-			if (start > end) {
-				const id = setInterval(() => {
-					i -= this.speed;
-					slider.value = i.toString();
-
-					if (end >= i) {
-						clearInterval(id);
-						slider.value = end.toString();
-						if (
-							end <= this.range[0] &&
-							this.class != 'slider-line-thumb'
-						) {
-							slider.className = 'slider-off';
-						}
-					}
-				}, 1);
-			} else if (start < end) {
-				const id = setInterval(() => {
-					i += this.speed;
-					slider.value = i.toString();
-
-					if (end <= i) {
-						clearInterval(id);
-						slider.value = end.toString();
-					}
-				}, 1);
-			} else {
-				slider.value = end.toString();
-			}
-
-			this.oldValue = end;
-
-			// Set cleanup newValue, set to value, and sendAction
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = this.value as number;
 			}
@@ -127,10 +79,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.sendAction('tap_action');
 		}
-
-		const slider = this.shadowRoot?.getElementById('slider');
-		console.log(slider?.getAttribute('value'));
-
 		this.lastX = undefined;
 		this.lastY = undefined;
 		this.scrolling = false;
@@ -281,12 +229,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			<input
 				type="range"
 				class="${this.class}"
-				id="slider"
 				style=${styleMap(slider_style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
 				step=${step}
 				value="${this.value}"
+				@input=${this.onInput}
 				@touchend=${this.onEnd}
 				@touchmove=${this.onMove}
 				@mouseup=${this.onEnd}
