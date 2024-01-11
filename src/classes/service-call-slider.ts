@@ -106,7 +106,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.lastX = currentX;
 		} else if (
 			Math.abs(currentX - this.lastX) <
-			Math.abs(currentY - this.lastY) + 20
+			Math.abs(currentY - this.lastY) - 20
 		) {
 			this.scrolling = true;
 		}
