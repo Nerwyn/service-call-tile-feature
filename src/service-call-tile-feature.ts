@@ -307,3 +307,7 @@ window.customTileFeatures.push({
 	name: 'Service Call',
 	configurable: true,
 });
+
+if (!window.structuredClone) {
+	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
+}
