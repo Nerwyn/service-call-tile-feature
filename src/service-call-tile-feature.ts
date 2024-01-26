@@ -100,7 +100,7 @@ class ServiceCallTileFeature extends LitElement {
 		for (const actionType of actionTypes) {
 			if (actionType in entry) {
 				const action = entry[actionType as keyof IActions] as IAction;
-				if ('service' in action) {
+				if (['call-service', 'more-info'].includes(action.action)) {
 					// Merge service_data, target, and data fields
 					action.data = {
 						...action.data,
