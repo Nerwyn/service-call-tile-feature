@@ -192,6 +192,11 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		if (!('entity_id' in entry)) {
+			let entity_id = (entry.tap_action?.data?.entity_id ??
+				parentEntityId)
+			if (Array.isArray(entity_id)) {
+				entity_id = entity_id[0]
+			}
 			entry.entity_id = (entry.tap_action?.data?.entity_id ??
 				parentEntityId) as string;
 		}
