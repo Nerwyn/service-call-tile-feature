@@ -298,11 +298,12 @@ export class BaseServiceCallFeature extends LitElement {
 
 				// Slider specific label display logic
 				if (
-					'range' in this &&
-					(this.range as number[]).length &&
-					Number(this.value) <= (this.range as number[])[0] &&
-					'class' in this &&
-					this.class != 'slider-line-thumb'
+					this.value == undefined ||
+					('range' in this &&
+						(this.range as number[]).length &&
+						Number(this.value) <= (this.range as number[])[0] &&
+						'class' in this &&
+						this.class != 'slider-line-thumb')
 				) {
 					style.display = 'none';
 				}
