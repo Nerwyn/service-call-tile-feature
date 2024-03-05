@@ -84,14 +84,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.newValue = Math.trunc(this.newValue);
 			}
 			this.value = this.newValue;
-
 			this.sendAction('tap_action');
 		}
 
 		this.lastX = undefined;
 		this.lastY = undefined;
 		this.scrolling = false;
-		this.getValueFromHass = true;
+		setTimeout(() => (this.getValueFromHass = true), 1000);
 	}
 
 	@eventOptions({ passive: true })
