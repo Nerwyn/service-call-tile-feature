@@ -274,7 +274,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		return html`${background}${slider}${icon_label}`;
+		return html`<div class="container">
+			${background}${slider}${icon_label}
+		</div>`;
 	}
 
 	static get styles() {
