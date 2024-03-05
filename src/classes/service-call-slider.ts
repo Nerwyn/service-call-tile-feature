@@ -42,6 +42,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					if (end >= i) {
 						clearInterval(id);
 						slider.value = end.toString();
+						this.setLabel(slider);
 						if (
 							this.value == undefined ||
 							(end <= this.range[0] &&
@@ -61,6 +62,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					if (end <= i) {
 						clearInterval(id);
 						slider.value = end.toString();
+						this.setLabel(slider);
 					}
 				}, 1);
 			} else {
@@ -119,6 +121,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	setLabel(slider: HTMLInputElement) {
 		this.value = slider.value;
 
+		// Due to lit's use of shadow-doms cannot traverse to parent
 		let label = slider.nextElementSibling;
 		if (label && label.className != 'label') {
 			label = label.nextElementSibling;
@@ -127,6 +130,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const valueLabels = label?.getElementsByClassName('value');
 			if (valueLabels) {
 				for (const valueLabel of valueLabels) {
+					// Cannot set textContent directly or lit will shriek in console and slow down the window
 					const children = valueLabel.childNodes;
 					for (const child of children) {
 						if (child.nodeName == '#text') {
@@ -144,8 +148,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				(label as HTMLElement).style.display = 'none';
 				slider.className = 'slider-off';
 			} else {
-				// eslint-disable-next-line
-				// @ts-ignore
 				(label as HTMLElement).style.display = 'inherit';
 				slider.className = this.class;
 			}
