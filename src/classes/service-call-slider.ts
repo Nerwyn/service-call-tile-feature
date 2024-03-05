@@ -130,9 +130,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 
 			if (Number(this.value) <= this.range[0]) {
-				label.setAttribute('display', 'none');
+				(label as HTMLElement).style.display = 'none';
 			} else {
-				label.removeAttribute('display');
+				// eslint-disable-next-line
+				// @ts-ignore
+				(label as HTMLElement).style.display = undefined;
 			}
 		}
 	}
