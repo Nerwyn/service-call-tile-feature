@@ -51,6 +51,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					}
 				}, 1);
 			} else if (start < end) {
+				slider.className = this.class;
 				const id = setInterval(() => {
 					i += this.speed;
 					slider.value = i.toString();
@@ -131,10 +132,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			if (Number(this.value) <= this.range[0]) {
 				(label as HTMLElement).style.display = 'none';
+				slider.className = 'slider-off';
 			} else {
 				// eslint-disable-next-line
 				// @ts-ignore
 				(label as HTMLElement).style.display = 'inherit';
+				slider.className = this.class;
 			}
 		}
 	}
@@ -228,6 +231,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		></div>`;
 
 		this.class = 'slider';
+		let _class = this.class;
 		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
@@ -243,7 +247,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.value == undefined ||
 			(this.value == this.range[0] && this.class != 'slider-line-thumb')
 		) {
-			this.class = 'slider-off';
+			_class = 'slider-off';
 		}
 		const slider_style = structuredClone(this.entry.slider_style ?? {});
 		for (const key in slider_style) {
@@ -256,7 +260,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = html`
 			<input
 				type="range"
-				class="${this.class}"
+				class="${_class}"
 				style=${styleMap(slider_style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
