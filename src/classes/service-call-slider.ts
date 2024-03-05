@@ -116,8 +116,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	setLabel(slider: HTMLInputElement) {
 		this.value = slider.value;
-		const valueLabels =
-			slider.parentElement!.getElementsByClassName('value');
+		const valueLabels = slider
+			.getRootNode()
+			// eslint-disable-next-line
+			// @ts-ignore
+			.host.getElementsByClassName('value');
 		for (const valueLabel of valueLabels) {
 			valueLabel.innerHTML = this.value;
 		}
