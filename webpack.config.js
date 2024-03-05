@@ -1,10 +1,10 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
-const env =
-	execSync('git branch --show-current').toString().trim() == 'main'
-		? 'production'
-		: 'development';
+const env = 'production'
+	// execSync('git branch --show-current').toString().trim() == 'main'
+	// 	? 'production'
+	// 	: 'development';
 
 module.exports = {
 	mode: env,
