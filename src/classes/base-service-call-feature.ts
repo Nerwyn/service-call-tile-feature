@@ -300,7 +300,9 @@ export class BaseServiceCallFeature extends LitElement {
 				if (
 					'range' in this &&
 					(this.range as number[]).length &&
-					Number(this.value) <= (this.range as number[])[0]
+					Number(this.value) <= (this.range as number[])[0] &&
+					'class' in this &&
+					this.class != 'slider-line-thumb'
 				) {
 					style.display = 'none';
 				}

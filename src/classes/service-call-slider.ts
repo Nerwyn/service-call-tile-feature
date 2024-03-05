@@ -135,7 +135,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 			}
 
-			if (Number(this.value) <= this.range[0]) {
+			if (
+				Number(this.value) <= this.range[0] &&
+				this.class != 'slider-line-thumb'
+			) {
 				(label as HTMLElement).style.display = 'none';
 				slider.className = 'slider-off';
 			} else {
