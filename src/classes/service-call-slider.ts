@@ -126,7 +126,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const valueLabels = label?.getElementsByClassName('value');
 			if (valueLabels) {
 				for (const valueLabel of valueLabels) {
-					valueLabel.firstChild!.nodeValue = this.value;
+					const children = valueLabel.childNodes;
+					for (const child of children) {
+						if (child.nodeName == 'text') {
+							child.nodeValue = this.value;
+						}
+					}
 				}
 			}
 
