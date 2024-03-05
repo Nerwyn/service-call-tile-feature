@@ -73,7 +73,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 		const [domain, service] = domainService.split('.');
 		const data = structuredClone(action.data);
-		const context = { value: this.value };
+		const context = { VALUE: this.value };
 		for (const key in data) {
 			data[key] = renderTemplate(this.hass, data[key] as string, context);
 
@@ -263,13 +263,15 @@ export class BaseServiceCallFeature extends LitElement {
 
 		let label = html``;
 		if ('label' in this.entry) {
-			let text = renderTemplate(this.hass, this.entry.label as string);
+			const context = { VALUE: this.value };
+			let text = renderTemplate(this.hass, this.entry.label as string, context);
 			if (text) {
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
 						(this.value ?? '').toString(),
 					);
+					
 				}
 				text +=
 					(renderTemplate(
