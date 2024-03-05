@@ -285,7 +285,9 @@ export class BaseServiceCallFeature extends LitElement {
 					for (let i = 0; i < splitText.length - 1; i += 1) {
 						text.push(splitText[i]);
 						if (i != splitText.length - 1) {
-							text.push(html`<div>${this.value}</div>`);
+							text.push(
+								html`<div class="value">${this.value}</div>`,
+							);
 						}
 					}
 				}

@@ -37,7 +37,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const id = setInterval(() => {
 					i -= this.speed;
 					slider.value = i.toString();
-					this.value = slider.value
+					this.setLabel(slider);
 
 					if (end >= i) {
 						clearInterval(id);
@@ -54,7 +54,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const id = setInterval(() => {
 					i += this.speed;
 					slider.value = i.toString();
-					this.value = slider.value
+					this.setLabel(slider);
 
 					if (end <= i) {
 						clearInterval(id);
@@ -111,6 +111,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			Math.abs(currentY - this.lastY) - 20
 		) {
 			this.scrolling = true;
+		}
+	}
+
+	setLabel(slider: HTMLInputElement) {
+		this.value = slider.value;
+		const valueLabels =
+			slider.parentElement!.getElementsByClassName('value');
+		for (const valueLabel of valueLabels) {
+			valueLabel.innerHTML = this.value;
 		}
 	}
 
