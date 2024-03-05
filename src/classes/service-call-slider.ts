@@ -236,7 +236,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		></div>`;
 
 		this.class = 'slider';
-		let _class = this.class;
 		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
@@ -248,6 +247,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class = 'slider';
 				break;
 		}
+		let _class = this.class;
 		if (
 			this.value == undefined ||
 			(this.value == this.range[0] && this.class != 'slider-line-thumb')
