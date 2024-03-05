@@ -1,6 +1,6 @@
 import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
-import { LitElement, CSSResult, html, css } from 'lit';
+import { LitElement, CSSResult, TemplateResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
@@ -264,20 +264,32 @@ export class BaseServiceCallFeature extends LitElement {
 		let label = html``;
 		if ('label' in this.entry) {
 			const context = { VALUE: this.value };
-			let text = renderTemplate(this.hass, this.entry.label as string, context);
+			let text: string | (string | TemplateResult<1>)[] = renderTemplate(
+				this.hass,
+				this.entry.label as string,
+				context,
+			) as string;
 			if (text) {
-				if (typeof text == 'string' && text.includes('VALUE')) {
-					text = text.replace(
-						/VALUE/g,
-						(this.value ?? '').toString(),
-					);
-					
-				}
 				text +=
 					(renderTemplate(
 						this.hass,
 						this.entry.unit_of_measurement as string,
 					) as string) ?? '';
+				if (typeof text == 'string' && text.includes('VALUE')) {
+					// text = text.replace(
+					// 	/VALUE/g,
+					// 	(this.value ?? '').toString(),
+					// );
+					const splitText: string[] = text.split('VALUE');
+					text = [];
+					for (let i = 0; i < splitText.length - 1; i += 1) {
+						text.push(splitText[i]);
+						if (i != splitText.length - 1) {
+							text.push(html`<div>${this.value}</div>`);
+						}
+					}
+				}
+
 				const style = structuredClone(this.entry.label_style ?? {});
 				for (const key in style) {
 					style[key] = renderTemplate(
