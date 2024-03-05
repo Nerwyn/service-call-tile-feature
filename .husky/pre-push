@@ -3,3 +3,4 @@
 
 npm run build
 git add dist/
+git commit -m "webpack build hook"
