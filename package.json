@@ -25,8 +25,7 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"husky": {
 		"hooks": {
-			"pre-commit": "pretty-quick --staged",
-			"pre-push": ""
+			"pre-commit": "pretty-quick --staged"
 		}
 	},
 	"dependencies": {
