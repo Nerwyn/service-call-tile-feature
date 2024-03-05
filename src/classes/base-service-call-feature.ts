@@ -296,6 +296,15 @@ export class BaseServiceCallFeature extends LitElement {
 					) as string;
 				}
 
+				// Slider specific label display logic
+				if (
+					'range' in this &&
+					(this.range as number[]).length &&
+					Number(this.value) <= (this.range as number[])[0]
+				) {
+					style.display = 'none';
+				}
+
 				// prettier-ignore
 				label = html`<pre class="label" style=${styleMap(style)}>${text}</pre>`;
 			}
