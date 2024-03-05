@@ -126,7 +126,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const valueLabels = label?.getElementsByClassName('value');
 			if (valueLabels) {
 				for (const valueLabel of valueLabels) {
-					valueLabel.textContent = this.value;
+					valueLabel.replaceChildren(document.createTextNode(this.value));
 				}
 			}
 
@@ -274,9 +274,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
-		return html`<div class="container">
-			${background}${slider}${icon_label}
-		</div>`;
+		return html`${background}${slider}${icon_label}`;
 	}
 
 	static get styles() {
