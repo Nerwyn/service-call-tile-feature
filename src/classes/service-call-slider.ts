@@ -121,7 +121,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			// eslint-disable-next-line
 			// @ts-ignore
 			.host.getElementsByClassName('value');
+		console.log(valueLabels)
 		for (const valueLabel of valueLabels) {
+			console.log(valueLabel)
 			valueLabel.innerHTML = this.value;
 		}
 	}
