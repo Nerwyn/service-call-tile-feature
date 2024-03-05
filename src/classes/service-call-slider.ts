@@ -20,6 +20,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	onInput(e: InputEvent) {
 		if (!this.scrolling) {
+			this.getValueFromHass = false;
+
 			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
@@ -85,13 +87,17 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.sendAction('tap_action');
 		}
+
 		this.lastX = undefined;
 		this.lastY = undefined;
 		this.scrolling = false;
+		this.getValueFromHass = true;
 	}
 
 	@eventOptions({ passive: true })
 	onMove(e: TouchEvent | MouseEvent) {
+		this.getValueFromHass = false;
+
 		let currentX: number;
 		if ('clientX' in e) {
 			currentX = e.clientX;
@@ -115,6 +121,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			Math.abs(currentY - this.lastY) - 20
 		) {
 			this.scrolling = true;
+			this.getValueFromHass = true;
 		}
 	}
 

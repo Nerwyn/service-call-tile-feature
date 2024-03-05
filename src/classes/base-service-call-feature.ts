@@ -19,6 +19,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 
 	value: string | number = 0;
+	getValueFromHass: boolean = true;
 	touchscreen = 'ontouchstart' in document.documentElement;
 
 	sendAction(
@@ -219,26 +220,28 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	setValue() {
-		const value_attribute = renderTemplate(
-			this.hass,
-			this.entry.value_attribute as string,
-		);
-		const entity_id = renderTemplate(
-			this.hass,
-			this.entry.entity_id as string,
-		) as string;
-		if (entity_id) {
-			if (value_attribute == 'state') {
-				this.value = this.hass.states[entity_id].state;
-			} else {
-				let value =
-					this.hass.states[entity_id].attributes[
-						value_attribute as string
-					];
-				if (value_attribute == 'brightness') {
-					value = Math.round((100 * parseInt(value ?? 0)) / 255);
+		if (this.getValueFromHass) {
+			const value_attribute = renderTemplate(
+				this.hass,
+				this.entry.value_attribute as string,
+			);
+			const entity_id = renderTemplate(
+				this.hass,
+				this.entry.entity_id as string,
+			) as string;
+			if (entity_id) {
+				if (value_attribute == 'state') {
+					this.value = this.hass.states[entity_id].state;
+				} else {
+					let value =
+						this.hass.states[entity_id].attributes[
+							value_attribute as string
+						];
+					if (value_attribute == 'brightness') {
+						value = Math.round((100 * parseInt(value ?? 0)) / 255);
+					}
+					this.value = value;
 				}
-				this.value = value;
 			}
 		}
 	}
