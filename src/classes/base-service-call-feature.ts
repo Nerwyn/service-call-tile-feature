@@ -300,7 +300,7 @@ export class BaseServiceCallFeature extends LitElement {
 					) as string;
 				}
 				// prettier-ignore
-				label = html`<pre class="label" id="label" style=${styleMap(style)}>${text}</pre>`;
+				label = html`<pre class="label" style=${styleMap(style)}>${text}</pre>`;
 			}
 		}
 

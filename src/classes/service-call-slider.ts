@@ -117,14 +117,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	setLabel(slider: HTMLInputElement) {
 		this.value = slider.value;
 
-		const label = slider.shadowRoot?.getElementById('label');
+		let label = slider.nextElementSibling;
+		if (label && label.className != 'label') {
+			label = label?.nextElementSibling;
+		}
 		console.log(label);
-		const valueLabels = label?.getElementsByClassName('value');
-		console.log(valueLabels);
-		if (valueLabels) {
-			for (const valueLabel of valueLabels) {
-				console.log(valueLabel);
-				valueLabel.innerHTML = this.value;
+		if (label) {
+			const valueLabels = label?.getElementsByClassName('value');
+			console.log(valueLabels);
+			if (valueLabels) {
+				for (const valueLabel of valueLabels) {
+					console.log(valueLabel);
+					valueLabel.innerHTML = this.value;
+				}
 			}
 		}
 	}
