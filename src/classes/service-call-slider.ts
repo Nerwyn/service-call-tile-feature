@@ -116,15 +116,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	setLabel(slider: HTMLInputElement) {
 		this.value = slider.value;
-		// eslint-disable-next-line
-		// @ts-ignore
-		const shadowRoot = slider.getRootNode().host;
 
-		const labels = shadowRoot.getElementsByClassName('label');
-		console.log(labels);
-		for (const label of labels) {
-			const valueLabels = label.getElementsByClassName('value');
-			console.log(valueLabels);
+		const label = slider.shadowRoot?.getElementById('label');
+		console.log(label);
+		const valueLabels = label?.getElementsByClassName('value');
+		console.log(valueLabels);
+		if (valueLabels) {
 			for (const valueLabel of valueLabels) {
 				console.log(valueLabel);
 				valueLabel.innerHTML = this.value;
