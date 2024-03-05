@@ -134,7 +134,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			} else {
 				// eslint-disable-next-line
 				// @ts-ignore
-				(label as HTMLElement).style.display = undefined;
+				(label as HTMLElement).style.display = 'inherit';
 			}
 		}
 	}
