@@ -1,7 +1,13 @@
 const path = require('path');
+const { execSync } = require('child_process');
+
+const env =
+	execSync('git branch --show-current').toString().trim() == 'main'
+		? 'production'
+		: 'development';
 
 module.exports = {
-	mode: 'production',
+	mode: env,
 	entry: {
 		main: './src/service-call-tile-feature.ts',
 	},
@@ -20,4 +26,5 @@ module.exports = {
 			},
 		],
 	},
+	devtool: env == 'production' ? false : 'eval',
 };
