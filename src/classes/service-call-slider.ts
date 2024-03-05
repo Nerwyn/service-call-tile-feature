@@ -28,6 +28,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			slider.value = start.toString();
 			this.newValue = end;
 
+			this.setLabel(slider);
+
 			if (end > this.range[0]) {
 				slider.className = this.class;
 			}
@@ -37,7 +39,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const id = setInterval(() => {
 					i -= this.speed;
 					slider.value = i.toString();
-					this.setLabel(slider);
 
 					if (end >= i) {
 						clearInterval(id);
@@ -54,7 +55,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const id = setInterval(() => {
 					i += this.speed;
 					slider.value = i.toString();
-					this.setLabel(slider);
 
 					if (end <= i) {
 						clearInterval(id);
@@ -119,15 +119,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		let label = slider.nextElementSibling;
 		if (label && label.className != 'label') {
-			label = label?.nextElementSibling;
+			label = label.nextElementSibling;
 		}
-		console.log(label);
 		if (label) {
 			const valueLabels = label?.getElementsByClassName('value');
-			console.log(valueLabels);
 			if (valueLabels) {
 				for (const valueLabel of valueLabels) {
-					console.log(valueLabel);
 					valueLabel.innerHTML = this.value;
 				}
 			}

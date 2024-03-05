@@ -275,11 +275,8 @@ export class BaseServiceCallFeature extends LitElement {
 						this.hass,
 						this.entry.unit_of_measurement as string,
 					) as string) ?? '';
+				console.log(text)
 				if (typeof text == 'string' && text.includes('VALUE')) {
-					// text = text.replace(
-					// 	/VALUE/g,
-					// 	(this.value ?? '').toString(),
-					// );
 					const splitText: string[] = text.split('VALUE');
 					text = [];
 					for (let i = 0; i < splitText.length - 1; i += 1) {
