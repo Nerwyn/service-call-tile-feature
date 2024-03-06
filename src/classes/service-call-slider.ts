@@ -125,37 +125,56 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	setLabel(slider: HTMLInputElement) {
-		this.value = slider.value;
+		if (this.renderedLabel && this.renderedLabel.includes('VALUE')) {
+			this.value = slider.value;
 
-		// Due to lit's use of shadow-doms cannot traverse to parent
-		let label = slider.nextElementSibling;
-		if (label && label.className != 'label') {
-			label = label.nextElementSibling;
-		}
-		if (label) {
-			const valueLabels = label?.getElementsByClassName('value');
-			if (valueLabels) {
-				for (const valueLabel of valueLabels) {
-					// Cannot set textContent directly or lit will shriek in console and slow down the window
-					const children = valueLabel.childNodes;
-					for (const child of children) {
-						if (child.nodeName == '#text') {
-							child.nodeValue = this.value;
-						}
+			const text: string[] = this.renderedLabel.map((line) => {
+				return structuredClone(line).replace(
+					/VALUE/g,
+					(this.value ?? '').toString(),
+				);
+			});
+			let i = 0;
+
+			// Due to lit's use of shadow-doms cannot traverse to parent
+			let label = slider.nextElementSibling;
+			if (label && label.className != 'label') {
+				label = label.nextElementSibling;
+			}
+			if (label) {
+				// const valueLabels = label?.getElementsByClassName('value');
+				// if (valueLabels) {
+				// 	for (const valueLabel of valueLabels) {
+				// 		// Cannot set textContent directly or lit will shriek in console and slow down the window
+				// 		const children = valueLabel.childNodes;
+				// 		for (const child of children) {
+				// 			if (child.nodeName == '#text') {
+				// 				child.nodeValue = this.value;
+				// 			}
+				// 		}
+				// 	}
+				// }
+
+				// Cannot set textContent directly or lit will shriek in console and slow down the window
+				const children = label.childNodes;
+				for (const child of children) {
+					if (child.nodeName == '#text') {
+						child.nodeValue = text[i];
+						i++;
 					}
 				}
-			}
 
-			if (
-				this.value == undefined ||
-				(Number(this.value) <= this.range[0] &&
-					this.class != 'slider-line-thumb')
-			) {
-				(label as HTMLElement).style.display = 'none';
-				slider.className = 'slider-off';
-			} else {
-				(label as HTMLElement).style.display = 'inherit';
-				slider.className = this.class;
+				if (
+					this.value == undefined ||
+					(Number(this.value) <= this.range[0] &&
+						this.class != 'slider-line-thumb')
+				) {
+					(label as HTMLElement).style.display = 'none';
+					slider.className = 'slider-off';
+				} else {
+					(label as HTMLElement).style.display = 'inherit';
+					slider.className = this.class;
+				}
 			}
 		}
 	}
