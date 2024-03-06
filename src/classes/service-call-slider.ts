@@ -128,13 +128,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.renderedLabel && this.renderedLabel.includes('VALUE')) {
 			this.value = slider.value;
 
+			const unitOfMeasurement =
+				(renderTemplate(
+					this.hass,
+					this.entry.unit_of_measurement as string,
+				) as string) ?? '';
 			const text: string[] = this.renderedLabel.map((line) => {
 				return structuredClone(line).replace(
 					/VALUE/g,
-					(this.value ?? '').toString(),
+					`${(this.value ?? '').toString()}${unitOfMeasurement}`,
 				);
 			});
 			let i = 0;
+			console.log(text);
 
 			// Due to lit's use of shadow-doms cannot traverse to parent
 			let label = slider.nextElementSibling;
@@ -158,6 +164,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				// Cannot set textContent directly or lit will shriek in console and slow down the window
 				const children = label.childNodes;
 				for (const child of children) {
+					console.log(child);
 					if (child.nodeName == '#text') {
 						child.nodeValue = text[i];
 						i++;

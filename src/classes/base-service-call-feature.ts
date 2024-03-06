@@ -293,19 +293,19 @@ export class BaseServiceCallFeature extends LitElement {
 				// }
 
 				this.renderedLabel = text.toString().split('\n');
-				console.log(this.renderedLabel)
+				const unitOfMeasurement =
+					(renderTemplate(
+						this.hass,
+						this.entry.unit_of_measurement as string,
+					) as string) ?? '';
+				console.log(this.renderedLabel);
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
-						`${(this.value ?? '').toString()}${
-							(renderTemplate(
-								this.hass,
-								this.entry.unit_of_measurement as string,
-							) as string) ?? ''
-						}`,
+						`${(this.value ?? '').toString()}${unitOfMeasurement}`,
 					);
 				}
-				console.log(text)
+				console.log(text);
 
 				const style = structuredClone(this.entry.label_style ?? {});
 				for (const key in style) {
