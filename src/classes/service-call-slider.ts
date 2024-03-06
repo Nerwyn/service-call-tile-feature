@@ -76,6 +76,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			this.setValue();
 			slider.value = this.value.toString();
+			this.setLabel(slider);
 		}
 	}
 
@@ -93,6 +94,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setValue();
 			const slider = e.currentTarget as HTMLInputElement;
 			slider.value = this.value.toString();
+			this.setLabel(slider);
 		}
 
 		this.lastX = undefined;
@@ -132,6 +134,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setValue();
 			const slider = e.currentTarget as HTMLInputElement;
 			slider.value = this.value.toString();
+			this.setLabel(slider);
 		}
 	}
 
