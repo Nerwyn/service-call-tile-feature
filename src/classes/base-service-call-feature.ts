@@ -274,24 +274,6 @@ export class BaseServiceCallFeature extends LitElement {
 				context,
 			) as string;
 			if (text) {
-				// text +=
-				// 	(renderTemplate(
-				// 		this.hass,
-				// 		this.entry.unit_of_measurement as string,
-				// 	) as string) ?? '';
-				// if (typeof text == 'string' && text.includes('VALUE')) {
-				// 	const splitText: string[] = text.split('VALUE');
-				// 	text = [];
-				// 	for (let i = 0; i < splitText.length; i += 1) {
-				// 		text.push(splitText[i]);
-				// 		if (i != splitText.length - 1) {
-				// 			text.push(
-				// 				html`<div class="value">${this.value}</div>`,
-				// 			);
-				// 		}
-				// 	}
-				// }
-
 				this.renderedLabel = text.toString();
 				const unitOfMeasurement =
 					(renderTemplate(
@@ -303,6 +285,8 @@ export class BaseServiceCallFeature extends LitElement {
 						/VALUE/g,
 						`${(this.value ?? '').toString()}${unitOfMeasurement}`,
 					);
+				} else {
+					text += unitOfMeasurement;
 				}
 
 				const style = structuredClone(this.entry.label_style ?? {});
@@ -323,6 +307,13 @@ export class BaseServiceCallFeature extends LitElement {
 						this.class != 'slider-line-thumb')
 				) {
 					style.display = 'none';
+				}
+				console.log(this.value)
+				if ('range' in this) {
+					console.log(this.range)
+				}
+				if ('class' in this) {
+					console.log(this.class)
 				}
 
 				// prettier-ignore
