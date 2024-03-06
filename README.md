@@ -338,7 +338,7 @@ entries:
         {% if is_state("light.lounge", "on") %}
           rgb({{ state_attr("light.lounge", "rgb_color") }})
         {% else %}
-          initial
+          var(--state-inactive-color)
         {% endif %}
 ```
 
@@ -651,9 +651,7 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        label: >-
-          {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
-          undefined}}
+        label: VALUE
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -672,7 +670,7 @@ features:
           service: light.turn_on
           data:
             color_temp: VALUE
-        label: '{{ state_attr("light.chandelier", "color_temp") }}'
+        label: VALUE
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -718,9 +716,7 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        label: >
-          {{ (100*state_attr("light.sunroom_ceiling", "brightness")/255) | round
-          or '' }}
+        label: VALUE
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -735,7 +731,7 @@ features:
             {% if is_state("light.sunroom_ceiling", "on") %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
             {% else %}
-              initial
+              var(--state-inactive-color)
             {% endif %}
       - type: slider
         thumb: line
@@ -746,7 +742,7 @@ features:
           data:
             color_temp: VALUE
             entity_id: light.sunroom_ceiling
-        label: '{{ state_attr("light.sunroom_ceiling", "color_temp") }}'
+        label: VALUE
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
