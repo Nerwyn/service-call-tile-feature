@@ -168,7 +168,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	render() {
-		const icon_label = super.render();
+		this.setValue();
 
 		if (this.oldValue == undefined) {
 			this.oldValue = parseFloat(this.value as string);
@@ -299,6 +299,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			/>
 		`;
 
+		const icon_label = super.render();
 		return html`${background}${slider}${icon_label}`;
 	}
 
