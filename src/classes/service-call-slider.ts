@@ -19,10 +19,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	scrolling: boolean = false;
 
 	onInput(e: InputEvent) {
+		const slider = e.currentTarget as HTMLInputElement;
+
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
 
-			const slider = e.currentTarget as HTMLInputElement;
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
 			);
@@ -72,10 +73,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 
 			this.oldValue = end;
+		} else {
+			this.setValue();
+			slider.value = this.value.toString();
 		}
 	}
 
-	onEnd(_e: TouchEvent | MouseEvent) {
+	onEnd(e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = this.value as number;
@@ -85,6 +89,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 			this.value = this.newValue;
 			this.sendAction('tap_action');
+		} else {
+			this.setValue();
+			const slider = e.currentTarget as HTMLInputElement;
+			slider.value = this.value.toString();
 		}
 
 		this.lastX = undefined;
@@ -121,6 +129,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		) {
 			this.scrolling = true;
 			this.getValueFromHass = true;
+			this.setValue();
+			const slider = e.currentTarget as HTMLInputElement;
+			slider.value = this.value.toString();
 		}
 	}
 
