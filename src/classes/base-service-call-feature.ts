@@ -308,13 +308,6 @@ export class BaseServiceCallFeature extends LitElement {
 				) {
 					style.display = 'none';
 				}
-				console.log(this.value)
-				if ('range' in this) {
-					console.log(this.range)
-				}
-				if ('class' in this) {
-					console.log(this.class)
-				}
 
 				// prettier-ignore
 				label = html`<pre class="label" style=${styleMap(style)}>${text}</pre>`;
