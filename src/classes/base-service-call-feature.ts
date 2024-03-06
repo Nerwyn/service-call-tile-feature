@@ -20,7 +20,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	value: string | number = 0;
 	getValueFromHass: boolean = true;
-	renderedLabel?: string[];
+	renderedLabel?: string;
 	touchscreen = 'ontouchstart' in document.documentElement;
 
 	sendAction(
@@ -292,20 +292,18 @@ export class BaseServiceCallFeature extends LitElement {
 				// 	}
 				// }
 
-				this.renderedLabel = text.toString().split('\n');
+				this.renderedLabel = text.toString();
 				const unitOfMeasurement =
 					(renderTemplate(
 						this.hass,
 						this.entry.unit_of_measurement as string,
 					) as string) ?? '';
-				console.log(this.renderedLabel);
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
 						`${(this.value ?? '').toString()}${unitOfMeasurement}`,
 					);
 				}
-				console.log(text);
 
 				const style = structuredClone(this.entry.label_style ?? {});
 				for (const key in style) {

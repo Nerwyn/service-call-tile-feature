@@ -133,14 +133,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					this.hass,
 					this.entry.unit_of_measurement as string,
 				) as string) ?? '';
-			const text: string[] = this.renderedLabel.map((line) => {
-				return structuredClone(line).replace(
-					/VALUE/g,
-					`${(this.value ?? '').toString()}${unitOfMeasurement}`,
-				);
-			});
-			let i = 0;
-			console.log(text);
+			const text = structuredClone(this.renderedLabel).replace(
+				/VALUE/g,
+				`${(this.value ?? '').toString()}${unitOfMeasurement}`,
+			);
 
 			// Due to lit's use of shadow-doms cannot traverse to parent
 			let label = slider.nextElementSibling;
@@ -148,26 +144,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				label = label.nextElementSibling;
 			}
 			if (label) {
-				// const valueLabels = label?.getElementsByClassName('value');
-				// if (valueLabels) {
-				// 	for (const valueLabel of valueLabels) {
-				// 		// Cannot set textContent directly or lit will shriek in console and slow down the window
-				// 		const children = valueLabel.childNodes;
-				// 		for (const child of children) {
-				// 			if (child.nodeName == '#text') {
-				// 				child.nodeValue = this.value;
-				// 			}
-				// 		}
-				// 	}
-				// }
-
 				// Cannot set textContent directly or lit will shriek in console and slow down the window
 				const children = label.childNodes;
 				for (const child of children) {
-					console.log(child);
 					if (child.nodeName == '#text') {
-						child.nodeValue = text[i];
-						i++;
+						child.nodeValue = text;
 					}
 				}
 
