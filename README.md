@@ -407,7 +407,7 @@ To create a slider, add a Service Call tile feature to your tile and edit it. Ch
 
 If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. **DO NOT use templating to set value**, it will pull a stale value from the Home Assistant frontend states object rather than the updated slider value.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. **DO NOT use templating to set value**, it will pull a stale value from the Home Assistant frontend states object rather than the updated slider value. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider.
 
 ```yaml
 type: custom:service-call
