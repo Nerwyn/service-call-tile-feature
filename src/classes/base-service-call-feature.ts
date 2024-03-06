@@ -292,45 +292,39 @@ export class BaseServiceCallFeature extends LitElement {
 				// 	}
 				// }
 
-				// const style = structuredClone(this.entry.label_style ?? {});
-				// for (const key in style) {
-				// 	style[key] = renderTemplate(
-				// 		this.hass,
-				// 		style[key] as string,
-				// 	) as string;
-				// }
-
-				// // Slider specific label display logic
-				// if (
-				// 	this.value == undefined ||
-				// 	('range' in this &&
-				// 		(this.range as number[]).length &&
-				// 		Number(this.value) <= (this.range as number[])[0] &&
-				// 		'class' in this &&
-				// 		this.class != 'slider-line-thumb')
-				// ) {
-				// 	style.display = 'none';
-				// }
-
 				this.renderedLabel = text.toString().split('\n');
-
+				console.log(this.renderedLabel)
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
-						(this.value ?? '').toString(),
+						`${(this.value ?? '').toString()}${
+							(renderTemplate(
+								this.hass,
+								this.entry.unit_of_measurement as string,
+							) as string) ?? ''
+						}`,
 					);
 				}
-				text +=
-					(renderTemplate(
-						this.hass,
-						this.entry.unit_of_measurement as string,
-					) as string) ?? '';
+				console.log(text)
+
 				const style = structuredClone(this.entry.label_style ?? {});
 				for (const key in style) {
 					style[key] = renderTemplate(
 						this.hass,
 						style[key] as string,
 					) as string;
+				}
+
+				// Slider specific label display logic
+				if (
+					this.value == undefined ||
+					('range' in this &&
+						(this.range as number[]).length &&
+						Number(this.value) <= (this.range as number[])[0] &&
+						'class' in this &&
+						this.class != 'slider-line-thumb')
+				) {
+					style.display = 'none';
 				}
 
 				// prettier-ignore
@@ -393,6 +387,7 @@ export class BaseServiceCallFeature extends LitElement {
 					justify-content: center;
 					align-items: center;
 					height: 15px;
+					line-height: 15px;
 					width: inherit;
 					margin: 0;
 					font-family: inherit;
