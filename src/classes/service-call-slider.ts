@@ -363,6 +363,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
+					overflow: visible;
+
 					--color: var(--tile-color);
 					--background: var(--color, var(--state-inactive-color));
 					--background-height: 100%;

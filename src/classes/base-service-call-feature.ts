@@ -347,6 +347,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 				.container {
 					all: inherit;
+					overflow: hidden;
 					height: 100%;
 				}
 
