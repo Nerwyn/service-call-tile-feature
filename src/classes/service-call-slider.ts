@@ -204,7 +204,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const tooltip = slider.parentElement
 			?.previousElementSibling as HTMLElement;
 		if (tooltip) {
-			// Cannot set textContent directly or lit will shriek in console and crash window
 			const children = tooltip.childNodes;
 			for (const child of children) {
 				if (child.nodeName == '#text') {
@@ -355,10 +354,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const icon_label = super.render();
-		return html`<div class="container">
-			<div class="tooltip"></div>
-			${background}${slider}${icon_label}
-		</div>`;
+		return html`<div class="tooltip"></div>
+			<div class="container">${background}${slider}${icon_label}</div>`;
 	}
 
 	static get styles() {
