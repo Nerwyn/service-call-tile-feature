@@ -13,6 +13,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	speed: number = 2;
 	range: [number, number] = [0, 100];
 	class: string = 'slider';
+	showTooltip: boolean = false;
 
 	lastX?: number;
 	lastY?: number;
@@ -22,6 +23,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.scrolling) {
+			this.setTooltip(slider);
 			this.getValueFromHass = false;
 
 			const start = parseFloat(
@@ -80,8 +82,25 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
+	onStart(e: TouchEvent | MouseEvent) {
+		if (!this.scrolling) {
+			const slider = e.currentTarget as HTMLInputElement;
+			this.showTooltip = true;
+			this.setTooltip(slider);
+		} else {
+			console.log('Scrolling detected (onStart)');
+			this.scrolling = false;
+			this.lastX = undefined;
+			this.lastY = undefined;
+		}
+	}
+
 	onEnd(e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
+			const slider = e.currentTarget as HTMLInputElement;
+			this.showTooltip = false;
+			this.setTooltip(slider);
+
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = this.value as number;
 			}
@@ -158,7 +177,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				label = label.nextElementSibling;
 			}
 			if (label) {
-				// Cannot set textContent directly or lit will shriek in console and slow down the window
+				// Cannot set textContent directly or lit will shriek in console and crash window
 				const children = label.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
@@ -177,6 +196,26 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					(label as HTMLElement).style.display = 'inherit';
 					slider.className = this.class;
 				}
+			}
+		}
+	}
+
+	setTooltip(slider: HTMLInputElement) {
+		const tooltip = slider.parentElement
+			?.previousElementSibling as HTMLElement;
+		if (tooltip) {
+			// Cannot set textContent directly or lit will shriek in console and crash window
+			const children = tooltip.childNodes;
+			for (const child of children) {
+				if (child.nodeName == '#text') {
+					child.nodeValue = this.value.toString();
+				}
+			}
+
+			if (this.showTooltip) {
+				tooltip.className = 'tooltip faded-in';
+			} else {
+				tooltip.className = 'tooltip faded-out';
 			}
 		}
 	}
@@ -306,15 +345,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				step=${step}
 				value="${this.value}"
 				@input=${this.onInput}
+				@touchstart=${this.onStart}
 				@touchend=${this.onEnd}
 				@touchmove=${this.onMove}
+				@mousedown=${this.onStart}
 				@mouseup=${this.onEnd}
 				@mousemove=${this.onMove}
 			/>
 		`;
 
 		const icon_label = super.render();
-		return html`${background}${slider}${icon_label}`;
+		return html`<div class="container">
+			<div class="tooltip"></div>
+			${background}${slider}${icon_label}
+		</div>`;
 	}
 
 	static get styles() {
@@ -461,6 +505,31 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				.slider-off::-moz-range-thumb {
 					visibility: hidden;
+				}
+
+				.tooltip {
+					background: black;
+					color: white;
+					position: absolute;
+					border-radius: 4px;
+					padding: 2px;
+					height: 15px;
+					width: fit-content;
+					line-height: 15px;
+					top: -20px;
+					transform: translateX(var(--x-position));
+
+					--x-position: 0px;
+				}
+
+				.faded-out {
+					opacity: 0;
+					transition: opacity 0.2s ease-out;
+				}
+
+				.faded-in {
+					opacity: 1;
+					transition: opacity 0.4s ease-in;
 				}
 			`,
 		];
