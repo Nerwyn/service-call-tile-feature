@@ -354,7 +354,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const icon_label = super.render();
-		return html`<div class="tooltip">${this.value}</div>
+		return html`<div class="tooltip faded-out">${this.value}</div>
 			<div class="container">${background}${slider}${icon_label}</div>`;
 	}
 
