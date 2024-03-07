@@ -204,6 +204,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const tooltip = slider.parentElement
 			?.previousElementSibling as HTMLElement;
 		if (tooltip) {
+			this.value = slider.value;
+
 			const children = tooltip.childNodes;
 			for (const child of children) {
 				if (child.nodeName == '#text') {
