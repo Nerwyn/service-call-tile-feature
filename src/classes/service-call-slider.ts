@@ -171,12 +171,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				`${(this.value ?? '').toString()}${unitOfMeasurement}`,
 			);
 
-			// Due to lit's use of shadow-doms cannot traverse to parent
-			let label = slider.nextElementSibling;
-			if (label && label.className != 'label') {
-				label = label.nextElementSibling;
-			}
-			if (label) {
+			const labels =
+				slider.parentElement?.getElementsByClassName('label');
+
+			if (labels) {
+				const label = labels[0];
+
 				// Cannot set textContent directly or lit will shriek in console and crash window
 				const children = label.childNodes;
 				for (const child of children) {
@@ -206,10 +206,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (tooltip) {
 			this.value = slider.value;
 
+			const unitOfMeasurement =
+				(renderTemplate(
+					this.hass,
+					this.entry.unit_of_measurement as string,
+				) as string) ?? '';
+
 			const children = tooltip.childNodes;
 			for (const child of children) {
 				if (child.nodeName == '#text') {
-					child.nodeValue = this.value.toString();
+					child.nodeValue = `${this.value.toString()}${unitOfMeasurement}`;
 				}
 			}
 
