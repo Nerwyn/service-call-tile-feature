@@ -154,6 +154,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const slider = e.currentTarget as HTMLInputElement;
 			slider.value = this.value.toString();
 			this.setLabel(slider);
+			this.showTooltip = false;
+			this.setTooltip(slider);
 		}
 	}
 
@@ -515,6 +517,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 
 				.tooltip {
+					z-index: 3;
 					background: black;
 					color: white;
 					position: absolute;
