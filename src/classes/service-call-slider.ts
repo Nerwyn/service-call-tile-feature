@@ -152,7 +152,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.getValueFromHass = true;
 			this.setValue();
 			const slider = e.currentTarget as HTMLInputElement;
-			slider.value = this.value.toString();
+			if (this.value != undefined) {
+				slider.value = this.value.toString();
+			}
 			this.setLabel(slider);
 			this.showTooltip = false;
 			this.setTooltip(slider);
@@ -204,18 +206,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			if (this.showTooltip) {
 				this.value = slider.value;
 
-				if (this.unitOfMeasurement) {
-					tooltip.setAttribute('units', this.unitOfMeasurement);
-				}
-
-				console.log(this.unitOfMeasurement);
-				console.log(tooltip.getAttribute('units'));
+				const unitOfMeasurement = structuredClone(
+					this.unitOfMeasurement,
+				);
 
 				const children = tooltip.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
 						child.nodeValue = `${this.value.toString()}${tooltip.getAttribute(
-							'units',
+							unitOfMeasurement,
 						)}`;
 					}
 				}
