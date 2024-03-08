@@ -221,12 +221,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 			}
 
-			const xPosition = `${Math.round(
-				slider.offsetWidth *
-					(Number(this.value) / (this.range[1] - this.range[0]) -
-						0.5),
-			).toString()}px`;
-			tooltip.style.setProperty('--x-position', xPosition);
+			const xPosition = Math.round(
+				(slider.offsetWidth / (this.range[1] - this.range[0])) *
+					(Number(this.value) - (this.range[0] + this.range[1]) / 2),
+			).toString();
+			tooltip.style.setProperty('--x-position', `${xPosition}px`);
 
 			if (this.showTooltip) {
 				tooltip.className = 'tooltip faded-in';
