@@ -82,6 +82,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
+	@eventOptions({ passive: true })
 	onStart(e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
 			const slider = e.currentTarget as HTMLInputElement;
