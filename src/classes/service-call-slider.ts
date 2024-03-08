@@ -163,14 +163,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.renderedLabel && this.renderedLabel.includes('VALUE')) {
 			this.value = slider.value;
 
-			const unitOfMeasurement =
-				(renderTemplate(
-					this.hass,
-					this.entry.unit_of_measurement as string,
-				) as string) ?? '';
 			const text = structuredClone(this.renderedLabel).replace(
 				/VALUE/g,
-				`${(this.value ?? '').toString()}${unitOfMeasurement}`,
+				`${(this.value ?? '').toString()}${this.unitOfMeasurement}`,
 			);
 
 			const labels =
@@ -208,16 +203,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (tooltip) {
 			this.value = slider.value;
 
-			const unitOfMeasurement =
-				(renderTemplate(
-					this.hass,
-					this.entry.unit_of_measurement as string,
-				) as string) ?? '';
-
 			const children = tooltip.childNodes;
 			for (const child of children) {
 				if (child.nodeName == '#text') {
-					child.nodeValue = `${this.value.toString()}${unitOfMeasurement}`;
+					child.nodeValue = `${this.value.toString()}${
+						this.unitOfMeasurement
+					}`;
 				}
 			}
 

@@ -21,6 +21,7 @@ export class BaseServiceCallFeature extends LitElement {
 	value: string | number = 0;
 	getValueFromHass: boolean = true;
 	renderedLabel?: string;
+	unitOfMeasurement: string = '';
 	touchscreen = 'ontouchstart' in document.documentElement;
 
 	sendAction(
@@ -250,6 +251,12 @@ export class BaseServiceCallFeature extends LitElement {
 	render() {
 		this.setValue();
 
+		this.unitOfMeasurement =
+			(renderTemplate(
+				this.hass,
+				this.entry.unit_of_measurement as string,
+			) as string) ?? '';
+
 		let icon = html``;
 		if ('icon' in this.entry) {
 			const style = structuredClone(this.entry.icon_style ?? {});
@@ -275,18 +282,15 @@ export class BaseServiceCallFeature extends LitElement {
 			) as string;
 			if (text) {
 				this.renderedLabel = text.toString();
-				const unitOfMeasurement =
-					(renderTemplate(
-						this.hass,
-						this.entry.unit_of_measurement as string,
-					) as string) ?? '';
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
-						`${(this.value ?? '').toString()}${unitOfMeasurement}`,
+						`${(this.value ?? '').toString()}${
+							this.unitOfMeasurement
+						}`,
 					);
 				} else {
-					text += unitOfMeasurement;
+					text += this.unitOfMeasurement;
 				}
 
 				const style = structuredClone(this.entry.label_style ?? {});
