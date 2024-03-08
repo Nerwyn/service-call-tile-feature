@@ -204,12 +204,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			if (this.showTooltip) {
 				this.value = slider.value;
 
+				if (this.unitOfMeasurement) {
+					tooltip.setAttribute('units', this.unitOfMeasurement);
+				}
+
 				const children = tooltip.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
-						child.nodeValue = `${this.value.toString()}${
-							this.unitOfMeasurement
-						}`;
+						child.nodeValue = `${this.value.toString()}${tooltip.getAttribute(
+							'units',
+						)}`;
 					}
 				}
 
@@ -219,7 +223,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 							(this.range[0] + this.range[1]) / 2),
 				);
 				tooltip.style.setProperty('--x-position', `${xPosition}px`);
-				
+
 				tooltip.className = 'tooltip faded-in';
 			} else {
 				tooltip.className = 'tooltip faded-out';
