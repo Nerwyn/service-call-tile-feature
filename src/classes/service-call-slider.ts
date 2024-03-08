@@ -224,7 +224,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const xPosition = Math.round(
 				(slider.offsetWidth / (this.range[1] - this.range[0])) *
 					(Number(this.value) - (this.range[0] + this.range[1]) / 2),
-			).toString();
+			);
+
 			tooltip.style.setProperty('--x-position', `${xPosition}px`);
 
 			if (this.showTooltip) {
@@ -529,10 +530,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					position: absolute;
 					border-radius: 0.8em;
 					padding: 0.2em 0.4em;
-					height: 15px;
+					height: 20px;
 					width: fit-content;
-					line-height: 15px;
-					top: -24px;
+					line-height: 20px;
+					top: -29px;
 					transform: translateX(var(--x-position));
 
 					--x-position: 0px;
