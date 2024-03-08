@@ -222,6 +222,12 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	setValue() {
+		this.unitOfMeasurement =
+			(renderTemplate(
+				this.hass,
+				this.entry.unit_of_measurement as string,
+			) as string) ?? '';
+
 		if (this.getValueFromHass) {
 			const value_attribute = renderTemplate(
 				this.hass,
@@ -250,12 +256,6 @@ export class BaseServiceCallFeature extends LitElement {
 
 	render() {
 		this.setValue();
-
-		this.unitOfMeasurement =
-			(renderTemplate(
-				this.hass,
-				this.entry.unit_of_measurement as string,
-			) as string) ?? '';
 
 		let icon = html``;
 		if ('icon' in this.entry) {
