@@ -12,6 +12,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	newValue?: number;
 	speed: number = 2;
 	range: [number, number] = [0, 100];
+	step: number = 1;
+	precision: number = 0;
+
 	class: string = 'slider';
 	showTooltip: boolean = false;
 
@@ -89,7 +92,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.showTooltip = true;
 			this.setTooltip(slider);
 		} else {
-			console.log('Scrolling detected (onStart)');
 			this.scrolling = false;
 			this.lastX = undefined;
 			this.lastY = undefined;
@@ -97,22 +99,22 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
+		const slider = e.currentTarget as HTMLInputElement;
+
 		if (!this.scrolling) {
-			const slider = e.currentTarget as HTMLInputElement;
 			this.showTooltip = false;
 			this.setTooltip(slider);
 
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = this.value as number;
 			}
-			if (this.newValue % 1 == 0) {
+			if (!this.precision) {
 				this.newValue = Math.trunc(this.newValue);
 			}
 			this.value = this.newValue;
 			this.sendAction('tap_action');
 		} else {
 			this.setValue();
-			const slider = e.currentTarget as HTMLInputElement;
 			slider.value = this.value.toString();
 			this.setLabel(slider);
 		}
@@ -168,7 +170,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			const text = structuredClone(this.renderedLabel).replace(
 				/VALUE/g,
-				`${(this.value ?? '').toString()}${this.unitOfMeasurement}`,
+				`${(
+					Number(this.value).toFixed(this.precision) ?? ''
+				).toString()}${this.unitOfMeasurement}`,
 			);
 
 			const labels =
@@ -207,12 +211,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			if (this.showTooltip) {
 				this.value = slider.value;
 
+				// Cannot set textContent directly or lit will shriek in console and crash window
 				const children = tooltip.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
-						child.nodeValue = `${this.value.toString()}${
-							this.unitOfMeasurement
-						}`;
+						child.nodeValue = `${Number(this.value).toFixed(
+							this.precision,
+						)}${this.unitOfMeasurement}`;
 					}
 				}
 
@@ -295,13 +300,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
-		let step: number;
 		if (this.entry.step) {
-			step = this.entry.step;
+			this.step = this.entry.step;
 		} else if (['number', 'input_number'].includes(domain)) {
-			step = this.hass.states[entity_id].attributes.step;
+			this.step = this.hass.states[entity_id].attributes.step;
 		} else {
-			step = (this.range[1] - this.range[0]) / 100;
+			this.step = (this.range[1] - this.range[0]) / 100;
+		}
+
+		const splitStep = this.step.toString().split('.');
+		if (splitStep.length > 1) {
+			this.precision = splitStep[1].length;
+		} else {
+			this.precision = 0;
 		}
 
 		const background_style = structuredClone(
@@ -352,7 +363,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				style=${styleMap(slider_style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
-				step=${step}
+				step=${this.step}
 				value="${this.value}"
 				@input=${this.onInput}
 				@touchstart=${this.onStart}
@@ -365,7 +376,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const icon_label = super.render();
-		const tooltipText = `${this.value}${this.unitOfMeasurement}`;
+		const tooltipText = `${Number(this.value).toFixed(this.precision)}${
+			this.unitOfMeasurement
+		}`;
 
 		// prettier-ignore
 		return html`<div class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}">${tooltipText}</div>

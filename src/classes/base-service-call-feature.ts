@@ -253,7 +253,10 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 
-		if (this.value != undefined && Number(this.value) % 1 == 0) {
+		if (
+			(this.value != undefined && Number(this.value) % 1 == 0) ||
+			('precision' in this && !this.precision)
+		) {
 			this.value = Math.trunc(Number(this.value));
 		}
 	}
@@ -287,12 +290,19 @@ export class BaseServiceCallFeature extends LitElement {
 			if (text) {
 				this.renderedLabel = text.toString();
 				if (typeof text == 'string' && text.includes('VALUE')) {
-					text = text.replace(
-						/VALUE/g,
-						`${(this.value ?? '').toString()}${
+					let textValue: string;
+					if ('precision' in this) {
+						textValue = `${(
+							Number(this.value).toFixed(
+								this.precision as number,
+							) ?? ''
+						).toString()}${this.unitOfMeasurement}`;
+					} else {
+						textValue = `${(this.value ?? '').toString()}${
 							this.unitOfMeasurement
-						}`,
-					);
+						}`;
+					}
+					text = text.replace(/VALUE/g, textValue);
 				} else {
 					text += this.unitOfMeasurement;
 				}
