@@ -364,9 +364,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 
 		const icon_label = super.render();
+		const tooltipText = `${this.value}${this.unitOfMeasurement}`;
 
 		// prettier-ignore
-		return html`<div class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}">${this.value}${this.unitOfMeasurement}</div>
+		return html`<div class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}">${tooltipText}</div>
 			<div class="container">${background}${slider}${icon_label}</div>`;
 	}
 

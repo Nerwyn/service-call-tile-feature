@@ -252,6 +252,10 @@ export class BaseServiceCallFeature extends LitElement {
 				}
 			}
 		}
+
+		if (this.value != undefined && Number(this.value) % 1 == 0) {
+			this.value = Math.trunc(Number(this.value));
+		}
 	}
 
 	render() {
