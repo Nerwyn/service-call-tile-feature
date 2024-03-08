@@ -226,7 +226,9 @@ export class BaseServiceCallFeature extends LitElement {
 			(renderTemplate(
 				this.hass,
 				this.entry.unit_of_measurement as string,
-			) as string) ?? '';
+			) as string) ??
+			this.unitOfMeasurement ??
+			'';
 
 		if (this.getValueFromHass) {
 			const value_attribute = renderTemplate(
