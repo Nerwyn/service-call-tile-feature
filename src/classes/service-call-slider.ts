@@ -201,25 +201,25 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const tooltip = slider.parentElement
 			?.previousElementSibling as HTMLElement;
 		if (tooltip) {
-			this.value = slider.value;
-
-			const children = tooltip.childNodes;
-			for (const child of children) {
-				if (child.nodeName == '#text') {
-					child.nodeValue = `${this.value.toString()}${
-						this.unitOfMeasurement
-					}`;
-				}
-			}
-
-			const xPosition = Math.round(
-				(slider.offsetWidth / (this.range[1] - this.range[0])) *
-					(Number(this.value) - (this.range[0] + this.range[1]) / 2),
-			);
-
-			tooltip.style.setProperty('--x-position', `${xPosition}px`);
-
 			if (this.showTooltip) {
+				this.value = slider.value;
+
+				const children = tooltip.childNodes;
+				for (const child of children) {
+					if (child.nodeName == '#text') {
+						child.nodeValue = `${this.value.toString()}${
+							this.unitOfMeasurement
+						}`;
+					}
+				}
+
+				const xPosition = Math.round(
+					(slider.offsetWidth / (this.range[1] - this.range[0])) *
+						(Number(this.value) -
+							(this.range[0] + this.range[1]) / 2),
+				);
+				tooltip.style.setProperty('--x-position', `${xPosition}px`);
+				
 				tooltip.className = 'tooltip faded-in';
 			} else {
 				tooltip.className = 'tooltip faded-out';
