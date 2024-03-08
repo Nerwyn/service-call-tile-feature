@@ -1,6 +1,6 @@
 import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
-import { LitElement, CSSResult, TemplateResult, html, css } from 'lit';
+import { LitElement, CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
@@ -254,8 +254,9 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		if (
-			(this.value != undefined && Number(this.value) % 1 == 0) ||
-			('precision' in this && !this.precision)
+			this.value != undefined &&
+			(Number(this.value) % 1 == 0 ||
+				('precision' in this && !this.precision))
 		) {
 			this.value = Math.trunc(Number(this.value));
 		}
@@ -282,7 +283,7 @@ export class BaseServiceCallFeature extends LitElement {
 		let label = html``;
 		if ('label' in this.entry) {
 			const context = { VALUE: this.value };
-			let text: string | (string | TemplateResult<1>)[] = renderTemplate(
+			let text: string = renderTemplate(
 				this.hass,
 				this.entry.label as string,
 				context,
