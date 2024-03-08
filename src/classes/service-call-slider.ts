@@ -518,15 +518,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				.tooltip {
 					z-index: 3;
-					background: black;
-					color: white;
+					background: var(--clear-background-color);
+					color: var(--primary-text-color);
 					position: absolute;
-					border-radius: 4px;
-					padding: 2px;
+					border-radius: 0.8em;
+					padding: 0.2em 0.4em;
 					height: 15px;
 					width: fit-content;
 					line-height: 15px;
-					top: -20px;
+					top: -24px;
 					transform: translateX(var(--x-position));
 
 					--x-position: 0px;
@@ -534,12 +534,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				.faded-out {
 					opacity: 0;
-					transition: opacity 0.2s ease-out;
+					transition:
+						opacity 180ms ease-in-out 0s,
+						left 180ms ease-in-out 0s,
+						bottom 180ms ease-in-out 0s;
 				}
 
 				.faded-in {
 					opacity: 1;
-					transition: opacity 0.4s ease-in;
+					transition: opacity 540ms ease-in-out 0s;
 				}
 			`,
 		];
