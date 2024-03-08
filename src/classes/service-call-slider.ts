@@ -213,9 +213,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const children = tooltip.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
-						child.nodeValue = `${this.value.toString()}${tooltip.getAttribute(
-							unitOfMeasurement,
-						)}`;
+						child.nodeValue = `${this.value.toString()}${unitOfMeasurement}`;
 					}
 				}
 
