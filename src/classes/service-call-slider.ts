@@ -208,6 +208,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					tooltip.setAttribute('units', this.unitOfMeasurement);
 				}
 
+				console.log(this.unitOfMeasurement);
+				console.log(tooltip.getAttribute('units'));
+
 				const children = tooltip.childNodes;
 				for (const child of children) {
 					if (child.nodeName == '#text') {
