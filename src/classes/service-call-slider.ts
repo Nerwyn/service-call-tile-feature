@@ -489,6 +489,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					z-index: 1;
 					box-shadow: -100vw 0 0 100vw var(--color);
+					border-radius: 0px;
 				}
 
 				.slider-line-thumb::-webkit-slider-thumb {
