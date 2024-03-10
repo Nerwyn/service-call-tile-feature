@@ -33,6 +33,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
+			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
 			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
@@ -268,10 +269,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				step=${this.step}
 				value="${value}"
 				@input=${this.onInput}
-				@touchstart=${this.onStart}
 				@touchend=${this.onEnd}
 				@touchmove=${this.onMove}
-				@mousedown=${this.onStart}
 				@mouseup=${this.onEnd}
 				@mousemove=${this.onMove}
 			/>
