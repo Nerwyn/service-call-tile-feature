@@ -256,6 +256,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	render() {
 		this.setValue();
+		if (this.getValueFromHass) {
+			this.currentValue = this.value;
+		}
 
 		const entity_id = renderTemplate(
 			this.hass,
