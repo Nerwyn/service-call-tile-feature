@@ -89,7 +89,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.getValueFromHass = true;
 			}
 			this.setValue();
-			slider.value = this.value.toString();
+			slider.value = (this.value ?? 0).toString();
 			this.setTooltip(slider, false);
 			this.currentValue = slider.value;
 		}
@@ -126,7 +126,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.getValueFromHass = true;
 			}
 			this.setValue();
-			slider.value = this.value.toString();
+			slider.value = (this.value ?? 0).toString();
 			this.currentValue = slider.value;
 		}
 
@@ -138,7 +138,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	@eventOptions({ passive: true })
 	onMove(e: TouchEvent | MouseEvent) {
-		this.getValueFromHass = false;
 		const slider = e.currentTarget as HTMLInputElement;
 
 		let currentX: number;
@@ -166,9 +165,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.scrolling = true;
 			this.getValueFromHass = true;
 			this.setValue();
-			if (this.value != undefined) {
-				slider.value = this.value.toString();
-			}
+			slider.value = (this.value ?? 0).toString();
 			this.currentValue = slider.value;
 			this.setTooltip(slider, false);
 			this.sliderOn = !(
