@@ -25,12 +25,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	startX?: number;
 	startY?: number;
 	scrolling: boolean = false;
+	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
+			clearTimeout(this.getValueFromHassTimer)
 			this.value = slider.value;
 			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
@@ -101,6 +103,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
+			clearTimeout(this.getValueFromHassTimer)
 			this.value = slider.value;
 			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
@@ -133,7 +136,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.scrolling = false;
 		this.startX = undefined;
 		this.startY = undefined;
-		setTimeout(() => (this.getValueFromHass = true), 1000);
+		this.getValueFromHassTimer = setTimeout(() => (this.getValueFromHass = true), 1000);
 	}
 
 	@eventOptions({ passive: true })
