@@ -99,6 +99,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.scrolling) {
+			this.getValueFromHass = false;
 			this.value = slider.value;
 			this.setTooltip(slider, true);
 		}
@@ -274,11 +275,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = this.value;
 		}
 
-		const entity_id = renderTemplate(
+		const entityId = renderTemplate(
 			this.hass,
 			this.entry.entity_id as string,
 		) as string;
-		const [domain, _service] = (entity_id ?? '').split('.');
+		const [domain, _service] = (entityId ?? '').split('.');
 
 		if (this.entry.range) {
 			this.range = [
@@ -297,8 +298,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			];
 		} else if (['number', 'input_number'].includes(domain)) {
 			this.range = [
-				this.hass.states[entity_id].attributes.min,
-				this.hass.states[entity_id].attributes.max,
+				this.hass.states[entityId].attributes.min,
+				this.hass.states[entityId].attributes.max,
 			];
 		}
 
@@ -321,7 +322,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				tap_action.data = data;
 			}
 			if (!('entity_id' in data)) {
-				data.entity_id = entity_id;
+				data.entity_id = entityId;
 				tap_action.data = data;
 			}
 			this.entry.tap_action = tap_action;
@@ -332,7 +333,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.entry.step) {
 			this.step = this.entry.step;
 		} else if (['number', 'input_number'].includes(domain)) {
-			this.step = this.hass.states[entity_id].attributes.step;
+			this.step = this.hass.states[entityId].attributes.step;
 		} else {
 			this.step = (this.range[1] - this.range[0]) / 100;
 		}
