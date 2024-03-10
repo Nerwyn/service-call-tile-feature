@@ -211,9 +211,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.unitOfMeasurement
 		}`;
 		// prettier-ignore
-		return html`<div
-			class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
-		>${tooltipText}</div>`;
+		return html`
+			<div
+				class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
+				style=${styleMap({
+					'--x-position': this.tooltipPosition.toString() + 'px',
+				})}
+			>${tooltipText}</div>
+		`;
 	}
 
 	buildSlider() {
