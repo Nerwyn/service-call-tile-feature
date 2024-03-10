@@ -177,7 +177,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.showTooltip = show;
 	}
 
-	buildLabel(value = this.getValueFromHass ? this.currentValue : this.value) {
+	buildLabel(value = this.getValueFromHass ? this.value : this.currentValue) {
 		const hide =
 			this.value == undefined ||
 			(Number(this.value) <= this.range[0] &&
