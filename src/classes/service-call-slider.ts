@@ -221,7 +221,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	buildSlider() {
+	buildSlider(
+		value = this.getValueFromHass ? this.value : this.currentValue,
+	) {
 		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
@@ -234,8 +236,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				break;
 		}
 		this.sliderOn = !(
-			this.value == undefined ||
-			(this.value == this.range[0] && this.class != 'slider-line-thumb')
+			value == undefined ||
+			(value == this.range[0] && this.class != 'slider-line-thumb')
 		);
 
 		const style = structuredClone(this.entry.slider_style ?? {});
@@ -254,7 +256,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				min="${this.range[0]}"
 				max="${this.range[1]}"
 				step=${this.step}
-				value="${this.value}"
+				value="${value}"
 				@input=${this.onInput}
 				@touchstart=${this.onStart}
 				@touchend=${this.onEnd}
