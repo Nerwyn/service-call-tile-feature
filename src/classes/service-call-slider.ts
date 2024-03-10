@@ -10,8 +10,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@state() showTooltip: boolean = false;
 	@state() sliderOn: boolean = true;
-	@state() currentValue: string =
-		this.value != undefined ? this.value.toString() : '';
+	@state() currentValue = this.value;
 
 	class: string = 'slider';
 	oldValue?: number;
