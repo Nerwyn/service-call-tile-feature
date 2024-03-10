@@ -175,10 +175,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	setTooltip(slider: HTMLInputElement, show: boolean) {
-		this.tooltipPosition = Math.round(
-			(slider.offsetWidth / (this.range[1] - this.range[0])) *
-				(Number(this.value) - (this.range[0] + this.range[1]) / 2),
-		);
+		if (show) {
+			this.tooltipPosition = Math.round(
+				(slider.offsetWidth / (this.range[1] - this.range[0])) *
+					(Number(this.currentValue) -
+						(this.range[0] + this.range[1]) / 2),
+			);
+		}
 
 		this.showTooltip = show;
 	}

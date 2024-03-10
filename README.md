@@ -790,6 +790,7 @@ features:
           flex-direction: row
         icon_style:
           padding: 8px
+		  flex: auto
         label_style:
           left: '-16px'
 
