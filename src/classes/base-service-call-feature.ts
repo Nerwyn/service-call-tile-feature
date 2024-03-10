@@ -241,13 +241,13 @@ export class BaseServiceCallFeature extends LitElement {
 				if (valueAttribute == 'state') {
 					this.value = this.hass.states[entityId].state;
 				} else {
-					const value =
+					let value =
 						this.hass.states[entityId].attributes[
 							valueAttribute as string
 						];
-					// if (valueAttribute == 'brightness') {
-					// 	value = Math.round((100 * parseInt(value ?? 0)) / 255);
-					// }
+					if (valueAttribute == 'brightness') {
+						value = Math.round((100 * parseInt(value ?? 0)) / 255);
+					}
 					this.value = value;
 				}
 			}

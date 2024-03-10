@@ -116,6 +116,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.value = this.newValue;
 			this.sendAction('tap_action');
 		} else {
+			if (this.value == undefined) {
+				this.getValueFromHass = true;
+				this.setValue;
+			}
 			slider.value = this.value.toString();
 			this.currentValue = slider.value;
 		}
