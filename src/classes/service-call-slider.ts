@@ -84,6 +84,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.oldValue = end;
 		} else {
+			this.getValueFromHass = true;
 			this.setValue();
 			slider.value = this.value.toString();
 			this.setTooltip(slider, false);
