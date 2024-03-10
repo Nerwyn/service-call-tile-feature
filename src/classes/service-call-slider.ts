@@ -32,6 +32,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
 			this.value = slider.value;
+			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
 
 			const start = parseFloat(
@@ -86,8 +87,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			if (this.value == undefined) {
 				this.getValueFromHass = true;
-				this.setValue();
 			}
+			this.setValue();
 			slider.value = this.value.toString();
 			this.setTooltip(slider, false);
 			this.currentValue = slider.value;
@@ -101,6 +102,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
 			this.value = slider.value;
+			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
 		}
 	}
@@ -122,8 +124,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			if (this.value == undefined) {
 				this.getValueFromHass = true;
-				this.setValue();
 			}
+			this.setValue();
 			slider.value = this.value.toString();
 			this.currentValue = slider.value;
 		}
@@ -209,9 +211,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltip() {
-		const tooltipText = `${Number(this.value).toFixed(this.precision)}${
-			this.unitOfMeasurement
-		}`;
+		const tooltipText = `${Number(this.currentValue).toFixed(
+			this.precision,
+		)}${this.unitOfMeasurement}`;
 		// prettier-ignore
 		return html`
 			<div
