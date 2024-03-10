@@ -1,5 +1,5 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement, eventOptions } from 'lit/decorators.js';
+import { customElement, eventOptions, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
@@ -8,26 +8,32 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
+	@state() showTooltip: boolean = false;
+	@state() sliderOn: boolean = true;
+	@state() currentValue: string =
+		this.value != undefined ? this.value.toString() : '';
+
+	class: string = 'slider';
 	oldValue?: number;
 	newValue?: number;
 	speed: number = 2;
 	range: [number, number] = [0, 100];
 	step: number = 1;
+
 	precision: number = 0;
+	tooltipPosition: number = 0;
 
-	class: string = 'slider';
-	showTooltip: boolean = false;
-
-	lastX?: number;
-	lastY?: number;
+	startX?: number;
+	startY?: number;
 	scrolling: boolean = false;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.scrolling) {
-			this.setTooltip(slider);
 			this.getValueFromHass = false;
+			this.value = slider.value;
+			this.setTooltip(slider, true);
 
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
@@ -37,7 +43,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = end;
 
 			if (end > this.range[0]) {
-				slider.className = this.class;
+				this.sliderOn = true;
 			}
 
 			let i = start;
@@ -45,32 +51,32 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				const id = setInterval(() => {
 					i -= this.speed;
 					slider.value = i.toString();
-					this.setLabel(slider);
+					this.currentValue = slider.value;
 
 					if (end >= i) {
 						clearInterval(id);
 						slider.value = end.toString();
-						this.setLabel(slider);
+						this.currentValue = slider.value;
 						if (
 							this.value == undefined ||
 							(end <= this.range[0] &&
 								this.class != 'slider-line-thumb')
 						) {
-							slider.className = 'slider-off';
+							this.sliderOn = false;
 						}
 					}
 				}, 1);
 			} else if (start < end) {
-				slider.className = this.class;
+				this.sliderOn = true;
 				const id = setInterval(() => {
 					i += this.speed;
 					slider.value = i.toString();
-					this.setLabel(slider);
+					this.currentValue = slider.value;
 
 					if (end <= i) {
 						clearInterval(id);
 						slider.value = end.toString();
-						this.setLabel(slider);
+						this.currentValue = slider.value;
 					}
 				}, 1);
 			} else {
@@ -81,32 +87,29 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			this.setValue();
 			slider.value = this.value.toString();
-			this.setLabel(slider);
+			this.setTooltip(slider, false);
+			this.currentValue = slider.value;
 		}
 	}
 
 	@eventOptions({ passive: true })
 	onStart(e: TouchEvent | MouseEvent) {
+		const slider = e.currentTarget as HTMLInputElement;
+
 		if (!this.scrolling) {
-			const slider = e.currentTarget as HTMLInputElement;
-			this.showTooltip = true;
-			this.setTooltip(slider);
-		} else {
-			this.scrolling = false;
-			this.lastX = undefined;
-			this.lastY = undefined;
+			this.value = slider.value;
+			this.setTooltip(slider, true);
 		}
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
+		this.setTooltip(slider, false);
+		this.setValue();
 
 		if (!this.scrolling) {
-			this.showTooltip = false;
-			this.setTooltip(slider);
-
 			if (!this.newValue && this.newValue != 0) {
-				this.newValue = this.value as number;
+				this.newValue = Number(this.value);
 			}
 			if (!this.precision) {
 				this.newValue = Math.trunc(this.newValue);
@@ -114,20 +117,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.value = this.newValue;
 			this.sendAction('tap_action');
 		} else {
-			this.setValue();
 			slider.value = this.value.toString();
-			this.setLabel(slider);
+			this.currentValue = slider.value;
 		}
 
-		this.lastX = undefined;
-		this.lastY = undefined;
 		this.scrolling = false;
+		this.startX = undefined;
+		this.startY = undefined;
 		setTimeout(() => (this.getValueFromHass = true), 1000);
 	}
 
 	@eventOptions({ passive: true })
 	onMove(e: TouchEvent | MouseEvent) {
 		this.getValueFromHass = false;
+		const slider = e.currentTarget as HTMLInputElement;
 
 		let currentX: number;
 		if ('clientX' in e) {
@@ -142,108 +145,117 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			currentY = e.touches[0].clientY;
 		}
 
-		if (this.lastY == undefined) {
-			this.lastY = currentY;
+		if (this.startY == undefined) {
+			this.startY = currentY;
 		}
-		if (this.lastX == undefined) {
-			this.lastX = currentX;
+		if (this.startX == undefined) {
+			this.startX = currentX;
 		} else if (
-			Math.abs(currentX - this.lastX) <
-			Math.abs(currentY - this.lastY) - 20
+			Math.abs(currentX - this.startX) <
+			Math.abs(currentY - this.startY) - 20
 		) {
 			this.scrolling = true;
 			this.getValueFromHass = true;
 			this.setValue();
-			const slider = e.currentTarget as HTMLInputElement;
 			if (this.value != undefined) {
 				slider.value = this.value.toString();
 			}
-			this.setLabel(slider);
-			this.showTooltip = false;
-			this.setTooltip(slider);
-		}
-	}
-
-	setLabel(slider: HTMLInputElement) {
-		if (this.renderedLabel && this.renderedLabel.includes('VALUE')) {
-			this.value = slider.value;
-
-			const text = structuredClone(this.renderedLabel).replace(
-				/VALUE/g,
-				`${(
-					Number(this.value).toFixed(this.precision) ?? ''
-				).toString()}${this.unitOfMeasurement}`,
+			this.currentValue = slider.value;
+			this.setTooltip(slider, false);
+			this.sliderOn = !(
+				this.value == undefined || Number(this.value) <= this.range[0]
 			);
-
-			const labels =
-				slider.parentElement?.getElementsByClassName('label');
-
-			if (labels) {
-				const label = labels[0];
-
-				// Cannot set textContent directly or lit will shriek in console and crash window
-				const children = label.childNodes;
-				for (const child of children) {
-					if (child.nodeName == '#text') {
-						child.nodeValue = text;
-					}
-				}
-
-				if (
-					this.value == undefined ||
-					(Number(this.value) <= this.range[0] &&
-						this.class != 'slider-line-thumb')
-				) {
-					(label as HTMLElement).style.display = 'none';
-					slider.className = 'slider-off';
-				} else {
-					(label as HTMLElement).style.display = 'inherit';
-					slider.className = this.class;
-				}
-			}
 		}
 	}
 
-	setTooltip(slider: HTMLInputElement) {
-		const tooltip = slider.parentElement
-			?.previousElementSibling as HTMLElement;
-		if (tooltip) {
-			if (this.showTooltip) {
-				this.value = slider.value;
+	setTooltip(slider: HTMLInputElement, show: boolean) {
+		this.tooltipPosition = Math.round(
+			(slider.offsetWidth / (this.range[1] - this.range[0])) *
+				(Number(this.value) - (this.range[0] + this.range[1]) / 2),
+		);
 
-				// Cannot set textContent directly or lit will shriek in console and crash window
-				const children = tooltip.childNodes;
-				for (const child of children) {
-					if (child.nodeName == '#text') {
-						child.nodeValue = `${Number(this.value).toFixed(
-							this.precision,
-						)}${this.unitOfMeasurement}`;
-					}
-				}
+		this.showTooltip = show;
+	}
 
-				const xPosition = Math.round(
-					(slider.offsetWidth / (this.range[1] - this.range[0])) *
-						(Number(this.value) -
-							(this.range[0] + this.range[1]) / 2),
-				);
-				tooltip.style.setProperty('--x-position', `${xPosition}px`);
+	buildLabel(value: string = this.currentValue) {
+		const hide =
+			Number(this.value) <= this.range[0] &&
+			'class' in this &&
+			this.class != 'slider-line-thumb';
+		return super.buildLabel(value, hide);
+	}
 
-				tooltip.className = 'tooltip faded-in';
-			} else {
-				tooltip.className = 'tooltip faded-out';
-			}
+	buildBackground() {
+		const style = structuredClone(this.entry.background_style ?? {});
+		for (const key in style) {
+			style[key] = renderTemplate(
+				this.hass,
+				style[key] as string,
+			) as string;
 		}
+		return html`<div
+			class="slider-background"
+			style=${styleMap(style)}
+		></div>`;
+	}
+
+	buildTooltip() {
+		const tooltipText = `${Number(this.value).toFixed(this.precision)}${
+			this.unitOfMeasurement
+		}`;
+		// prettier-ignore
+		return html`<div
+			class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
+		>${tooltipText}</div>`;
+	}
+
+	buildSlider() {
+		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
+			case 'line':
+				this.class = 'slider-line-thumb';
+				break;
+			case 'flat':
+				this.class = 'slider-flat-thumb';
+				break;
+			default:
+				this.class = 'slider';
+				break;
+		}
+		this.sliderOn = !(
+			this.value == undefined ||
+			(this.value == this.range[0] && this.class != 'slider-line-thumb')
+		);
+
+		const style = structuredClone(this.entry.slider_style ?? {});
+		for (const key in style) {
+			style[key] = renderTemplate(
+				this.hass,
+				style[key] as string,
+			) as string;
+		}
+
+		return html`
+			<input
+				type="range"
+				class="${this.sliderOn ? this.class : 'slider-off'}"
+				style=${styleMap(style)}
+				min="${this.range[0]}"
+				max="${this.range[1]}"
+				step=${this.step}
+				value="${this.value}"
+				@input=${this.onInput}
+				@touchstart=${this.onStart}
+				@touchend=${this.onEnd}
+				@touchmove=${this.onMove}
+				@mousedown=${this.onStart}
+				@mouseup=${this.onEnd}
+				@mousemove=${this.onMove}
+			/>
+		`;
 	}
 
 	render() {
 		this.setValue();
-
-		if (this.oldValue == undefined) {
-			this.oldValue = parseFloat(this.value as string);
-		}
-		if (this.newValue == undefined) {
-			this.newValue = parseFloat(this.value as string);
-		}
 
 		const entity_id = renderTemplate(
 			this.hass,
@@ -315,74 +327,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
-		const background_style = structuredClone(
-			this.entry.background_style ?? {},
-		);
-		for (const key in background_style) {
-			background_style[key] = renderTemplate(
-				this.hass,
-				background_style[key] as string,
-			) as string;
-		}
-		const background = html`<div
-			class="slider-background"
-			style=${styleMap(background_style)}
-		></div>`;
-
-		this.class = 'slider';
-		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
-			case 'line':
-				this.class = 'slider-line-thumb';
-				break;
-			case 'flat':
-				this.class = 'slider-flat-thumb';
-				break;
-			default:
-				this.class = 'slider';
-				break;
-		}
-		let _class = this.class;
-		if (
-			this.value == undefined ||
-			(this.value == this.range[0] && this.class != 'slider-line-thumb')
-		) {
-			_class = 'slider-off';
-		}
-		const slider_style = structuredClone(this.entry.slider_style ?? {});
-		for (const key in slider_style) {
-			slider_style[key] = renderTemplate(
-				this.hass,
-				slider_style[key] as string,
-			) as string;
-		}
-
-		const slider = html`
-			<input
-				type="range"
-				class="${_class}"
-				style=${styleMap(slider_style)}
-				min="${this.range[0]}"
-				max="${this.range[1]}"
-				step=${this.step}
-				value="${this.value}"
-				@input=${this.onInput}
-				@touchstart=${this.onStart}
-				@touchend=${this.onEnd}
-				@touchmove=${this.onMove}
-				@mousedown=${this.onStart}
-				@mouseup=${this.onEnd}
-				@mousemove=${this.onMove}
-			/>
+		return html`
+			${this.buildTooltip()}
+			<div class="container">
+				${this.buildBackground()}${this.buildSlider()}
+				${this.buildIcon()}${this.buildLabel(this.currentValue)}
+			</div>
 		`;
-
-		const icon_label = super.render();
-		const tooltipText = `${Number(this.value).toFixed(this.precision)}${
-			this.unitOfMeasurement
-		}`;
-
-		// prettier-ignore
-		return html`<div class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}">${tooltipText}</div>
-			<div class="container">${background}${slider}${icon_label}</div>`;
 	}
 
 	static get styles() {

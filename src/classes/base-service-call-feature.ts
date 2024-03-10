@@ -1,7 +1,7 @@
 import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
@@ -18,10 +18,10 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
 
-	value: string | number = 0;
-	getValueFromHass: boolean = true;
-	renderedLabel?: string;
+	@state() value: string | number | boolean = 0;
+	@state() getValueFromHass: boolean = true;
 	unitOfMeasurement: string = '';
+	precision: number = 0;
 	touchscreen = 'ontouchstart' in document.documentElement;
 
 	sendAction(
@@ -229,25 +229,25 @@ export class BaseServiceCallFeature extends LitElement {
 			) as string) ?? '';
 
 		if (this.getValueFromHass) {
-			const value_attribute = renderTemplate(
+			const valueAttribute = renderTemplate(
 				this.hass,
 				this.entry.value_attribute as string,
 			);
-			const entity_id = renderTemplate(
+			const entityId = renderTemplate(
 				this.hass,
 				this.entry.entity_id as string,
 			) as string;
-			if (entity_id) {
-				if (value_attribute == 'state') {
-					this.value = this.hass.states[entity_id].state;
+			if (entityId) {
+				if (valueAttribute == 'state') {
+					this.value = this.hass.states[entityId].state;
 				} else {
-					let value =
-						this.hass.states[entity_id].attributes[
-							value_attribute as string
+					const value =
+						this.hass.states[entityId].attributes[
+							valueAttribute as string
 						];
-					if (value_attribute == 'brightness') {
-						value = Math.round((100 * parseInt(value ?? 0)) / 255);
-					}
+					// if (valueAttribute == 'brightness') {
+					// 	value = Math.round((100 * parseInt(value ?? 0)) / 255);
+					// }
 					this.value = value;
 				}
 			}
@@ -255,16 +255,14 @@ export class BaseServiceCallFeature extends LitElement {
 
 		if (
 			this.value != undefined &&
-			(Number(this.value) % 1 == 0 ||
-				('precision' in this && !this.precision))
+			typeof this.value == 'number' &&
+			!this.precision
 		) {
 			this.value = Math.trunc(Number(this.value));
 		}
 	}
 
-	render() {
-		this.setValue();
-
+	buildIcon() {
 		let icon = html``;
 		if ('icon' in this.entry) {
 			const style = structuredClone(this.entry.icon_style ?? {});
@@ -279,31 +277,29 @@ export class BaseServiceCallFeature extends LitElement {
 				style=${styleMap(style)}
 			></ha-icon>`;
 		}
+		return icon;
+	}
 
+	buildLabel(value = this.value, hide: boolean = false) {
 		let label = html``;
 		if ('label' in this.entry) {
-			const context = { VALUE: this.value };
+			const context = {
+				VALUE: value,
+				UNIT: this.unitOfMeasurement,
+			};
 			let text: string = renderTemplate(
 				this.hass,
 				this.entry.label as string,
 				context,
 			) as string;
 			if (text) {
-				this.renderedLabel = text.toString();
 				if (typeof text == 'string' && text.includes('VALUE')) {
-					let textValue: string;
-					if ('precision' in this) {
-						textValue = `${(
-							Number(this.value).toFixed(
-								this.precision as number,
-							) ?? ''
-						).toString()}${this.unitOfMeasurement}`;
-					} else {
-						textValue = `${(this.value ?? '').toString()}${
-							this.unitOfMeasurement
-						}`;
-					}
-					text = text.replace(/VALUE/g, textValue);
+					text = text.replace(
+						/VALUE/g,
+						`${(
+							Number(value).toFixed(this.precision) ?? ''
+						).toString()}${this.unitOfMeasurement}`,
+					);
 				} else {
 					text += this.unitOfMeasurement;
 				}
@@ -315,25 +311,24 @@ export class BaseServiceCallFeature extends LitElement {
 						style[key] as string,
 					) as string;
 				}
-
-				// Slider specific label display logic
-				if (
-					this.value == undefined ||
-					('range' in this &&
-						(this.range as number[]).length &&
-						Number(this.value) <= (this.range as number[])[0] &&
-						'class' in this &&
-						this.class != 'slider-line-thumb')
-				) {
+				if (hide) {
 					style.display = 'none';
 				}
 
 				// prettier-ignore
-				label = html`<pre class="label" style=${styleMap(style)}>${text}</pre>`;
+				label = html`<pre
+					class="label"
+					style=${styleMap(style)}
+				>${text}</pre>`;
 			}
 		}
+		return label;
+	}
 
-		return html`${icon}${label}`;
+	render() {
+		this.setValue();
+
+		return html`${this.buildIcon()}${this.buildLabel()}`;
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
