@@ -32,7 +32,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
-			clearTimeout(this.getValueFromHassTimer)
+			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
 			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
@@ -97,19 +97,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	@eventOptions({ passive: true })
-	onStart(e: TouchEvent | MouseEvent) {
-		const slider = e.currentTarget as HTMLInputElement;
-
-		if (!this.scrolling) {
-			this.getValueFromHass = false;
-			clearTimeout(this.getValueFromHassTimer)
-			this.value = slider.value;
-			this.currentValue = slider.value;
-			this.setTooltip(slider, true);
-		}
-	}
-
 	onEnd(e: TouchEvent | MouseEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 		this.setTooltip(slider, false);
@@ -136,7 +123,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.scrolling = false;
 		this.startX = undefined;
 		this.startY = undefined;
-		this.getValueFromHassTimer = setTimeout(() => (this.getValueFromHass = true), 1000);
+		this.getValueFromHassTimer = setTimeout(
+			() => (this.getValueFromHass = true),
+			1000,
+		);
 	}
 
 	@eventOptions({ passive: true })
@@ -243,7 +233,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		this.sliderOn = !(
 			value == undefined ||
-			(value == this.range[0] && this.class != 'slider-line-thumb')
+			(Number(value) <= this.range[0] &&
+				this.class != 'slider-line-thumb')
 		);
 
 		const style = structuredClone(this.entry.slider_style ?? {});
@@ -264,10 +255,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				step=${this.step}
 				value="${value}"
 				@input=${this.onInput}
-				@touchstart=${this.onStart}
 				@touchend=${this.onEnd}
 				@touchmove=${this.onMove}
-				@mousedown=${this.onStart}
 				@mouseup=${this.onEnd}
 				@mousemove=${this.onMove}
 			/>
@@ -342,7 +331,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			this.step = (this.range[1] - this.range[0]) / 100;
 		}
-
 		const splitStep = this.step.toString().split('.');
 		if (splitStep.length > 1) {
 			this.precision = splitStep[1].length;
