@@ -183,7 +183,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.showTooltip = show;
 	}
 
-	buildLabel(value = this.getValueFromHass ? this.value : this.currentValue) {
+	buildLabel() {
+		const value = this.getValueFromHass ? this.value : this.currentValue;
 		const hide =
 			this.value == undefined ||
 			(Number(this.value) <= this.range[0] &&
@@ -221,9 +222,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	buildSlider(
-		value = this.getValueFromHass ? this.value : this.currentValue,
-	) {
+	buildSlider() {
+		const value = this.getValueFromHass ? this.value : this.currentValue;
 		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
@@ -348,7 +348,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			${this.buildTooltip()}
 			<div class="container">
 				${this.buildBackground()}${this.buildSlider()}
-				${this.buildIcon()}${this.buildLabel(this.currentValue)}
+				${this.buildIcon()}${this.buildLabel()}
 			</div>
 		`;
 	}
