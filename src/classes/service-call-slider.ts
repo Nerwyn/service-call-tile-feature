@@ -179,7 +179,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildLabel(value: string = this.currentValue) {
 		const hide =
-			this.value != undefined ||
+			this.value == undefined ||
 			(Number(this.value) <= this.range[0] &&
 				'class' in this &&
 				this.class != 'slider-line-thumb');

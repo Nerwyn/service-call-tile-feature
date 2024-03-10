@@ -284,7 +284,7 @@ export class BaseServiceCallFeature extends LitElement {
 		let label = html``;
 		if ('label' in this.entry) {
 			const context = {
-				VALUE: value,
+				VALUE: Number(value).toFixed(this.precision),
 				UNIT: this.unitOfMeasurement,
 			};
 			let text: string = renderTemplate(
@@ -300,8 +300,6 @@ export class BaseServiceCallFeature extends LitElement {
 							Number(value).toFixed(this.precision) ?? ''
 						).toString()}${this.unitOfMeasurement}`,
 					);
-				} else {
-					text += this.unitOfMeasurement;
 				}
 
 				const style = structuredClone(this.entry.label_style ?? {});
