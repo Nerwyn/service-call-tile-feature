@@ -84,8 +84,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 			this.oldValue = end;
 		} else {
-			this.getValueFromHass = true;
-			this.setValue();
+			if (this.value == undefined) {
+				this.getValueFromHass = true;
+				this.setValue();
+			}
 			slider.value = this.value.toString();
 			this.setTooltip(slider, false);
 			this.currentValue = slider.value;
@@ -119,7 +121,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			if (this.value == undefined) {
 				this.getValueFromHass = true;
-				this.setValue;
+				this.setValue();
 			}
 			slider.value = this.value.toString();
 			this.currentValue = slider.value;
