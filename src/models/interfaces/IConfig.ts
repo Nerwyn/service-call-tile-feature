@@ -35,6 +35,7 @@ export interface ISliderOptions {
 	range?: [number, number];
 	step?: number;
 	thumb?: ThumbType;
+	tooltip?: boolean;
 }
 
 export interface IOption extends IEntry {

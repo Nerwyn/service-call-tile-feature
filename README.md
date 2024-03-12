@@ -98,6 +98,8 @@ If the icon or label is empty, then the entire HTML element will not render. If 
 
 All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
+You can include the current value of a tile feature and it's units by using the variables `VALUE` and `UNIT` in a label template.
+
 ## Actions
 
 There are three ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders support just tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
@@ -168,7 +170,7 @@ Each action has a set of possible options associated with them. If `action` is n
 
 `data` and `target` get internally merged into one object since `hass.callService` only has a single data field. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
 
-If you include `VALUE` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider.
+If you include `VALUE` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider. You can do this with or without templating.
 
 ```yaml
 type: custom:service-call
@@ -407,7 +409,7 @@ To create a slider, add a Service Call tile feature to your tile and edit it. Ch
 
 If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. **DO NOT use templating to set value**, it will pull a stale value from the Home Assistant frontend states object rather than the updated slider value. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. If you want to use templating to set the slider label instead, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement as you wish. Otherwise if you include `VALUE` in a label without templating it will be replaced with the current slider value with unit of measurement appended to it if provided. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider and include units if `unit_of_measurement` is also provided.
 
 ```yaml
 type: custom:service-call

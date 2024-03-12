@@ -221,12 +221,23 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const tooltipText = `${Number(this.currentValue).toFixed(
 			this.precision,
 		)}${this.unitOfMeasurement}`;
+		const display = (
+			'tooltip' in this.entry
+				? renderTemplate(
+						this.hass,
+						this.entry.tooltip as unknown as string,
+				  )
+				: true
+		)
+			? 'initial'
+			: 'none';
 		// prettier-ignore
 		return html`
 			<div
 				class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
 				style=${styleMap({
 					'--x-position': this.tooltipPosition.toString() + 'px',
+					display: display
 				})}
 			>${tooltipText}</div>
 		`;
