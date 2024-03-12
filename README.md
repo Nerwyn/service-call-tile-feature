@@ -102,7 +102,7 @@ You can include the current value of a tile feature and it's units by using the 
 
 ## Actions
 
-There are three ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders support just tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
+There are three ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
 | Name              | Type   | Description                                                                                       |
 | ----------------- | ------ | ------------------------------------------------------------------------------------------------- |
@@ -312,11 +312,12 @@ entries:
 
 ## Slider Specific Options
 
-| Name  | Type   | Description                                                                                                                                                          |
-| ----- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| range | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                |
-| step  | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.           |
-| thumb | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile temperature slider.<br />- `flat`: Like a mushroom slider. |
+| Name    | Type    | Description                                                                                                                                                                |
+| ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range   | array   | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                      |
+| step    | number  | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.                 |
+| thumb   | string  | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile color temperature slider.<br />- `flat`: Like a mushroom slider. |
+| tooltip | boolean | Whether or not to display a tooltip with the slider value when it's held down on, defaults to true.                                                                        |
 
 ```yaml
 type: custom:service-call
@@ -329,6 +330,7 @@ entries:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
       - '{{ state_attr("light.lounge", "max_mireds") }}'
     step: 1
+	tooltip: true
     value_attribute: brightness
     tap_action:
       action: call-service
