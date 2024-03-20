@@ -1,5 +1,5 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement, eventOptions, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
@@ -98,7 +98,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	@eventOptions({ passive: true })
 	onStart(e: TouchEvent | MouseEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
@@ -143,7 +142,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		);
 	}
 
-	@eventOptions({ passive: true })
 	onMove(e: TouchEvent | MouseEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
@@ -280,12 +278,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				step=${this.step}
 				value="${value}"
 				@input=${this.onInput}
-				@touchstart=${this.onStart}
-				@touchend=${this.onEnd}
-				@touchmove=${this.onMove}
-				@mousedown=${this.onStart}
-				@mouseup=${this.onEnd}
-				@mousemove=${this.onMove}
+				@mousedown=${this.onMouseDown}
+				@mouseup=${this.onMouseUp}
+				@mousemove=${this.onMouseMove}
+				@touchstart=${this.onTouchStart}
+				@touchend=${this.onTouchEnd}
+				@touchmove=${this.onTouchMove}
+				@contextmenu=${this.onContextMenu}
 			/>
 		`;
 	}

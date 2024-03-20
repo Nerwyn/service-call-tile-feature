@@ -115,6 +115,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					.entry=${entry}
 					._shouldRenderRipple=${false}
 					@click=${this.onClick}
+					@contextmenu=${this.onContextMenu}
 					style=${styleMap(style)}
 				/>`,
 			);

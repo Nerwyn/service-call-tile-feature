@@ -1,10 +1,5 @@
-import { html, css, CSSResult, TemplateResult } from 'lit';
-import {
-	customElement,
-	eventOptions,
-	property,
-	queryAsync,
-} from 'lit/decorators.js';
+import { html, css, CSSResult } from 'lit';
+import { customElement, property, queryAsync } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { Ripple } from '@material/mwc-ripple';
@@ -65,8 +60,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		}
 	}
 
-	@eventOptions({ passive: true })
-	onHoldStart(e: TouchEvent | MouseEvent) {
+	onStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
 		this.scrolling = false;
 
@@ -80,7 +74,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		}
 	}
 
-	onHoldEnd(e: TouchEvent | MouseEvent) {
+	onEnd(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.endPress();
 
 		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
@@ -104,8 +98,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		this.scrolling = false;
 	}
 
-	@eventOptions({ passive: true })
-	onHoldMove(_e: TouchEvent | MouseEvent) {
+	onMove(_e: TouchEvent | MouseEvent) {
 		this.scrolling = true;
 	}
 
@@ -124,38 +117,24 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
 
-		let button: TemplateResult<1>;
-		if (this.touchscreen) {
-			button = html`<button
-				class=${this.className ?? ''}
-				style=${styleMap(style)}
-				@touchstart=${this.onHoldStart}
-				@touchend=${this.onHoldEnd}
-				@touchmove=${this.onHoldMove}
-				@touchcancel=${this._rippleHandlers.endPress}
-				@mouseenter=${this._rippleHandlers.startHover}
-				@mouseleave=${this._rippleHandlers.endHover}
-				@focus=${this._rippleHandlers.startFocus}
-				@blur=${this._rippleHandlers.endFocus}
-			>
-				${ripple}
-			</button>`;
-		} else {
-			button = html`<button
-				class=${this.className ?? ''}
-				style=${styleMap(style)}
-				@mousedown=${this.onHoldStart}
-				@mouseup=${this.onHoldEnd}
-				@mousemove=${this.onHoldMove}
-				@touchcancel=${this._rippleHandlers.endPress}
-				@mouseenter=${this._rippleHandlers.startHover}
-				@mouseleave=${this._rippleHandlers.endHover}
-				@focus=${this._rippleHandlers.startFocus}
-				@blur=${this._rippleHandlers.endFocus}
-			>
-				${ripple}
-			</button>`;
-		}
+		const button = html`<button
+			class=${this.className ?? ''}
+			style=${styleMap(style)}
+			@mousedown=${this.onMouseDown}
+			@mouseup=${this.onMouseUp}
+			@mousemove=${this.onMouseMove}
+			@mouseenter=${this._rippleHandlers.startHover}
+			@mouseleave=${this._rippleHandlers.endHover}
+			@touchstart=${this.onTouchStart}
+			@touchend=${this.onTouchEnd}
+			@touchmove=${this.onTouchMove}
+			@touchcancel=${this._rippleHandlers.endPress}
+			@focus=${this._rippleHandlers.startFocus}
+			@blur=${this._rippleHandlers.endFocus}
+			@contextmenu=${this.onContextMenu}
+		>
+			${ripple}
+		</button>`;
 
 		return html`${button}${icon_label}`;
 	}

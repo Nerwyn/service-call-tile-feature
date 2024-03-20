@@ -1,7 +1,12 @@
 import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import {
+	customElement,
+	eventOptions,
+	property,
+	state,
+} from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
@@ -22,7 +27,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@state() getValueFromHass: boolean = true;
 	unitOfMeasurement: string = '';
 	precision: number = 0;
-	touchscreen = 'ontouchstart' in document.documentElement;
+	fireMouseEvent?: boolean = true;
 
 	sendAction(
 		actionType: ActionType,
@@ -321,6 +326,53 @@ export class BaseServiceCallFeature extends LitElement {
 			}
 		}
 		return label;
+	}
+
+	// Skeletons for overridden event handlers
+	onStart(_e: MouseEvent | TouchEvent) {}
+	onEnd(_e: MouseEvent | TouchEvent) {}
+	onMove(_e: MouseEvent | TouchEvent) {}
+
+	@eventOptions({ passive: true })
+	onMouseDown(e: MouseEvent | TouchEvent) {
+		if (this.fireMouseEvent) {
+			this.onStart(e);
+		}
+	}
+	onMouseUp(e: MouseEvent | TouchEvent) {
+		if (this.fireMouseEvent) {
+			this.onEnd(e);
+		}
+		this.fireMouseEvent = true;
+	}
+	@eventOptions({ passive: true })
+	onMouseMove(e: MouseEvent | TouchEvent) {
+		if (this.fireMouseEvent) {
+			this.onMove(e);
+		}
+	}
+
+	@eventOptions({ passive: true })
+	onTouchStart(e: TouchEvent) {
+		this.onStart(e);
+		this.fireMouseEvent = false;
+	}
+	onTouchEnd(e: TouchEvent) {
+		this.onEnd(e);
+		this.fireMouseEvent = false;
+	}
+	@eventOptions({ passive: true })
+	onTouchMove(e: TouchEvent) {
+		this.onMove(e);
+		this.fireMouseEvent = false;
+	}
+
+	onContextMenu(e: PointerEvent) {
+		if (!this.fireMouseEvent) {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		}
 	}
 
 	render() {
