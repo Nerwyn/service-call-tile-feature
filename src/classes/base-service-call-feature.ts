@@ -248,7 +248,7 @@ export class BaseServiceCallFeature extends LitElement {
 					let value;
 					const indexMatch = valueAttribute.match(/\[\d+\]/);
 					if (indexMatch) {
-						let index = parseInt(
+						const index = parseInt(
 							indexMatch[0].replace(/\[|\]/g, ''),
 						);
 						valueAttribute = valueAttribute.replace(
