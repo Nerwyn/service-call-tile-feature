@@ -259,7 +259,7 @@ export class BaseServiceCallFeature extends LitElement {
 							this.hass.states[entityId].attributes[
 								valueAttribute
 							];
-						if (value && value.length) {
+						if (value != undefined && value.length) {
 							value = value[index];
 						} else {
 							value == undefined;
