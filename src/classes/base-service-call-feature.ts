@@ -246,7 +246,7 @@ export class BaseServiceCallFeature extends LitElement {
 					this.value = this.hass.states[entityId].state;
 				} else {
 					let value;
-					const indexMatch = valueAttribute.match(/\[\d+\]/);
+					const indexMatch = valueAttribute.match(/\[\d+\]$/);
 					if (indexMatch) {
 						const index = parseInt(
 							indexMatch[0].replace(/\[|\]/g, ''),
@@ -258,7 +258,12 @@ export class BaseServiceCallFeature extends LitElement {
 						value =
 							this.hass.states[entityId].attributes[
 								valueAttribute
-							][index];
+							];
+						if (value && value.length) {
+							value = value[index];
+						} else {
+							value == undefined;
+						}
 					} else {
 						value =
 							this.hass.states[entityId].attributes[
