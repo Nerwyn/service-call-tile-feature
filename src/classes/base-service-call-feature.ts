@@ -233,10 +233,10 @@ export class BaseServiceCallFeature extends LitElement {
 			) as string) ?? '';
 
 		if (this.getValueFromHass) {
-			const valueAttribute = renderTemplate(
+			let valueAttribute = renderTemplate(
 				this.hass,
 				this.entry.value_attribute as string,
-			);
+			) as string;
 			const entityId = renderTemplate(
 				this.hass,
 				this.entry.entity_id as string,
@@ -245,10 +245,26 @@ export class BaseServiceCallFeature extends LitElement {
 				if (valueAttribute == 'state') {
 					this.value = this.hass.states[entityId].state;
 				} else {
-					let value =
-						this.hass.states[entityId].attributes[
-							valueAttribute as string
-						];
+					let value;
+					const indexMatch = valueAttribute.match(/\[\d+\]/);
+					if (indexMatch) {
+						let index = parseInt(
+							indexMatch[0].replace(/\[|\]/g, ''),
+						);
+						valueAttribute = valueAttribute.replace(
+							indexMatch[0],
+							'',
+						);
+						value =
+							this.hass.states[entityId].attributes[
+								valueAttribute
+							][index];
+					} else {
+						value =
+							this.hass.states[entityId].attributes[
+								valueAttribute
+							];
+					}
 					if (valueAttribute == 'brightness') {
 						value = Math.round((100 * parseInt(value ?? 0)) / 255);
 					}
