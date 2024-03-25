@@ -757,7 +757,7 @@ features:
         step: 0.1
         service: light.turn_on
         value_attribute: hs_color[0]
-        label: VALUE
+        icon: mdi:palette
         data:
           hs_color:
             - VALUE
