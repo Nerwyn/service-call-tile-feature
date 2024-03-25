@@ -83,16 +83,15 @@ export class BaseServiceCallFeature extends LitElement {
 		const data = structuredClone(action.data);
 		const context = { VALUE: this.value };
 		for (const key in data) {
-			data[key] = renderTemplate(this.hass, data[key] as string, context);
-
-			if (data[key]) {
-				if (data[key] == 'VALUE') {
-					data[key] = this.value;
-				} else if (data[key].toString().includes('VALUE')) {
-					data[key] = data[key]
-						.toString()
-						.replace(/VALUE/g, (this.value ?? '').toString());
+			if (Array.isArray(data[key])) {
+				for (const i in data[key] as string[]) {
+					(data[key] as string[])[i] = this.replaceValue(
+						(data[key] as string[])[i],
+						context,
+					) as string;
 				}
+			} else {
+				data[key] = this.replaceValue(data[key] as string, context);
 			}
 		}
 
@@ -265,6 +264,25 @@ export class BaseServiceCallFeature extends LitElement {
 		) {
 			this.value = Math.trunc(Number(this.value));
 		}
+	}
+
+	replaceValue(
+		str: string | number | boolean,
+		context: object,
+	): string | number | boolean {
+		str = renderTemplate(this.hass, str as string, context);
+
+		if (str) {
+			if (str == 'VALUE') {
+				str = this.value;
+			} else if (str.toString().includes('VALUE')) {
+				str = str
+					.toString()
+					.replace(/VALUE/g, (this.value ?? '').toString());
+			}
+		}
+
+		return str;
 	}
 
 	buildIcon() {
