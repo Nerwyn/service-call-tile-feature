@@ -88,7 +88,7 @@ entries:
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
 
-The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `VALUE`, such as for sliders.
+The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `VALUE`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
@@ -330,7 +330,7 @@ entries:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
       - '{{ state_attr("light.lounge", "max_mireds") }}'
     step: 1
-	tooltip: true
+  tooltip: true
     value_attribute: brightness
     tap_action:
       action: call-service
@@ -699,7 +699,8 @@ Multiple sliders for a room's light and curtains.
 features:
   - type: custom:service-call
     entries:
-      - tap_action:
+      - type: button
+        tap_action:
           action: call-service
           service: light.turn_on
           data:
@@ -717,13 +718,21 @@ features:
           data:
             entity_id: light.sunroom_ceiling
             color_name: blue
-  - type: custom:service-call
-    entries:
+        icon: mdi:power
+        label: '{{ states("light.sunroom_ceiling") }}'
+        style:
+          '--color': |-
+            {% if is_state("light.sunroom_ceiling", ["on"]) %}
+              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+            {% else %}
+              initial
+            {% endif %}
       - type: slider
         label: VALUE
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
+        tooltip: '{{ is_state("light.sunroom_ceiling", "on") }}'
         tap_action:
           action: call-service
           service: light.turn_on
@@ -731,12 +740,34 @@ features:
             brightness_pct: VALUE
             entity_id: light.sunroom_ceiling
         style:
+          flex-basis: 200%
           '--color': |
             {% if is_state("light.sunroom_ceiling", "on") %}
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
             {% else %}
               var(--state-inactive-color)
             {% endif %}
+  - type: custom:service-call
+    entries:
+      - type: slider
+        thumb: line
+        range:
+          - 0
+          - 360
+        step: 0.1
+        service: light.turn_on
+        value_attribute: hs_color[0]
+        label: VALUE
+        data:
+          hs_color:
+            - VALUE
+            - 100
+          entity_id: light.sunroom_ceiling
+        style:
+          flex-basis: 200%
+          '--background': >-
+            linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%)
+          '--background-opacity': 1
       - type: slider
         thumb: line
         value_attribute: color_temp
@@ -794,7 +825,7 @@ features:
           flex-direction: row
         icon_style:
           padding: 8px
-		  flex: auto
+      flex: auto
         label_style:
           left: '-16px'
 
