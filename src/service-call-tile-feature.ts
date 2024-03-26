@@ -64,6 +64,16 @@ class ServiceCallTileFeature extends LitElement {
 			for (let option of entry.options ?? []) {
 				option = this.updateDeprecatedEntryFields(option);
 			}
+			if ('increment' in entry) {
+				entry.increment = this.updateDeprecatedEntryFields(
+					entry.increment!,
+				);
+			}
+			if ('decrement' in entry) {
+				entry.decrement = this.updateDeprecatedEntryFields(
+					entry.decrement!,
+				);
+			}
 		}
 
 		this.config = config;
