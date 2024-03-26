@@ -5,8 +5,8 @@ import { renderTemplate } from 'ha-nunjucks';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
-@customElement('service-call-spinner')
-export class ServiceCallSpinner extends BaseServiceCallFeature {
+@customElement('service-call-spinbox')
+export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	step: number = 1;
 	debounceTimer?: ReturnType<typeof setTimeout>;
 	debounceTime: number = 1000;
@@ -78,7 +78,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 		}
 		const background = html`
 			<div
-				class="spinner-background"
+				class="spinbox-background"
 				style=${styleMap(background_style)}
 			></div>
 		`;
@@ -135,7 +135,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					--background-opacity: 0.2;
 				}
 
-				.spinner-background {
+				.spinbox-background {
 					position: absolute;
 					width: inherit;
 					height: inherit;

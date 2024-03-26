@@ -19,7 +19,7 @@ import {
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
-import './classes/service-call-spinner';
+import './classes/service-call-spinbox';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -258,9 +258,9 @@ class ServiceCallTileFeature extends LitElement {
 						/>`,
 					);
 					break;
-				case 'spinner':
+				case 'spinbox':
 					row.push(
-						html`<service-call-spinner
+						html`<service-call-spinbox
 							.hass=${this.hass}
 							.entry=${entry}
 							style=${styleMap(style)}

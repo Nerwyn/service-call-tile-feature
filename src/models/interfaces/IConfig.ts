@@ -13,7 +13,7 @@ export interface IEntry
 	extends IActions,
 		ISliderOptions,
 		ISelectorOptions,
-		ISpinnerOptions {
+		ISpinboxOptions {
 	type?: TileFeatureType;
 	value_attribute?: string;
 
@@ -31,7 +31,7 @@ export interface IEntry
 	slider_style?: StyleInfo;
 }
 
-export type TileFeatureType = 'button' | 'slider' | 'selector';
+export type TileFeatureType = 'button' | 'slider' | 'selector' | 'spinbox';
 
 export type ThumbType = 'default' | 'line' | 'flat';
 
@@ -50,7 +50,9 @@ export interface ISelectorOptions {
 	options?: IOption[];
 }
 
-export interface ISpinnerOptions {
+export interface ISpinboxOptions {
 	step?: number;
 	debounce_time?: number;
+	increment?: IEntry;
+	decrement?: IEntry;
 }
