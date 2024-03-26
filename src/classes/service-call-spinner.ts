@@ -174,7 +174,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 
 				.label {
 					font-size: 14px;
-					font-weigth: 500;
+					font-weight: 500;
 					opacity: 0.77;
 				}
 
