@@ -25,6 +25,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	@state() value: string | number | boolean = 0;
 	@state() getValueFromHass: boolean = true;
+	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 	unitOfMeasurement: string = '';
 	precision: number = 0;
 	fireMouseEvent?: boolean = true;
@@ -306,10 +307,10 @@ export class BaseServiceCallFeature extends LitElement {
 		return str;
 	}
 
-	buildIcon() {
+	buildIcon(entry: IEntry = this.entry) {
 		let icon = html``;
-		if ('icon' in this.entry) {
-			const style = structuredClone(this.entry.icon_style ?? {});
+		if ('icon' in entry) {
+			const style = structuredClone(entry.icon_style ?? {});
 			for (const key in style) {
 				style[key] = renderTemplate(
 					this.hass,
@@ -317,7 +318,7 @@ export class BaseServiceCallFeature extends LitElement {
 				) as string;
 			}
 			icon = html`<ha-icon
-				.icon=${renderTemplate(this.hass, this.entry.icon as string)}
+				.icon=${renderTemplate(this.hass, entry.icon as string)}
 				style=${styleMap(style)}
 			></ha-icon>`;
 		}

@@ -25,14 +25,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	startX?: number;
 	startY?: number;
 	scrolling: boolean = false;
-	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.scrolling) {
 			this.getValueFromHass = false;
-			clearTimeout(this.getValueFromHassTimer);
 			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
 			this.currentValue = slider.value;
@@ -351,7 +349,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
 		if (this.entry.step) {
-			this.step = this.entry.step;
+			this.step = parseFloat(
+				renderTemplate(
+					this.hass,
+					this.entry.step as unknown as string,
+				) as string,
+			);
 		} else if (['number', 'input_number'].includes(domain)) {
 			this.step = this.hass.states[entityId].attributes.step;
 		} else {

@@ -19,6 +19,7 @@ import {
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
+import './classes/service-call-spinner';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -251,6 +252,15 @@ class ServiceCallTileFeature extends LitElement {
 				case 'selector':
 					row.push(
 						html`<service-call-selector
+							.hass=${this.hass}
+							.entry=${entry}
+							style=${styleMap(style)}
+						/>`,
+					);
+					break;
+				case 'spinner':
+					row.push(
+						html`<service-call-spinner
 							.hass=${this.hass}
 							.entry=${entry}
 							style=${styleMap(style)}

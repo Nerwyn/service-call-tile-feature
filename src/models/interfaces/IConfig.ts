@@ -9,7 +9,11 @@ export interface IConfig {
 	entries: IEntry[];
 }
 
-export interface IEntry extends IActions, ISliderOptions, ISelectorOptions {
+export interface IEntry
+	extends IActions,
+		ISliderOptions,
+		ISelectorOptions,
+		ISpinnerOptions {
 	type?: TileFeatureType;
 	value_attribute?: string;
 
@@ -44,4 +48,9 @@ export interface IOption extends IEntry {
 
 export interface ISelectorOptions {
 	options?: IOption[];
+}
+
+export interface ISpinnerOptions {
+	step?: number;
+	debounceTime?: number;
 }

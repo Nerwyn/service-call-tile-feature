@@ -25,7 +25,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	}
 
 	render() {
-		super.render();
+		this.setValue();
 
 		const entity_id = renderTemplate(
 			this.hass,
