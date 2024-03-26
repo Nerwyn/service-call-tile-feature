@@ -134,10 +134,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.scrolling = false;
 		this.startX = undefined;
 		this.startY = undefined;
-		this.getValueFromHassTimer = setTimeout(
-			() => (this.getValueFromHass = true),
-			1000,
-		);
+		this.resetGetValueFromHass();
 	}
 
 	onMove(e: TouchEvent | MouseEvent) {
@@ -196,7 +193,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			(Number(this.value) <= this.range[0] &&
 				'class' in this &&
 				this.class != 'slider-line-thumb');
-		return super.buildLabel(value, hide);
+		return super.buildLabel(this.entry, value, hide);
 	}
 
 	buildBackground() {

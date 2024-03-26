@@ -13,6 +13,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	scrolling: boolean = false;
 
 	onStart(_e: TouchEvent | MouseEvent) {
+		clearTimeout(this.debounceTimer);
+		clearTimeout(this.getValueFromHassTimer);
+		this.getValueFromHass = false;
 		this.scrolling = false;
 	}
 
@@ -23,20 +26,36 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			this.getValueFromHass = false;
 
 			const prevValue = parseFloat(this.value as string);
-			if (
-				(e.currentTarget as HTMLElement).className.includes('increment')
-			) {
-				this.value = prevValue + this.step;
-			} else {
-				this.value = prevValue - this.step;
+			const operator = (e.currentTarget as HTMLElement).id as
+				| 'increment'
+				| 'decrement';
+
+			switch (operator) {
+				case 'increment':
+					this.value = prevValue + this.step;
+					break;
+				case 'decrement':
+					this.value = prevValue - this.step;
+					break;
+				default:
+					break;
 			}
 
-			this.debounceTimer = setTimeout(() => {
-				this.sendAction('tap_action');
-				this.getValueFromHassTimer = setTimeout(() => {
-					this.getValueFromHass = true;
-				}, 1000);
-			}, this.debounceTime);
+			if (
+				operator in this.entry &&
+				'tap_action' in this.entry[operator]! &&
+				renderTemplate(
+					this.hass,
+					this.entry[operator]!.tap_action!.action,
+				) != 'none'
+			) {
+				this.sendAction('tap_action', this.entry[operator]);
+			} else {
+				this.debounceTimer = setTimeout(() => {
+					this.sendAction('tap_action');
+					this.resetGetValueFromHass();
+				}, this.debounceTime);
+			}
 		}
 
 		this.scrolling = false;
@@ -44,6 +63,46 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 	onMove(_e: TouchEvent | MouseEvent) {
 		this.scrolling = true;
+	}
+
+	buildBackground() {
+		const style = structuredClone(this.entry.background_style ?? {});
+		for (const key in style) {
+			style[key] = renderTemplate(
+				this.hass,
+				style[key] as string,
+			) as string;
+		}
+		return html`
+			<div class="spinbox-background" style=${styleMap(style)}></div>
+		`;
+	}
+
+	buildButton(operator: 'increment' | 'decrement') {
+		if (!(operator in this.entry)) {
+			this.entry[operator] = {};
+		}
+		if (!('icon' in this.entry[operator]!)) {
+			this.entry[operator]!.icon =
+				operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
+		}
+
+		return html`
+			<button
+				class="button"
+				id="${operator}"
+				@mousedown=${this.onMouseDown}
+				@mouseup=${this.onMouseUp}
+				@mousemove=${this.onMouseMove}
+				@touchstart=${this.onTouchStart}
+				@touchend=${this.onTouchEnd}
+				@touchmove=${this.onTouchMove}
+				@contextmenu=${this.onContextMenu}
+			>
+				${this.buildIcon(this.entry[operator])}
+				${this.buildLabel(this.entry[operator])}
+			</button>
+		`;
 	}
 
 	render() {
@@ -67,59 +126,10 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			);
 		}
 
-		const background_style = structuredClone(
-			this.entry.background_style ?? {},
-		);
-		for (const key in background_style) {
-			background_style[key] = renderTemplate(
-				this.hass,
-				background_style[key] as string,
-			) as string;
-		}
-		const background = html`
-			<div
-				class="spinbox-background"
-				style=${styleMap(background_style)}
-			></div>
-		`;
-
-		const decrementButton = html`
-			<button
-				class="button decrement"
-				@mousedown=${this.onMouseDown}
-				@mouseup=${this.onMouseUp}
-				@mousemove=${this.onMouseMove}
-				@touchstart=${this.onTouchStart}
-				@touchend=${this.onTouchEnd}
-				@touchmove=${this.onTouchMove}
-				@contextmenu=${this.onContextMenu}
-			>
-				${this.buildIcon({ icon: 'mdi:minus' })}
-			</button>
-		`;
-
-		const incrementButton = html`
-			<button
-				class="button increment"
-				@mousedown=${this.onMouseDown}
-				@mouseup=${this.onMouseUp}
-				@mousemove=${this.onMouseMove}
-				@touchstart=${this.onTouchStart}
-				@touchend=${this.onTouchEnd}
-				@touchmove=${this.onTouchMove}
-				@contextmenu=${this.onContextMenu}
-			>
-				${this.buildIcon({ icon: 'mdi:plus' })}
-			</button>
-		`;
-
-		const icon = this.buildIcon();
-		const label = this.buildLabel();
-
 		return html`
-			${background}${decrementButton}
-			<div class="icon-label-container">${icon}${label}</div>
-			${incrementButton}
+			${this.buildBackground()}${this.buildButton('decrement')}
+			${this.buildIcon()}${this.buildLabel()}
+			${this.buildButton('increment')}
 		`;
 	}
 
@@ -168,13 +178,20 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					place-content: center space-evenly;
 					align-items: center;
 					height: inherit;
-					width: 35px;
 					border: none;
-					padding: 0px;
+					padding: 10px;
 					color: inherit;
 					z-index: 2;
 
 					--mdc-icon-size: 16px;
+				}
+
+				#decrement {
+					left: 0px;
+				}
+
+				#increment {
+					right: 0px;
 				}
 			`,
 		];

@@ -307,6 +307,13 @@ export class BaseServiceCallFeature extends LitElement {
 		return str;
 	}
 
+	resetGetValueFromHass() {
+		this.getValueFromHassTimer = setTimeout(
+			() => (this.getValueFromHass = true),
+			5000,
+		);
+	}
+
 	buildIcon(entry: IEntry = this.entry) {
 		let icon = html``;
 		if ('icon' in entry) {
@@ -325,16 +332,20 @@ export class BaseServiceCallFeature extends LitElement {
 		return icon;
 	}
 
-	buildLabel(value = this.value, hide: boolean = false) {
+	buildLabel(
+		entry: IEntry = this.entry,
+		value = this.value,
+		hide: boolean = false,
+	) {
 		let label = html``;
-		if ('label' in this.entry) {
+		if ('label' in entry) {
 			const context = {
 				VALUE: Number(value).toFixed(this.precision),
 				UNIT: this.unitOfMeasurement,
 			};
 			let text: string = renderTemplate(
 				this.hass,
-				this.entry.label as string,
+				entry.label as string,
 				context,
 			).toString();
 			if (text) {
@@ -347,7 +358,7 @@ export class BaseServiceCallFeature extends LitElement {
 					);
 				}
 
-				const style = structuredClone(this.entry.label_style ?? {});
+				const style = structuredClone(entry.label_style ?? {});
 				for (const key in style) {
 					style[key] = renderTemplate(
 						this.hass,
