@@ -138,10 +138,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
-					flex-flow: row;
-					place-content: space-between;
+					place-content: center;
 
-					--background: var(--disabled-color);
+					--background: var(--color, var(--state-inactive-color));
 					--background-opacity: 0.2;
 				}
 
@@ -165,12 +164,14 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				}
 
 				.label {
+					width: fit-content;
 					font-size: 14px;
 					font-weight: 500;
 					opacity: 0.77;
 				}
 
 				.button {
+					position: absolute;
 					background: none;
 					cursor: pointer;
 					display: flex;
