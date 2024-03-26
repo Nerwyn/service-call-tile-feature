@@ -84,35 +84,33 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 		`;
 
 		const decrementButton = html`
-			<div class="button-container">
-				<button
-					class="button decrement"
-					@mousedown=${this.onMouseDown}
-					@mouseup=${this.onMouseUp}
-					@mousemove=${this.onMouseMove}
-					@touchstart=${this.onTouchStart}
-					@touchend=${this.onTouchEnd}
-					@touchmove=${this.onTouchMove}
-					@contextmenu=${this.onContextMenu}
-				/>
+			<button
+				class="button decrement"
+				@mousedown=${this.onMouseDown}
+				@mouseup=${this.onMouseUp}
+				@mousemove=${this.onMouseMove}
+				@touchstart=${this.onTouchStart}
+				@touchend=${this.onTouchEnd}
+				@touchmove=${this.onTouchMove}
+				@contextmenu=${this.onContextMenu}
+			>
 				${this.buildIcon({ icon: 'mdi:minus' })}
-			</div>
+			</button>
 		`;
 
 		const incrementButton = html`
-			<div class="button-container">
-				<button
-					class="button increment"
-					@mousedown=${this.onMouseDown}
-					@mouseup=${this.onMouseUp}
-					@mousemove=${this.onMouseMove}
-					@touchstart=${this.onTouchStart}
-					@touchend=${this.onTouchEnd}
-					@touchmove=${this.onTouchMove}
-					@contextmenu=${this.onContextMenu}
-				/>
+			<button
+				class="button increment"
+				@mousedown=${this.onMouseDown}
+				@mouseup=${this.onMouseUp}
+				@mousemove=${this.onMouseMove}
+				@touchstart=${this.onTouchStart}
+				@touchend=${this.onTouchEnd}
+				@touchmove=${this.onTouchMove}
+				@contextmenu=${this.onContextMenu}
+			>
 				${this.buildIcon({ icon: 'mdi:plus' })}
-			</div>
+			</button>
 		`;
 
 		const icon = this.buildIcon();
@@ -120,7 +118,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 
 		return html`
 			${background}${decrementButton}
-			<div class="icon-label-container">${label}${icon}</div>
+			<div class="icon-label-container">${icon}${label}</div>
 			${incrementButton}
 		`;
 	}
@@ -152,7 +150,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					align-items: center;
 					position: relative;
 					height: 40px;
-					width: 40px;
+					width: 35px;
 					border-radius: 10px;
 					border: none;
 					padding: 0px;
@@ -177,6 +175,8 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					width: inherit;
 					border-radius: inherit;
 					border: none;
+
+					--mdc-icon-size: 16px;
 				}
 			`,
 		];
