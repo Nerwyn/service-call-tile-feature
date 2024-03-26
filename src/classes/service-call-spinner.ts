@@ -84,7 +84,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 		`;
 
 		const decrementButton = html`
-			<div class="button-container>
+			<div class="button-container">
 				<button
 					class="button decrement"
 					@mousedown=${this.onMouseDown}
@@ -100,7 +100,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 		`;
 
 		const incrementButton = html`
-			<div class="button-container>
+			<div class="button-container">
 				<button
 					class="button increment"
 					@mousedown=${this.onMouseDown}
