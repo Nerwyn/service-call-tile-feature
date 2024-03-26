@@ -141,7 +141,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					height: inherit;
 					background: var(--background, var(--disabled-color));
 					opacity: var(--background-opacity);
-					z-index: 1
+					z-index: 1;
 				}
 
 				.button-container {
@@ -166,6 +166,16 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 				.icon-label-container {
 					display: flex;
 					flex-flow: column;
+				}
+
+				.icon {
+					opacity: 0.77;
+				}
+
+				.label {
+					font-size: 14px;
+					font-weigth: 500;
+					opacity: 0.77;
 				}
 
 				.button {
