@@ -30,17 +30,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				| 'increment'
 				| 'decrement';
 
-			switch (operator) {
-				case 'increment':
-					this.value = prevValue + this.step;
-					break;
-				case 'decrement':
-					this.value = prevValue - this.step;
-					break;
-				default:
-					break;
-			}
-
 			if (
 				operator in this.entry &&
 				'tap_action' in this.entry[operator]! &&
@@ -51,6 +40,16 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			) {
 				this.sendAction('tap_action', this.entry[operator]);
 			} else {
+				switch (operator) {
+					case 'increment':
+						this.value = prevValue + this.step;
+						break;
+					case 'decrement':
+						this.value = prevValue - this.step;
+						break;
+					default:
+						break;
+				}
 				this.debounceTimer = setTimeout(() => {
 					this.sendAction('tap_action');
 					this.resetGetValueFromHass();
