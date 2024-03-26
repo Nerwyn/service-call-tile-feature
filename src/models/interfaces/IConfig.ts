@@ -52,5 +52,5 @@ export interface ISelectorOptions {
 
 export interface ISpinnerOptions {
 	step?: number;
-	debounceTime?: number;
+	debounce_time?: number;
 }

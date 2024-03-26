@@ -58,11 +58,11 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 			);
 		}
 
-		if ('debounceTime' in this.entry) {
+		if ('debounce_time' in this.entry) {
 			this.debounceTime = parseFloat(
 				renderTemplate(
 					this.hass,
-					this.entry.debounceTime as unknown as string,
+					this.entry.debounce_time as unknown as string,
 				) as string,
 			);
 		}
