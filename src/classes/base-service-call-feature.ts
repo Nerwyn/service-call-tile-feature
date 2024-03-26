@@ -7,7 +7,7 @@ import {
 	property,
 	state,
 } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
 import {
@@ -314,19 +314,23 @@ export class BaseServiceCallFeature extends LitElement {
 		);
 	}
 
+	buildStyle(_style: StyleInfo = {}) {
+		const style = structuredClone(_style);
+		for (const key in style) {
+			style[key] = renderTemplate(
+				this.hass,
+				style[key] as string,
+			) as string;
+		}
+		return style;
+	}
+
 	buildIcon(entry: IEntry = this.entry) {
 		let icon = html``;
 		if ('icon' in entry) {
-			const style = structuredClone(entry.icon_style ?? {});
-			for (const key in style) {
-				style[key] = renderTemplate(
-					this.hass,
-					style[key] as string,
-				) as string;
-			}
 			icon = html`<ha-icon
 				.icon=${renderTemplate(this.hass, entry.icon as string)}
-				style=${styleMap(style)}
+				style=${styleMap(this.buildStyle(entry.icon_style ?? {}))}
 			></ha-icon>`;
 		}
 		return icon;
@@ -358,13 +362,7 @@ export class BaseServiceCallFeature extends LitElement {
 					);
 				}
 
-				const style = structuredClone(entry.label_style ?? {});
-				for (const key in style) {
-					style[key] = renderTemplate(
-						this.hass,
-						style[key] as string,
-					) as string;
-				}
+				const style = this.buildStyle(entry.label_style ?? {});
 				if (hide) {
 					style.display = 'none';
 				}

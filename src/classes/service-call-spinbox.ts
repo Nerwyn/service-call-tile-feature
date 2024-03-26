@@ -65,15 +65,13 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	}
 
 	buildBackground() {
-		const style = structuredClone(this.entry.background_style ?? {});
-		for (const key in style) {
-			style[key] = renderTemplate(
-				this.hass,
-				style[key] as string,
-			) as string;
-		}
 		return html`
-			<div class="spinbox-background" style=${styleMap(style)}></div>
+			<div
+				class="spinbox-background"
+				style=${styleMap(
+					this.buildStyle(this.entry.background_style ?? {}),
+				)}
+			></div>
 		`;
 	}
 
@@ -97,6 +95,13 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				@touchend=${this.onTouchEnd}
 				@touchmove=${this.onTouchMove}
 				@contextmenu=${this.onContextMenu}
+				style=${styleMap(
+					this.buildStyle(
+						this.entry[operator]?.style ??
+							this.entry[operator]?.background_style ??
+							{},
+					),
+				)}
 			>
 				${this.buildIcon(this.entry[operator])}
 				${this.buildLabel(this.entry[operator])}

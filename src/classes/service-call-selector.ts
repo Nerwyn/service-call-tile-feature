@@ -42,19 +42,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			options = Object.assign(new Array(entries.length), options);
 		}
 
-		const background_style = structuredClone(
-			this.entry.background_style ?? {},
-		);
-		for (const key in background_style) {
-			background_style[key] = renderTemplate(
-				this.hass,
-				background_style[key] as string,
-			) as string;
-		}
 		const selector = [
 			html`<div
 				class="selector-background"
-				style=${styleMap(background_style)}
+				style=${styleMap(
+					this.buildStyle(this.entry.background_style ?? {}),
+				)}
 			></div>`,
 		];
 
@@ -100,14 +93,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				optionClass = 'selected-option';
 			}
 
-			const style = structuredClone(entry.style ?? {});
-			for (const key in style) {
-				style[key] = renderTemplate(
-					this.hass,
-					style[key] as string,
-				) as string;
-			}
-
 			selector.push(
 				html`<service-call-button
 					class=${optionClass}
@@ -116,7 +101,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					._shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
-					style=${styleMap(style)}
+					style=${styleMap(this.buildStyle(entry.style ?? {}))}
 				/>`,
 			);
 		}

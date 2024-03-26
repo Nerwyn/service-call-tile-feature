@@ -197,16 +197,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildBackground() {
-		const style = structuredClone(this.entry.background_style ?? {});
-		for (const key in style) {
-			style[key] = renderTemplate(
-				this.hass,
-				style[key] as string,
-			) as string;
-		}
 		return html`<div
 			class="slider-background"
-			style=${styleMap(style)}
+			style=${styleMap(
+				this.buildStyle(this.entry.background_style ?? {}),
+			)}
 		></div>`;
 	}
 
@@ -255,19 +250,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class != 'slider-line-thumb')
 		);
 
-		const style = structuredClone(this.entry.slider_style ?? {});
-		for (const key in style) {
-			style[key] = renderTemplate(
-				this.hass,
-				style[key] as string,
-			) as string;
-		}
-
 		return html`
 			<input
 				type="range"
 				class="${this.sliderOn ? this.class : 'slider-off'}"
-				style=${styleMap(style)}
+				style=${styleMap(
+					this.buildStyle(this.entry.slider_style ?? {}),
+				)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
 				step=${this.step}

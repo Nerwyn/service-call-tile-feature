@@ -5,8 +5,6 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { Ripple } from '@material/mwc-ripple';
 import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
 
-import { renderTemplate } from 'ha-nunjucks';
-
 import { ActionType } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -105,21 +103,15 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		const icon_label = super.render();
 
-		const style = structuredClone(this.entry.background_style ?? {});
-		for (const key in style) {
-			style[key] = renderTemplate(
-				this.hass,
-				style[key] as string,
-			) as string;
-		}
-
 		const ripple = this._shouldRenderRipple
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
 
 		const button = html`<button
 			class=${this.className ?? ''}
-			style=${styleMap(style)}
+			style=${styleMap(
+				this.buildStyle(this.entry.background_style ?? {}),
+			)}
 			@mousedown=${this.onMouseDown}
 			@mouseup=${this.onMouseUp}
 			@mousemove=${this.onMouseMove}
