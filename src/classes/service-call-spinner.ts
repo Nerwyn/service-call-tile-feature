@@ -144,28 +144,10 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					z-index: 1;
 				}
 
-				.button-container {
-					display: flex;
-					flex-flow: column;
-					place-content: center space-evenly;
-					align-items: center;
-					position: relative;
-					height: 40px;
-					width: 35px;
-					border-radius: 10px;
-					border: none;
-					padding: 0px;
-					box-sizing: border-box;
-					line-height: 0;
-					outline: 0px;
-					overflow: hidden;
-					font-size: inherit;
-					color: inherit;
-				}
-
 				.icon-label-container {
 					display: flex;
 					flex-flow: column;
+					align-items: center;
 				}
 
 				.icon {
@@ -185,17 +167,10 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					flex-flow: column;
 					place-content: center space-evenly;
 					align-items: center;
-					position: relative;
-					height: 40px;
+					height: inherit;
 					width: 35px;
-					border-radius: 10px;
 					border: none;
 					padding: 0px;
-					box-sizing: border-box;
-					line-height: 0;
-					outline: 0px;
-					overflow: hidden;
-					font-size: inherit;
 					color: inherit;
 					z-index: 2;
 
