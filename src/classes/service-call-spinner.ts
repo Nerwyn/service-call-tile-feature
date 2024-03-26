@@ -187,7 +187,7 @@ export class ServiceCallSpinner extends BaseServiceCallFeature {
 					overflow: hidden;
 					font-size: inherit;
 					color: inherit;
-					z-index: 2
+					z-index: 2;
 
 					--mdc-icon-size: 16px;
 				}
