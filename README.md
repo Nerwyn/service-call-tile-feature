@@ -330,7 +330,7 @@ entries:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
       - '{{ state_attr("light.lounge", "max_mireds") }}'
     step: 1
-  tooltip: true
+    tooltip: true
     value_attribute: brightness
     tap_action:
       action: call-service
