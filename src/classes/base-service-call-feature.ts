@@ -344,9 +344,16 @@ export class BaseServiceCallFeature extends LitElement {
 		let label = html``;
 		if ('label' in entry) {
 			const context = {
-				VALUE: Number(value).toFixed(this.precision),
+				VALUE: value,
 				UNIT: this.unitOfMeasurement,
 			};
+			if (
+				this.value != undefined &&
+				typeof this.value == 'number' &&
+				this.precision !== undefined
+			) {
+				context.VALUE = Number(value).toFixed(this.precision);
+			}
 			let text: string = renderTemplate(
 				this.hass,
 				entry.label as string,
@@ -356,9 +363,9 @@ export class BaseServiceCallFeature extends LitElement {
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
 						/VALUE/g,
-						`${(
-							Number(value).toFixed(this.precision) ?? ''
-						).toString()}${this.unitOfMeasurement}`,
+						`${(context.VALUE ?? '').toString()}${
+							this.unitOfMeasurement
+						}`,
 					);
 				}
 
