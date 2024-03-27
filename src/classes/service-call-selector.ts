@@ -42,14 +42,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			options = Object.assign(new Array(entries.length), options);
 		}
 
-		const selector = [
-			html`<div
-				class="selector-background"
-				style=${styleMap(
-					this.buildStyle(this.entry.background_style ?? {}),
-				)}
-			></div>`,
-		];
+		const selector = [this.buildBackground()];
 
 		for (const i in entries) {
 			const entry = this.entry.options![i];
@@ -115,19 +108,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			css`
 				:host {
 					flex-flow: row;
-
-					--background: var(--disabled-color);
-					--background-opacity: 0.2;
+					
 					--color: var(--tile-color);
 					--hover-opacity: 0.3;
-				}
-
-				.selector-background {
-					position: absolute;
-					width: inherit;
-					height: inherit;
-					background: var(--background, var(--disabled-color));
-					opacity: var(--background-opacity);
 				}
 
 				.option {

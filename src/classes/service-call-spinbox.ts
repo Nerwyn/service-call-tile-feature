@@ -26,11 +26,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				| 'decrement';
 
 			if (
-				operator in this.entry &&
-				'tap_action' in this.entry[operator]! &&
 				renderTemplate(
 					this.hass,
-					this.entry[operator]!.tap_action!.action,
+					this.entry[operator]?.tap_action?.action ?? 'none',
 				) != 'none'
 			) {
 				this.sendAction('tap_action', this.entry[operator]);
@@ -68,17 +66,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 	onMove(_e: TouchEvent | MouseEvent) {
 		this.scrolling = true;
-	}
-
-	buildBackground() {
-		return html`
-			<div
-				class="spinbox-background"
-				style=${styleMap(
-					this.buildStyle(this.entry.background_style ?? {}),
-				)}
-			></div>
-		`;
 	}
 
 	buildButton(operator: 'increment' | 'decrement') {
@@ -166,18 +153,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			css`
 				:host {
 					place-content: center;
-
-					--background: var(--color, var(--state-inactive-color));
-					--background-opacity: 0.2;
-				}
-
-				.spinbox-background {
-					position: absolute;
-					width: inherit;
-					height: inherit;
-					background: var(--background, var(--disabled-color));
-					opacity: var(--background-opacity);
-					z-index: 1;
 				}
 
 				.icon-label-container {

@@ -431,6 +431,17 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
+	buildBackground() {
+		return html`
+			<div
+				class="background"
+				style=${styleMap(
+					this.buildStyle(this.entry.background_style ?? {}),
+				)}
+			></div>
+		`;
+	}
+
 	render() {
 		this.setValue();
 
@@ -463,12 +474,24 @@ export class BaseServiceCallFeature extends LitElement {
 					--icon-filter: none;
 					--label-color: inherit;
 					--label-filter: none;
+					--background: var(--color, var(--state-inactive-color));
+					--background-height: 100%;
+					--background-opacity: 0.2;
 				}
 
 				.container {
 					all: inherit;
 					overflow: hidden;
 					height: 100%;
+				}
+
+				.background {
+					position: absolute;
+					width: inherit;
+					height: var(--background-height);
+					background: var(--background, var(--disabled-color));
+					opacity: var(--background-opacity);
+					z-index: 1;
 				}
 
 				ha-icon {

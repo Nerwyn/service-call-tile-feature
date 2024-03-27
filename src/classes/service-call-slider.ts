@@ -196,15 +196,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		return super.buildLabel(this.entry, value, hide);
 	}
 
-	buildBackground() {
-		return html`<div
-			class="slider-background"
-			style=${styleMap(
-				this.buildStyle(this.entry.background_style ?? {}),
-			)}
-		></div>`;
-	}
-
 	buildTooltip() {
 		const tooltipText = `${Number(this.currentValue).toFixed(
 			this.precision,
@@ -370,18 +361,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					overflow: visible;
 
 					--color: var(--tile-color);
-					--background: var(--color, var(--state-inactive-color));
-					--background-height: 100%;
-					--background-opacity: 0.2;
 					--opacity: 1;
-				}
-
-				.slider-background {
-					position: absolute;
-					width: inherit;
-					height: var(--background-height);
-					background: var(--background);
-					opacity: var(--background-opacity);
 				}
 
 				.slider,
