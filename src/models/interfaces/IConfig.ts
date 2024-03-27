@@ -51,6 +51,7 @@ export interface ISelectorOptions {
 }
 
 export interface ISpinboxOptions {
+	range?: [number, number];
 	step?: number;
 	debounce_time?: number;
 	increment?: IEntry;

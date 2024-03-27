@@ -7,6 +7,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-spinbox')
 export class ServiceCallSpinbox extends BaseServiceCallFeature {
+	range: [number, number] = [-32768, 32767];
 	step: number = 1;
 	debounceTimer?: ReturnType<typeof setTimeout>;
 	debounceTime: number = 1000;
@@ -20,7 +21,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		if (!this.scrolling) {
 			clearTimeout(this.debounceTimer);
 
-			const prevValue = parseFloat(this.value as string);
 			const operator = (e.currentTarget as HTMLElement).id as
 				| 'increment'
 				| 'decrement';
@@ -38,17 +38,24 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				clearTimeout(this.getValueFromHassTimer);
 				this.getValueFromHass = false;
 
+				const prevValue = parseFloat(this.value as string);
+				let newValue = this.value as number;
 				switch (operator) {
 					case 'increment':
-						this.value = prevValue + this.step;
+						newValue = prevValue + this.step;
 						break;
 					case 'decrement':
-						this.value = prevValue - this.step;
+						newValue = prevValue - this.step;
 						break;
 					default:
 						break;
 				}
-				
+
+				this.value = Math.min(
+					Math.max(newValue, this.range[0]),
+					this.range[1],
+				);
+
 				this.debounceTimer = setTimeout(() => {
 					this.sendAction('tap_action');
 					this.resetGetValueFromHass();
@@ -110,6 +117,23 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 	render() {
 		this.setValue();
+
+		if (this.entry.range) {
+			this.range = [
+				parseFloat(
+					renderTemplate(
+						this.hass,
+						this.entry.range[0] as unknown as string,
+					) as string,
+				),
+				parseFloat(
+					renderTemplate(
+						this.hass,
+						this.entry.range[1] as unknown as string,
+					) as string,
+				),
+			];
+		}
 
 		if (this.entry.step) {
 			this.step = parseFloat(
