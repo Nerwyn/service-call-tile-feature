@@ -13,17 +13,12 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	scrolling: boolean = false;
 
 	onStart(_e: TouchEvent | MouseEvent) {
-		clearTimeout(this.debounceTimer);
-		clearTimeout(this.getValueFromHassTimer);
-		this.getValueFromHass = false;
 		this.scrolling = false;
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
 			clearTimeout(this.debounceTimer);
-			clearTimeout(this.getValueFromHassTimer);
-			this.getValueFromHass = false;
 
 			const prevValue = parseFloat(this.value as string);
 			const operator = (e.currentTarget as HTMLElement).id as
@@ -40,6 +35,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			) {
 				this.sendAction('tap_action', this.entry[operator]);
 			} else {
+				clearTimeout(this.getValueFromHassTimer);
+				this.getValueFromHass = false;
+
 				switch (operator) {
 					case 'increment':
 						this.value = prevValue + this.step;
@@ -50,6 +48,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					default:
 						break;
 				}
+				
 				this.debounceTimer = setTimeout(() => {
 					this.sendAction('tap_action');
 					this.resetGetValueFromHass();
