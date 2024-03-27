@@ -148,7 +148,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					width: inherit;
 					border-radius: 10px;
 					border: none;
-					z-index: 0;
+					z-index: 2;
 					overflow: hidden;
 				}
 				button::before {

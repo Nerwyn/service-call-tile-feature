@@ -375,6 +375,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					height: inherit;
 					border-radius: 10px;
 					background: none;
+					z-index: 2;
 				}
 
 				.slider,
@@ -431,7 +432,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					background: var(--color);
 					cursor: pointer;
 					opacity: var(--opacity);
-					z-index: 1;
+					z-index: 2;
 					box-shadow: -100vw 0 0 100vw var(--color);
 				}
 
@@ -444,7 +445,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					background: var(--color);
 					cursor: pointer;
 					opacity: var(--opacity);
-					z-index: 1;
+					z-index: 2;
 					box-shadow: -100vw 0 0 100vw var(--color);
 					border-radius: 0px;
 				}
