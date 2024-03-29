@@ -111,6 +111,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		) {
 			return html`
 				<service-call-button
+					id=${operator}
 					.hass=${this.hass}
 					.entry=${this.entry[operator]}
 					._shouldRenderRipple=${false}
@@ -244,7 +245,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				}
 
 				.button::before {
-					display: none;
+					display: none !important;
 				}
 
 				#decrement {
@@ -253,6 +254,11 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 				#increment {
 					right: 0px;
+				}
+
+				service-call-button {
+					position: absolute;
+					width: initial;
 				}
 			`,
 		];
