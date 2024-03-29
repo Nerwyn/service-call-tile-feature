@@ -133,6 +133,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 									this.sendAction('tap_action');
 								}, repeat_delay);
 							}
+						} else {
+							this.fireHapticEvent('selection');
 						}
 					}
 				}, holdTime);
