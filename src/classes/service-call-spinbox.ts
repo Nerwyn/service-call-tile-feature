@@ -116,7 +116,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					._shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
 					style=${styleMap(
-						this.buildStyle(this.entry[operator]!.style ?? {}),
+						this.buildStyle(this.entry[operator]?.style ?? {}),
 					)}
 				/>
 			`;
