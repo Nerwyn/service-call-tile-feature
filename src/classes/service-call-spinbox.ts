@@ -132,9 +132,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					.entry=${actions}
 					._shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
-					style=${styleMap(
-						this.buildStyle(this.entry[operator]?.style ?? {}),
-					)}
+					style=${styleMap(this.buildStyle(actions.style ?? {}))}
 				/>
 			`;
 		} else {
@@ -151,14 +149,11 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					@contextmenu=${this.onContextMenu}
 					style=${styleMap(
 						this.buildStyle(
-							this.entry[operator]?.background_style ??
-								this.entry[operator]?.style ??
-								{},
+							actions.background_style ?? actions.style ?? {},
 						),
 					)}
 				>
-					${this.buildIcon(this.entry[operator])}
-					${this.buildLabel(this.entry[operator])}
+					${this.buildIcon(actions)} ${this.buildLabel(actions)}
 				</button>
 			`;
 		}
