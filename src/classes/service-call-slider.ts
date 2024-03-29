@@ -36,6 +36,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = slider.value;
 			this.setTooltip(slider, true);
 
+			this.fireHapticEvent('selection');
+
 			const start = parseFloat(
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
 			);
@@ -121,6 +123,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.newValue = Math.trunc(this.newValue);
 			}
 			this.value = this.newValue;
+
+			this.fireHapticEvent('light');
 			this.sendAction('tap_action');
 		} else {
 			if (this.value == undefined) {

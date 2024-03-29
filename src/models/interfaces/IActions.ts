@@ -36,12 +36,27 @@ export interface IAction {
 
 	pipeline_id?: string;
 	start_listening?: boolean;
+
+	hold_time?: number;
+	repeat_delay?: number;
+	double_tap_window?: number;
 }
 
 export interface IActions {
 	tap_action?: IAction;
 	hold_action?: IAction;
 	double_tap_action?: IAction;
+
+	momentary_start_action?: IAction;
+	momentary_end_action?: IAction;
 }
 
-export type ActionType = 'tap_action' | 'hold_action' | 'double_tap_action';
+export type ActionType =
+	| 'tap_action'
+	| 'hold_action'
+	| 'double_tap_action'
+	| 'multi_tap_action'
+	| 'multi_hold_action'
+	| 'multi_double_tap_action'
+	| 'momentary_start_action'
+	| 'momentary_end_action';

@@ -24,6 +24,8 @@ export interface IEntry
 	label?: string;
 	unit_of_measurement?: string;
 
+	haptics?: boolean;
+
 	style?: StyleInfo;
 	background_style?: StyleInfo;
 	icon_style?: StyleInfo;

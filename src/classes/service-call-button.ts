@@ -5,7 +5,8 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { Ripple } from '@material/mwc-ripple';
 import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
 
-import { ActionType } from '../models/interfaces';
+import { renderTemplate } from 'ha-nunjucks';
+
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
@@ -24,15 +25,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
-	scrolling: boolean = false;
-
-	clickAction(actionType: ActionType) {
-		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
-		this.clickTimer = undefined;
-		this.clickCount = 0;
-
-		this.sendAction(actionType);
-	}
+	holdMove: boolean = false;
+	initialX?: number;
+	initialY?: number;
 
 	onClick(e: TouchEvent | MouseEvent) {
 		e.stopImmediatePropagation();
@@ -40,64 +35,201 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		if (
 			'double_tap_action' in this.entry &&
-			this.entry.double_tap_action!.action != 'none'
+			renderTemplate(this.hass, this.entry.double_tap_action!.action) !=
+				'none'
 		) {
 			// Double tap action is defined
 			if (this.clickCount > 1) {
 				// Double tap action is triggered
-				this.clickAction('double_tap_action');
+				this.fireHapticEvent('success');
+				this.sendAction('double_tap_action');
+				this.endAction();
 			} else {
 				// Single tap action is triggered if double tap is not within 200ms
-				this.clickTimer = setTimeout(() => {
-					this.clickAction('tap_action');
-				}, 200);
+				const doubleTapWindow: number =
+					'double_tap_window' in (this.entry.double_tap_action ?? {})
+						? (renderTemplate(
+								this.hass,
+								this.entry.double_tap_action!
+									.double_tap_window as unknown as string,
+						  ) as number)
+						: 200;
+				if (!this.clickTimer) {
+					this.clickTimer = setTimeout(() => {
+						this.fireHapticEvent('light');
+						this.sendAction('tap_action');
+						this.endAction();
+					}, doubleTapWindow);
+				}
 			}
 		} else {
 			// No double tap action defiend, tap action is triggered
-			this.clickAction('tap_action');
+			this.fireHapticEvent('light');
+			this.sendAction('tap_action');
+			this.endAction();
 		}
 	}
 
 	onStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
-		this.scrolling = false;
+		this.holdMove = false;
+		if ('targetTouches' in e) {
+			this.initialX = e.targetTouches[0].clientX;
+			this.initialY = e.targetTouches[0].clientY;
+		} else {
+			this.initialX = e.clientX;
+			this.initialY = e.clientY;
+		}
 
 		if (
-			'hold_action' in this.entry &&
-			this.entry.hold_action!.action != 'none'
+			'momentary_start_action' in this.entry &&
+			renderTemplate(
+				this.hass,
+				this.entry.momentary_start_action!.action,
+			) != 'none'
 		) {
-			this.holdTimer = setTimeout(() => {
-				this.hold = true;
-			}, 500);
+			this.fireHapticEvent('light');
+			this.buttonPressStart = performance.now();
+			this.sendAction('momentary_start_action');
+		} else if (
+			'momentary_end_action' in this.entry &&
+			renderTemplate(
+				this.hass,
+				this.entry.momentary_end_action!.action,
+			) != 'none'
+		) {
+			this.fireHapticEvent('light');
+			this.buttonPressStart = performance.now();
+		} else if (!this.holdTimer && 'hold_action' in this.entry) {
+			const holdTime =
+				'hold_time' in (this.entry.hold_action ?? {})
+					? (renderTemplate(
+							this.hass,
+							this.entry.hold_action!
+								.hold_time as unknown as string,
+					  ) as number)
+					: 500;
+			const holdAction = renderTemplate(
+				this.hass,
+				this.entry.hold_action?.action as string,
+			);
+
+			if (holdAction != 'none') {
+				this.holdTimer = setTimeout(() => {
+					if (!this.holdMove) {
+						this.hold = true;
+						if (holdAction == 'repeat') {
+							const repeat_delay =
+								'repeat_delay' in (this.entry.hold_action ?? {})
+									? (renderTemplate(
+											this.hass,
+											this.entry.hold_action!
+												.repeat_delay as unknown as string,
+									  ) as number)
+									: 100;
+							if (!this.holdInterval) {
+								this.holdInterval = setInterval(() => {
+									this.fireHapticEvent('selection');
+									this.sendAction('tap_action');
+								}, repeat_delay);
+							}
+						}
+					}
+				}, holdTime);
+			}
 		}
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.endPress();
 
-		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
-		clearInterval(this.holdInterval as ReturnType<typeof setInterval>);
-
-		if (!this.scrolling) {
-			if (this.hold) {
+		if (!this.holdMove) {
+			if (
+				'momentary_end_action' in this.entry &&
+				renderTemplate(
+					this.hass,
+					this.entry.momentary_end_action!.action,
+				) != 'none'
+			) {
+				this.fireHapticEvent('selection');
+				this.buttonPressEnd = performance.now();
+				this.sendAction('momentary_end_action');
+				this.endAction();
+			} else if (
+				'momentary_start_action' in this.entry &&
+				renderTemplate(
+					this.hass,
+					this.entry.momentary_start_action!.action,
+				) != 'none'
+			) {
+				this.endAction();
+			} else if (this.hold) {
 				// Hold action is triggered
-				this.hold = false;
 				e.stopImmediatePropagation();
 				e.preventDefault();
-				this.clickAction('hold_action');
+				if (
+					!(
+						renderTemplate(
+							this.hass,
+							this.entry.hold_action?.action as string,
+						) == 'repeat'
+					)
+				) {
+					this.fireHapticEvent('medium');
+					this.sendAction('hold_action');
+				}
+				this.endAction();
 			} else {
 				// Hold action is not triggered, fire tap action
 				this.onClick(e);
 			}
 		}
-
-		this.holdTimer = undefined;
-		this.holdInterval = undefined;
-		this.scrolling = false;
 	}
 
-	onMove(_e: TouchEvent | MouseEvent) {
-		this.scrolling = true;
+	onMove(e: TouchEvent | MouseEvent) {
+		let currentX: number;
+		let currentY: number;
+		if ('targetTouches' in e) {
+			currentX = e.targetTouches[0].clientX;
+			currentY = e.targetTouches[0].clientY;
+		} else {
+			currentX = e.clientX;
+			currentY = e.clientY;
+		}
+
+		const diffX = (this.initialX ?? currentX) - currentX;
+		const diffY = (this.initialY ?? currentY) - currentY;
+
+		// Only consider significant enough movement
+		const sensitivity = 8;
+		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+			this.endAction();
+			this.holdMove = true;
+		}
+	}
+
+	onMouseLeave(_e: MouseEvent) {
+		this._rippleHandlers.endHover();
+		this.endAction();
+		this.holdMove = true;
+	}
+
+	endAction() {
+		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
+		this.clickTimer = undefined;
+		this.clickCount = 0;
+
+		clearTimeout(this.holdTimer as ReturnType<typeof setTimeout>);
+		clearInterval(this.holdInterval as ReturnType<typeof setInterval>);
+		this.holdTimer = undefined;
+		this.holdInterval = undefined;
+		this.hold = false;
+
+		this.holdMove = false;
+		this.initialX = undefined;
+		this.initialY = undefined;
+
+		super.endAction();
 	}
 
 	render() {
@@ -116,7 +248,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@mouseup=${this.onMouseUp}
 			@mousemove=${this.onMouseMove}
 			@mouseenter=${this._rippleHandlers.startHover}
-			@mouseleave=${this._rippleHandlers.endHover}
+			@mouseleave=${this.onMouseLeave}
 			@touchstart=${this.onTouchStart}
 			@touchend=${this.onTouchEnd}
 			@touchmove=${this.onTouchMove}

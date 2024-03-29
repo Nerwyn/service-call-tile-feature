@@ -1,4 +1,4 @@
-import { HomeAssistant, forwardHaptic } from 'custom-card-helpers';
+import { HomeAssistant, HapticType, forwardHaptic } from 'custom-card-helpers';
 
 import { LitElement, CSSResult, html, css } from 'lit';
 import {
@@ -26,9 +26,30 @@ export class BaseServiceCallFeature extends LitElement {
 	@state() value: string | number | boolean = 0;
 	@state() getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
+
 	unitOfMeasurement: string = '';
 	precision: number = 0;
+
+	buttonPressStart?: number;
+	buttonPressEnd?: number;
 	fireMouseEvent?: boolean = true;
+
+	fireHapticEvent(haptic: HapticType) {
+		if (
+			renderTemplate(
+				this.hass,
+				this.entry.haptics as unknown as string,
+			) ??
+			false
+		) {
+			forwardHaptic(haptic);
+		}
+	}
+
+	endAction() {
+		this.buttonPressStart = undefined;
+		this.buttonPressEnd = undefined;
+	}
 
 	sendAction(
 		actionType: ActionType,
@@ -36,15 +57,21 @@ export class BaseServiceCallFeature extends LitElement {
 	) {
 		let action;
 		switch (actionType) {
+			case 'momentary_start_action':
+				action = actions.momentary_start_action!;
+				break;
+			case 'momentary_end_action':
+				action = actions.momentary_end_action!;
+				break;
 			case 'hold_action':
 				action = actions.hold_action ?? actions.tap_action!;
 				break;
 			case 'double_tap_action':
-				action = actions.double_tap_action! ?? actions.tap_action!;
+				action = actions.double_tap_action ?? actions.tap_action!;
 				break;
 			case 'tap_action':
 			default:
-				action = actions.tap_action ?? ({ action: 'none' } as IAction);
+				action = actions.tap_action!;
 				break;
 		}
 
@@ -52,25 +79,30 @@ export class BaseServiceCallFeature extends LitElement {
 			return;
 		}
 
-		switch (action.action) {
-			case 'call-service':
-				this.callService(action);
-				break;
-			case 'navigate':
-				this.navigate(action);
-				break;
-			case 'url':
-				this.toUrl(action);
-				break;
-			case 'assist':
-				this.assist(action);
-				break;
-			case 'more-info':
-				this.moreInfo(action);
-				break;
-			case 'none':
-			default:
-				break;
+		try {
+			switch (action.action) {
+				case 'call-service':
+					this.callService(action);
+					break;
+				case 'navigate':
+					this.navigate(action);
+					break;
+				case 'url':
+					this.toUrl(action);
+					break;
+				case 'assist':
+					this.assist(action);
+					break;
+				case 'more-info':
+					this.moreInfo(action);
+					break;
+				case 'none':
+				default:
+					break;
+			}
+		} catch (e) {
+			this.endAction();
+			throw e;
 		}
 	}
 
@@ -82,7 +114,14 @@ export class BaseServiceCallFeature extends LitElement {
 
 		const [domain, service] = domainService.split('.');
 		const data = structuredClone(action.data);
-		const context = { VALUE: this.value };
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+		};
 		for (const key in data) {
 			if (Array.isArray(data[key])) {
 				for (const i in data[key] as string[]) {
@@ -95,7 +134,6 @@ export class BaseServiceCallFeature extends LitElement {
 				data[key] = this.replaceValue(data[key] as string, context);
 			}
 		}
-
 		this.hass.callService(domain, service, data);
 	}
 
@@ -183,7 +221,7 @@ export class BaseServiceCallFeature extends LitElement {
 				) as unknown as boolean;
 			}
 			if (confirmation != false) {
-				forwardHaptic('warning');
+				this.fireHapticEvent('warning');
 
 				let text: string;
 				if (
@@ -301,6 +339,18 @@ export class BaseServiceCallFeature extends LitElement {
 				str = str
 					.toString()
 					.replace(/VALUE/g, (this.value ?? '').toString());
+			}
+			if ('HOLD_SECS' in context) {
+				if (str == 'HOLD_SECS') {
+					str = context.HOLD_SECS as string;
+				} else if (str.toString().includes('HOLD_SECS')) {
+					str = str
+						.toString()
+						.replace(
+							/HOLD_SECS/g,
+							(context.HOLD_SECS ?? '').toString(),
+						);
+				}
 			}
 		}
 
