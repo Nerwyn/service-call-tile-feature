@@ -109,6 +109,8 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			this.endAction();
 			clearTimeout(this.debounceTimer);
 			this.swiping = true;
+			this.getValueFromHass = true;
+			this.setValue();
 		}
 	}
 
