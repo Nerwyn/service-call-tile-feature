@@ -115,7 +115,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					if (!this.swiping) {
 						this.hold = true;
 						if (holdAction == 'repeat') {
-							const repeat_delay =
+							const repeatDelay =
 								'repeat_delay' in (this.entry.hold_action ?? {})
 									? (renderTemplate(
 											this.hass,
@@ -127,7 +127,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 								this.holdInterval = setInterval(() => {
 									this.fireHapticEvent('selection');
 									this.sendAction('tap_action');
-								}, repeat_delay);
+								}, repeatDelay);
 							}
 						} else {
 							this.fireHapticEvent('selection');

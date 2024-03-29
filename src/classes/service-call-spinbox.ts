@@ -13,6 +13,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	debounceTimer?: ReturnType<typeof setTimeout>;
 	debounceTime: number = 1000;
 
+	holdTimer?: ReturnType<typeof setTimeout>;
+	holdInterval?: ReturnType<typeof setInterval>;
+
 	onStart(e: TouchEvent | MouseEvent) {
 		this.swiping = false;
 		if ('targetTouches' in e) {
@@ -22,36 +25,61 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			this.initialX = e.clientX;
 			this.initialY = e.clientY;
 		}
+
+		const operator = (e.currentTarget as HTMLElement).id as
+			| 'increment'
+			| 'decrement';
+		if (
+			renderTemplate(
+				this.hass,
+				this.entry[operator]?.hold_action?.action ?? 'none',
+			) == 'repeat' &&
+			!this.holdTimer
+		) {
+			const holdTime =
+				'hold_time' in (this.entry.hold_action ?? {})
+					? (renderTemplate(
+							this.hass,
+							this.entry[operator]!.hold_action!
+								.hold_time as unknown as string,
+					  ) as number)
+					: 500;
+			this.holdTimer = setTimeout(() => {
+				clearTimeout(this.debounceTimer);
+				clearTimeout(this.getValueFromHassTimer);
+				this.getValueFromHass = false;
+
+				if (!this.swiping) {
+					const repeatDelay =
+						'repeat_delay' in (this.entry.hold_action ?? {})
+							? (renderTemplate(
+									this.hass,
+									this.entry.hold_action!
+										.repeat_delay as unknown as string,
+							  ) as number)
+							: 100;
+					if (!this.holdInterval) {
+						this.holdInterval = setInterval(() => {
+							this.operateValue(operator);
+							this.fireHapticEvent('selection');
+						}, repeatDelay);
+					}
+				}
+			}, holdTime);
+		}
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
 		clearTimeout(this.debounceTimer);
 
 		if (!this.swiping) {
-			const operator = (e.currentTarget as HTMLElement).id as
-				| 'increment'
-				| 'decrement';
-
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = false;
 
-			const prevValue = parseFloat(this.value as string);
-			let newValue = this.value as number;
-			switch (operator) {
-				case 'increment':
-					newValue = prevValue + this.step;
-					break;
-				case 'decrement':
-					newValue = prevValue - this.step;
-					break;
-				default:
-					break;
-			}
-
-			this.value = Math.min(
-				Math.max(newValue, this.range[0]),
-				this.range[1],
-			);
+			const operator = (e.currentTarget as HTMLElement).id as
+				| 'increment'
+				| 'decrement';
+			this.operateValue(operator);
 
 			this.debounceTimer = setTimeout(() => {
 				this.sendAction('tap_action');
@@ -82,6 +110,31 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			clearTimeout(this.debounceTimer);
 			this.swiping = true;
 		}
+	}
+
+	operateValue(operator: 'increment' | 'decrement') {
+		const prevValue = parseFloat(this.value as string);
+		let newValue = this.value as number;
+		switch (operator) {
+			case 'increment':
+				newValue = prevValue + this.step;
+				break;
+			case 'decrement':
+				newValue = prevValue - this.step;
+				break;
+			default:
+				break;
+		}
+		this.value = Math.min(Math.max(newValue, this.range[0]), this.range[1]);
+	}
+
+	endAction() {
+		clearTimeout(this.holdTimer);
+		clearTimeout(this.holdInterval);
+		this.holdTimer = undefined;
+		this.holdInterval = undefined;
+
+		super.endAction();
 	}
 
 	buildButton(operator: 'increment' | 'decrement') {
@@ -153,7 +206,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 						),
 					)}
 				>
-					${this.buildIcon(actions)} ${this.buildLabel(actions)}
+					${this.buildIcon(actions)}${this.buildLabel(actions)}
 				</button>
 			`;
 		}
