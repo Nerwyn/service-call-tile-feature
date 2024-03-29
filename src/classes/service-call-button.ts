@@ -25,10 +25,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
-	holdMove: boolean = false;
-	initialX?: number;
-	initialY?: number;
-
 	onClick(e: TouchEvent | MouseEvent) {
 		e.stopImmediatePropagation();
 		this.clickCount++;
@@ -72,7 +68,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 	onStart(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.startPress(e as unknown as Event);
-		this.holdMove = false;
+		this.swiping = false;
 		if ('targetTouches' in e) {
 			this.initialX = e.targetTouches[0].clientX;
 			this.initialY = e.targetTouches[0].clientY;
@@ -116,7 +112,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 			if (holdAction != 'none') {
 				this.holdTimer = setTimeout(() => {
-					if (!this.holdMove) {
+					if (!this.swiping) {
 						this.hold = true;
 						if (holdAction == 'repeat') {
 							const repeat_delay =
@@ -145,7 +141,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	onEnd(e: TouchEvent | MouseEvent) {
 		this._rippleHandlers.endPress();
 
-		if (!this.holdMove) {
+		if (!this.swiping) {
 			if (
 				'momentary_end_action' in this.entry &&
 				renderTemplate(
@@ -206,14 +202,14 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		const sensitivity = 8;
 		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
 			this.endAction();
-			this.holdMove = true;
+			this.swiping = true;
 		}
 	}
 
 	onMouseLeave(_e: MouseEvent) {
 		this._rippleHandlers.endHover();
 		this.endAction();
-		this.holdMove = true;
+		this.swiping = true;
 	}
 
 	endAction() {
@@ -226,10 +222,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		this.holdTimer = undefined;
 		this.holdInterval = undefined;
 		this.hold = false;
-
-		this.holdMove = false;
-		this.initialX = undefined;
-		this.initialY = undefined;
 
 		super.endAction();
 	}

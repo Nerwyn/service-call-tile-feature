@@ -22,14 +22,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	precision: number = 0;
 	tooltipPosition: number = 0;
 
-	startX?: number;
-	startY?: number;
-	scrolling: boolean = false;
-
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
-		if (!this.scrolling) {
+		if (!this.swiping) {
 			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
@@ -101,7 +97,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	onStart(e: TouchEvent | MouseEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
-		if (!this.scrolling) {
+		if (!this.swiping) {
 			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
@@ -115,7 +111,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.setTooltip(slider, false);
 		this.setValue();
 
-		if (!this.scrolling) {
+		if (!this.swiping) {
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = Number(this.value);
 			}
@@ -135,9 +131,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = slider.value;
 		}
 
-		this.scrolling = false;
-		this.startX = undefined;
-		this.startY = undefined;
+		this.swiping = false;
+		this.initialX = undefined;
+		this.initialY = undefined;
 		this.resetGetValueFromHass();
 	}
 
@@ -157,16 +153,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			currentY = e.touches[0].clientY;
 		}
 
-		if (this.startY == undefined) {
-			this.startY = currentY;
+		if (this.initialY == undefined) {
+			this.initialY = currentY;
 		}
-		if (this.startX == undefined) {
-			this.startX = currentX;
+		if (this.initialX == undefined) {
+			this.initialX = currentX;
 		} else if (
-			Math.abs(currentX - this.startX) <
-			Math.abs(currentY - this.startY) - 20
+			Math.abs(currentX - this.initialX) <
+			Math.abs(currentY - this.initialY) - 20
 		) {
-			this.scrolling = true;
+			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
 			slider.value = (this.value ?? 0).toString();

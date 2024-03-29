@@ -34,6 +34,10 @@ export class BaseServiceCallFeature extends LitElement {
 	buttonPressEnd?: number;
 	fireMouseEvent?: boolean = true;
 
+	swiping: boolean = false;
+	initialX?: number;
+	initialY?: number;
+
 	fireHapticEvent(haptic: HapticType) {
 		if (
 			renderTemplate(
@@ -49,6 +53,10 @@ export class BaseServiceCallFeature extends LitElement {
 	endAction() {
 		this.buttonPressStart = undefined;
 		this.buttonPressEnd = undefined;
+
+		this.swiping = false;
+		this.initialX = undefined;
+		this.initialY = undefined;
 	}
 
 	sendAction(
