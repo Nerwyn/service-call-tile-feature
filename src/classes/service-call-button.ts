@@ -265,7 +265,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		return html`${button}${icon_label}`;
 	}
 
-	static get styles() {
+	static get styles(): CSSResult | CSSResult[] {
 		return [
 			super.styles as CSSResult,
 			css`

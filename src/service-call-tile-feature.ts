@@ -107,7 +107,13 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		// For each type of action
-		const actionTypes = ['tap_action', 'hold_action', 'double_tap_action'];
+		const actionTypes = [
+			'tap_action',
+			'hold_action',
+			'double_tap_action',
+			'momentary_start_action',
+			'momentary_end_action',
+		];
 		for (const actionType of actionTypes) {
 			if (actionType in entry) {
 				const action = entry[actionType as keyof IActions] as IAction;

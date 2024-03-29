@@ -3,21 +3,22 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
-import { BaseServiceCallFeature } from './base-service-call-feature';
+import { ServiceCallButton } from './service-call-button';
+import { IActions, IAction } from '../models/interfaces';
 
 @customElement('service-call-spinbox')
-export class ServiceCallSpinbox extends BaseServiceCallFeature {
+export class ServiceCallSpinbox extends ServiceCallButton {
 	range: [number, number] = [-32768, 32767];
 	step: number = 1;
 	debounceTimer?: ReturnType<typeof setTimeout>;
 	debounceTime: number = 1000;
 	scrolling: boolean = false;
 
-	onStart(_e: TouchEvent | MouseEvent) {
+	xonStart(_e: TouchEvent | MouseEvent) {
 		this.scrolling = false;
 	}
 
-	onEnd(e: TouchEvent | MouseEvent) {
+	xonEnd(e: TouchEvent | MouseEvent) {
 		if (!this.scrolling) {
 			clearTimeout(this.debounceTimer);
 
@@ -64,10 +65,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		this.scrolling = false;
 	}
 
-	onMove(_e: TouchEvent | MouseEvent) {
-		this.scrolling = true;
-	}
-
 	buildButton(operator: 'increment' | 'decrement') {
 		if (!(operator in this.entry)) {
 			this.entry[operator] = {};
@@ -77,6 +74,27 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
 		}
 
+		const actionTypes = [
+			'tap_action',
+			'hold_action',
+			'double_tap_action',
+			'momentary_start_action',
+			'momentary_end_action',
+		];
+		for (const actionType of actionTypes) {
+			if (
+				actionType in this.entry &&
+				!(actionType in this.entry[operator]!)
+			) {
+				this.entry[operator]![actionType as keyof IActions] = this
+					.entry[actionType as keyof IActions] as IAction;
+			}
+		}
+
+		if (!('tap_action' in this.entry[operator]!)) {
+			this.entry[operator]!.tap_action = this.entry.tap_action;
+		}
+
 		return html`
 			<button
 				class="button"
@@ -84,6 +102,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				@mousedown=${this.onMouseDown}
 				@mouseup=${this.onMouseUp}
 				@mousemove=${this.onMouseMove}
+				@mouseleave=${this.onMouseLeave}
 				@touchstart=${this.onTouchStart}
 				@touchend=${this.onTouchEnd}
 				@touchmove=${this.onTouchMove}
@@ -147,7 +166,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		`;
 	}
 
-	static get styles() {
+	static get styles(): CSSResult | CSSResult[] {
 		return [
 			super.styles as CSSResult,
 			css`
