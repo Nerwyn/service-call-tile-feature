@@ -200,12 +200,17 @@ export class ServiceCallSpinbox extends ServiceCallButton {
 					place-content: center space-evenly;
 					align-items: center;
 					height: inherit;
+					width: initial;
 					border: none;
 					padding: 10px;
 					color: inherit;
 					z-index: 2;
 
 					--mdc-icon-size: 16px;
+				}
+
+				.button::before {
+					display: none;
 				}
 
 				#decrement {
