@@ -270,8 +270,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					background: 0px 0px;
 					position: absolute;
 					cursor: pointer;
-					height: inherit;
-					width: inherit;
+					height: 100%;
+					width: 100%;
 					border-radius: 10px;
 					border: none;
 					z-index: 2;

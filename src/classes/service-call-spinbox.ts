@@ -85,35 +85,51 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	}
 
 	buildButton(operator: 'increment' | 'decrement') {
+		const actions = this.entry[operator] ?? {};
+		if (!('icon' in actions)) {
+			actions.icon = operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
+		}
+
 		if (
+			renderTemplate(this.hass, actions?.tap_action?.action ?? 'none') !=
+				'none' ||
 			renderTemplate(
 				this.hass,
-				this.entry[operator]?.tap_action?.action ?? 'none',
-			) != 'none' ||
-			renderTemplate(
-				this.hass,
-				this.entry[operator]?.double_tap_action?.action ?? 'none',
+				actions?.double_tap_action?.action ?? 'none',
 			) != 'none' ||
 			!['none', 'repeat'].includes(
 				renderTemplate(
 					this.hass,
-					this.entry[operator]?.hold_action?.action ?? 'none',
+					actions?.hold_action?.action ?? 'none',
 				) as string,
 			) ||
 			renderTemplate(
 				this.hass,
-				this.entry[operator]?.momentary_start_action?.action ?? 'none',
+				actions?.momentary_start_action?.action ?? 'none',
 			) != 'none' ||
 			renderTemplate(
 				this.hass,
-				this.entry[operator]?.momentary_end_action?.action ?? 'none',
+				actions?.momentary_end_action?.action ?? 'none',
 			) != 'none'
 		) {
+			if (!('label_style' in actions!)) {
+				actions.label_style = {};
+			}
+			if (!('font-size' in actions.label_style!)) {
+				actions.label_style!['font-size'] = '14px';
+			}
+			if (!('font-weight' in actions.label_style!)) {
+				actions.label_style!['font-weight'] = '500';
+			}
+			if (!('opacity' in actions.label_style!)) {
+				actions.label_style!['opacity'] = '0.77';
+			}
+
 			return html`
 				<service-call-button
 					id=${operator}
 					.hass=${this.hass}
-					.entry=${this.entry[operator]}
+					.entry=${actions}
 					._shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
 					style=${styleMap(
@@ -122,14 +138,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				/>
 			`;
 		} else {
-			if (!(operator in this.entry)) {
-				this.entry[operator] = {};
-			}
-			if (!('icon' in this.entry[operator]!)) {
-				this.entry[operator]!.icon =
-					operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
-			}
-
 			return html`
 				<button
 					class="button"
@@ -259,6 +267,8 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				service-call-button {
 					position: absolute;
 					width: initial;
+
+					--opacity: 0;
 				}
 			`,
 		];
