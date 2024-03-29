@@ -94,7 +94,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				this.hass,
 				this.entry[operator]?.double_tap_action?.action ?? 'none',
 			) != 'none' ||
-			['none', 'repeat'].includes(
+			!['none', 'repeat'].includes(
 				renderTemplate(
 					this.hass,
 					this.entry[operator]?.hold_action?.action ?? 'none',
