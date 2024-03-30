@@ -167,18 +167,15 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				actions?.momentary_end_action?.action ?? 'none',
 			) != 'none'
 		) {
-			if (!('label_style' in actions!)) {
-				actions.label_style = {};
-			}
-			if (!('font-size' in actions.label_style!)) {
-				actions.label_style!['font-size'] = '14px';
-			}
-			if (!('font-weight' in actions.label_style!)) {
-				actions.label_style!['font-weight'] = '500';
-			}
-			if (!('opacity' in actions.label_style!)) {
-				actions.label_style!['opacity'] = '0.77';
-			}
+			const label_style = {
+				'font-size': '14px',
+				'font-weight': '500',
+				opacity: '0.77',
+			};
+			actions.label_style = {
+				...label_style,
+				...actions.label_style,
+			};
 
 			return html`
 				<service-call-button
