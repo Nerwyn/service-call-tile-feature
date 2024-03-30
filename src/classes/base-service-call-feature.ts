@@ -122,48 +122,24 @@ export class BaseServiceCallFeature extends LitElement {
 
 		const [domain, service] = domainService.split('.');
 		const data = structuredClone(action.data);
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
 		for (const key in data) {
 			if (Array.isArray(data[key])) {
 				for (const i in data[key] as string[]) {
 					(data[key] as string[])[i] = this.replaceValue(
 						(data[key] as string[])[i],
-						context,
 					) as string;
 				}
 			} else {
-				data[key] = this.replaceValue(data[key] as string, context);
+				data[key] = this.replaceValue(data[key] as string);
 			}
 		}
 		this.hass.callService(domain, service, data);
 	}
 
 	navigate(action: IAction) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-
-		const path = this.replaceValue(
-			action.navigation_path!,
-			context,
-		) as string;
+		const path = this.replaceValue(action.navigation_path!) as string;
 		const replace = this.replaceValue(
 			action.navigation_replace as unknown as string,
-			context,
 		) as boolean;
 		if (path.includes('//')) {
 			console.error(
@@ -190,17 +166,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	toUrl(action: IAction) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-
-		let url = this.replaceValue(action.url_path!, context) as string;
+		let url = this.replaceValue(action.url_path!) as string;
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
@@ -208,22 +174,9 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	assist(action: IAction) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-		const pipelineId = this.replaceValue(
-			action.pipeline_id!,
-			context,
-		) as string;
+		const pipelineId = this.replaceValue(action.pipeline_id!) as string;
 		const startListening = this.replaceValue(
 			action.start_listening!,
-			context,
 		) as boolean;
 
 		// eslint-disable-next-line
@@ -244,19 +197,8 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	moreInfo(action: IAction) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-
 		const entityId = this.replaceValue(
 			action.data?.entity_id as string,
-			context,
 		) as string;
 
 		const event = new Event('hass-more-info', {
@@ -270,21 +212,10 @@ export class BaseServiceCallFeature extends LitElement {
 
 	handleConfirmation(action: IAction) {
 		if ('confirmation' in action) {
-			let holdSecs: number = 0;
-			if (this.buttonPressStart && this.buttonPressEnd) {
-				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-			}
-			const context = {
-				VALUE: this.value,
-				HOLD_SECS: holdSecs ?? 0,
-				UNIT: this.unitOfMeasurement,
-			};
-
 			let confirmation = action.confirmation;
 			if (typeof confirmation == 'string') {
 				confirmation = this.replaceValue(
 					action.confirmation as string,
-					context,
 				) as boolean;
 			}
 			if (confirmation != false) {
@@ -297,14 +228,10 @@ export class BaseServiceCallFeature extends LitElement {
 				) {
 					text = this.replaceValue(
 						(confirmation as IConfirmation).text as string,
-						context,
 					) as string;
 				} else {
 					text = `Are you sure you want to run action '${
-						this.replaceValue(
-							action.service as string,
-							context,
-						) as string
+						this.replaceValue(action.service as string) as string
 					}'?`;
 				}
 				if (confirmation == true) {
@@ -316,7 +243,7 @@ export class BaseServiceCallFeature extends LitElement {
 						if (
 							!(confirmation as IConfirmation)
 								.exemptions!.map((exemption) =>
-									this.replaceValue(exemption.user, context),
+									this.replaceValue(exemption.user),
 								)
 								.includes(this.hass.user.id)
 						) {
@@ -397,30 +324,36 @@ export class BaseServiceCallFeature extends LitElement {
 
 	replaceValue(
 		str: string | number | boolean,
-		context: object,
+		context?: Record<string, string | number | boolean>,
 	): string | number | boolean {
 		str = renderTemplate(this.hass, str as string, context);
 
-		if (typeof str == 'string') {
-			if ('VALUE' in context) {
-				if (str == 'VALUE') {
-					str = context.VALUE as string;
-				} else if (str.toString().includes('VALUE')) {
-					str = str
-						.toString()
-						.replace(/VALUE/g, (context.VALUE ?? '').toString());
-				}
+		if (!context) {
+			let holdSecs: number = 0;
+			if (this.buttonPressStart && this.buttonPressEnd) {
+				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
 			}
-			if ('HOLD_SECS' in context) {
-				if (str == 'HOLD_SECS') {
-					str = context.HOLD_SECS as string;
-				} else if (str.toString().includes('HOLD_SECS')) {
-					str = str
-						.toString()
-						.replace(
-							/HOLD_SECS/g,
-							(context.HOLD_SECS ?? '').toString(),
-						);
+			context = {
+				VALUE: this.value,
+				HOLD_SECS: holdSecs ?? 0,
+				UNIT: this.unitOfMeasurement,
+			};
+		}
+
+		// Legacy VALUE interpolation (and others)
+		if (typeof str == 'string') {
+			for (const key in context) {
+				if (key in context) {
+					if (str == key) {
+						str = context[key] as string;
+					} else if (str.toString().includes(key)) {
+						str = str
+							.toString()
+							.replace(
+								new RegExp(key, 'g'),
+								(context[key] ?? '').toString(),
+							);
+					}
 				}
 			}
 		}
@@ -436,41 +369,18 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	buildStyle(_style: StyleInfo = {}) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-
 		const style = structuredClone(_style);
 		for (const key in style) {
-			style[key] = this.replaceValue(
-				style[key] as string,
-				context,
-			) as string;
+			style[key] = this.replaceValue(style[key] as string) as string;
 		}
 		return style;
 	}
 
 	buildIcon(entry: IEntry = this.entry) {
-		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-		}
-		const context = {
-			VALUE: this.value,
-			HOLD_SECS: holdSecs ?? 0,
-			UNIT: this.unitOfMeasurement,
-		};
-
 		let icon = html``;
 		if ('icon' in entry) {
 			icon = html`<ha-icon
-				.icon=${this.replaceValue(entry.icon as string, context)}
+				.icon=${this.replaceValue(entry.icon as string)}
 				style=${styleMap(this.buildStyle(entry.icon_style ?? {}))}
 			></ha-icon>`;
 		}
