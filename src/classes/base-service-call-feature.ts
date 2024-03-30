@@ -326,8 +326,6 @@ export class BaseServiceCallFeature extends LitElement {
 		str: string | number | boolean,
 		context?: Record<string, string | number | boolean>,
 	): string | number | boolean {
-		str = renderTemplate(this.hass, str as string, context);
-
 		if (!context) {
 			let holdSecs: number = 0;
 			if (this.buttonPressStart && this.buttonPressEnd) {
@@ -339,6 +337,7 @@ export class BaseServiceCallFeature extends LitElement {
 				UNIT: this.unitOfMeasurement,
 			};
 		}
+		str = renderTemplate(this.hass, str as string, context);
 
 		// Legacy VALUE interpolation (and others)
 		if (typeof str == 'string') {
