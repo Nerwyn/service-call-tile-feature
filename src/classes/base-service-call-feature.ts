@@ -129,6 +129,7 @@ export class BaseServiceCallFeature extends LitElement {
 		const context = {
 			VALUE: this.value,
 			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
 		};
 		for (const key in data) {
 			if (Array.isArray(data[key])) {
@@ -146,14 +147,24 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	navigate(action: IAction) {
-		const path =
-			(renderTemplate(this.hass, action.navigation_path!) as string) ??
-			'';
-		const replace =
-			(renderTemplate(
-				this.hass,
-				(action.navigation_replace as unknown as string)!,
-			) as boolean) ?? false;
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+
+		const path = this.replaceValue(
+			action.navigation_path!,
+			context,
+		) as string;
+		const replace = this.replaceValue(
+			action.navigation_replace as unknown as string,
+			context,
+		) as boolean;
 		if (path.includes('//')) {
 			console.error(
 				'Protocol detected in navigation path. To navigate to another website use the action "url" with the key "url_path" instead.',
@@ -179,7 +190,17 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	toUrl(action: IAction) {
-		let url = (renderTemplate(this.hass, action.url_path!) as string) ?? '';
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+
+		let url = this.replaceValue(action.url_path!, context) as string;
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
@@ -187,6 +208,24 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	assist(action: IAction) {
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+		const pipelineId = this.replaceValue(
+			action.pipeline_id!,
+			context,
+		) as string;
+		const startListening = this.replaceValue(
+			action.start_listening!,
+			context,
+		) as boolean;
+
 		// eslint-disable-next-line
 		// @ts-ignore
 		if (this.hass?.auth?.external?.config?.hasAssist) {
@@ -195,8 +234,8 @@ export class BaseServiceCallFeature extends LitElement {
 			this.hass?.auth?.external?.fireMessage({
 				type: 'assist/show',
 				payload: {
-					pipeline_id: action.pipeline_id ?? 'last_used',
-					start_listening: action.start_listening ?? false,
+					pipeline_id: pipelineId ?? 'last_used',
+					start_listening: startListening ?? false,
 				},
 			});
 		} else {
@@ -205,10 +244,20 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	moreInfo(action: IAction) {
-		const entityId = renderTemplate(
-			this.hass,
-			action.data!.entity_id as string,
-		);
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+
+		const entityId = this.replaceValue(
+			action.data?.entity_id as string,
+			context,
+		) as string;
 
 		const event = new Event('hass-more-info', {
 			bubbles: true,
@@ -221,12 +270,22 @@ export class BaseServiceCallFeature extends LitElement {
 
 	handleConfirmation(action: IAction) {
 		if ('confirmation' in action) {
+			let holdSecs: number = 0;
+			if (this.buttonPressStart && this.buttonPressEnd) {
+				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+			}
+			const context = {
+				VALUE: this.value,
+				HOLD_SECS: holdSecs ?? 0,
+				UNIT: this.unitOfMeasurement,
+			};
+
 			let confirmation = action.confirmation;
 			if (typeof confirmation == 'string') {
-				confirmation = renderTemplate(
-					this.hass,
+				confirmation = this.replaceValue(
 					action.confirmation as string,
-				) as unknown as boolean;
+					context,
+				) as boolean;
 			}
 			if (confirmation != false) {
 				this.fireHapticEvent('warning');
@@ -236,15 +295,17 @@ export class BaseServiceCallFeature extends LitElement {
 					confirmation != true &&
 					'text' in (confirmation as IConfirmation)
 				) {
-					text = renderTemplate(
-						this.hass,
+					text = this.replaceValue(
 						(confirmation as IConfirmation).text as string,
+						context,
 					) as string;
 				} else {
-					text = `Are you sure you want to run action '${renderTemplate(
-						this.hass,
-						action.service as string,
-					)}'?`;
+					text = `Are you sure you want to run action '${
+						this.replaceValue(
+							action.service as string,
+							context,
+						) as string
+					}'?`;
 				}
 				if (confirmation == true) {
 					if (!confirm(text)) {
@@ -255,7 +316,7 @@ export class BaseServiceCallFeature extends LitElement {
 						if (
 							!(confirmation as IConfirmation)
 								.exemptions!.map((exemption) =>
-									renderTemplate(this.hass, exemption.user),
+									this.replaceValue(exemption.user, context),
 								)
 								.includes(this.hass.user.id)
 						) {
@@ -340,13 +401,15 @@ export class BaseServiceCallFeature extends LitElement {
 	): string | number | boolean {
 		str = renderTemplate(this.hass, str as string, context);
 
-		if (str) {
-			if (str == 'VALUE') {
-				str = this.value;
-			} else if (str.toString().includes('VALUE')) {
-				str = str
-					.toString()
-					.replace(/VALUE/g, (this.value ?? '').toString());
+		if (typeof str == 'string') {
+			if ('VALUE' in context) {
+				if (str == 'VALUE') {
+					str = context.VALUE as string;
+				} else if (str.toString().includes('VALUE')) {
+					str = str
+						.toString()
+						.replace(/VALUE/g, (context.VALUE ?? '').toString());
+				}
 			}
 			if ('HOLD_SECS' in context) {
 				if (str == 'HOLD_SECS') {
@@ -373,21 +436,41 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	buildStyle(_style: StyleInfo = {}) {
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+
 		const style = structuredClone(_style);
 		for (const key in style) {
-			style[key] = renderTemplate(
-				this.hass,
+			style[key] = this.replaceValue(
 				style[key] as string,
+				context,
 			) as string;
 		}
 		return style;
 	}
 
 	buildIcon(entry: IEntry = this.entry) {
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		}
+		const context = {
+			VALUE: this.value,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+		};
+
 		let icon = html``;
 		if ('icon' in entry) {
 			icon = html`<ha-icon
-				.icon=${renderTemplate(this.hass, entry.icon as string)}
+				.icon=${this.replaceValue(entry.icon as string, context)}
 				style=${styleMap(this.buildStyle(entry.icon_style ?? {}))}
 			></ha-icon>`;
 		}
@@ -401,10 +484,16 @@ export class BaseServiceCallFeature extends LitElement {
 	) {
 		let label = html``;
 		if ('label' in entry) {
+			let holdSecs: number = 0;
+			if (this.buttonPressStart && this.buttonPressEnd) {
+				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+			}
 			const context = {
 				VALUE: value,
+				HOLD_SECS: holdSecs ?? 0,
 				UNIT: this.unitOfMeasurement,
 			};
+
 			if (
 				this.value != undefined &&
 				typeof this.value == 'number' &&
