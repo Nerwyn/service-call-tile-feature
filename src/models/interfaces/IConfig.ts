@@ -30,7 +30,6 @@ export interface IEntry
 	background_style?: StyleInfo;
 	icon_style?: StyleInfo;
 	label_style?: StyleInfo;
-	slider_style?: StyleInfo;
 }
 
 export type TileFeatureType = 'button' | 'slider' | 'selector' | 'spinbox';
@@ -41,7 +40,9 @@ export interface ISliderOptions {
 	range?: [number, number];
 	step?: number;
 	thumb?: ThumbType;
-	tooltip?: boolean;
+
+	slider_style?: StyleInfo;
+	tooltip_style?: StyleInfo;
 }
 
 export interface IOption extends IEntry {

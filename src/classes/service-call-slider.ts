@@ -1,6 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
 import { IAction } from '../models/interfaces';
@@ -200,24 +200,31 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const tooltipText = `${Number(this.currentValue).toFixed(
 			this.precision,
 		)}${this.unitOfMeasurement}`;
-		const display = (
-			'tooltip' in this.entry
-				? renderTemplate(
-						this.hass,
-						this.entry.tooltip as unknown as string,
-				  )
-				: true
-		)
-			? 'initial'
-			: 'none';
+
+		const style: StyleInfo = {
+			...this.buildStyle(this.entry.tooltip_style ?? {}),
+			'--x-position': this.tooltipPosition.toString() + 'px',
+		};
+
+		// Deprecated tooltip hide/show field
+		if ('tooltip' in this.entry) {
+			style.display = (
+				'tooltip' in this.entry
+					? renderTemplate(
+							this.hass,
+							this.entry.tooltip as unknown as string,
+					  )
+					: true
+			)
+				? 'initial'
+				: 'none';
+		}
+
 		// prettier-ignore
 		return html`
 			<div
 				class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
-				style=${styleMap({
-					'--x-position': this.tooltipPosition.toString() + 'px',
-					display: display
-				})}
+				style=${styleMap(style)}
 			>${tooltipText}</div>
 		`;
 	}
