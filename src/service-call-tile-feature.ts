@@ -241,6 +241,19 @@ class ServiceCallTileFeature extends LitElement {
 						);
 					}
 				}
+
+				if ('increment' in entry) {
+					entry.increment = this.populateMissingEntityId(
+						entry.increment!,
+						entry.entity_id!,
+					);
+				}
+				if ('decrement' in entry) {
+					entry.decrement = this.populateMissingEntityId(
+						entry.decrement!,
+						entry.entity_id!,
+					);
+				}
 			}
 
 			const style: StyleInfo = {};
