@@ -15,10 +15,11 @@ export interface IEntry
 		ISelectorOptions,
 		ISpinboxOptions {
 	type?: TileFeatureType;
-	value_attribute?: string;
 
 	entity_id?: string;
 	autofill_entity_id?: boolean;
+	value_attribute?: string;
+	value_from_hass_delay?: number;
 
 	icon?: string;
 	label?: string;

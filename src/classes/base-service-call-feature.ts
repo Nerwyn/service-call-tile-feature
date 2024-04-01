@@ -361,9 +361,15 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	resetGetValueFromHass() {
+		const valueFromHassDelay =
+			'value_from_hass_delay' in this.entry
+				? (this.replaceValue(
+						this.entry.value_from_hass_delay as unknown as string,
+				  ) as number)
+				: 1000;
 		this.getValueFromHassTimer = setTimeout(
 			() => (this.getValueFromHass = true),
-			5000,
+			valueFromHassDelay,
 		);
 	}
 
