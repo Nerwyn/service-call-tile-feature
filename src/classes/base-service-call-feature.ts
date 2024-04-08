@@ -410,8 +410,8 @@ export class BaseServiceCallFeature extends LitElement {
 			};
 
 			if (
-				this.value != undefined &&
-				typeof this.value == 'number' &&
+				value != undefined &&
+				typeof value == 'number' &&
 				this.precision !== undefined
 			) {
 				context.VALUE = Number(value).toFixed(this.precision);
