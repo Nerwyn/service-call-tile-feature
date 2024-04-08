@@ -24,7 +24,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 
 	@state() value: string | number | boolean = 0;
-	@state() getValueFromHass: boolean = true;
+	getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 
 	unitOfMeasurement: string = '';
@@ -268,13 +268,13 @@ export class BaseServiceCallFeature extends LitElement {
 			) as string) ?? '';
 
 		if (this.getValueFromHass) {
-			let valueAttribute = renderTemplate(
-				this.hass,
-				this.entry.value_attribute as string,
-			) as string;
 			const entityId = renderTemplate(
 				this.hass,
 				this.entry.entity_id as string,
+			) as string;
+			let valueAttribute = renderTemplate(
+				this.hass,
+				this.entry.value_attribute as string,
 			) as string;
 			if (entityId) {
 				if (valueAttribute == 'state') {

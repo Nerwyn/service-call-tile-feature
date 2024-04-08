@@ -29,8 +29,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
 			this.value = slider.value;
-			this.currentValue = slider.value;
-			this.setTooltip(slider, true);
 
 			this.fireHapticEvent('selection');
 
@@ -38,8 +36,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				(this.oldValue as unknown as string) ?? this.value ?? '0',
 			);
 			const end = parseFloat(slider.value ?? start);
-			slider.value = start.toString();
 			this.newValue = end;
+
+			this.currentValue = start;
+			this.setTooltip(slider, true);
 
 			if (end > this.range[0]) {
 				this.sliderOn = true;
@@ -49,13 +49,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			if (start > end) {
 				const id = setInterval(() => {
 					i -= this.speed;
-					slider.value = i.toString();
-					this.currentValue = slider.value;
+					this.currentValue = i;
+					this.setTooltip(slider, this.showTooltip);
 
 					if (end >= i) {
 						clearInterval(id);
-						slider.value = end.toString();
-						this.currentValue = slider.value;
+						this.currentValue = end;
+						this.setTooltip(slider, this.showTooltip);
 						if (
 							this.value == undefined ||
 							(end <= this.range[0] &&
@@ -69,17 +69,17 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.sliderOn = true;
 				const id = setInterval(() => {
 					i += this.speed;
-					slider.value = i.toString();
-					this.currentValue = slider.value;
+					this.currentValue = i;
+					this.setTooltip(slider, this.showTooltip);
 
 					if (end <= i) {
 						clearInterval(id);
-						slider.value = end.toString();
-						this.currentValue = slider.value;
+						this.currentValue = end;
+						this.setTooltip(slider, this.showTooltip);
 					}
 				}, 1);
 			} else {
-				slider.value = end.toString();
+				this.currentValue = end;
 			}
 
 			this.oldValue = end;
@@ -88,25 +88,24 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.getValueFromHass = true;
 			}
 			this.setValue();
-			slider.value = (this.value ?? 0).toString();
+			this.currentValue = this.value ?? 0;
 			this.setTooltip(slider, false);
-			this.currentValue = slider.value;
 		}
 	}
 
-	onStart(e: TouchEvent | MouseEvent) {
+	onStart(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.swiping) {
 			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
-			this.value = slider.value;
 			this.currentValue = slider.value;
+			this.value = slider.value;
 			this.setTooltip(slider, true);
 		}
 	}
 
-	onEnd(e: TouchEvent | MouseEvent) {
+	onEnd(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 		this.setTooltip(slider, false);
 		this.setValue();
@@ -127,17 +126,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.getValueFromHass = true;
 			}
 			this.setValue();
-			slider.value = (this.value ?? 0).toString();
-			this.currentValue = slider.value;
+			this.currentValue = this.value ?? 0;
 		}
 
-		this.swiping = false;
-		this.initialX = undefined;
-		this.initialY = undefined;
+		this.endAction();
 		this.resetGetValueFromHass();
 	}
 
-	onMove(e: TouchEvent | MouseEvent) {
+	onMove(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		let currentX: number;
@@ -165,12 +161,21 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-			slider.value = (this.value ?? 0).toString();
-			this.currentValue = slider.value;
+			this.currentValue = this.value ?? 0;
 			this.setTooltip(slider, false);
 			this.sliderOn = !(
 				this.value == undefined || Number(this.value) <= this.range[0]
 			);
+		}
+	}
+
+	setValue() {
+		super.setValue();
+		if (this.getValueFromHass) {
+			this.oldValue = Number(this.value);
+			if (this.newValue == undefined) {
+				this.newValue = Number(this.value);
+			}
 		}
 	}
 
