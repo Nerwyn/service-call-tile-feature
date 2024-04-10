@@ -19,6 +19,6 @@ declare global {
 			| number
 			| boolean
 			| Record<string, string | number | boolean>
-		>;
+		> | any;
 	}
 }

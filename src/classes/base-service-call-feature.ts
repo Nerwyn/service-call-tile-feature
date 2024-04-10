@@ -104,6 +104,9 @@ export class BaseServiceCallFeature extends LitElement {
 				case 'more-info':
 					this.moreInfo(action);
 					break;
+				case 'fire-dom-event':
+					this.callFireDomEvent(action);
+					break;
 				case 'none':
 				default:
 					break;
@@ -114,6 +117,11 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
+	callFireDomEvent(action: IAction) {
+		const event = new Event('ll-custom', { composed: true, bubbles: true });
+		event.detail = action;
+		this.dispatchEvent(event);
+	}
 	callService(action: IAction) {
 		const domainService = renderTemplate(
 			this.hass,

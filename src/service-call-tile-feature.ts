@@ -91,7 +91,7 @@ class ServiceCallTileFeature extends LitElement {
 			'url_path',
 			'confirmation',
 			'pipeline_id',
-			'start_listening',
+			'start_listening'
 		];
 		const tapAction = entry.tap_action ?? ({} as IAction);
 		let updateTapAction = false;
@@ -126,7 +126,10 @@ class ServiceCallTileFeature extends LitElement {
 						(action as IAction).action = 'navigate';
 					} else if ('url_path' in action) {
 						(action as IAction).action = 'url';
-					} else if (
+					} else if ('fire-dom-event' in action) {
+						(action as IAction).action = 'fire-dom-event';
+					}
+					else if (
 						'pipeline_id' in action ||
 						'start_listening' in action
 					) {

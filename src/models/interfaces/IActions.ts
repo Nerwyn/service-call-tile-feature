@@ -4,6 +4,7 @@ export type Action =
 	| 'url'
 	| 'assist'
 	| 'more-info'
+	| 'fire-dom-event'
 	| 'none';
 
 export interface IData {
@@ -36,6 +37,8 @@ export interface IAction {
 
 	pipeline_id?: string;
 	start_listening?: boolean;
+
+	browser_mod?: any;
 
 	hold_time?: number;
 	repeat_delay?: number;
