@@ -22,7 +22,12 @@ export interface IConfirmation {
 	exemptions?: [{ user: string }];
 }
 
-export interface IAction {
+export interface IBrowserMod {
+	service?: string;
+	data?: IData;
+}
+
+export type IAction = {
 	action: Action;
 
 	service?: string;
@@ -38,7 +43,7 @@ export interface IAction {
 	pipeline_id?: string;
 	start_listening?: boolean;
 
-	browser_mod?: any;
+	browser_mod?: IBrowserMod;
 
 	hold_time?: number;
 	repeat_delay?: number;

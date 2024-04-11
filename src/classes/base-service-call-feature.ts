@@ -105,7 +105,7 @@ export class BaseServiceCallFeature extends LitElement {
 					this.moreInfo(action);
 					break;
 				case 'fire-dom-event':
-					this.callFireDomEvent(action);
+					this.fireDomEvent(action);
 					break;
 				case 'none':
 				default:
@@ -117,11 +117,14 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
-	callFireDomEvent(action: IAction) {
-		const event = new Event('ll-custom', { composed: true, bubbles: true });
-		event.detail = action;
-		this.dispatchEvent(event);
+	fireDomEvent(action: IAction) {
+		if(action.browser_mod?.data != undefined){
+			const event = new Event('ll-custom', { composed: true, bubbles: true });
+			event.detail = action;
+			this.dispatchEvent(event);
+		}
 	}
+
 	callService(action: IAction) {
 		const domainService = renderTemplate(
 			this.hass,
@@ -453,6 +456,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 		return label;
 	}
+
 
 	// Skeletons for overridden event handlers
 	onStart(_e: MouseEvent | TouchEvent) {}

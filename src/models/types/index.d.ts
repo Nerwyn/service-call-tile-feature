@@ -1,3 +1,5 @@
+import { IAction } from '../interfaces/IActions';
+
 export {};
 
 declare global {
@@ -18,7 +20,8 @@ declare global {
 			| string
 			| number
 			| boolean
+			| IData
 			| Record<string, string | number | boolean>
-		> | any;
+		> | IAction;
 	}
 }
