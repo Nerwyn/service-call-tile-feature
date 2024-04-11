@@ -32,7 +32,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		if (
 			renderTemplate(
 				this.hass,
-				this.entry[operator]?.hold_action?.action ?? 'none',
+				this.entry.hold_action?.action ?? 'none',
 			) == 'repeat' &&
 			!this.holdTimer
 		) {

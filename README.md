@@ -11,7 +11,7 @@
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
-Call any service and most [actions](https://www.home-assistant.io/dashboards/actions/) via tile features. This custom tile feature will let you create super customizable tile buttons, sliders, and selectors. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
+Call any service and most [actions](https://www.home-assistant.io/dashboards/actions/) via tile features. This custom tile feature will let you create super customizable tile buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -53,7 +53,7 @@ The custom service call feature is actually a row of entries, each of which have
 
 | Name                | Type      | Description                                                                                                                                              |
 | ------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type                | string    | Type of tile feature. Currently supported options are `button`, `slider`, and `selector`.                                                                |
+| type                | string    | Type of tile feature. Currently supported options are `button`, `slider`, `selector`, and `spinbox`.                                                     |
 | value_attribute     | string    | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
 | entity_id           | string    | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
 | autofill_entity_id  | boolean   | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
@@ -61,6 +61,7 @@ The custom service call feature is actually a row of entries, each of which have
 | label               | string    | A string to place either underneath the icon or by itself.                                                                                               |
 | unit_of_measurement | string    | A string to append to the end of the label, if it exists.                                                                                                |
 | style               | StyleInfo | CSS style properties to set to the feature, further explained below.                                                                                     |
+| haptics             | boolean   | Enable haptics on the feature, defaults to `false`.                                                                                                      |
 
 ```yaml
 type: custom:service-call
@@ -69,6 +70,7 @@ entries:
     value_attribute: brightness
     entity_id: light.lounge
     autofill_entity_id: false
+    haptics: true
     icon: >-
       {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
       "mdi:ceiling-light-outline") }}
@@ -86,7 +88,7 @@ entries:
         {% endif %}
 ```
 
-By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider` and `selector` are also supported.
+By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider`, `selector`, and `spinbox` are also supported.
 
 The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `VALUE`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
 
@@ -94,21 +96,25 @@ If you find that the autofilling of the entity ID in the service call or tile fe
 
 If the icon or label is empty, then the entire HTML element will not render. If the label is present, then `unit_of_measurement` is appended to the end of it.
 
+Haptics are disabled for tile features by default, but can be enabled by setting `haptics` to true.
+
 ## Templating
 
 All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
-You can include the current value of a tile feature and it's units by using the variables `VALUE` and `UNIT` in a label template.
+You can include the current value of a tile feature and it's units by using the variables `VALUE` and `UNIT` in a label template. You can also include `HOLD_SECS` in a template if performing a `momentary_end_action`.
 
 ## Actions
 
-There are three ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
+There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
-| Name              | Type   | Description                                                                                       |
-| ----------------- | ------ | ------------------------------------------------------------------------------------------------- |
-| tap_action        | object | Action to perform on single tap.                                                                  |
-| hold_action       | object | Action to perform when held.                                                                      |
-| double_tap_action | object | Action to perform when double tapped. Adding this introduces a 200ms delay to single tap actions. |
+| Name                                             | Type   | Description                                                                                                           |
+| ------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| tap_action                                       | object | Action to perform on single tap.                                                                                      |
+| hold_action                                      | object | Action to perform when held.                                                                                          |
+| double_tap_action                                | object | Action to perform when double tapped. Adding this introduces a 200ms delay to single tap actions.                     |
+| [momentary_start_action](#momentary-button-mode) | object | Action to perform when the button is initially held down. If configured normal tap and hold actions will not trigger. |
+| [momentary_end_action](#momentary-button-mode)   | object | Action to perform when the button is released.                                                                        |
 
 ```yaml
 type: custom:service-call
@@ -144,6 +150,59 @@ entries:
           Are you sure you want to turn the light {{ 'on' if
           is_state('light.lounge', 'off') else 'off' }}?
 ```
+
+### Adjustable Timings
+
+#### Hold Time
+
+Hold actions are triggered by holding down on a button. The default amount of time is 500ms. You can change this by setting `hold_time` in the hold action to a different number.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:view-dashboard
+    hold_action:
+      action: navigate
+      navigation_path: /lovelace/2
+      hold_time: 600
+```
+
+#### Repeat and Repeat Delay
+
+By setting a hold action to `repeat`, the tap action will repeat while the button is held down. The default delay between repeats is 100ms. You can change this by setting `repeat_delay` in the hold action to a different number, or globally by setting it in the remote config root. See the below section on [repeat](#repeat) for more.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:lightbulb
+    tap_action:
+      action: call-service
+      service: light.toggle
+      target:
+        entity_id: light.bedroom
+    hold_action:
+      action: repeat
+      repeat_delay: 1000
+```
+
+#### Double Tap Window
+
+Double tap actions have a default window of 200ms to trigger before a single tap action is triggered instead. You can change this by setting `double_tap_window` in the double tap action to a different number.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:view-dashboard
+    double_tap_action:
+      action: navigate
+      navigation_path: /lovelace/1
+    double_tap_window: 400
+```
+
+**NOTE**: Setting `double_tap_window` above or too close to `hold_time` can result in undesirable behavior, as the hold timer expires before the double tap window does.
 
 ### Action Types
 
@@ -264,6 +323,67 @@ entries:
         entity_id: camera.front_door
 ```
 
+#### none
+
+None. This action does nothing.
+
+````yaml
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    tap_action:
+      action: none
+    hold_action:
+      action: more-info
+````
+
+#### repeat
+
+| Name         | Description                                      |
+| ------------ | ------------------------------------------------ |
+| repeat_delay | Milliseconds between repeats. Defaults to 100ms. |
+
+The `tap_action` must be defined, whether by the default key or as a custom action.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:lightbulb
+    tap_action:
+      action: call-service
+      service: light.toggle
+      target:
+        entity_id: light.theater
+    hold_action:
+      action: repeat # light will be toggled repeatedly while held
+    repeat_delay: 1000
+```
+
+### Momentary Button mode
+
+As an alternative to normal tap, hold, and double tap actions, buttons and selectors can also be used in a momentary mode. Configuring this option disables the normal tap, hold, and double tap actions.
+
+`momentary_start_action` is fired when you first press down on a button (or center of touchpad). `momentary_end_action` is fired when you release the button or touchpad. While these are meant to be used together you can use one or the other.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:ceiling-light
+    momentary_start_action:
+      action: call-service
+      service: light.turn_on
+      data:
+        entity_id: light.sunroom_ceiling
+    momentary_end_action:
+      action: call-service
+      service: light.turn_off
+      data:
+        entity_id: light.sunroom_ceiling
+```
+
 ## Style Options
 
 While any CSS property can be used, these values are internal CSS variables designed to be set by the user.
@@ -348,11 +468,11 @@ entries:
 
 ## Selector Specific Options
 
-| Name                  | Type     | Description                                                                                                                             |
-| --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| options               | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature                                     |
-| options.i.option      | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option |
-| style.--hover-opacity | number   | Opacity to use when hovering over a selector option.                                                                                    |
+| Name                  | Type     | Description                                                                                                                              |
+| --------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| options               | Option[] | An array of entries to use as options for the selector, each one being like it's own button feature.                                     |
+| options.i.option      | string   | A value to used to compare against the features value (see `value_attribute` above) to determine if it is the currently selected option. |
+| style.--hover-opacity | number   | Opacity to use when hovering over a selector option.                                                                                     |
 
 ```yaml
 type: custom:service-call
@@ -382,6 +502,74 @@ entries:
           '--color': var(--blue-color)
     style:
       --hover-opacity: 0.4
+```
+
+## Spinbox Specific Options
+
+| Name          | Type   | Description                                                                   |
+| ------------- | ------ | ----------------------------------------------------------------------------- |
+| range         | array  | The minimum and maximum numbers for the spinbox, defaults to [-32767, 32767]. |
+| step          | number | The increment/decrement step amount, defaults to 1.                           |
+| debounce_time | number | The time to wait before firing the spinbox action, defaults to 1000ms.        |
+| increment     | IEntry | Override the default increment button behavior and style options.             |
+| decrement     | IEntry | Override the default decrement button behavior and style options.             |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: spinbox
+    icon: mdi:brightness-4
+    label: VALUE
+    step: 5
+    debounceTime: 1000
+    range:
+      - 0
+      - 100
+    value_attribute: brightness
+    tap_action:
+      action: call-service
+      service: light.turn_on
+      data:
+        entity_id: light.sunroom_ceiling
+        brightness_pct: VALUE
+    decrement:
+      icon: mdi:brightness-3
+      label: down
+      tap_action:
+        action: none
+        service: light.turn_on
+        data:
+          entity_id: light.sunroom_ceiling
+          brightness_step_pct: -10
+      hold_action:
+        action: repeat
+      style:
+        flex-flow: row
+      icon_style:
+        padding-right: 4px
+    increment:
+      icon: mdi:brightness-2
+      label: up
+      tap_action:
+        action: none
+        service: light.turn_on
+        data:
+          entity_id: light.sunroom_ceiling
+          brightness_step_pct: 5
+      hold_action:
+        action: repeat
+      style:
+        flex-flow: row-reverse
+      icon_style:
+        padding-left: 4px
+    style:
+      '--light-color': rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+      '--on-color': >-
+        {{ "var(--light-color)" if is_state("light.sunroom_ceiling", "on") else
+        "initial" }}
+      '--background': var(--on-color)
+      '--icon-color': var(--on-color)
+      '--label-color': var(--on-color)
 ```
 
 # Feature Types
@@ -464,7 +652,33 @@ entries:
 
 This feature is set up to work with Home Assistant `select/input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `select/input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
 
-Since each selector option is a service call button, you can override it's default behavior by including service call information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
+Since each selector option is a service call button, you can override it's default behavior by including action information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
+
+## Spinboxes
+
+Spinboxes allow you to create Home Assistant style number buttons, similar to the climate target temperature feature. By default this feature holds a value based on it's entity's state or attribute. The user can increment or decrement this value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `debounce_time` (default 1000ms), the user defined `tap_action` will fire. This action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature`. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this action repeat when held by setting `hold_action.action` to repeat.
+
+You can also override the default behavior of the increment and decrement buttons by including action information as show in [example 6](#Example-6). Doing so will disable the normal increment/decrement and debounce button behavior and create a stylized button feature instead.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: spinbox
+    icon: mdi:thermometer
+    label: VALUE
+    step: 1
+    debounceTime: 1000
+    range:
+      - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
+      - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
+    value_attribute: temperature
+    unit_of_measurement: ' °F'
+    tap_action:
+      service: climate.set_temperature
+      data:
+        entity_id: climate.downstairs_thermostat
+        temperature: VALUE
+```
 
 # Examples
 
@@ -510,7 +724,7 @@ card_mod:
 
 ## Example 2
 
-A light tile with a button for each bulb, a color selector, and brightness and temperature sliders, with emphasis on certain options.
+A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options.
 
 ```yaml
 features:
@@ -685,6 +899,49 @@ features:
           '--label-color': var(--disabled-color)
           '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
           '--background-opacity': 1
+  - type: custom:service-call
+    entries:
+      - type: spinbox
+        haptics: true
+        icon: mdi:brightness-4
+        label: VALUE
+        step: 5
+        debounceTime: 1000
+        range:
+          - 0
+          - 100
+        value_attribute: brightness
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            brightness_pct: VALUE
+        decrement:
+          icon: mdi:brightness-3
+          label: down
+          hold_action:
+            action: repeat
+          style:
+            flex-flow: row
+          icon_style:
+            padding-right: 4px
+        increment:
+          icon: mdi:brightness-2
+          label: up
+          hold_action:
+            action: repeat
+          style:
+            flex-flow: row-reverse
+          icon_style:
+            padding-left: 4px
+        style:
+          '--light-color': rgb({{ state_attr("light.chandelier", "rgb_color") }})
+          '--on-color': >-
+            {{ "var(--light-color)" if is_state("light.chandelier", "on") else
+            "initial" }}
+          '--background': var(--on-color)
+          '--icon-color': var(--on-color)
+          '--label-color': var(--on-color)
 type: tile
 entity: light.chandelier
 ```
@@ -828,6 +1085,33 @@ features:
           flex: auto
         label_style:
           left: '-16px'
+      - type: slider
+        tap_action:
+          action: call-service
+          service: media_player.media_seek
+          data:
+            seek_position: VALUE
+            entity_id: media_player.spotify
+        value_attribute: media_position
+        range:
+          - 0
+          - '{{ state_attr("media_player.spotify", "media_duration") }}'
+        thumb: line
+        label: >-
+          {{ (VALUE / 60) | int }}:{{ 0 if (VALUE - 60*((VALUE / 60) | int)) < 10
+          else "" }}{{ (VALUE - 60*((VALUE / 60) | int)) | int }}/{{
+          (state_attr("media_player.spotify", "media_duration") / 60) |
+          int }}:{{ 0 if (state_attr("media_player.spotify",
+          "media_duration") - 60*((state_attr("media_player.spotify",
+          "media_duration") / 60) | int)) < 10 else "" }}{{
+          (state_attr("media_player.spotify", "media_duration") -
+          60*((state_attr("media_player.spotify", "media_duration") /
+          60) | int)) | int }}
+        style:
+          '--color': rgb(31, 223, 100)
+        background_style:
+          height: 39%
+          border-radius: 32px
 
 type: tile
 entity: binary_sensor.sun_room
@@ -953,6 +1237,48 @@ color: accent
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="1200"/>
+
+## Example 6
+
+A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different commic based on how long you hold it using momentary button mode.
+
+```yaml
+features:
+  - type: custom:service-call
+    entries:
+      - type: spinbox
+        icon: mdi:thermometer
+        label: VALUE
+        step: 1
+        debounceTime: 1000
+        range:
+          - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
+          - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
+        value_attribute: temperature
+        unit_of_measurement: ' °F'
+        tap_action:
+          service: climate.set_temperature
+          data:
+            entity_id: climate.downstairs_thermostat
+            temperature: VALUE
+        hold_action:
+          action: repeat
+        style:
+          '--background': var(--tile-color)
+          '--icon-color': var(--tile-color)
+          flex-flow: row
+  - type: custom:service-call
+    entries:
+      - type: button
+        label: XKCD
+        value_from_hass_delay: 5000
+        momentary_end_action:
+          action: url
+          url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
+type: tile
+entity: climate.downstairs_thermostat
+
+```
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
