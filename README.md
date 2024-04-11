@@ -724,7 +724,7 @@ card_mod:
 
 ## Example 2
 
-A light tile with a button for each bulb, a color selector, and brightness and temperature sliders, with emphasis on certain options.
+A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options.
 
 ```yaml
 features:
@@ -899,6 +899,49 @@ features:
           '--label-color': var(--disabled-color)
           '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
           '--background-opacity': 1
+  - type: custom:service-call
+    entries:
+      - type: spinbox
+        haptics: true
+        icon: mdi:brightness-4
+        label: VALUE
+        step: 5
+        debounceTime: 1000
+        range:
+          - 0
+          - 100
+        value_attribute: brightness
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          data:
+            brightness_pct: VALUE
+        decrement:
+          icon: mdi:brightness-3
+          label: down
+          hold_action:
+            action: repeat
+          style:
+            flex-flow: row
+          icon_style:
+            padding-right: 4px
+        increment:
+          icon: mdi:brightness-2
+          label: up
+          hold_action:
+            action: repeat
+          style:
+            flex-flow: row-reverse
+          icon_style:
+            padding-left: 4px
+        style:
+          '--light-color': rgb({{ state_attr("light.chandelier", "rgb_color") }})
+          '--on-color': >-
+            {{ "var(--light-color)" if is_state("light.chandelier", "on") else
+            "initial" }}
+          '--background': var(--on-color)
+          '--icon-color': var(--on-color)
+          '--label-color': var(--on-color)
 type: tile
 entity: light.chandelier
 ```
@@ -1042,6 +1085,33 @@ features:
           flex: auto
         label_style:
           left: '-16px'
+      - type: slider
+        tap_action:
+          action: call-service
+          service: media_player.media_seek
+          data:
+            seek_position: VALUE
+            entity_id: media_player.spotify
+        value_attribute: media_position
+        range:
+          - 0
+          - '{{ state_attr("media_player.spotify", "media_duration") }}'
+        thumb: line
+        label: >-
+          {{ (VALUE / 60) | int }}:{{ 0 if (VALUE - 60*((VALUE / 60) | int)) < 10
+          else "" }}{{ (VALUE - 60*((VALUE / 60) | int)) | int }}/{{
+          (state_attr("media_player.spotify", "media_duration") / 60) |
+          int }}:{{ 0 if (state_attr("media_player.spotify",
+          "media_duration") - 60*((state_attr("media_player.spotify",
+          "media_duration") / 60) | int)) < 10 else "" }}{{
+          (state_attr("media_player.spotify", "media_duration") -
+          60*((state_attr("media_player.spotify", "media_duration") /
+          60) | int)) | int }}
+        style:
+          '--color': rgb(31, 223, 100)
+        background_style:
+          height: 39%
+          border-radius: 32px
 
 type: tile
 entity: binary_sensor.sun_room
@@ -1170,10 +1240,44 @@ color: accent
 
 ## Example 6
 
-Spinbox TODO
+A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different commic based on how long you hold it using momentary button mode.
 
 ```yaml
-TODO
+features:
+  - type: custom:service-call
+    entries:
+      - type: spinbox
+        icon: mdi:thermometer
+        label: VALUE
+        step: 1
+        debounceTime: 1000
+        range:
+          - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
+          - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
+        value_attribute: temperature
+        unit_of_measurement: ' °F'
+        tap_action:
+          service: climate.set_temperature
+          data:
+            entity_id: climate.downstairs_thermostat
+            temperature: VALUE
+        hold_action:
+          action: repeat
+        style:
+          '--background': var(--tile-color)
+          '--icon-color': var(--tile-color)
+          flex-flow: row
+  - type: custom:service-call
+    entries:
+      - type: button
+        label: XKCD
+        value_from_hass_delay: 5000
+        momentary_end_action:
+          action: url
+          url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
+type: tile
+entity: climate.downstairs_thermostat
+
 ```
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
