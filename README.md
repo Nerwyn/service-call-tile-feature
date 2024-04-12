@@ -15,6 +15,124 @@ Call any service and most [actions](https://www.home-assistant.io/dashboards/act
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
+# Feature Types
+
+## Buttons
+
+Buttons are the most basic type of custom tile feature, being based on the example provided in the Home Assistant developer documentation.
+
+To create a button, add a Service Call tile feature to your tile and edit it. By default type will be set to button. In order for this button to actually do anything you need to give it an action to perform, like so:
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    tap_action:
+      action: call-service
+      service: light.toggle
+```
+
+As explained above, the entity ID of the feature and service call data is autofilled with the tile entity ID.
+
+All basic style options work with service call buttons as show in [example 2](#Example-2)
+
+In addition to `tap_action`, buttons also support `hold_action`, `double_tap_action`, `momentary_start_action`, and `momentary_end_action`. All of these are described in further detail below.
+
+Like all features in this project, buttons can be given an icon and a label. The icon, label, and rest of the feature can be stylized using style options described below.
+
+## Sliders
+
+Sliders allow you to create Home Assistant styled input range sliders, similar to those available for light brightness and temperature. But these sliders can be used for any action.
+
+To create a slider, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `slider`. By default this will look like a normal tile light brightness or cover position slider, but you can change this to a couple of other thumb styles as shown in [example 3](#Example-3) using the `thumb` option.
+
+If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
+
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. If you want to use templating to set the slider label instead, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement as you wish. Otherwise if you include `VALUE` in a label without templating it will be replaced with the current slider value with unit of measurement appended to it if provided. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider and include units if `unit_of_measurement` is also provided.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    value_attribute: brightness
+    tap_action:
+      action: call-service
+      service: light.turn_on
+      data:
+        brightness_pct: VALUE
+```
+
+To better understand the attributes of Home Assistant entities, use the states tab in Home Assistant Developer tools. Remember, that you can also change the entity of the slider by setting `entity_id` either at the entry level or within the `data` or `target` objects (NOT at the root of the feature config).
+
+By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the service you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn` with `color_temp`), make sure to set step size to a whole number.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: slider
+    thumb: line
+    value_attribute: color_temp
+    range:
+      - 153
+      - 371
+    step: 1
+    tap_action:
+      action: call-service
+      service: light.turn_on
+      data:
+        color_temp: VALUE
+    style:
+      --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
+      --background-opacity: 1
+```
+
+## Selectors
+
+Selectors allow you to create a row of custom button features with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. But like all features in this project it can be used for any actions.
+
+To create a selector, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `selector`. At first you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature as described above. For now let's use the options field to give each selector option an icon:
+
+```yaml
+type: custom:service-call
+entries:
+  - type: selector
+    entity_id: input_select.listening_mode
+    options:
+      - icon: mdi:dolby
+      - icon: mdi:music
+      - icon: mdi:microsoft-xbox-controller
+```
+
+This feature is set up to work with Home Assistant `select/input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `select/input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
+
+Since each selector option is a service call button, you can override it's default behavior by including action information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
+
+## Spinboxes
+
+Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `debounce_time` (default 1000ms), the user defined `tap_action` will fire. Similar This action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `VALUE` by itself or in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting `hold_action.action` to repeat.
+
+You can also override the default behavior of the increment and decrement buttons by including action information as show in [example 6](#Example-6). Doing so will disable the normal increment/decrement and debounce button behavior and create a stylized button feature instead.
+
+```yaml
+type: custom:service-call
+entries:
+  - type: spinbox
+    icon: mdi:thermometer
+    label: VALUE
+    step: 1
+    debounceTime: 1000
+    range:
+      - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
+      - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
+    value_attribute: temperature
+    unit_of_measurement: ' °F'
+    tap_action:
+      service: climate.set_temperature
+      data:
+        entity_id: climate.downstairs_thermostat
+        temperature: VALUE
+```
+
 # How To Use
 
 The trade off for the level of customizability that this card offers is that it can be a bit confusing to use. All of the available features and options are documented below. This card can be installed using HACS by adding it as a custom frontend repository.
@@ -424,7 +542,7 @@ While any CSS property can be used, these values are internal CSS variables desi
 | --background-opacity | number | Opacity of the tile feature background. Defaults to 0.2.                                             |
 | flex-basis           | string | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
 
-If you want to apply additional styles to subelements, you can also use the options `icon_style`, `label_style`, `background_style`, and `slider_style`.
+If you want to apply additional styles to subelements, you can also use the options `icon_style`, `label_style`, `background_style`, `slider_style`, and `tooltip_style`.
 
 ```yaml
 type: custom:service-call
@@ -456,12 +574,12 @@ entries:
 
 ## Slider Specific Options
 
-| Name    | Type    | Description                                                                                                                                                                |
-| ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| range   | array   | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                      |
-| step    | number  | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.                 |
-| thumb   | string  | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile color temperature slider.<br />- `flat`: Like a mushroom slider. |
-| tooltip | boolean | Whether or not to display a tooltip with the slider value when it's held down on, defaults to true.                                                                        |
+| Name                  | Type   | Description                                                                                                                                                                                                                             |
+| --------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range                 | array  | The minimum and maximum numbers for the slider, defaults to [0, 100].                                                                                                                                                                   |
+| step                  | number | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.                                                                              |
+| thumb                 | string | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile color temperature slider.<br />- `flat`: Like a mushroom slider.                                                              |
+| value_from_hass_delay | number | The time the feature will wait after firing an action before it starts retrieving values from Home Assistant again. Useful for preventing bouncing between new and old values if an entity takes a while to update. Defaults to 1000ms. |
 
 ```yaml
 type: custom:service-call
@@ -474,7 +592,6 @@ entries:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
       - '{{ state_attr("light.lounge", "max_mireds") }}'
     step: 1
-    tooltip: true
     value_attribute: brightness
     tap_action:
       action: call-service
@@ -530,13 +647,14 @@ entries:
 
 ## Spinbox Specific Options
 
-| Name          | Type   | Description                                                                   |
-| ------------- | ------ | ----------------------------------------------------------------------------- |
-| range         | array  | The minimum and maximum numbers for the spinbox, defaults to [-32767, 32767]. |
-| step          | number | The increment/decrement step amount, defaults to 1.                           |
-| debounce_time | number | The time to wait before firing the spinbox action, defaults to 1000ms.        |
-| increment     | IEntry | Override the default increment button behavior and style options.             |
-| decrement     | IEntry | Override the default decrement button behavior and style options.             |
+| Name                  | Type   | Description                                                                                                                                                                                                                             |
+| --------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| range                 | array  | The minimum and maximum numbers for the spinbox, defaults to [-32767, 32767].                                                                                                                                                           |
+| step                  | number | The increment/decrement step amount, defaults to 1.                                                                                                                                                                                     |
+| value_from_hass_delay | number | The time the feature will wait after firing an action before it starts retrieving values from Home Assistant again. Useful for preventing bouncing between new and old values if an entity takes a while to update. Defaults to 1000ms. |
+| debounce_time         | number | The time to wait before firing the spinbox action, defaults to 1000ms.                                                                                                                                                                  |
+| increment             | IEntry | Override the default increment button behavior and style options.                                                                                                                                                                       |
+| decrement             | IEntry | Override the default decrement button behavior and style options.                                                                                                                                                                       |
 
 ```yaml
 type: custom:service-call
@@ -594,114 +712,6 @@ entries:
       '--background': var(--on-color)
       '--icon-color': var(--on-color)
       '--label-color': var(--on-color)
-```
-
-# Feature Types
-
-## Buttons
-
-Buttons are the most basic type of custom tile feature, being based on the example provided in the Home Assistant developer documentation.
-
-To create a button, add a Service Call tile feature to your tile and edit it. By default type will be set to button. In order for this button to actually do anything you need to give it a `service` to call, like so:
-
-```yaml
-type: custom:service-call
-entries:
-  - type: button
-    service: light.toggle
-```
-
-As explained above, the entity ID of the feature and service call data is autofilled with the tile entity ID.
-
-All basic style options work with service call buttons as show in [example 2](#Example-2)
-
-## Sliders
-
-Sliders allow you to create Home Assistant styled input range sliders, similar to those available for light brightness and temperature. But these sliders can be used for any service call.
-
-To create a slider, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `slider`. By default this will look like a normal tile light brightness or cover position slider, but you can change this to a couple of other thumb styles as shown in [example 3](#Example-3) using the `thumb` option.
-
-If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
-
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. If you want to use templating to set the slider label instead, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement as you wish. Otherwise if you include `VALUE` in a label without templating it will be replaced with the current slider value with unit of measurement appended to it if provided. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider and include units if `unit_of_measurement` is also provided.
-
-```yaml
-type: custom:service-call
-entries:
-  - type: slider
-    service: light.turn_on
-    value_attribute: brightness
-    data:
-      brightness_pct: VALUE
-```
-
-To better understand the attributes of Home Assistant entities, use the states tab in Home Assistant Developer tools. Remember, that you can also change the entity of the slider by setting `entity_id` either at the entry level or within the `data` or `target` objects (NOT at the root of the feature config).
-
-By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the service you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn` with `color_temp`), make sure to set step size to a whole number.
-
-```yaml
-type: custom:service-call
-entries:
-  - type: slider
-    thumb: line
-    value_attribute: color_temp
-    service: light.turn_on
-    range:
-      - 153
-      - 371
-    step: 1
-    data:
-      color_temp: VALUE
-    style:
-      --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-      --background-opacity: 1
-```
-
-## Selectors
-
-Selectors allow you to create a row of service call buttons which with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. But like all features in this project it can be used for any service calls.
-
-To create a selector, add a Service Call tile feature to your tile and edit it. Change the type field under `entries` (NOT the root tile feature `type`) to `selector`. At first you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a service call button as described above. For now let's use the options field to give each selector option an icon:
-
-```yaml
-type: custom:service-call
-entries:
-  - type: selector
-    entity_id: input_select.listening_mode
-    options:
-      - icon: mdi:dolby
-      - icon: mdi:music
-      - icon: mdi:microsoft-xbox-controller
-```
-
-This feature is set up to work with Home Assistant `select/input_select` entities out of the box. Just using the config above, you can use it to change the values of input selects entities. By default each button will call the `select/input_select.select_option` service. The list of options is automatically retrieved, but you still have to include the `options` array and give each option button style information so that they will render (you can create blank buttons by setting the option to `{}`).
-
-Since each selector option is a service call button, you can override it's default behavior by including action information as shown in [example 2](#Example-2). Doing so will also break the current option highlighting, but you can use the `option` field within an option alongside `value_attribute` to restore this, also shown in example 2. `option` will be the value to compare against the entity's value, whether that is it's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to tile color, but can be changed by setting `color` to a different value. You can also set `color` within an option to give that option a different highlight color.
-
-## Spinboxes
-
-Spinboxes allow you to create Home Assistant style number buttons, similar to the climate target temperature feature. By default this feature holds a value based on it's entity's state or attribute. The user can increment or decrement this value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `debounce_time` (default 1000ms), the user defined `tap_action` will fire. This action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature`. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this action repeat when held by setting `hold_action.action` to repeat.
-
-You can also override the default behavior of the increment and decrement buttons by including action information as show in [example 6](#Example-6). Doing so will disable the normal increment/decrement and debounce button behavior and create a stylized button feature instead.
-
-```yaml
-type: custom:service-call
-entries:
-  - type: spinbox
-    icon: mdi:thermometer
-    label: VALUE
-    step: 1
-    debounceTime: 1000
-    range:
-      - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
-      - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
-    value_attribute: temperature
-    unit_of_measurement: ' °F'
-    tap_action:
-      service: climate.set_temperature
-      data:
-        entity_id: climate.downstairs_thermostat
-        temperature: VALUE
 ```
 
 # Examples
@@ -1013,7 +1023,6 @@ features:
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
-        tooltip: '{{ is_state("light.sunroom_ceiling", "on") }}'
         tap_action:
           action: call-service
           service: light.turn_on
@@ -1027,6 +1036,13 @@ features:
               rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
             {% else %}
               var(--state-inactive-color)
+            {% endif %}
+        tooltip_style:
+          display: |
+            {% if is_state("light.sunroom_ceiling", "on") %}
+            initial
+            {% else %}
+            none
             {% endif %}
   - type: custom:service-call
     entries:
@@ -1264,7 +1280,7 @@ color: accent
 
 ## Example 6
 
-A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different commic based on how long you hold it using momentary button mode.
+A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different comic based on how long you hold it using momentary button mode.
 
 ```yaml
 features:
@@ -1275,6 +1291,7 @@ features:
         label: VALUE
         step: 1
         debounceTime: 1000
+        value_from_hass_delay: 5000
         range:
           - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
           - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
@@ -1295,13 +1312,14 @@ features:
     entries:
       - type: button
         label: XKCD
-        value_from_hass_delay: 5000
         momentary_end_action:
           action: url
           url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
 type: tile
 entity: climate.downstairs_thermostat
 ```
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
