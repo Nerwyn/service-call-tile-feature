@@ -83,7 +83,7 @@ export class BaseServiceCallFeature extends LitElement {
 				break;
 		}
 
-		if (!this.handleConfirmation(action)) {
+		if (!action || !this.handleConfirmation(action)) {
 			return;
 		}
 
