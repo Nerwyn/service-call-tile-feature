@@ -1,5 +1,3 @@
-import { IAction } from '../interfaces/IActions';
-
 export {};
 
 declare global {
@@ -16,6 +14,6 @@ declare global {
 
 	interface Event {
 		// eslint-disable-next-line
-		detail?: Record<string, any>
+		detail?: Record<string, any>;
 	}
 }

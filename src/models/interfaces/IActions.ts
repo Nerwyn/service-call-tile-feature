@@ -25,9 +25,10 @@ export interface IConfirmation {
 export interface IBrowserMod {
 	service?: string;
 	data?: IData;
+	target?: ITarget;
 }
 
-export type IAction = {
+export interface IAction {
 	action: Action;
 
 	service?: string;

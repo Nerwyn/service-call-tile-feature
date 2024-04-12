@@ -118,11 +118,12 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	fireDomEvent(action: IAction) {
-		if(action.browser_mod?.data != undefined){
-			const event = new Event('ll-custom', { composed: true, bubbles: true });
-			event.detail = action;
-			this.dispatchEvent(event);
-		}
+		const event = new Event('ll-custom', {
+			composed: true,
+			bubbles: true,
+		});
+		event.detail = action;
+		this.dispatchEvent(event);
 	}
 
 	callService(action: IAction) {
@@ -456,7 +457,6 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 		return label;
 	}
-
 
 	// Skeletons for overridden event handlers
 	onStart(_e: MouseEvent | TouchEvent) {}
