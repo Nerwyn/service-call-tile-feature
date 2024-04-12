@@ -66,20 +66,20 @@ export class BaseServiceCallFeature extends LitElement {
 		let action;
 		switch (actionType) {
 			case 'momentary_start_action':
-				action = actions.momentary_start_action!;
+				action = actions.momentary_start_action;
 				break;
 			case 'momentary_end_action':
-				action = actions.momentary_end_action!;
+				action = actions.momentary_end_action;
 				break;
 			case 'hold_action':
-				action = actions.hold_action ?? actions.tap_action!;
+				action = actions.hold_action ?? actions.tap_action;
 				break;
 			case 'double_tap_action':
-				action = actions.double_tap_action ?? actions.tap_action!;
+				action = actions.double_tap_action ?? actions.tap_action;
 				break;
 			case 'tap_action':
 			default:
-				action = actions.tap_action!;
+				action = actions.tap_action;
 				break;
 		}
 
