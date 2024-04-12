@@ -104,6 +104,9 @@ export class BaseServiceCallFeature extends LitElement {
 				case 'more-info':
 					this.moreInfo(action);
 					break;
+				case 'fire-dom-event':
+					this.fireDomEvent(action);
+					break;
 				case 'none':
 				default:
 					break;
@@ -111,6 +114,14 @@ export class BaseServiceCallFeature extends LitElement {
 		} catch (e) {
 			this.endAction();
 			throw e;
+		}
+	}
+
+	fireDomEvent(action: IAction) {
+		if(action.browser_mod?.data != undefined){
+			const event = new Event('ll-custom', { composed: true, bubbles: true });
+			event.detail = action;
+			this.dispatchEvent(event);
 		}
 	}
 
@@ -445,6 +456,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 		return label;
 	}
+
 
 	// Skeletons for overridden event handlers
 	onStart(_e: MouseEvent | TouchEvent) {}
