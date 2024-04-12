@@ -15,13 +15,7 @@ declare global {
 	}
 
 	interface Event {
-		detail?: Record<
-			string,
-			| string
-			| number
-			| boolean
-			| IData
-			| Record<string, string | number | boolean>
-		> | IAction;
+		// eslint-disable-next-line
+		detail?: Record<string, any>
 	}
 }
