@@ -208,14 +208,15 @@ entries:
 
 Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashboards/actions/) syntax. Most Home Assistant actions are supported.
 
-| Action       | Description                                                                                  |
-| ------------ | -------------------------------------------------------------------------------------------- |
-| call-service | Call any Home Assistant service.                                                             |
-| navigate     | Navigate to another Home Assistant page.                                                     |
-| url          | Navigate to an external URL.                                                                 |
-| assist       | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app. |
-| more-info    | Open the more info dialog.                                                                   |
-| none         | Explicilty set a command to do nothing.                                                      |
+| Action         | Description                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| call-service   | Call any Home Assistant service.                                                                                         |
+| navigate       | Navigate to another Home Assistant page.                                                                                 |
+| url            | Navigate to an external URL.                                                                                             |
+| assist         | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app.                             |
+| more-info      | Open the more info dialog.                                                                                               |
+| fire-dom-event | Fire a browser dom event using whatever information is in the Action object. Useful for opening browser-mod popup cards. |
+| none           | Explicilty set a command to do nothing.                                                                                  |
 
 Each action has a set of possible options associated with them. If `action` is not provided the card will guess which type of action it is by the options used.
 
@@ -321,6 +322,29 @@ entries:
       action: more-info
       data:
         entity_id: camera.front_door
+```
+
+#### fire-dom-event
+
+| Name        | Description                                                                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| browser_mod | A field expected by [browser mod](https://github.com/thomasloven/hass-browser_mod?tab=readme-ov-file#how-do-i-update-a-popup-from-the-browser-mod-15) for popups. |
+
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    icon: mdi:map
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.more_info
+        data:
+          large: true
+          entity: zone.home
+          ignore_popup_card: false
+        target:
+          entity: THIS
 ```
 
 #### none
@@ -1277,7 +1301,6 @@ features:
           url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
 type: tile
 entity: climate.downstairs_thermostat
-
 ```
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
