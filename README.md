@@ -273,7 +273,7 @@ entries:
 
 #### Hold Time
 
-Hold actions are triggered by holding down on a button. The default amount of time is 500ms. You can change this by setting `hold_time` in the hold action to a different number.
+Hold actions are triggered by holding down on a button for a defined amount of time and then releasing. The default amount of time is 500ms. You can change this by setting `hold_time` in the hold action to a different number.
 
 ```yaml
 type: custom:service-call
@@ -288,7 +288,7 @@ entries:
 
 #### Repeat and Repeat Delay
 
-By setting a hold action to `repeat`, the tap action will repeat while the button is held down. The default delay between repeats is 100ms. You can change this by setting `repeat_delay` in the hold action to a different number, or globally by setting it in the remote config root. See the below section on [repeat](#repeat) for more.
+By setting a hold action to `repeat`, the tap action will repeat while the button is held down. The default delay between repeats is 100ms. You can change this by setting `repeat_delay` in the hold action to a different number. See the below section on [repeat](#repeat) for more.
 
 ```yaml
 type: custom:service-call
@@ -486,7 +486,7 @@ entries:
 | ------------ | ------------------------------------------------ |
 | repeat_delay | Milliseconds between repeats. Defaults to 100ms. |
 
-The `tap_action` must be defined, whether by the default key or as a custom action.
+The `tap_action` must also be defined.
 
 ```yaml
 type: custom:service-call
