@@ -107,6 +107,7 @@ export class BaseServiceCallFeature extends LitElement {
 				case 'fire-dom-event':
 					this.fireDomEvent(action);
 					break;
+				case 'repeat':
 				case 'none':
 				default:
 					break;
@@ -115,15 +116,6 @@ export class BaseServiceCallFeature extends LitElement {
 			this.endAction();
 			throw e;
 		}
-	}
-
-	fireDomEvent(action: IAction) {
-		const event = new Event('ll-custom', {
-			composed: true,
-			bubbles: true,
-		});
-		event.detail = action;
-		this.dispatchEvent(event);
 	}
 
 	callService(action: IAction) {
@@ -219,6 +211,15 @@ export class BaseServiceCallFeature extends LitElement {
 			composed: true,
 		});
 		event.detail = { entityId };
+		this.dispatchEvent(event);
+	}
+
+	fireDomEvent(action: IAction) {
+		const event = new Event('ll-custom', {
+			composed: true,
+			bubbles: true,
+		});
+		event.detail = action;
 		this.dispatchEvent(event);
 	}
 

@@ -59,7 +59,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        brightness_pct: {{ VALUE }}
+        brightness_pct: '{{ VALUE }}'
 ```
 
 To better understand the attributes of Home Assistant entities, use the states tab in Home Assistant Developer tools. Remember, that you can also change the entity of the slider by setting `entity_id` either at the entry level or within the `data` or `target` objects (NOT at the root of the feature config).
@@ -80,7 +80,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        color_temp: {{ VALUE }}
+        color_temp: '{{ VALUE }}'
     style:
       --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
       --background-opacity: 1
@@ -118,7 +118,7 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:thermometer
-    label: {{ VALUE }}
+    label: '{{ VALUE }}'
     step: 1
     debounceTime: 1000
     range:
@@ -130,7 +130,7 @@ entries:
       service: climate.set_temperature
       data:
         entity_id: climate.downstairs_thermostat
-        temperature: {{ VALUE }}
+        temperature: '{{ VALUE }}'
 ```
 
 # How To Use
@@ -326,15 +326,16 @@ entries:
 
 Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashboards/actions/) syntax. Most Home Assistant actions are supported.
 
-| Action         | Description                                                                                                              |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| call-service   | Call any Home Assistant service.                                                                                         |
-| navigate       | Navigate to another Home Assistant page.                                                                                 |
-| url            | Navigate to an external URL.                                                                                             |
-| assist         | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app.                             |
-| more-info      | Open the more info dialog.                                                                                               |
-| fire-dom-event | Fire a browser dom event using whatever information is in the Action object. Useful for opening browser-mod popup cards. |
-| none           | Explicilty set a command to do nothing.                                                                                  |
+| Action                            | Description                                                                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [call-service](#call-service)     | Call any Home Assistant service.                                                                                                                        |
+| [navigate](#navigate)             | Navigate to another Home Assistant page.                                                                                                                |
+| [url](#url)                       | Navigate to an external URL.                                                                                                                            |
+| [assist](#assist)                 | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app.                                                            |
+| [more-info](#more-info)           | Open the more info dialog.                                                                                                                              |
+| [fire-dom-event](#fire-dom-event) | Fire a browser dom event using whatever information is in the Action object. Useful for opening browser-mod popup cards.                                |
+| [repeat](#repeat)                 | Repeat the `tap_action` ten times a second while held. Only applicable to `hold_action`, acts as `none` if used in `tap_action` or `double_tap_action`. |
+| [none](#none)                     | Explicilty set a command to do nothing.                                                                                                                 |
 
 Each action has a set of possible options associated with them. If `action` is not provided the card will guess which type of action it is by the options used.
 
@@ -360,7 +361,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        brightness_pct: {{ VALUE }}
+        brightness_pct: '{{ VALUE }}'
       target:
         entity_id: light.lounge
 ```
@@ -465,21 +466,6 @@ entries:
           entity: THIS
 ```
 
-#### none
-
-None. This action does nothing.
-
-````yaml
-```yaml
-type: custom:service-call
-entries:
-  - type: button
-    tap_action:
-      action: none
-    hold_action:
-      action: more-info
-````
-
 #### repeat
 
 | Name         | Description                                      |
@@ -502,6 +488,21 @@ entries:
       action: repeat # light will be toggled repeatedly while held
     repeat_delay: 1000
 ```
+
+#### none
+
+None. This action does nothing.
+
+````yaml
+```yaml
+type: custom:service-call
+entries:
+  - type: button
+    tap_action:
+      action: none
+    hold_action:
+      action: more-info
+````
 
 ### Momentary Button mode
 
@@ -549,7 +550,7 @@ type: custom:service-call
 entries:
   - type: button
     icon: mdi:brightness-4
-    label: {{ VALUE }}
+    label: '{{ VALUE }}'
     value_attribute: brightness
     tap_action:
       action: call-service
@@ -586,7 +587,7 @@ type: custom:service-call
 entries:
   - type: slider
     icon: mdi:brightness-4
-    label: {{ VALUE }}
+    label: '{{ VALUE }}'
     thumb: flat
     range:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
@@ -661,7 +662,7 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:brightness-4
-    label: {{ VALUE }}
+    label: '{{ VALUE }}'
     step: 5
     debounceTime: 1000
     range:
@@ -673,7 +674,7 @@ entries:
       service: light.turn_on
       data:
         entity_id: light.sunroom_ceiling
-        brightness_pct: {{ VALUE }}
+        brightness_pct: '{{ VALUE }}'
     decrement:
       icon: mdi:brightness-3
       label: down
@@ -903,7 +904,7 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -911,7 +912,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: {{ VALUE }}
+            brightness_pct: '{{ VALUE }}'
         style:
           flex-basis: 200%
       - type: slider
@@ -921,8 +922,8 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            color_temp: {{ VALUE }}
-        label: {{ VALUE }}
+            color_temp: '{{ VALUE }}'
+        label: '{{ VALUE }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -938,7 +939,7 @@ features:
       - type: spinbox
         haptics: true
         icon: mdi:brightness-4
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         step: 5
         debounceTime: 1000
         range:
@@ -949,7 +950,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: {{ VALUE }}
+            brightness_pct: '{{ VALUE }}'
         decrement:
           icon: mdi:brightness-3
           label: down
@@ -1019,7 +1020,7 @@ features:
               initial
             {% endif %}
       - type: slider
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -1027,7 +1028,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: {{ VALUE }}
+            brightness_pct: '{{ VALUE }}'
             entity_id: light.sunroom_ceiling
         style:
           flex-basis: 200%
@@ -1072,9 +1073,9 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            color_temp: {{ VALUE }}
+            color_temp: '{{ VALUE }}'
             entity_id: light.sunroom_ceiling
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -1092,7 +1093,7 @@ features:
           action: call-service
           service: cover.set_cover_position
           data:
-            position: {{ VALUE }}
+            position: '{{ VALUE }}'
             entity_id: cover.sunroom_curtains
         value_attribute: current_position
         icon: mdi:curtains
@@ -1106,7 +1107,7 @@ features:
           action: call-service
           service: media_player.volume_set
           data:
-            volume_level: {{ VALUE }}
+            volume_level: '{{ VALUE }}'
             entity_id: media_player.spotify
         value_attribute: volume_level
         icon: mdi:spotify
@@ -1130,7 +1131,7 @@ features:
           action: call-service
           service: media_player.media_seek
           data:
-            seek_position: {{ VALUE }}
+            seek_position: '{{ VALUE }}'
             entity_id: media_player.spotify
         value_attribute: media_position
         range:
@@ -1266,7 +1267,7 @@ features:
       - type: slider
         thumb: flat
         entity_id: input_number.slider_test
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         style:
           '--label-color': var(--disabled-color)
 type: tile
@@ -1288,7 +1289,7 @@ features:
     entries:
       - type: spinbox
         icon: mdi:thermometer
-        label: {{ VALUE }}
+        label: '{{ VALUE }}'
         step: 1
         debounceTime: 1000
         value_from_hass_delay: 5000
@@ -1301,7 +1302,7 @@ features:
           service: climate.set_temperature
           data:
             entity_id: climate.downstairs_thermostat
-            temperature: {{ VALUE }}
+            temperature: '{{ VALUE }}'
         hold_action:
           action: repeat
         style:

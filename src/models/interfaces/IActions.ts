@@ -5,6 +5,7 @@ export type Action =
 	| 'assist'
 	| 'more-info'
 	| 'fire-dom-event'
+	| 'repeat'
 	| 'none';
 
 export interface IData {
