@@ -129,20 +129,22 @@ export class BaseServiceCallFeature extends LitElement {
 		for (const key in data) {
 			if (Array.isArray(data[key])) {
 				for (const i in data[key] as string[]) {
-					(data[key] as string[])[i] = this.replaceValue(
+					(data[key] as string[])[i] = this.renderTemplate(
 						(data[key] as string[])[i],
 					) as string;
 				}
 			} else {
-				data[key] = this.replaceValue(data[key] as string);
+				data[key] = this.renderTemplate(data[key] as string);
 			}
 		}
 		this.hass.callService(domain, service, data);
 	}
 
 	navigate(action: IAction) {
-		const path = this.replaceValue(action.navigation_path!) as string;
-		const replace = this.replaceValue(
+		const path = this.renderTemplate(
+			action.navigation_path as string,
+		) as string;
+		const replace = this.renderTemplate(
 			action.navigation_replace as unknown as string,
 		) as boolean;
 		if (path.includes('//')) {
@@ -170,7 +172,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	toUrl(action: IAction) {
-		let url = this.replaceValue(action.url_path!) as string;
+		let url = this.renderTemplate(action.url_path as string) as string;
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
@@ -178,9 +180,11 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	assist(action: IAction) {
-		const pipelineId = this.replaceValue(action.pipeline_id!) as string;
-		const startListening = this.replaceValue(
-			action.start_listening!,
+		const pipelineId = this.renderTemplate(
+			action.pipeline_id as string,
+		) as string;
+		const startListening = this.renderTemplate(
+			action.start_listening as unknown as string,
 		) as boolean;
 
 		// eslint-disable-next-line
@@ -201,7 +205,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	moreInfo(action: IAction) {
-		const entityId = this.replaceValue(
+		const entityId = this.renderTemplate(
 			action.data?.entity_id as string,
 		) as string;
 
@@ -227,7 +231,7 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('confirmation' in action) {
 			let confirmation = action.confirmation;
 			if (typeof confirmation == 'string') {
-				confirmation = this.replaceValue(
+				confirmation = this.renderTemplate(
 					action.confirmation as string,
 				) as boolean;
 			}
@@ -239,12 +243,12 @@ export class BaseServiceCallFeature extends LitElement {
 					confirmation != true &&
 					'text' in (confirmation as IConfirmation)
 				) {
-					text = this.replaceValue(
+					text = this.renderTemplate(
 						(confirmation as IConfirmation).text as string,
 					) as string;
 				} else {
 					text = `Are you sure you want to run action '${
-						this.replaceValue(action.service as string) as string
+						this.renderTemplate(action.service as string) as string
 					}'?`;
 				}
 				if (confirmation == true) {
@@ -256,7 +260,7 @@ export class BaseServiceCallFeature extends LitElement {
 						if (
 							!(confirmation as IConfirmation)
 								.exemptions!.map((exemption) =>
-									this.replaceValue(exemption.user),
+									this.renderTemplate(exemption.user),
 								)
 								.includes(this.hass.user.id)
 						) {
@@ -335,7 +339,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
-	replaceValue(
+	renderTemplate(
 		str: string | number | boolean,
 		context?: Record<string, string | number | boolean>,
 	): string | number | boolean {
@@ -376,7 +380,7 @@ export class BaseServiceCallFeature extends LitElement {
 	resetGetValueFromHass() {
 		const valueFromHassDelay =
 			'value_from_hass_delay' in this.entry
-				? (this.replaceValue(
+				? (this.renderTemplate(
 						this.entry.value_from_hass_delay as unknown as string,
 				  ) as number)
 				: 1000;
@@ -386,10 +390,16 @@ export class BaseServiceCallFeature extends LitElement {
 		);
 	}
 
-	buildStyle(_style: StyleInfo = {}) {
+	buildStyle(
+		_style: StyleInfo = {},
+		context?: Record<string, string | number | boolean>,
+	) {
 		const style = structuredClone(_style);
 		for (const key in style) {
-			style[key] = this.replaceValue(style[key] as string) as string;
+			style[key] = this.renderTemplate(
+				style[key] as string,
+				context,
+			) as string;
 		}
 		return style;
 	}
@@ -398,7 +408,7 @@ export class BaseServiceCallFeature extends LitElement {
 		let icon = html``;
 		if ('icon' in entry) {
 			icon = html`<ha-icon
-				.icon=${this.replaceValue(entry.icon as string)}
+				.icon=${this.renderTemplate(entry.icon as string)}
 				style=${styleMap(this.buildStyle(entry.icon_style ?? {}))}
 			></ha-icon>`;
 		}

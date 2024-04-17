@@ -1,7 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
-import { renderTemplate } from 'ha-nunjucks';
 
 import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
@@ -215,8 +214,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if ('tooltip' in this.entry) {
 			style.display = (
 				'tooltip' in this.entry
-					? renderTemplate(
-							this.hass,
+					? this.renderTemplate(
 							this.entry.tooltip as unknown as string,
 					  )
 					: true
@@ -236,7 +234,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildSlider() {
 		const value = this.getValueFromHass ? this.value : this.currentValue;
-		switch (renderTemplate(this.hass, this.entry.thumb as string)) {
+		switch (this.renderTemplate(this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
 				break;
@@ -283,8 +281,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = this.value;
 		}
 
-		const entityId = renderTemplate(
-			this.hass,
+		const entityId = this.renderTemplate(
 			this.entry.entity_id as string,
 		) as string;
 		const [domain, _service] = (entityId ?? '').split('.');
@@ -292,14 +289,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.entry.range) {
 			this.range = [
 				parseFloat(
-					renderTemplate(
-						this.hass,
+					this.renderTemplate(
 						this.entry.range[0] as unknown as string,
 					) as string,
 				),
 				parseFloat(
-					renderTemplate(
-						this.hass,
+					this.renderTemplate(
 						this.entry.range[1] as unknown as string,
 					) as string,
 				),
@@ -340,8 +335,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		if (this.entry.step) {
 			this.step = parseFloat(
-				renderTemplate(
-					this.hass,
+				this.renderTemplate(
 					this.entry.step as unknown as string,
 				) as string,
 			);

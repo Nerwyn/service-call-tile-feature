@@ -1,7 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { renderTemplate } from 'ha-nunjucks';
 
 import { IAction } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
@@ -27,8 +26,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		this.setValue();
 
-		const entity_id = renderTemplate(
-			this.hass,
+		const entity_id = this.renderTemplate(
 			this.entry.entity_id as string,
 		) as string;
 		const entries = this.entry.options ?? [];
@@ -79,7 +77,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			}
 
 			const option =
-				renderTemplate(this.hass, entry.option as string) ?? options[i];
+				this.renderTemplate(entry.option as string) ?? options[i];
 
 			let optionClass = 'option';
 			if (this.value == option && this.value != undefined) {

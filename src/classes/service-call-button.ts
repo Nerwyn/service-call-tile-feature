@@ -5,8 +5,6 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { Ripple } from '@material/mwc-ripple';
 import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
 
-import { renderTemplate } from 'ha-nunjucks';
-
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
@@ -31,8 +29,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		if (
 			'double_tap_action' in this.entry &&
-			renderTemplate(this.hass, this.entry.double_tap_action!.action) !=
-				'none'
+			this.renderTemplate(
+				this.entry.double_tap_action?.action as string,
+			) != 'none'
 		) {
 			// Double tap action is defined
 			if (this.clickCount > 1) {
@@ -44,8 +43,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				// Single tap action is triggered if double tap is not within 200ms
 				const doubleTapWindow: number =
 					'double_tap_window' in (this.entry.double_tap_action ?? {})
-						? (renderTemplate(
-								this.hass,
+						? (this.renderTemplate(
 								this.entry.double_tap_action!
 									.double_tap_window as unknown as string,
 						  ) as number)
@@ -79,34 +77,28 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		if (
 			'momentary_start_action' in this.entry &&
-			renderTemplate(
-				this.hass,
-				this.entry.momentary_start_action!.action,
-			) != 'none'
+			this.renderTemplate(this.entry.momentary_start_action!.action) !=
+				'none'
 		) {
 			this.fireHapticEvent('light');
 			this.buttonPressStart = performance.now();
 			this.sendAction('momentary_start_action');
 		} else if (
 			'momentary_end_action' in this.entry &&
-			renderTemplate(
-				this.hass,
-				this.entry.momentary_end_action!.action,
-			) != 'none'
+			this.renderTemplate(this.entry.momentary_end_action!.action) !=
+				'none'
 		) {
 			this.fireHapticEvent('light');
 			this.buttonPressStart = performance.now();
 		} else if (!this.holdTimer && 'hold_action' in this.entry) {
 			const holdTime =
 				'hold_time' in (this.entry.hold_action ?? {})
-					? (renderTemplate(
-							this.hass,
-							this.entry.hold_action!
-								.hold_time as unknown as string,
+					? (this.renderTemplate(
+							this.entry.hold_action
+								?.hold_time as unknown as string,
 					  ) as number)
 					: 500;
-			const holdAction = renderTemplate(
-				this.hass,
+			const holdAction = this.renderTemplate(
 				this.entry.hold_action?.action as string,
 			);
 
@@ -117,8 +109,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 						if (holdAction == 'repeat') {
 							const repeatDelay =
 								'repeat_delay' in (this.entry.hold_action ?? {})
-									? (renderTemplate(
-											this.hass,
+									? (this.renderTemplate(
 											this.entry.hold_action!
 												.repeat_delay as unknown as string,
 									  ) as number)
@@ -144,9 +135,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		if (!this.swiping) {
 			if (
 				'momentary_end_action' in this.entry &&
-				renderTemplate(
-					this.hass,
-					this.entry.momentary_end_action!.action,
+				this.renderTemplate(
+					this.entry.momentary_end_action?.action as string,
 				) != 'none'
 			) {
 				this.fireHapticEvent('selection');
@@ -155,9 +145,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				this.endAction();
 			} else if (
 				'momentary_start_action' in this.entry &&
-				renderTemplate(
-					this.hass,
-					this.entry.momentary_start_action!.action,
+				this.renderTemplate(
+					this.entry.momentary_start_action?.action as string,
 				) != 'none'
 			) {
 				this.endAction();
@@ -167,8 +156,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				e.preventDefault();
 				if (
 					!(
-						renderTemplate(
-							this.hass,
+						this.renderTemplate(
 							this.entry.hold_action?.action as string,
 						) == 'repeat'
 					)

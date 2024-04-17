@@ -1,7 +1,6 @@
 import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { renderTemplate } from 'ha-nunjucks';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
@@ -30,18 +29,15 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			| 'increment'
 			| 'decrement';
 		if (
-			renderTemplate(
-				this.hass,
-				this.entry.hold_action?.action ?? 'none',
-			) == 'repeat' &&
+			this.renderTemplate(this.entry.hold_action?.action ?? 'none') ==
+				'repeat' &&
 			!this.holdTimer
 		) {
 			const holdTime =
 				'hold_time' in (this.entry.hold_action ?? {})
-					? (renderTemplate(
-							this.hass,
-							this.entry[operator]!.hold_action!
-								.hold_time as unknown as string,
+					? (this.renderTemplate(
+							this.entry[operator]?.hold_action
+								?.hold_time as unknown as string,
 					  ) as number)
 					: 500;
 			this.holdTimer = setTimeout(() => {
@@ -52,10 +48,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				if (!this.swiping) {
 					const repeatDelay =
 						'repeat_delay' in (this.entry.hold_action ?? {})
-							? (renderTemplate(
-									this.hass,
-									this.entry.hold_action!
-										.repeat_delay as unknown as string,
+							? (this.renderTemplate(
+									this.entry.hold_action
+										?.repeat_delay as unknown as string,
 							  ) as number)
 							: 100;
 					if (!this.holdInterval) {
@@ -146,24 +141,19 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		}
 
 		if (
-			renderTemplate(this.hass, actions?.tap_action?.action ?? 'none') !=
+			this.renderTemplate(actions?.tap_action?.action ?? 'none') !=
 				'none' ||
-			renderTemplate(
-				this.hass,
-				actions?.double_tap_action?.action ?? 'none',
-			) != 'none' ||
+			this.renderTemplate(actions?.double_tap_action?.action ?? 'none') !=
+				'none' ||
 			!['none', 'repeat'].includes(
-				renderTemplate(
-					this.hass,
+				this.renderTemplate(
 					actions?.hold_action?.action ?? 'none',
 				) as string,
 			) ||
-			renderTemplate(
-				this.hass,
+			this.renderTemplate(
 				actions?.momentary_start_action?.action ?? 'none',
 			) != 'none' ||
-			renderTemplate(
-				this.hass,
+			this.renderTemplate(
 				actions?.momentary_end_action?.action ?? 'none',
 			) != 'none'
 		) {
@@ -217,14 +207,12 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		if (this.entry.range) {
 			this.range = [
 				parseFloat(
-					renderTemplate(
-						this.hass,
+					this.renderTemplate(
 						this.entry.range[0] as unknown as string,
 					) as string,
 				),
 				parseFloat(
-					renderTemplate(
-						this.hass,
+					this.renderTemplate(
 						this.entry.range[1] as unknown as string,
 					) as string,
 				),
@@ -233,8 +221,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 		if (this.entry.step) {
 			this.step = parseFloat(
-				renderTemplate(
-					this.hass,
+				this.renderTemplate(
 					this.entry.step as unknown as string,
 				) as string,
 			);
@@ -242,8 +229,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 		if ('debounce_time' in this.entry) {
 			this.debounceTime = parseFloat(
-				renderTemplate(
-					this.hass,
+				this.renderTemplate(
 					this.entry.debounce_time as unknown as string,
 				) as string,
 			);
