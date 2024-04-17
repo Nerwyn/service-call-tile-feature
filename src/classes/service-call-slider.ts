@@ -19,7 +19,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	step: number = 1;
 
 	precision: number = 0;
-	tooltipPosition: number = 0;
+	tooltipOffset: number = 0;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
@@ -180,7 +180,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	setTooltip(slider: HTMLInputElement, show: boolean) {
 		if (show) {
-			this.tooltipPosition = Math.round(
+			this.tooltipOffset = Math.round(
 				(slider.offsetWidth / (this.range[1] - this.range[0])) *
 					(Number(this.currentValue) -
 						(this.range[0] + this.range[1]) / 2),
@@ -201,34 +201,38 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltip() {
-		const tooltipText = `${Number(this.currentValue).toFixed(
-			this.precision,
-		)}${this.unitOfMeasurement}`;
-
-		const style: StyleInfo = {
-			...this.buildStyle(this.entry.tooltip_style ?? {}),
-			'--x-position': this.tooltipPosition.toString() + 'px',
+		const context = {
+			VALUE: `${Number(this.currentValue).toFixed(this.precision)}`,
+			UNIT: this.unitOfMeasurement,
+			HOLD_SECS: '0',
+			OFFSET: this.tooltipOffset,
 		};
+		const style: StyleInfo = this.buildStyle(
+			this.entry.tooltip_style ?? {},
+			context,
+		);
 
 		// Deprecated tooltip hide/show field
 		if ('tooltip' in this.entry) {
-			style.display = (
-				'tooltip' in this.entry
-					? this.renderTemplate(
-							this.entry.tooltip as unknown as string,
-					  )
-					: true
+			style['--tooltip-display'] = this.renderTemplate(
+				this.entry.tooltip as unknown as string,
 			)
 				? 'initial'
 				: 'none';
 		}
+
+		this.style.setProperty(
+			'--tooltip-label',
+			`${context.VALUE}${context.UNIT}`,
+		);
+		this.style.setProperty('--tooltip-offset', `${context.OFFSET}px`);
 
 		// prettier-ignore
 		return html`
 			<div
 				class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
 				style=${styleMap(style)}
-			>${tooltipText}</div>
+			></div>
 		`;
 	}
 
@@ -369,6 +373,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 					--color: var(--tile-color);
 					--opacity: 1;
+					--tooltip-label: '0';
+					--tooltip-offset: 0px;
+					--tooltip-transform: translateX(var(--tooltip-offset));
+					--tooltip-display: initial;
 				}
 
 				.slider,
@@ -510,11 +518,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					width: fit-content;
 					line-height: 20px;
 					top: -29px;
-					transform: translateX(var(--x-position));
+					transform: var(--tooltip-transform);
+					display: var(--tooltip-display);
 
 					--x-position: 0px;
 				}
-
 				.faded-out {
 					opacity: 0;
 					transition:
@@ -522,10 +530,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						left 180ms ease-in-out 0s,
 						bottom 180ms ease-in-out 0s;
 				}
-
 				.faded-in {
 					opacity: 1;
 					transition: opacity 540ms ease-in-out 0s;
+				}
+				.tooltip::after {
+					content: var(--tooltip-label);
 				}
 			`,
 		];
