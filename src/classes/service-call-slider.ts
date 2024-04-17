@@ -211,6 +211,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.entry.tooltip_style ?? {},
 			context,
 		);
+		if ('--tooltip-label' in style) {
+			style['--tooltip-label'] = `"${style['--tooltip-label']}"`;
+		}
 
 		// Deprecated tooltip hide/show field
 		if ('tooltip' in this.entry) {
@@ -223,7 +226,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		this.style.setProperty(
 			'--tooltip-label',
-			`${context.VALUE}${context.UNIT}`,
+			`"${context.VALUE}${context.UNIT}"`,
 		);
 		this.style.setProperty('--tooltip-offset', `${context.OFFSET}px`);
 
@@ -520,8 +523,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					top: -29px;
 					transform: var(--tooltip-transform);
 					display: var(--tooltip-display);
-
-					--x-position: 0px;
 				}
 				.faded-out {
 					opacity: 0;
