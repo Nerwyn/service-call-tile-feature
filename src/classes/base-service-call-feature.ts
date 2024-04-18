@@ -342,16 +342,18 @@ export class BaseServiceCallFeature extends LitElement {
 										this.hass.states[entityId].state ==
 										'playing'
 									) {
-										this.value = parseInt(
-											(parseInt(value as string) +
-												Date.now() -
+										this.value =
+											parseInt(value as string) +
+											Date.now() -
+											parseInt(
 												this.hass.states[entityId]
 													.attributes
-													.media_position_updated_at) as unknown as string,
-										);
+													.media_position_updated_at,
+											);
 									}
 								}, 1000);
-							} catch {
+							} catch (e) {
+								console.error(e);
 								this.value = value as string | number | boolean;
 							}
 							break;
