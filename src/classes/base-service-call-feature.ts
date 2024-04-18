@@ -354,8 +354,8 @@ export class BaseServiceCallFeature extends LitElement {
 																entityId
 															].attributes
 																.media_position_updated_at,
-														) /
-															1000),
+														)) /
+														1000,
 											),
 											Math.floor(
 												this.hass.states[entityId]
