@@ -207,7 +207,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			HOLD_SECS: '0',
 			OFFSET: this.tooltipOffset,
 		};
-		console.log(this.style);
 		const style: StyleInfo = this.buildStyle(
 			{
 				...this.entry.tooltip_style,
