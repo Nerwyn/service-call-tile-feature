@@ -345,7 +345,7 @@ export class BaseServiceCallFeature extends LitElement {
 										this.value =
 											parseInt(value as string) +
 											Date.now() -
-											parseInt(
+											Date.parse(
 												this.hass.states[entityId]
 													.attributes
 													.media_position_updated_at,
