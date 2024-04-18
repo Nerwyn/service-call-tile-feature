@@ -357,7 +357,7 @@ export class BaseServiceCallFeature extends LitElement {
 													1000,
 										);
 									}
-								}, 1000);
+								}, 500);
 							} catch (e) {
 								console.error(e);
 								this.value = value as string | number | boolean;
