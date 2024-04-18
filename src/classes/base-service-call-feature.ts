@@ -345,7 +345,7 @@ export class BaseServiceCallFeature extends LitElement {
 										this.hass.states[entityId].state ==
 										'playing'
 									) {
-										this.value = Math.trunc(
+										this.value = Math.floor(
 											parseInt(value as string) +
 												(Date.now() -
 													Date.parse(
