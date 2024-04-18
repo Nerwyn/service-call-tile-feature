@@ -210,18 +210,21 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const style: StyleInfo = this.buildStyle(
 			{
 				...this.entry.tooltip_style,
-				'--tooltip-label': (this.entry.tooltip_style?.[
-					'--tooltip-label'
-				] ?? '--tooltip-label' in this.style
-					? this.style['--tooltip-label' as keyof CSSStyleDeclaration]
-					: `"${context.VALUE}${context.UNIT}"`) as string,
+				'--tooltip-label': `"${
+					(this.entry.tooltip_style?.['--tooltip-label'] ??
+					'--tooltip-label' in this.style
+						? this.style[
+								'--tooltip-label' as keyof CSSStyleDeclaration
+						  ]
+						: `"{{ VALUE }}{{ UNIT }}"`) as string
+				}"`,
 				'--tooltip-offset': (this.entry.tooltip_style?.[
 					'--tooltip-offset'
 				] ?? '--tooltip-offset' in this.style
 					? this.style[
 							'--tooltip-offset' as keyof CSSStyleDeclaration
 					  ]
-					: `${context.OFFSET}px`) as string,
+					: '{{ OFFSET }}px') as string,
 				'--tooltip-transform': (this.entry.tooltip_style?.[
 					'--tooltip-transform'
 				] ?? '--tooltip-transform' in this.style
