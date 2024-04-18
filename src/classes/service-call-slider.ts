@@ -207,6 +207,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			HOLD_SECS: '0',
 			OFFSET: this.tooltipOffset,
 		};
+		console.log(this.style)
 		const style: StyleInfo = this.buildStyle(
 			{
 				...this.entry.tooltip_style,
@@ -216,7 +217,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						? this.style[
 								'--tooltip-label' as keyof CSSStyleDeclaration
 						  ]
-						: `"{{ VALUE }}{{ UNIT }}"`) as string
+						: `{{ VALUE }}{{ UNIT }}`) as string
 				}"`,
 				'--tooltip-offset': (this.entry.tooltip_style?.[
 					'--tooltip-offset'
@@ -231,7 +232,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					? this.style[
 							'--tooltip-transform' as keyof CSSStyleDeclaration
 					  ]
-					: 'translateX(var(--tooltip-offset') as string,
+					: 'translateX(var(--tooltip-offset))') as string,
 				'--tooltip-display': (this.entry.tooltip_style?.[
 					'--tooltip-display'
 				] ?? '--tooltip-display' in this.style
