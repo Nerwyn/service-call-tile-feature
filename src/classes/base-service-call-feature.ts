@@ -345,27 +345,21 @@ export class BaseServiceCallFeature extends LitElement {
 										this.hass.states[entityId].state ==
 										'playing'
 									) {
-										this.value = Math.floor(
-											Math.min(
-												Math.floor(
-													Math.floor(
-														value as number,
-													) +
-														(Date.now() -
-															Date.parse(
-																this.hass
-																	.states[
-																	entityId
-																].attributes
-																	.media_position_updated_at,
-															)) /
-															1000,
-												),
-												Math.floor(
-													this.hass.states[entityId]
-														.attributes
-														.media_duration,
-												),
+										this.value = Math.min(
+											Math.floor(
+												Math.floor(value as number) +
+													(Date.now() -
+														Date.parse(
+															this.hass.states[
+																entityId
+															].attributes
+																.media_position_updated_at,
+														)) /
+														1000,
+											),
+											Math.floor(
+												this.hass.states[entityId]
+													.attributes.media_duration,
 											),
 										);
 									}
