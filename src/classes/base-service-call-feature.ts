@@ -346,7 +346,7 @@ export class BaseServiceCallFeature extends LitElement {
 										'playing'
 									) {
 										this.value = Math.floor(
-											parseInt(value as string) +
+											Math.floor(value as number) +
 												(Date.now() -
 													Date.parse(
 														this.hass.states[
@@ -357,7 +357,7 @@ export class BaseServiceCallFeature extends LitElement {
 													1000,
 										);
 									}
-								}, 500);
+								}, 1000);
 							} catch (e) {
 								console.error(e);
 								this.value = value as string | number | boolean;
