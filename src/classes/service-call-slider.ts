@@ -208,33 +208,37 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			OFFSET: this.tooltipOffset,
 		};
 		const style: StyleInfo = this.buildStyle(
-			this.entry.tooltip_style ?? {},
+			{
+				...this.entry.tooltip_style,
+				'--tooltip-label': (this.entry.tooltip_style?.[
+					'--tooltip-label'
+				] ?? '--tooltip-label' in this.style
+					? this.style['--tooltip-label' as keyof CSSStyleDeclaration]
+					: `"${context.VALUE}${context.UNIT}"`) as string,
+				'--tooltip-offset': (this.entry.tooltip_style?.[
+					'--tooltip-offset'
+				] ?? '--tooltip-offset' in this.style
+					? this.style[
+							'--tooltip-offset' as keyof CSSStyleDeclaration
+					  ]
+					: `${context.OFFSET}px`) as string,
+				'--tooltip-transform': (this.entry.tooltip_style?.[
+					'--tooltip-transform'
+				] ?? '--tooltip-transform' in this.style
+					? this.style[
+							'--tooltip-transform' as keyof CSSStyleDeclaration
+					  ]
+					: 'translateX(var(--tooltip-offset') as string,
+				'--tooltip-display': (this.entry.tooltip_style?.[
+					'--tooltip-display'
+				] ?? '--tooltip-display' in this.style
+					? this.style[
+							'--tooltip-display' as keyof CSSStyleDeclaration
+					  ]
+					: 'initial') as string,
+			},
 			context,
 		);
-		if ('--tooltip-label' in style) {
-			style['--tooltip-label'] = `"${style['--tooltip-label']}"`;
-		} else {
-			if ('--tooltip-label' in this.style) {
-				style['--tooltip-label'] = `"${
-					this.renderTemplate(
-						this.style['--tooltip-label'] as string,
-						context,
-					) as string
-				}"`;
-			} else {
-				style['--tooltip-label'] = `"${context.VALUE}${context.UNIT}"`;
-			}
-		}
-		if (!('--tooltip-offset' in style)) {
-			if ('--tooltip-offset' in this.style) {
-				style['--tooltip-offset'] = this.renderTemplate(
-					this.style['--tooltip-offset'] as string,
-					context,
-				) as string;
-			} else {
-				style['--tooltip-offset'] = `${context.OFFSET}px`;
-			}
-		}
 
 		// Deprecated tooltip hide/show field
 		if ('tooltip' in this.entry) {
@@ -391,8 +395,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 					--color: var(--tile-color);
 					--opacity: 1;
-					--tooltip-transform: translateX(var(--tooltip-offset));
-					--tooltip-display: initial;
 				}
 
 				.slider,
