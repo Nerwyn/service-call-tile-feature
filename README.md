@@ -1154,6 +1154,9 @@ features:
           60) | int)) | int }}
         style:
           '--color': rgb(31, 223, 100)
+          '--tooltip-label': >-
+            {{ (VALUE / 60) | int }}:{{ 0 if (VALUE - 60*((VALUE / 60) | int)) < 10
+            else "" }}{{ (VALUE - 60*((VALUE / 60) | int)) | int }}
         background_style:
           height: 39%
           border-radius: 32px
