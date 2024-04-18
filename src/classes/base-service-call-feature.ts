@@ -26,6 +26,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@state() value: string | number | boolean = 0;
 	getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
+	valueUpdateInterval?: ReturnType<typeof setInterval>;
 
 	unitOfMeasurement: string = '';
 	precision: number = 0;
@@ -51,6 +52,9 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	endAction() {
+		clearInterval(this.valueUpdateInterval);
+		this.valueUpdateInterval = undefined;
+
 		this.buttonPressStart = undefined;
 		this.buttonPressEnd = undefined;
 
@@ -289,15 +293,17 @@ export class BaseServiceCallFeature extends LitElement {
 				this.hass,
 				this.entry.entity_id as string,
 			) as string;
-			let valueAttribute = renderTemplate(
-				this.hass,
-				this.entry.value_attribute as string,
-			) as string;
+			let valueAttribute = (
+				renderTemplate(
+					this.hass,
+					this.entry.value_attribute as string,
+				) as string
+			).toLowerCase();
 			if (entityId) {
 				if (valueAttribute == 'state') {
 					this.value = this.hass.states[entityId].state;
 				} else {
-					let value;
+					let value: string | number | boolean | string[] | number[];
 					const indexMatch = valueAttribute.match(/\[\d+\]$/);
 					if (indexMatch) {
 						const index = parseInt(
@@ -311,7 +317,7 @@ export class BaseServiceCallFeature extends LitElement {
 							this.hass.states[entityId].attributes[
 								valueAttribute
 							];
-						if (value && value.length) {
+						if (value && Array.isArray(value) && value.length) {
 							value = value[index];
 						} else {
 							value == undefined;
@@ -322,10 +328,37 @@ export class BaseServiceCallFeature extends LitElement {
 								valueAttribute
 							];
 					}
-					if (valueAttribute == 'brightness') {
-						value = Math.round((100 * parseInt(value ?? 0)) / 255);
+
+					switch (valueAttribute) {
+						case 'brightness':
+							this.value = Math.round(
+								(100 * parseInt((value as string) ?? 0)) / 255,
+							);
+							break;
+						case 'media_position':
+							try {
+								this.valueUpdateInterval = setInterval(() => {
+									if (
+										this.hass.states[entityId].state ==
+										'playing'
+									) {
+										this.value = parseInt(
+											(parseInt(value as string) +
+												Date.now() -
+												this.hass.states[entityId]
+													.attributes
+													.media_position_updated_at) as unknown as string,
+										);
+									}
+								}, 1000);
+							} catch {
+								this.value = value as string | number | boolean;
+							}
+							break;
+						default:
+							this.value = value as string | number | boolean;
+							break;
 					}
-					this.value = value;
 				}
 			}
 		}
