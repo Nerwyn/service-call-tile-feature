@@ -346,15 +346,19 @@ export class BaseServiceCallFeature extends LitElement {
 										'playing'
 									) {
 										this.value = Math.floor(
-											Math.floor(value as number) +
-												(Date.now() -
-													Date.parse(
-														this.hass.states[
-															entityId
-														].attributes
-															.media_position_updated_at,
-													)) /
-													1000,
+											Math.min(
+												Math.floor(value as number) +
+													(Date.now() -
+														Date.parse(
+															this.hass.states[
+																entityId
+															].attributes
+																.media_position_updated_at,
+														)) /
+														1000,
+												this.hass.states[entityId]
+													.attributes.media_duration,
+											),
 										);
 									}
 								}, 500);
