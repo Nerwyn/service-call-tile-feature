@@ -207,39 +207,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			HOLD_SECS: '0',
 			OFFSET: this.tooltipOffset,
 		};
-		console.log(this.style)
+		console.log(this.style);
 		const style: StyleInfo = this.buildStyle(
 			{
 				...this.entry.tooltip_style,
 				'--tooltip-label': `"${
-					(this.entry.tooltip_style?.['--tooltip-label'] ??
-					'--tooltip-label' in this.style
-						? this.style[
-								'--tooltip-label' as keyof CSSStyleDeclaration
-						  ]
-						: `{{ VALUE }}{{ UNIT }}`) as string
+					this.entry.tooltip_style?.['--tooltip-label'] ??
+					this.entry.style?.['--tooltip-label'] ??
+					`{{ VALUE }}{{ UNIT }}`
 				}"`,
-				'--tooltip-offset': (this.entry.tooltip_style?.[
-					'--tooltip-offset'
-				] ?? '--tooltip-offset' in this.style
-					? this.style[
-							'--tooltip-offset' as keyof CSSStyleDeclaration
-					  ]
-					: '{{ OFFSET }}px') as string,
-				'--tooltip-transform': (this.entry.tooltip_style?.[
-					'--tooltip-transform'
-				] ?? '--tooltip-transform' in this.style
-					? this.style[
-							'--tooltip-transform' as keyof CSSStyleDeclaration
-					  ]
-					: 'translateX(var(--tooltip-offset))') as string,
-				'--tooltip-display': (this.entry.tooltip_style?.[
-					'--tooltip-display'
-				] ?? '--tooltip-display' in this.style
-					? this.style[
-							'--tooltip-display' as keyof CSSStyleDeclaration
-					  ]
-					: 'initial') as string,
+				'--tooltip-offset':
+					this.entry.tooltip_style?.['--tooltip-offset'] ??
+					this.entry.style?.['--tooltip-offset'] ??
+					'{{ OFFSET }}px',
+				'--tooltip-transform':
+					this.entry.tooltip_style?.['--tooltip-transform'] ??
+					this.entry.style?.['--tooltip-transform'] ??
+					'translateX(var(--tooltip-offset))',
+				'--tooltip-display':
+					this.entry.tooltip_style?.['--tooltip-display'] ??
+					this.entry.style?.['--tooltip-display'] ??
+					'initial',
 			},
 			context,
 		);
