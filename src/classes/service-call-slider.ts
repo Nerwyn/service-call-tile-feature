@@ -213,6 +213,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		);
 		if ('--tooltip-label' in style) {
 			style['--tooltip-label'] = `"${style['--tooltip-label']}"`;
+		} else {
+			if ('--tooltip-label' in this.style) {
+				style['--tooltip-label'] = `"${
+					this.renderTemplate(
+						this.style['--tooltip-label'] as string,
+						context,
+					) as string
+				}"`;
+			} else {
+				style['--tooltip-label'] = `"${context.VALUE}${context.UNIT}"`;
+			}
+		}
+		if (!('--tooltip-offset' in style)) {
+			if ('--tooltip-offset' in this.style) {
+				style['--tooltip-offset'] = this.renderTemplate(
+					this.style['--tooltip-offset'] as string,
+					context,
+				) as string;
+			} else {
+				style['--tooltip-offset'] = `${context.OFFSET}px`;
+			}
 		}
 
 		// Deprecated tooltip hide/show field
@@ -223,12 +244,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				? 'initial'
 				: 'none';
 		}
-
-		this.style.setProperty(
-			'--tooltip-label',
-			`"${context.VALUE}${context.UNIT}"`,
-		);
-		this.style.setProperty('--tooltip-offset', `${context.OFFSET}px`);
 
 		// prettier-ignore
 		return html`
@@ -376,8 +391,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 					--color: var(--tile-color);
 					--opacity: 1;
-					--tooltip-label: '0';
-					--tooltip-offset: 0px;
 					--tooltip-transform: translateX(var(--tooltip-offset));
 					--tooltip-display: initial;
 				}
