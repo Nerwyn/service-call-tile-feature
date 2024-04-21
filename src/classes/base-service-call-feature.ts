@@ -293,9 +293,11 @@ export class BaseServiceCallFeature extends LitElement {
 			const entityId = this.renderTemplate(
 				this.entry.entity_id as string,
 			) as string;
-			let valueAttribute = this.renderTemplate(
-				this.entry.value_attribute as string,
-			) as string;
+			let valueAttribute = (
+				this.renderTemplate(
+					this.entry.value_attribute as string,
+				) as string
+			).toLowerCase();
 			console.debug(`Value Attribute:${valueAttribute}`);
 			if (entityId) {
 				if (valueAttribute == 'state') {

@@ -162,9 +162,7 @@ class ServiceCallTileFeature extends LitElement {
 		entry.type = (entry.type ?? 'button').toLowerCase() as TileFeatureType;
 
 		// Set value attribute to state as default
-		entry.value_attribute = (
-			entry.value_attribute ?? 'state'
-		).toLowerCase();
+		entry.value_attribute = entry.value_attribute ?? 'state';
 
 		// Move style fields to style object
 		const deprecatedStyleFields: Record<string, string> = {
