@@ -295,8 +295,7 @@ export class BaseServiceCallFeature extends LitElement {
 				this.entry.entity_id as string,
 			) as string;
 			let valueAttribute = (
-				renderTemplate(
-					this.hass,
+				this.renderTemplate(
 					this.entry.value_attribute as string,
 				) as string
 			).toLowerCase();
@@ -407,7 +406,7 @@ export class BaseServiceCallFeature extends LitElement {
 				if (key in context) {
 					if (str == key) {
 						str = context[key] as string;
-					} else if (str.toString().includes(key)) {
+					} else if ((str ?? '').toString().includes(key)) {
 						str = str
 							.toString()
 							.replace(
