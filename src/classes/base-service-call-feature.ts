@@ -282,8 +282,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	setValue() {
 		this.unitOfMeasurement =
-			(renderTemplate(
-				this.hass,
+			(this.renderTemplate(
 				this.entry.unit_of_measurement as string,
 			) as string) ?? '';
 
@@ -294,11 +293,9 @@ export class BaseServiceCallFeature extends LitElement {
 			const entityId = this.renderTemplate(
 				this.entry.entity_id as string,
 			) as string;
-			let valueAttribute = (
-				this.renderTemplate(
-					this.entry.value_attribute as string,
-				) as string
-			).toLowerCase();
+			let valueAttribute = this.renderTemplate(
+				this.entry.value_attribute as string,
+			) as string;
 			console.debug(`Value Attribute:${valueAttribute}`);
 			if (entityId) {
 				if (valueAttribute == 'state') {
