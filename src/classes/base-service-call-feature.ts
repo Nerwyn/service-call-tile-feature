@@ -407,7 +407,7 @@ export class BaseServiceCallFeature extends LitElement {
 					if (str == key) {
 						str = context[key] as string;
 					} else if ((str ?? '').toString().includes(key)) {
-						str = str
+						str = (str ?? '')
 							.toString()
 							.replace(
 								new RegExp(key, 'g'),
@@ -486,7 +486,7 @@ export class BaseServiceCallFeature extends LitElement {
 			let text: string = this.renderTemplate(
 				entry.label as string,
 				context,
-			).toString();
+			) as string;
 			if (text) {
 				if (typeof text == 'string' && text.includes('VALUE')) {
 					text = text.replace(
