@@ -298,7 +298,6 @@ export class BaseServiceCallFeature extends LitElement {
 					this.entry.value_attribute as string,
 				) as string
 			).toLowerCase();
-			console.debug(`Value Attribute:${valueAttribute}`);
 			if (entityId) {
 				if (valueAttribute == 'state') {
 					this.value = this.hass.states[entityId].state;
