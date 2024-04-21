@@ -123,8 +123,7 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	callService(action: IAction) {
-		const domainService = renderTemplate(
-			this.hass,
+		const domainService = this.renderTemplate(
 			action.service as string,
 		) as string;
 
@@ -292,8 +291,7 @@ export class BaseServiceCallFeature extends LitElement {
 			clearInterval(this.valueUpdateInterval);
 			this.valueUpdateInterval = undefined;
 
-			const entityId = renderTemplate(
-				this.hass,
+			const entityId = this.renderTemplate(
 				this.entry.entity_id as string,
 			) as string;
 			let valueAttribute = (
@@ -486,8 +484,7 @@ export class BaseServiceCallFeature extends LitElement {
 			) {
 				context.VALUE = Number(value).toFixed(this.precision);
 			}
-			let text: string = renderTemplate(
-				this.hass,
+			let text: string = this.renderTemplate(
 				entry.label as string,
 				context,
 			).toString();
