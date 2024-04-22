@@ -23,7 +23,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
 
-	@state() value: string | number | boolean = 0;
+	@state() value?: string | number | boolean = 0;
 	entityId?: string;
 	getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
@@ -303,7 +303,13 @@ export class BaseServiceCallFeature extends LitElement {
 			if (valueAttribute == 'state') {
 				this.value = this.hass.states[this.entityId].state;
 			} else {
-				let value: string | number | boolean | string[] | number[];
+				let value:
+					| string
+					| number
+					| boolean
+					| string[]
+					| number[]
+					| undefined;
 				const indexMatch = valueAttribute.match(/\[\d+\]$/);
 				if (indexMatch) {
 					const index = parseInt(indexMatch[0].replace(/\[|\]/g, ''));
@@ -324,15 +330,15 @@ export class BaseServiceCallFeature extends LitElement {
 						];
 				}
 
-				switch (valueAttribute) {
-					case 'brightness':
-						this.value = Math.round(
-							(100 * parseInt((value as string) ?? 0)) / 255,
-						);
-						break;
-					case 'media_position':
-						try {
-							if (value != undefined) {
+				if (value != undefined) {
+					switch (valueAttribute) {
+						case 'brightness':
+							this.value = Math.round(
+								(100 * parseInt((value as string) ?? 0)) / 255,
+							);
+							break;
+						case 'media_position':
+							try {
 								this.valueUpdateInterval = setInterval(() => {
 									if (
 										this.hass.states[
@@ -360,15 +366,17 @@ export class BaseServiceCallFeature extends LitElement {
 										);
 									}
 								}, 500);
+							} catch (e) {
+								console.error(e);
+								this.value = value as string | number | boolean;
 							}
-						} catch (e) {
-							console.error(e);
+							break;
+						default:
 							this.value = value as string | number | boolean;
-						}
-						break;
-					default:
-						this.value = value as string | number | boolean;
-						break;
+							break;
+					}
+				} else {
+					this.value = value;
 				}
 			}
 		}
@@ -392,7 +400,7 @@ export class BaseServiceCallFeature extends LitElement {
 				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
 			}
 			context = {
-				VALUE: this.value,
+				VALUE: this.value as string,
 				HOLD_SECS: holdSecs ?? 0,
 				UNIT: this.unitOfMeasurement,
 			};
@@ -470,7 +478,7 @@ export class BaseServiceCallFeature extends LitElement {
 				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
 			}
 			const context = {
-				VALUE: value,
+				VALUE: value as string,
 				HOLD_SECS: holdSecs ?? 0,
 				UNIT: this.unitOfMeasurement,
 			};
