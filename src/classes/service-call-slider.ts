@@ -17,6 +17,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	speed: number = 2;
 	range: [number, number] = [0, 100];
 	step: number = 1;
+	intervalId?: ReturnType<typeof setTimeout>;
 
 	precision: number = 0;
 	tooltipOffset: number = 0;
@@ -44,28 +45,32 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.sliderOn = true;
 			}
 
+			clearInterval(this.intervalId);
+			this.intervalId = undefined;
 			let i = start;
 			if (start > end) {
-				const id = setInterval(() => {
+				this.intervalId = setInterval(() => {
 					i -= this.speed;
 					this.currentValue = i;
 					this.setTooltip(slider, this.showTooltip);
 
 					if (end >= i) {
-						clearInterval(id);
+						clearInterval(this.intervalId);
+						this.intervalId = undefined;
 						this.currentValue = end;
 						this.setTooltip(slider, this.showTooltip);
 					}
 				}, 1);
 			} else if (start < end) {
 				this.sliderOn = true;
-				const id = setInterval(() => {
+				this.intervalId = setInterval(() => {
 					i += this.speed;
 					this.currentValue = i;
 					this.setTooltip(slider, this.showTooltip);
 
 					if (end <= i) {
-						clearInterval(id);
+						clearInterval(this.intervalId);
+						this.intervalId = undefined;
 						this.currentValue = end;
 						this.setTooltip(slider, this.showTooltip);
 					}
