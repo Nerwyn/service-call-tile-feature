@@ -58,14 +58,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						this.sliderOn = !(
 							this.currentValue == undefined ||
 							(end <= this.range[0] &&
-								this.class != 'slider-line-thumb') ||
-							['off', 'idle', 'standby'].includes(
-								this.hass.states[
-									this.renderTemplate(
-										this.entry.entity_id as string,
-									) as string
-								].state,
-							)
+								(this.class != 'slider-line-thumb' ||
+									['off', 'idle', 'standby'].includes(
+										this.hass.states[
+											this.entityId as string
+										].state,
+									)))
 						);
 					}
 				}, 1);
@@ -169,14 +167,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setTooltip(slider, false);
 			this.sliderOn = !(
 				this.currentValue == undefined ||
-				Number(this.currentValue) <= this.range[0] ||
-				['off', 'idle', 'standby'].includes(
-					this.hass.states[
-						this.renderTemplate(
-							this.entry.entity_id as string,
-						) as string
-					].state,
-				)
+				(Number(this.currentValue) <= this.range[0] &&
+					(this.class != 'slider-line-thumb' ||
+						['off', 'idle', 'standby'].includes(
+							this.hass.states[this.entityId as string].state,
+						)))
 			);
 		}
 	}
@@ -205,12 +200,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildLabel() {
 		const value = this.getValueFromHass ? this.value : this.currentValue;
-		const hide =
-			this.value == undefined ||
-			(Number(this.value) <= this.range[0] &&
-				'class' in this &&
-				this.class != 'slider-line-thumb');
-		return super.buildLabel(this.entry, value, hide);
+		return super.buildLabel(this.entry, value, !this.sliderOn);
 	}
 
 	buildTooltip() {
@@ -280,11 +270,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			(Number(value) <= this.range[0] &&
 				this.class != 'slider-line-thumb') ||
 			['off', 'idle', 'standby'].includes(
-				this.hass.states[
-					this.renderTemplate(
-						this.entry.entity_id as string,
-					) as string
-				].state,
+				this.hass.states[this.entityId as string].state,
 			)
 		);
 
@@ -318,10 +304,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = this.value;
 		}
 
-		const entityId = this.renderTemplate(
-			this.entry.entity_id as string,
-		) as string;
-		const [domain, _service] = (entityId ?? '').split('.');
+		const [domain, _service] = (this.entityId ?? '').split('.');
 
 		if (this.entry.range) {
 			this.range = [
@@ -338,8 +321,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			];
 		} else if (['number', 'input_number'].includes(domain)) {
 			this.range = [
-				this.hass.states[entityId].attributes.min,
-				this.hass.states[entityId].attributes.max,
+				this.hass.states[this.entityId as string].attributes.min,
+				this.hass.states[this.entityId as string].attributes.max,
 			];
 		}
 
@@ -362,7 +345,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				tap_action.data = data;
 			}
 			if (!('entity_id' in data)) {
-				data.entity_id = entityId;
+				data.entity_id = this.entityId as string;
 				tap_action.data = data;
 			}
 			this.entry.tap_action = tap_action;
@@ -377,7 +360,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				) as string,
 			);
 		} else if (['number', 'input_number'].includes(domain)) {
-			this.step = this.hass.states[entityId].attributes.step;
+			this.step =
+				this.hass.states[this.entityId as string].attributes.step;
 		} else {
 			this.step = (this.range[1] - this.range[0]) / 100;
 		}

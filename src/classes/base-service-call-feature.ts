@@ -24,6 +24,7 @@ export class BaseServiceCallFeature extends LitElement {
 	@property({ attribute: false }) entry!: IEntry;
 
 	@state() value: string | number | boolean = 0;
+	entityId?: string;
 	getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 	valueUpdateInterval?: ReturnType<typeof setInterval>;
@@ -281,94 +282,90 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	setValue() {
+		this.entityId = this.renderTemplate(
+			this.entry.entity_id as string,
+		) as string;
+
 		this.unitOfMeasurement =
 			(this.renderTemplate(
 				this.entry.unit_of_measurement as string,
 			) as string) ?? '';
 
-		if (this.getValueFromHass) {
+		if (this.getValueFromHass && this.entityId) {
 			clearInterval(this.valueUpdateInterval);
 			this.valueUpdateInterval = undefined;
 
-			const entityId = this.renderTemplate(
-				this.entry.entity_id as string,
-			) as string;
 			let valueAttribute = (
 				this.renderTemplate(
 					this.entry.value_attribute as string,
 				) as string
 			).toLowerCase();
-			if (entityId) {
-				if (valueAttribute == 'state') {
-					this.value = this.hass.states[entityId].state;
-				} else {
-					let value: string | number | boolean | string[] | number[];
-					const indexMatch = valueAttribute.match(/\[\d+\]$/);
-					if (indexMatch) {
-						const index = parseInt(
-							indexMatch[0].replace(/\[|\]/g, ''),
-						);
-						valueAttribute = valueAttribute.replace(
-							indexMatch[0],
-							'',
-						);
-						value =
-							this.hass.states[entityId].attributes[
-								valueAttribute
-							];
-						if (value && Array.isArray(value) && value.length) {
-							value = value[index];
-						} else {
-							value == undefined;
-						}
+			if (valueAttribute == 'state') {
+				this.value = this.hass.states[this.entityId].state;
+			} else {
+				let value: string | number | boolean | string[] | number[];
+				const indexMatch = valueAttribute.match(/\[\d+\]$/);
+				if (indexMatch) {
+					const index = parseInt(indexMatch[0].replace(/\[|\]/g, ''));
+					valueAttribute = valueAttribute.replace(indexMatch[0], '');
+					value =
+						this.hass.states[this.entityId].attributes[
+							valueAttribute
+						];
+					if (value && Array.isArray(value) && value.length) {
+						value = value[index];
 					} else {
-						value =
-							this.hass.states[entityId].attributes[
-								valueAttribute
-							];
+						value == undefined;
 					}
+				} else {
+					value =
+						this.hass.states[this.entityId].attributes[
+							valueAttribute
+						];
+				}
 
-					switch (valueAttribute) {
-						case 'brightness':
-							this.value = Math.round(
-								(100 * parseInt((value as string) ?? 0)) / 255,
-							);
-							break;
-						case 'media_position':
-							try {
-								this.valueUpdateInterval = setInterval(() => {
-									if (
-										this.hass.states[entityId].state ==
-										'playing'
-									) {
-										this.value = Math.min(
-											Math.floor(
-												Math.floor(value as number) +
-													(Date.now() -
-														Date.parse(
-															this.hass.states[
-																entityId
-															].attributes
-																.media_position_updated_at,
-														)) /
-														1000,
-											),
-											Math.floor(
-												this.hass.states[entityId]
-													.attributes.media_duration,
-											),
-										);
-									}
-								}, 500);
-							} catch (e) {
-								console.error(e);
-								this.value = value as string | number | boolean;
-							}
-							break;
-						default:
+				switch (valueAttribute) {
+					case 'brightness':
+						this.value = Math.round(
+							(100 * parseInt((value as string) ?? 0)) / 255,
+						);
+						break;
+					case 'media_position':
+						try {
+							this.valueUpdateInterval = setInterval(() => {
+								if (
+									this.hass.states[this.entityId as string]
+										.state == 'playing'
+								) {
+									this.value = Math.min(
+										Math.floor(
+											Math.floor(value as number) +
+												(Date.now() -
+													Date.parse(
+														this.hass.states[
+															this
+																.entityId as string
+														].attributes
+															.media_position_updated_at,
+													)) /
+													1000,
+										),
+										Math.floor(
+											this.hass.states[
+												this.entityId as string
+											].attributes.media_duration,
+										),
+									);
+								}
+							}, 500);
+						} catch (e) {
+							console.error(e);
 							this.value = value as string | number | boolean;
-							break;
-					}
+						}
+						break;
+					default:
+						this.value = value as string | number | boolean;
+						break;
 				}
 			}
 		}
