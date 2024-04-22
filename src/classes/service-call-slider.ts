@@ -55,13 +55,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						clearInterval(id);
 						this.currentValue = end;
 						this.setTooltip(slider, this.showTooltip);
-						if (
-							this.value == undefined ||
+						this.sliderOn = !(
+							this.currentValue == undefined ||
 							(end <= this.range[0] &&
-								this.class != 'slider-line-thumb')
-						) {
-							this.sliderOn = false;
-						}
+								this.class != 'slider-line-thumb') ||
+							['off', 'idle', 'standby'].includes(
+								this.hass.states[
+									this.renderTemplate(
+										this.entry.entity_id as string,
+									) as string
+								].state,
+							)
+						);
 					}
 				}, 1);
 			} else if (start < end) {
@@ -163,7 +168,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = this.value ?? 0;
 			this.setTooltip(slider, false);
 			this.sliderOn = !(
-				this.value == undefined || Number(this.value) <= this.range[0]
+				this.currentValue == undefined ||
+				Number(this.currentValue) <= this.range[0] ||
+				['off', 'idle', 'standby'].includes(
+					this.hass.states[
+						this.renderTemplate(
+							this.entry.entity_id as string,
+						) as string
+					].state,
+				)
 			);
 		}
 	}
@@ -265,7 +278,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.sliderOn = !(
 			value == undefined ||
 			(Number(value) <= this.range[0] &&
-				this.class != 'slider-line-thumb')
+				this.class != 'slider-line-thumb') ||
+			['off', 'idle', 'standby'].includes(
+				this.hass.states[
+					this.renderTemplate(
+						this.entry.entity_id as string,
+					) as string
+				].state,
+			)
 		);
 
 		return html`
