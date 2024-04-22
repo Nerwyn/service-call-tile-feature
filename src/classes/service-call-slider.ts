@@ -55,16 +55,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						clearInterval(id);
 						this.currentValue = end;
 						this.setTooltip(slider, this.showTooltip);
-						this.sliderOn = !(
-							this.currentValue == undefined ||
-							(end <= this.range[0] &&
-								(this.class != 'slider-line-thumb' ||
-									['off', 'idle', 'standby'].includes(
-										this.hass.states[
-											this.entityId as string
-										].state,
-									)))
-						);
 					}
 				}, 1);
 			} else if (start < end) {
@@ -268,10 +258,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.sliderOn = !(
 			value == undefined ||
 			(Number(value) <= this.range[0] &&
-				this.class != 'slider-line-thumb') ||
-			['off', 'idle', 'standby'].includes(
-				this.hass.states[this.entityId as string].state,
-			)
+				(this.class != 'slider-line-thumb' ||
+					['off', 'idle', 'standby'].includes(
+						this.hass.states[this.entityId as string].state,
+					)))
 		);
 
 		return html`

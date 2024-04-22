@@ -332,32 +332,35 @@ export class BaseServiceCallFeature extends LitElement {
 						break;
 					case 'media_position':
 						try {
-							this.valueUpdateInterval = setInterval(() => {
-								if (
-									this.hass.states[this.entityId as string]
-										.state == 'playing'
-								) {
-									this.value = Math.min(
-										Math.floor(
-											Math.floor(value as number) +
-												(Date.now() -
-													Date.parse(
-														this.hass.states[
-															this
-																.entityId as string
-														].attributes
-															.media_position_updated_at,
-													)) /
-													1000,
-										),
-										Math.floor(
-											this.hass.states[
-												this.entityId as string
-											].attributes.media_duration,
-										),
-									);
-								}
-							}, 500);
+							if (value != undefined) {
+								this.valueUpdateInterval = setInterval(() => {
+									if (
+										this.hass.states[
+											this.entityId as string
+										].state == 'playing'
+									) {
+										this.value = Math.min(
+											Math.floor(
+												Math.floor(value as number) +
+													(Date.now() -
+														Date.parse(
+															this.hass.states[
+																this
+																	.entityId as string
+															].attributes
+																.media_position_updated_at,
+														)) /
+														1000,
+											),
+											Math.floor(
+												this.hass.states[
+													this.entityId as string
+												].attributes.media_duration,
+											),
+										);
+									}
+								}, 500);
+							}
 						} catch (e) {
 							console.error(e);
 							this.value = value as string | number | boolean;
