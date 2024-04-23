@@ -495,15 +495,6 @@ export class BaseServiceCallFeature extends LitElement {
 				context,
 			) as string;
 			if (text) {
-				if (typeof text == 'string' && text.includes('VALUE')) {
-					text = text.replace(
-						/VALUE/g,
-						`${(context.VALUE ?? '').toString()}${
-							this.unitOfMeasurement
-						}`,
-					);
-				}
-
 				const style = this.buildStyle(entry.label_style ?? {});
 				if (hide) {
 					style.display = 'none';

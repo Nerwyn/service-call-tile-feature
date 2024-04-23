@@ -48,7 +48,7 @@ To create a slider, add a Service Call tile feature to your tile and edit it. Ch
 
 If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `VALUE`. If you want to use templating to set the slider label instead, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement as you wish. Otherwise if you include `VALUE` in a label without templating it will be replaced with the current slider value with unit of measurement appended to it if provided. If you similarly include `VALUE` in a slider's label, it will update as you tap or drag the slider and include units if `unit_of_measurement` is also provided.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `' {{ VALUE }}`. If you want to use templating to set the slider label, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement.
 
 ```yaml
 type: custom:service-call
@@ -118,7 +118,7 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:thermometer
-    label: '{{ VALUE }}'
+    label: '{{ VALUE }}{{ UNIT }}'
     step: 1
     debounceTime: 1000
     range:
@@ -193,8 +193,7 @@ entries:
       {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
       "mdi:ceiling-light-outline") }}
     label: >-
-      {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
-      undefined }}
+      {{ VALUE }}{{ UNIT }}
     unit_of_measurement: '%'
     style:
       --icon-color: yellow
@@ -208,23 +207,23 @@ entries:
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider`, `selector`, and `spinbox` are also supported.
 
-The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `VALUE`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
+The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `'{{ VALUE }}'`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
-If the icon or label is empty, then the entire HTML element will not render. If the label is present, then `unit_of_measurement` is appended to the end of it.
+If the icon or label is empty, then the entire HTML element will not render. Both can be defined using templates, and the variables `VALUE` and `UNIT` can be included in label templates.
 
 Haptics are disabled for tile features by default, but can be enabled by setting `haptics` to true.
 
 ## Templating
 
-All fields at the entry level and lower support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
+Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
 You can include the current value of a tile feature and it's units by using the variables `VALUE` and `UNIT` in a label template. You can also include `HOLD_SECS` in a template if performing a `momentary_end_action`.
 
 ## Actions
 
-There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons and selector options support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
+There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons, selector options, and spinbox buttons support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
 | Name                                             | Type   | Description                                                                                                           |
 | ------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------- |
@@ -347,9 +346,9 @@ Each action has a set of possible options associated with them. If `action` is n
 | data    | Additional data to pass to the service call. See the Home Assistant documentation or go to Developer Tools > Services to see available options for each service. |
 | target  | The entity IDs, device IDs, or area IDs to call the service on.                                                                                                  |
 
-`data` and `target` get internally merged into one object since `hass.callService` only has a single data field. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
+`data` and `target` get internally merged into one object and can be used interchangeably or together. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
 
-If you include `VALUE` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider. You can do this with or without templating.
+If you include `'{{ VALUE }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox. You can do this with or without templating.
 
 ```yaml
 type: custom:service-call
@@ -550,7 +549,8 @@ type: custom:service-call
 entries:
   - type: button
     icon: mdi:brightness-4
-    label: '{{ VALUE }}'
+    label: '{{ VALUE }}{{ UNIT }}'
+    unit_of_measurement: '%'
     value_attribute: brightness
     tap_action:
       action: call-service
@@ -591,7 +591,8 @@ type: custom:service-call
 entries:
   - type: slider
     icon: mdi:brightness-4
-    label: '{{ VALUE }}'
+    label: '{{ VALUE }}{{ UNIT }}'
+    unit_of_measurment: ' Mireds'
     thumb: flat
     range:
       - '{{ state_attr("light.lounge", "min_mireds") }}'
@@ -666,7 +667,8 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:brightness-4
-    label: '{{ VALUE }}'
+    label: '{{ VALUE }}{{ UNIT }}'
+    unit_of_measurement: '%'
     step: 5
     debounceTime: 1000
     range:
@@ -908,7 +910,7 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -927,7 +929,7 @@ features:
           service: light.turn_on
           data:
             color_temp: '{{ VALUE }}'
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -943,7 +945,8 @@ features:
       - type: spinbox
         haptics: true
         icon: mdi:brightness-4
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
+        unit_of_measurement: '%'
         step: 5
         debounceTime: 1000
         range:
@@ -1024,7 +1027,7 @@ features:
               initial
             {% endif %}
       - type: slider
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -1062,7 +1065,7 @@ features:
         icon: mdi:palette
         data:
           hs_color:
-            - VALUE
+            - '{{ VALUE }}'
             - 100
           entity_id: light.sunroom_ceiling
         style:
@@ -1079,7 +1082,7 @@ features:
           data:
             color_temp: '{{ VALUE }}'
             entity_id: light.sunroom_ceiling
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -1296,7 +1299,7 @@ features:
     entries:
       - type: spinbox
         icon: mdi:thermometer
-        label: '{{ VALUE }}'
+        label: '{{ VALUE }}{{ UNIT }}'
         step: 1
         debounceTime: 1000
         value_from_hass_delay: 5000
