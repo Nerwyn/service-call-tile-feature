@@ -348,7 +348,7 @@ Each action has a set of possible options associated with them. If `action` is n
 
 `data` and `target` get internally merged into one object and can be used interchangeably or together. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
 
-If you include `'{{ VALUE }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox. You can do this with or without templating.
+If you include `'{{ VALUE }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox.
 
 ```yaml
 type: custom:service-call
