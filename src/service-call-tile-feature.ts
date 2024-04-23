@@ -66,12 +66,12 @@ class ServiceCallTileFeature extends LitElement {
 			}
 			if ('increment' in entry) {
 				entry.increment = this.updateDeprecatedEntryFields(
-					entry.increment!,
+					entry.increment as IEntry,
 				);
 			}
 			if ('decrement' in entry) {
 				entry.decrement = this.updateDeprecatedEntryFields(
-					entry.decrement!,
+					entry.decrement as IEntry,
 				);
 			}
 		}
@@ -237,21 +237,21 @@ class ServiceCallTileFeature extends LitElement {
 					if (option.autofill_entity_id ?? true) {
 						option = this.populateMissingEntityId(
 							option,
-							entry.entity_id!,
+							entry.entity_id as string,
 						);
 					}
 				}
 
 				if ('increment' in entry) {
 					entry.increment = this.populateMissingEntityId(
-						entry.increment!,
-						entry.entity_id!,
+						entry.increment as IEntry,
+						entry.entity_id as string,
 					);
 				}
 				if ('decrement' in entry) {
 					entry.decrement = this.populateMissingEntityId(
-						entry.decrement!,
-						entry.entity_id!,
+						entry.decrement as IEntry,
+						entry.entity_id as string,
 					);
 				}
 			}
@@ -260,7 +260,7 @@ class ServiceCallTileFeature extends LitElement {
 			for (const key in entry.style ?? {}) {
 				style[key] = renderTemplate(
 					this.hass,
-					entry.style![key] as string,
+					(entry.style ?? {})[key] as string,
 				) as string;
 			}
 

@@ -44,8 +44,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				const doubleTapWindow: number =
 					'double_tap_window' in (this.entry.double_tap_action ?? {})
 						? (this.renderTemplate(
-								this.entry.double_tap_action!
-									.double_tap_window as unknown as string,
+								this.entry.double_tap_action
+									?.double_tap_window as unknown as string,
 						  ) as number)
 						: 200;
 				if (!this.clickTimer) {
@@ -77,16 +77,18 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		if (
 			'momentary_start_action' in this.entry &&
-			this.renderTemplate(this.entry.momentary_start_action!.action) !=
-				'none'
+			this.renderTemplate(
+				this.entry.momentary_start_action?.action ?? 'none',
+			) != 'none'
 		) {
 			this.fireHapticEvent('light');
 			this.buttonPressStart = performance.now();
 			this.sendAction('momentary_start_action');
 		} else if (
 			'momentary_end_action' in this.entry &&
-			this.renderTemplate(this.entry.momentary_end_action!.action) !=
-				'none'
+			this.renderTemplate(
+				this.entry.momentary_end_action?.action ?? 'none',
+			) != 'none'
 		) {
 			this.fireHapticEvent('light');
 			this.buttonPressStart = performance.now();
@@ -110,8 +112,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 							const repeatDelay =
 								'repeat_delay' in (this.entry.hold_action ?? {})
 									? (this.renderTemplate(
-											this.entry.hold_action!
-												.repeat_delay as unknown as string,
+											this.entry.hold_action
+												?.repeat_delay as unknown as string,
 									  ) as number)
 									: 100;
 							if (!this.holdInterval) {

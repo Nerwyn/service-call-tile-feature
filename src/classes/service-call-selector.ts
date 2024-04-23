@@ -10,7 +10,8 @@ import './service-call-button';
 export class ServiceCallSelector extends BaseServiceCallFeature {
 	onClick(e: MouseEvent) {
 		// Get all selection options
-		const options = (e.currentTarget as HTMLElement).parentNode!.children;
+		const options =
+			(e.currentTarget as HTMLElement).parentNode?.children ?? [];
 
 		// Set class of all selection options to default
 		for (const option of options) {
@@ -26,15 +27,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		this.setValue();
 
-		const entity_id = this.renderTemplate(
-			this.entry.entity_id as string,
-		) as string;
 		const entries = this.entry.options ?? [];
 		let options: string[] = [];
-		if (entity_id) {
+		if (this.entityId) {
 			options =
-				(this.hass.states[entity_id].attributes.options as string[]) ??
-				new Array<string>(entries.length);
+				(this.hass.states[this.entityId].attributes
+					.options as string[]) ?? new Array<string>(entries.length);
 		}
 		if (options.length < entries.length) {
 			options = Object.assign(new Array(entries.length), options);
@@ -50,7 +48,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				!('double_tap_action' in entry) &&
 				!('hold_action' in entry)
 			) {
-				const [domain, _service] = (entity_id ?? '').split('.');
+				const [domain, _service] = (this.entityId ?? '').split('.');
 				const tap_action = {} as IAction;
 				tap_action.action = 'call-service';
 				switch (domain) {
@@ -64,12 +62,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				}
 
 				const data = tap_action.data ?? {};
-				if (!('option' in data!)) {
+				if (!('option' in data)) {
 					data.option = options[i];
 					tap_action.data = data;
 				}
-				if (!('entity_id' in data!)) {
-					data.entity_id = entity_id;
+				if (!('entity_id' in data)) {
+					data.entity_id = this.entityId as string;
 					tap_action.data = data;
 				}
 				entry.tap_action = tap_action;

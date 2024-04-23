@@ -262,8 +262,8 @@ export class BaseServiceCallFeature extends LitElement {
 				} else {
 					if ('exemptions' in (confirmation as IConfirmation)) {
 						if (
-							!(confirmation as IConfirmation)
-								.exemptions!.map((exemption) =>
+							!(confirmation as IConfirmation).exemptions
+								?.map((exemption) =>
 									this.renderTemplate(exemption.user),
 								)
 								.includes(this.hass.user.id)
