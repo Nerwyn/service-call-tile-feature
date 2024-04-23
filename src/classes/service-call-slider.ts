@@ -92,6 +92,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	onStart(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
+		console.info('onStart fired')
+		this.sliderOn = true;
 
 		if (!this.swiping) {
 			this.getValueFromHass = false;
