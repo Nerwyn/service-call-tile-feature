@@ -92,8 +92,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	onStart(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
-		console.info('onStart fired')
-		this.sliderOn = true;
 
 		if (!this.swiping) {
 			this.getValueFromHass = false;
@@ -101,6 +99,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = slider.value;
 			this.value = slider.value;
 			this.setTooltip(slider, true);
+			this.sliderOn = true;
 		}
 	}
 
@@ -165,10 +164,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.sliderOn = !(
 				this.currentValue == undefined ||
 				(Number(this.currentValue) <= this.range[0] &&
-					(this.class != 'slider-line-thumb' ||
-						['off', 'idle', 'standby'].includes(
-							this.hass.states[this.entityId as string].state,
-						)))
+					this.class != 'slider-line-thumb')
 			);
 		}
 	}
@@ -265,10 +261,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.sliderOn = !(
 			value == undefined ||
 			(Number(value) <= this.range[0] &&
-				(this.class != 'slider-line-thumb' ||
-					['off', 'idle', 'standby'].includes(
-						this.hass.states[this.entityId as string].state,
-					)))
+				this.class != 'slider-line-thumb')
 		);
 
 		return html`
