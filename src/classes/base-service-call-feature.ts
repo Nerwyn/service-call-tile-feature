@@ -364,6 +364,8 @@ export class BaseServiceCallFeature extends LitElement {
 												].attributes.media_duration,
 											),
 										);
+									} else {
+										this.value = value as number;
 									}
 								}, 500);
 							} catch (e) {

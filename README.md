@@ -207,7 +207,14 @@ entries:
 
 By default type will be `button`. If you're using an older version of this feature it may not be present but will still default to `button`. Currently `slider`, `selector`, and `spinbox` are also supported.
 
-The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. It can also be used to include the feature value in service call data by setting a field in the data object to `'{{ VALUE }}'`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
+The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. For spinboxes, this field is used to determine which attribute to decrement or increment.
+
+`value_attribute` can also be used to include the feature value in service call data by setting a field in the data object to `'{{ VALUE }}'`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
+
+Some additional logic is applied for certain `value_attribute` values:
+
+- `brightness` - Converted from the default range of 0-255 to 0-100.
+- `media_position` - Updated twice a second using the current timestamp and the attribute `media_position_updated_at` when the entity state is `playing`, and locked to a max value using the attribute `media_duration`
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
