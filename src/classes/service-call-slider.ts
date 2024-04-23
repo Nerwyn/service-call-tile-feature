@@ -90,6 +90,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
+	onStart(e: MouseEvent | TouchEvent) {
+		const slider = e.currentTarget as HTMLInputElement;
+
+		if (!this.swiping) {
+			this.getValueFromHass = false;
+			clearTimeout(this.getValueFromHassTimer);
+			this.currentValue = slider.value;
+			this.value = slider.value;
+			this.setTooltip(slider, true);
+		}
+	}
+
 	onEnd(e: MouseEvent | TouchEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 		this.setTooltip(slider, false);
@@ -270,8 +282,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				value="${value}"
 				.value="${value}"
 				@input=${this.onInput}
+				@mousedown=${this.onMouseDown}
 				@mouseup=${this.onMouseUp}
 				@mousemove=${this.onMouseMove}
+				@touchstart=${this.onTouchStart}
 				@touchend=${this.onTouchEnd}
 				@touchmove=${this.onTouchMove}
 				@contextmenu=${this.onContextMenu}
