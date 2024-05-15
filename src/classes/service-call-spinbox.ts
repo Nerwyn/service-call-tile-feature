@@ -229,7 +229,12 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				) as string,
 			);
 		}
-		console.log(`Step: ${this.entry.step} : ${this.step}`)
+		const splitStep = this.step.toString().split('.');
+		if (splitStep.length > 1) {
+			this.precision = splitStep[1].length;
+		} else {
+			this.precision = 0;
+		}
 
 		if ('debounce_time' in this.entry) {
 			this.debounceTime = parseFloat(
