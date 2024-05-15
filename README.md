@@ -214,7 +214,7 @@ The `value_attribute` field is to set which entity attribute the feature should 
 Some additional logic is applied for certain `value_attribute` values:
 
 - `brightness` - Converted from the default range of 0-255 to 0-100.
-- `media_position` - Updated twice a second using the current timestamp and the attribute `media_position_updated_at` when the entity state is `playing`, and locked to a max value using the attribute `media_duration`
+- `media_position` - Updated twice a second using the current timestamp and the attribute `media_position_updated_at` when the entity state is `playing`, and locked to a max value using the attribute `media_duration`.
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 

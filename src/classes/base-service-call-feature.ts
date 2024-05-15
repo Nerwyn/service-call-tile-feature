@@ -42,10 +42,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	fireHapticEvent(haptic: HapticType) {
 		if (
-			renderTemplate(
-				this.hass,
-				this.entry.haptics as unknown as string,
-			) ??
+			this.renderTemplate(this.entry.haptics as unknown as string) ??
 			false
 		) {
 			forwardHaptic(haptic);

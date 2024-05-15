@@ -41,12 +41,10 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		const selector = [this.buildBackground()];
 
 		for (const i in entries) {
-			const entry = this.entry.options![i];
-
 			if (
-				!('tap_action' in entry) &&
-				!('double_tap_action' in entry) &&
-				!('hold_action' in entry)
+				!('tap_action' in entries[i]) &&
+				!('double_tap_action' in entries[i]) &&
+				!('hold_action' in entries[i])
 			) {
 				const [domain, _service] = (this.entityId ?? '').split('.');
 				const tap_action = {} as IAction;
@@ -70,12 +68,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					data.entity_id = this.entityId as string;
 					tap_action.data = data;
 				}
-				entry.tap_action = tap_action;
-				entry.hold_action = tap_action;
+				entries[i].tap_action = tap_action;
+				entries[i].hold_action = tap_action;
 			}
 
 			const option =
-				this.renderTemplate(entry.option as string) ?? options[i];
+				this.renderTemplate(entries[i].option as string) ?? options[i];
 
 			let optionClass = 'option';
 			if (this.value == option && this.value != undefined) {
@@ -86,11 +84,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				html`<service-call-button
 					class=${optionClass}
 					.hass=${this.hass}
-					.entry=${entry}
+					.entry=${entries[i]}
 					._shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
-					style=${styleMap(this.buildStyle(entry.style ?? {}))}
+					style=${styleMap(this.buildStyle(entries[i].style ?? {}))}
 				/>`,
 			);
 		}
