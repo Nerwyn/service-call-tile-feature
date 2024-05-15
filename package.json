@@ -31,7 +31,7 @@
 	"dependencies": {
 		"@material/mwc-ripple": "^0.27.0",
 		"custom-card-helpers": "^1.9.0",
-		"ha-nunjucks": "^1.2.0",
+		"ha-nunjucks": "1.2.1-beta.001",
 		"lit": "^3.1.1"
 	},
 	"devDependencies": {
