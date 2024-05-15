@@ -482,6 +482,9 @@ export class BaseServiceCallFeature extends LitElement {
 				UNIT: this.unitOfMeasurement,
 			};
 
+			console.log(`Value: ${value}`)
+			console.log(`Typeof Value: ${typeof value}`)
+			console.log(`Precision ${this.precision}`)
 			if (
 				value != undefined &&
 				typeof value == 'number' &&
