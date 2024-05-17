@@ -327,7 +327,7 @@ export class BaseServiceCallFeature extends LitElement {
 						];
 				}
 
-				if (value != undefined) {
+				if (value != undefined || valueAttribute == 'elapsed') {
 					switch (valueAttribute) {
 						case 'brightness':
 							this.value = Math.round(
@@ -370,6 +370,77 @@ export class BaseServiceCallFeature extends LitElement {
 								this.value = value as string | number | boolean;
 							}
 							break;
+						case 'elapsed':
+							if (this.entityId.startsWith('timer.')) {
+								const hms =
+									this.hass.states[
+										this.entityId as string
+									].attributes.finishes_at.split(':');
+								const durationSeconds =
+									parseInt(hms[0]) * 3600 +
+									parseInt(hms[1]) * 60 +
+									parseInt(hms[2]);
+
+								if (
+									this.hass.states[this.entityId as string]
+										.state == 'idle'
+								) {
+									this.value = durationSeconds;
+								} else {
+									const endSeconds = Date.parse(
+										this.hass.states[
+											this.entityId as string
+										].attributes.finishes_at,
+									);
+									try {
+										this.valueUpdateInterval = setInterval(
+											() => {
+												if (
+													this.hass.states[
+														this.entityId as string
+													].state == 'active'
+												) {
+													const remainingSeconds =
+														(endSeconds -
+															Date.now()) /
+														1000;
+													const value = Math.floor(
+														durationSeconds -
+															remainingSeconds,
+													);
+													this.value = Math.min(
+														value,
+														durationSeconds,
+													);
+												} else {
+													const hms =
+														this.hass.states[
+															this
+																.entityId as string
+														].attributes.remaining.split(
+															':',
+														);
+													const remainingSeconds =
+														parseInt(hms[0]) *
+															3600 +
+														parseInt(hms[1]) * 60 +
+														parseInt(hms[2]);
+													this.value = Math.floor(
+														durationSeconds -
+															remainingSeconds,
+													);
+												}
+											},
+											500,
+										);
+									} catch (e) {
+										console.error(e);
+										this.value = 0;
+									}
+								}
+								break;
+							}
+						// falls through
 						default:
 							this.value = value as string | number | boolean;
 							break;
