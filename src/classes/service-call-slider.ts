@@ -264,13 +264,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class != 'slider-line-thumb')
 		);
 
+		const style = this.buildStyle(this.entry.slider_style ?? {});
+		if (
+			this.renderTemplate(this.entry.tap_action?.action as string) ==
+			'none'
+		) {
+			style['pointer-events'] = 'none';
+		}
+
 		return html`
 			<input
 				type="range"
 				class="${this.sliderOn ? this.class : 'slider-off'}"
-				style=${styleMap(
-					this.buildStyle(this.entry.slider_style ?? {}),
-				)}
+				style=${styleMap(style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
 				step=${this.step}
