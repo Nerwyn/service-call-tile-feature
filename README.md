@@ -215,6 +215,8 @@ Some additional logic is applied for certain `value_attribute` values:
 
 - `brightness` - Converted from the default range of 0-255 to 0-100.
 - `media_position` - Updated twice a second using the current timestamp and the attribute `media_position_updated_at` when the entity state is `playing`, and locked to a max value using the attribute `media_duration`.
+- `elapsed` - Only for timer entities. Updated twice a second using the the current timestamp and the attributes `duration`, `remaining`, and `finishes_at`, and locked to a max value using the attribute `duration`.
+  - _NOTE_: `elapsed` is not an actual attribute of timer entities, but is a possible `value_attribute` for timer entities for the purpose of displaying accurate timer elapsed values. Timer entities do have an attribute `remaining`, which only updates when the timer state changes. The actual `remaining` attribute can be calculated using the `elapsed` value and the timer `duration` attribute.
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
@@ -497,7 +499,7 @@ entries:
 
 #### none
 
-None. This action does nothing.
+None. This action does nothing. Can also be used to make a slider ready only.
 
 ````yaml
 ```yaml
@@ -1338,6 +1340,81 @@ entity: climate.downstairs_thermostat
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
+
+## Example 7
+
+A read only timer display with buttons and multiple labels.
+
+```yaml
+features:
+  - type: custom:service-call
+    entries:
+      - type: button
+        value_attribute: elapsed
+        label: >-
+          {% set minutes = (VALUE / 60) | int %} {% set seconds = (VALUE - 60 *
+          minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
+          seconds | int }}
+        style:
+          overflow: visible
+          height: 12px
+          border-radius: 0px
+          '--color': none
+      - type: slider
+        tap_action:
+          action: none
+        value_attribute: elapsed
+        thumb: flat
+        style:
+          flex-basis: 1200%
+          height: 10px
+          '--tooltip-label': >-
+            {% set minutes = (VALUE / 60) | int %} {% set seconds = (VALUE - 60
+            * minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
+            seconds | int }}
+        step: 1
+        range:
+          - 0
+          - >-
+            {% set hms = state_attr(config.entity, "duration").split(":") %} {{
+            (hms[0] |int ) * 3600 + (hms[1] | int) * 60 + (hms[2] | int)
+            }}
+      - type: button
+        value_attribute: duration
+        label: '{% set hms = VALUE.split(":") %} {{ hms[1] | int }}:{{ hms[2] }}'
+        style:
+          overflow: visible
+          height: 12px
+          border-radius: 0px
+          '--color': none
+  - type: custom:service-call
+    entries:
+      - type: button
+        icon: mdi:timer-check
+        tap_action:
+          action: call-service
+          service: timer.start
+          target:
+            entity_id: timer.timer_test
+      - type: button
+        icon: mdi:timer-pause
+        tap_action:
+          action: call-service
+          service: timer.pause
+          target:
+            entity_id: timer.timer_test
+      - type: button
+        icon: mdi:timer-cancel
+        tap_action:
+          action: call-service
+          service: timer.cancel
+          target:
+            entity_id: timer.timer_test
+type: tile
+entity: timer.timer_test
+```
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/timer_tile.png" alt="timer_tile" width="600"/>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
