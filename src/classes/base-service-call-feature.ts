@@ -470,19 +470,23 @@ export class BaseServiceCallFeature extends LitElement {
 
 	renderTemplate(
 		str: string | number | boolean,
-		context?: Record<string, string | number | boolean>,
+		context?: object,
 	): string | number | boolean {
-		if (!context) {
-			let holdSecs: number = 0;
-			if (this.buttonPressStart && this.buttonPressEnd) {
-				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-			}
-			context = {
-				VALUE: this.value as string,
-				HOLD_SECS: holdSecs ?? 0,
-				UNIT: this.unitOfMeasurement,
-			};
+		let holdSecs: number = 0;
+		if (this.buttonPressStart && this.buttonPressEnd) {
+			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
 		}
+		context = {
+			VALUE: this.value as string,
+			HOLD_SECS: holdSecs ?? 0,
+			UNIT: this.unitOfMeasurement,
+			config: {
+				...this.entry,
+				entity: this.entityId,
+			},
+			...context,
+		};
+
 		str = renderTemplate(this.hass, str as string, context);
 
 		// Legacy VALUE interpolation (and others)
@@ -490,13 +494,16 @@ export class BaseServiceCallFeature extends LitElement {
 			for (const key in context) {
 				if (key in context) {
 					if (str == key) {
-						str = context[key] as string;
+						str = context[key as keyof object] as string;
 					} else if ((str ?? '').toString().includes(key)) {
 						str = (str ?? '')
 							.toString()
 							.replace(
 								new RegExp(key, 'g'),
-								(context[key] ?? '').toString(),
+								(
+									(context[key as keyof object] ??
+										'') as string
+								).toString(),
 							);
 					}
 				}
@@ -519,10 +526,7 @@ export class BaseServiceCallFeature extends LitElement {
 		);
 	}
 
-	buildStyle(
-		_style: StyleInfo = {},
-		context?: Record<string, string | number | boolean>,
-	) {
+	buildStyle(_style: StyleInfo = {}, context?: object) {
 		const style = structuredClone(_style);
 		for (const key in style) {
 			style[key] = this.renderTemplate(
@@ -551,14 +555,8 @@ export class BaseServiceCallFeature extends LitElement {
 	) {
 		let label = html``;
 		if ('label' in entry) {
-			let holdSecs: number = 0;
-			if (this.buttonPressStart && this.buttonPressEnd) {
-				holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
-			}
 			const context = {
 				VALUE: value as string,
-				HOLD_SECS: holdSecs ?? 0,
-				UNIT: this.unitOfMeasurement,
 			};
 
 			if (

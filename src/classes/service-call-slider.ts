@@ -199,8 +199,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	buildTooltip() {
 		const context = {
 			VALUE: `${Number(this.currentValue).toFixed(this.precision)}`,
-			UNIT: this.unitOfMeasurement,
-			HOLD_SECS: '0',
 			OFFSET: this.tooltipOffset,
 		};
 		const style: StyleInfo = this.buildStyle(
