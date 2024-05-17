@@ -336,7 +336,7 @@ export class BaseServiceCallFeature extends LitElement {
 							break;
 						case 'media_position':
 							try {
-								this.valueUpdateInterval = setInterval(() => {
+								const setIntervalValue = () => {
 									if (
 										this.hass.states[
 											this.entityId as string
@@ -364,7 +364,13 @@ export class BaseServiceCallFeature extends LitElement {
 									} else {
 										this.value = value as number;
 									}
-								}, 500);
+								};
+
+								setIntervalValue();
+								this.valueUpdateInterval = setInterval(
+									setIntervalValue,
+									500,
+								);
 							} catch (e) {
 								console.error(e);
 								this.value = value as string | number | boolean;
@@ -372,14 +378,14 @@ export class BaseServiceCallFeature extends LitElement {
 							break;
 						case 'elapsed':
 							if (this.entityId.startsWith('timer.')) {
-								const hms =
+								const durationHMS =
 									this.hass.states[
 										this.entityId as string
 									].attributes.duration.split(':');
 								const durationSeconds =
-									parseInt(hms[0]) * 3600 +
-									parseInt(hms[1]) * 60 +
-									parseInt(hms[2]);
+									parseInt(durationHMS[0]) * 3600 +
+									parseInt(durationHMS[1]) * 60 +
+									parseInt(durationHMS[2]);
 
 								if (
 									this.hass.states[this.entityId as string]
@@ -393,44 +399,46 @@ export class BaseServiceCallFeature extends LitElement {
 										].attributes.finishes_at,
 									);
 									try {
-										this.valueUpdateInterval = setInterval(
-											() => {
-												if (
+										const setIntervalValue = () => {
+											if (
+												this.hass.states[
+													this.entityId as string
+												].state == 'active'
+											) {
+												const remainingSeconds =
+													(endSeconds - Date.now()) /
+													1000;
+												const value = Math.floor(
+													durationSeconds -
+														remainingSeconds,
+												);
+												this.value = Math.min(
+													value,
+													durationSeconds,
+												);
+											} else {
+												const remainingHMS =
 													this.hass.states[
 														this.entityId as string
-													].state == 'active'
-												) {
-													const remainingSeconds =
-														(endSeconds -
-															Date.now()) /
-														1000;
-													const value = Math.floor(
-														durationSeconds -
-															remainingSeconds,
+													].attributes.remaining.split(
+														':',
 													);
-													this.value = Math.min(
-														value,
-														durationSeconds,
-													);
-												} else {
-													const hms =
-														this.hass.states[
-															this
-																.entityId as string
-														].attributes.remaining.split(
-															':',
-														);
-													const remainingSeconds =
-														parseInt(hms[0]) *
-															3600 +
-														parseInt(hms[1]) * 60 +
-														parseInt(hms[2]);
-													this.value = Math.floor(
-														durationSeconds -
-															remainingSeconds,
-													);
-												}
-											},
+												const remainingSeconds =
+													parseInt(remainingHMS[0]) *
+														3600 +
+													parseInt(remainingHMS[1]) *
+														60 +
+													parseInt(remainingHMS[2]);
+												this.value = Math.floor(
+													durationSeconds -
+														remainingSeconds,
+												);
+											}
+										};
+
+										setIntervalValue();
+										this.valueUpdateInterval = setInterval(
+											setIntervalValue,
 											500,
 										);
 									} catch (e) {
