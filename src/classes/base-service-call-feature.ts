@@ -380,6 +380,7 @@ export class BaseServiceCallFeature extends LitElement {
 									parseInt(hms[0]) * 3600 +
 									parseInt(hms[1]) * 60 +
 									parseInt(hms[2]);
+								console.log(`Duration: ${durationSeconds}`)
 
 								if (
 									this.hass.states[this.entityId as string]
@@ -404,6 +405,7 @@ export class BaseServiceCallFeature extends LitElement {
 														(endSeconds -
 															Date.now()) /
 														1000;
+													console.log(`Remaining: ${remainingSeconds}`)
 													const value = Math.floor(
 														durationSeconds -
 															remainingSeconds,
@@ -412,6 +414,7 @@ export class BaseServiceCallFeature extends LitElement {
 														value,
 														durationSeconds,
 													);
+													console.log(`Value: ${value}`)
 												} else {
 													const hms =
 														this.hass.states[
