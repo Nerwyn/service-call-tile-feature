@@ -1238,24 +1238,24 @@ features:
             style:
               '--icon-color': >-
                 {{ "var(--disabled-color)" if
-                is_state("input_select.test_select", "A") }}
+                is_state(config.entity, config.option) }}
               '--color': var(--red-color)
           - option: B
             icon: mdi:alpha-b
             style:
               '--icon-color': >-
                 {{ "var(--disabled-color)" if
-                is_state("input_select.test_select", "B") }}
+                is_state(config.entity, config.option) }}
               '--color': var(--green-color)
           - option: C
             icon: mdi:alpha-c
             style:
               '--icon-color': >-
                 {{ "var(--disabled-color)" if
-                is_state("input_select.test_select", "C") }}
+                is_state(config.entity, config.option) }}
               '--color': var(--blue-color)
   - type: custom:service-call
-    show: '{{ is_state("input_select.test_select", "A") }}'
+    show: '{{ is_state(config.entity, "A") }}'
     entries:
       - type: button
         icon: mdi:youtube
@@ -1274,14 +1274,14 @@ features:
           action: navigate
           navigation_path: /lovelace-extra/0
   - type: custom:service-call
-    show: '{{ is_state("input_select.test_select", "B") }}'
+    show: '{{ is_state(config.entity, "B") }}'
     entries:
       - type: button
         icon: mdi:assistant
         tap_action:
           action: assist
   - type: custom:service-call
-    show: '{{ is_state("input_select.test_select", "C") }}'
+    show: '{{ is_state(config.entity, "C") }}'
     entries:
       - type: slider
         thumb: flat
