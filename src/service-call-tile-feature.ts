@@ -224,6 +224,46 @@ class ServiceCallTileFeature extends LitElement {
 			return null;
 		}
 
+		// Render template context
+		const context = {
+			config: {
+				...this.config,
+				entity: this.stateObj.entity_id,
+			},
+		};
+
+		// Hide and show checks
+		if ('hide' in this.config) {
+			if (
+				renderTemplate(
+					this.hass,
+					this.config.hide as unknown as string,
+					context,
+				)
+			) {
+				context.config.hide = true;
+				this.style.setProperty('display', 'none');
+			} else {
+				context.config.hide = false;
+				this.style.removeProperty('display');
+			}
+		}
+		if ('show' in this.config) {
+			if (
+				renderTemplate(
+					this.hass,
+					this.config.show as unknown as string,
+					context,
+				)
+			) {
+				context.config.show = true;
+				this.style.removeProperty('display');
+			} else {
+				context.config.show = false;
+				this.style.setProperty('display', 'none');
+			}
+		}
+
 		const row: TemplateResult[] = [];
 		for (let entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
@@ -256,16 +296,28 @@ class ServiceCallTileFeature extends LitElement {
 				}
 			}
 
+			const context = {
+				config: {
+					...entry,
+					entity: '',
+				},
+			};
+			context.config.entity = renderTemplate(
+				this.hass,
+				entry.entity_id ?? '',
+				context,
+			) as string;
 			const style: StyleInfo = {};
 			for (const key in entry.style ?? {}) {
 				style[key] = renderTemplate(
 					this.hass,
 					(entry.style ?? {})[key] as string,
+					context,
 				) as string;
 			}
 
 			const entryType = (
-				(renderTemplate(this.hass, entry.type as string) ??
+				(renderTemplate(this.hass, entry.type as string, context) ??
 					'button') as string
 			).toLowerCase();
 			switch (entryType) {
@@ -309,25 +361,6 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		// Hide and show checks
-		if ('hide' in this.config) {
-			if (
-				renderTemplate(this.hass, this.config.hide as unknown as string)
-			) {
-				this.style.setProperty('display', 'none');
-			} else {
-				this.style.removeProperty('display');
-			}
-		}
-		if ('show' in this.config) {
-			if (
-				renderTemplate(this.hass, this.config.show as unknown as string)
-			) {
-				this.style.removeProperty('display');
-			} else {
-				this.style.setProperty('display', 'none');
-			}
-		}
 		return html`<div class="row">${row}</div>`;
 	}
 
