@@ -74,11 +74,15 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 			const option =
 				this.renderTemplate(entries[i].option as string) ?? options[i];
-
 			let optionClass = 'option';
 			if (this.value == option && this.value != undefined) {
 				optionClass = 'selected-option';
 			}
+			const styleContext = {
+				config: {
+					option: option,
+				},
+			};
 
 			selector.push(
 				html`<service-call-button
@@ -88,7 +92,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					._shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
-					style=${styleMap(this.buildStyle(entries[i].style ?? {}))}
+					style=${styleMap(
+						this.buildStyle(entries[i].style ?? {}, styleContext),
+					)}
 				/>`,
 			);
 		}
