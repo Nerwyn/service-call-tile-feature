@@ -167,6 +167,14 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				...actions.label_style,
 			};
 
+			const context = {
+				config: {
+					...actions,
+					entity: this.renderTemplate(actions.entity_id ?? ''),
+					operator: operator,
+				},
+			};
+
 			return html`
 				<service-call-button
 					id=${operator}
@@ -174,7 +182,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					.entry=${actions}
 					._shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
-					style=${styleMap(this.buildStyle(actions.style ?? {}))}
+					style=${styleMap(
+						this.buildStyle(actions.style ?? {}, context),
+					)}
 				/>
 			`;
 		} else {
