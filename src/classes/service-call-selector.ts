@@ -80,6 +80,8 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			}
 			const styleContext = {
 				config: {
+					...this.entry,
+					entity: this.renderTemplate(this.entry.entity_id ?? ''),
 					option: option,
 				},
 			};
