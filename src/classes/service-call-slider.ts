@@ -450,7 +450,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 40px;
-					width: 24px;
+					width: 16px;
 					background: var(--color);
 					cursor: pointer;
 					opacity: var(--opacity);
@@ -462,7 +462,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-moz-appearance: none;
 					height: 40px;
-					width: 24px;
+					width: 16px;
 					border-color: var(--color);
 					background: var(--color);
 					cursor: pointer;
