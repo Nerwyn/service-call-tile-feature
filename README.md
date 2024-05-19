@@ -1368,10 +1368,6 @@ features:
         style:
           flex-basis: 1200%
           height: 10px
-          '--tooltip-label': >-
-            {% set minutes = (VALUE / 60) | int %} {% set seconds = (VALUE - 60
-            * minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
-            seconds | int }}
         step: 1
         range:
           - 0
