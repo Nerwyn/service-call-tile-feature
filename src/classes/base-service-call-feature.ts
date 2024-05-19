@@ -378,21 +378,20 @@ export class BaseServiceCallFeature extends LitElement {
 							break;
 						case 'elapsed':
 							if (this.entityId.startsWith('timer.')) {
-								const durationHMS =
-									this.hass.states[
-										this.entityId as string
-									].attributes.duration.split(':');
-								const durationSeconds =
-									parseInt(durationHMS[0]) * 3600 +
-									parseInt(durationHMS[1]) * 60 +
-									parseInt(durationHMS[2]);
-
 								if (
 									this.hass.states[this.entityId as string]
 										.state == 'idle'
 								) {
-									this.value = durationSeconds;
+									this.value = 0;
 								} else {
+									const durationHMS =
+										this.hass.states[
+											this.entityId as string
+										].attributes.duration.split(':');
+									const durationSeconds =
+										parseInt(durationHMS[0]) * 3600 +
+										parseInt(durationHMS[1]) * 60 +
+										parseInt(durationHMS[2]);
 									const endSeconds = Date.parse(
 										this.hass.states[
 											this.entityId as string
