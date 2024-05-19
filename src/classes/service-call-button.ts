@@ -217,6 +217,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	render() {
+		this.setValue();
+
 		const ripple = this._shouldRenderRipple
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
