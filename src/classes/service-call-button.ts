@@ -217,8 +217,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	render() {
-		const icon_label = super.render();
-
 		const ripple = this._shouldRenderRipple
 			? html`<mwc-ripple></mwc-ripple>`
 			: html``;
@@ -244,7 +242,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			${ripple}
 		</button>`;
 
-		return html`${button}${icon_label}`;
+		return html`${button}${this.buildIcon()}${this.buildLabel()}`;
 	}
 
 	static get styles(): CSSResult | CSSResult[] {

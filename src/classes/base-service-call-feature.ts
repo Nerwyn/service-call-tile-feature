@@ -548,11 +548,7 @@ export class BaseServiceCallFeature extends LitElement {
 		return icon;
 	}
 
-	buildLabel(
-		entry: IEntry = this.entry,
-		value = this.value,
-		hide: boolean = false,
-	) {
+	buildLabel(entry: IEntry = this.entry, value = this.value) {
 		let label = html``;
 		if ('label' in entry) {
 			const context = {
@@ -571,15 +567,10 @@ export class BaseServiceCallFeature extends LitElement {
 				context,
 			) as string;
 			if (text) {
-				const style = this.buildStyle(entry.label_style ?? {});
-				if (hide) {
-					style.display = 'none';
-				}
-
 				// prettier-ignore
 				label = html`<pre
 					class="label"
-					style=${styleMap(style)}
+					style=${styleMap(this.buildStyle(entry.label_style ?? {}))}
 				>${text}</pre>`;
 			}
 		}
@@ -642,12 +633,6 @@ export class BaseServiceCallFeature extends LitElement {
 				)}
 			></div>
 		`;
-	}
-
-	render() {
-		this.setValue();
-
-		return html`${this.buildIcon()}${this.buildLabel()}`;
 	}
 
 	static get styles(): CSSResult | CSSResult[] {

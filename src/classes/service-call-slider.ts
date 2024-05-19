@@ -161,11 +161,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setValue();
 			this.currentValue = this.value ?? 0;
 			this.setTooltip(slider, false);
-			this.sliderOn = !(
-				this.currentValue == undefined ||
-				(Number(this.currentValue) <= this.range[0] &&
-					this.class != 'slider-line-thumb')
-			);
+			this.sliderOn =
+				!(
+					this.currentValue == undefined ||
+					this.hass.states[this.entityId as string].state == 'off'
+				) || (this.currentValue as number) > this.range[0];
 		}
 	}
 
@@ -193,7 +193,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildLabel() {
 		const value = this.getValueFromHass ? this.value : this.currentValue;
-		return super.buildLabel(this.entry, value, !this.sliderOn);
+		return this.sliderOn ? super.buildLabel(this.entry, value) : html``;
 	}
 
 	buildTooltip() {
@@ -256,11 +256,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class = 'slider';
 				break;
 		}
-		this.sliderOn = !(
-			value == undefined ||
-			(Number(value) <= this.range[0] &&
-				this.class != 'slider-line-thumb')
-		);
+		this.sliderOn =
+			!(
+				value == undefined ||
+				this.hass.states[this.entityId as string].state == 'off'
+			) || (value as number) > this.range[0];
 
 		const style = this.buildStyle(this.entry.slider_style ?? {});
 		if (
