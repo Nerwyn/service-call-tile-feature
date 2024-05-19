@@ -161,11 +161,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.setValue();
 			this.currentValue = this.value ?? 0;
 			this.setTooltip(slider, false);
-			this.sliderOn =
-				!(
-					this.currentValue == undefined ||
-					this.hass.states[this.entityId as string].state == 'off'
-				) || (this.currentValue as number) > this.range[0];
+			this.setSliderState(this.currentValue as number);
 		}
 	}
 
@@ -189,6 +185,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 
 		this.showTooltip = show;
+	}
+
+	setSliderState(value: number) {
+		this.sliderOn =
+			!(
+				value == undefined ||
+				this.hass.states[this.entityId as string].state == 'off' ||
+				(this.entityId?.startsWith('timer.') &&
+					this.hass.states[this.entityId as string].state == 'idle')
+			) || (Number(value) as number) > this.range[0];
 	}
 
 	buildLabel() {
@@ -256,12 +262,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class = 'slider';
 				break;
 		}
-		this.sliderOn =
-			!(
-				value == undefined ||
-				this.hass.states[this.entityId as string].state == 'off'
-			) || (value as number) > this.range[0];
-
+		this.setSliderState(value as number);
 		const style = this.buildStyle(this.entry.slider_style ?? {});
 		if (
 			this.renderTemplate(this.entry.tap_action?.action as string) ==
