@@ -206,6 +206,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const context = {
 			VALUE: `${Number(this.currentValue).toFixed(this.precision)}`,
 			OFFSET: this.tooltipOffset,
+			value: `${Number(this.currentValue).toFixed(this.precision)}`,
+			offset: this.tooltipOffset,
 		};
 		const style: StyleInfo = this.buildStyle(
 			{

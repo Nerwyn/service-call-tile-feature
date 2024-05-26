@@ -479,6 +479,9 @@ export class BaseServiceCallFeature extends LitElement {
 			VALUE: this.value as string,
 			HOLD_SECS: holdSecs ?? 0,
 			UNIT: this.unitOfMeasurement,
+			value: this.value as string,
+			hold_secs: holdSecs ?? 0,
+			unit: this.unitOfMeasurement,
 			config: {
 				...this.entry,
 				entity: this.entityId,
@@ -490,21 +493,18 @@ export class BaseServiceCallFeature extends LitElement {
 
 		// Legacy VALUE interpolation (and others)
 		if (typeof str == 'string') {
-			for (const key in context) {
-				if (key in context) {
-					if (str == key) {
-						str = context[key as keyof object] as string;
-					} else if ((str ?? '').toString().includes(key)) {
-						str = (str ?? '')
-							.toString()
-							.replace(
-								new RegExp(key, 'g'),
-								(
-									(context[key as keyof object] ??
-										'') as string
-								).toString(),
-							);
-					}
+			for (const key in ['VALUE', 'HOLD_SECS', 'UNIT']) {
+				if (str == key) {
+					str = context[key as keyof object] as string;
+				} else if ((str ?? '').toString().includes(key)) {
+					str = (str ?? '')
+						.toString()
+						.replace(
+							new RegExp(key, 'g'),
+							(
+								(context[key as keyof object] ?? '') as string
+							).toString(),
+						);
 				}
 			}
 		}
@@ -552,6 +552,7 @@ export class BaseServiceCallFeature extends LitElement {
 		if ('label' in entry) {
 			const context = {
 				VALUE: value as string,
+				value: value as string,
 			};
 
 			if (
