@@ -48,7 +48,7 @@ To create a slider, add a Service Call tile feature to your tile and edit it. Ch
 
 If the domain of the feature entity is a `number/input_number`, then the service and data will be set to use the `number/input_number.set_value` service, and range and step will use the corresponding attributes of the entity if they are not set in the config. Otherwise, you will need to set `service` to a service call to actually do anything.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `' {{ VALUE }}`. If you want to use templating to set the slider label, you can use `VALUE` and `UNIT` inside of a template to display the current slider value and unit of measurement.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `value_attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `{{ value }}`. If you want to use templating to set the slider label, you can use `value` and `unit` inside of a template to display the current slider value and unit of measurement.
 
 ```yaml
 type: custom:service-call
@@ -59,7 +59,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        brightness_pct: '{{ VALUE }}'
+        brightness_pct: '{{ value }}'
 ```
 
 To better understand the attributes of Home Assistant entities, use the states tab in Home Assistant Developer tools. Remember, that you can also change the entity of the slider by setting `entity_id` either at the entry level or within the `data` or `target` objects (NOT at the root of the feature config).
@@ -80,7 +80,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        color_temp: '{{ VALUE }}'
+        color_temp: '{{ value }}'
     style:
       --background-color: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
       --background-opacity: 1
@@ -109,7 +109,7 @@ Since each selector option is a service call button, you can override it's defau
 
 ## Spinboxes
 
-Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `debounce_time` (default 1000ms), the user defined `tap_action` will fire. Similar This action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `VALUE` by itself or in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting `hold_action.action` to repeat.
+Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `debounce_time` (default 1000ms), the user defined `tap_action` will fire. Similar This action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `value` by itself or in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting `hold_action.action` to repeat.
 
 You can also override the default behavior of the increment and decrement buttons by including action information as show in [example 6](#Example-6). Doing so will disable the normal increment/decrement and debounce button behavior and create a stylized button feature instead.
 
@@ -118,7 +118,7 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:thermometer
-    label: '{{ VALUE }}{{ UNIT }}'
+    label: '{{ value }}{{ unit }}'
     step: 1
     debounceTime: 1000
     range:
@@ -130,7 +130,7 @@ entries:
       service: climate.set_temperature
       data:
         entity_id: climate.downstairs_thermostat
-        temperature: '{{ VALUE }}'
+        temperature: '{{ value }}'
 ```
 
 # How To Use
@@ -193,7 +193,7 @@ entries:
       {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
       "mdi:ceiling-light-outline") }}
     label: >-
-      {{ VALUE }}{{ UNIT }}
+      {{ value }}{{ unit }}
     unit_of_measurement: '%'
     style:
       --icon-color: yellow
@@ -209,7 +209,7 @@ By default type will be `button`. If you're using an older version of this featu
 
 The `value_attribute` field is to set which entity attribute the feature should use for it's value, if not the default entity state. For sliders this field is used to determine the it's default value on render. For selectors this field is used for determining which option is currently selected. For spinboxes, this field is used to determine which attribute to decrement or increment.
 
-`value_attribute` can also be used to include the feature value in service call data by setting a field in the data object to `'{{ VALUE }}'`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
+`value_attribute` can also be used to include the feature value in service call data by setting a field in the data object to `'{{ value }}'`, such as for sliders. If the attribute which you wish to use is an array, you can also further include the index at the end of the attribute name in brackets (like `hs_color[0]`).
 
 Some additional logic is applied for certain `value_attribute` values:
 
@@ -220,7 +220,7 @@ Some additional logic is applied for certain `value_attribute` values:
 
 If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `autofill_entity_id` to `false` may help. Just remember to set the entity ID of the tile feature and the entity, device, or area ID of the service call target.
 
-If the icon or label is empty, then the entire HTML element will not render. Both can be defined using templates, and the variables `VALUE` and `UNIT` can be included in label templates.
+If the icon or label is empty, then the entire HTML element will not render. Both can be defined using templates, and the variables `value` and `unit` can be included in label templates.
 
 Haptics are disabled for tile features by default, but can be enabled by setting `haptics` to true.
 
@@ -228,7 +228,7 @@ Haptics are disabled for tile features by default, but can be enabled by setting
 
 Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
-You can include the current value of a tile feature and it's units by using the variables `VALUE` and `UNIT` in a label template. You can also include `HOLD_SECS` in a template if performing a `momentary_end_action`.
+You can include the current value of a tile feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a `momentary_end_action`.
 
 ## Actions
 
@@ -357,7 +357,7 @@ Each action has a set of possible options associated with them. If `action` is n
 
 `data` and `target` get internally merged into one object and can be used interchangeably or together. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
 
-If you include `'{{ VALUE }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox.
+If you include `'{{ value }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox.
 
 ```yaml
 type: custom:service-call
@@ -369,7 +369,7 @@ entries:
       action: call-service
       service: light.turn_on
       data:
-        brightness_pct: '{{ VALUE }}'
+        brightness_pct: '{{ value }}'
       target:
         entity_id: light.lounge
 ```
@@ -558,7 +558,7 @@ type: custom:service-call
 entries:
   - type: button
     icon: mdi:brightness-4
-    label: '{{ VALUE }}{{ UNIT }}'
+    label: '{{ value }}{{ unit }}'
     unit_of_measurement: '%'
     value_attribute: brightness
     tap_action:
@@ -590,8 +590,8 @@ entries:
 | step                      | number       | The step size of the slider. Defaults to 1/100 of the range. You may have to manually set this to a whole number for service data like light `color_temp`.                                                                              |
 | thumb                     | string       | The slider thumb style.<br />- `default`: Like a tile light brightness slider.<br />- `line`: Like a tile color temperature slider.<br />- `flat`: Like a mushroom slider.                                                              |
 | value_from_hass_delay     | number       | The time the feature will wait after firing an action before it starts retrieving values from Home Assistant again. Useful for preventing bouncing between new and old values if an entity takes a while to update. Defaults to 1000ms. |
-| style.--tooltip-label     | string       | Tooltip label template, defaults to `{{ VALUE }}{{ UNIT }}`.                                                                                                                                                                            |
-| style.--tooltip-offset    | string       | Tooltip offset from center, defaults to `{{ OFFSET }}px`.                                                                                                                                                                               |
+| style.--tooltip-label     | string       | Tooltip label template, defaults to `{{ value }}{{ unit }}`.                                                                                                                                                                            |
+| style.--tooltip-offset    | string       | Tooltip offset from center, defaults to `{{ offset }}px`.                                                                                                                                                                               |
 | style.--tooltip-transform | CSS function | Tooltip location transform function, defaults to `translateX(var(--tooltip-offset))`.                                                                                                                                                   |
 | style.--tooltip-display   | string       | Tooltip display value, set to `none` to hide tooltip, defaults to `initial`.                                                                                                                                                            |
 
@@ -600,7 +600,7 @@ type: custom:service-call
 entries:
   - type: slider
     icon: mdi:brightness-4
-    label: '{{ VALUE }}{{ UNIT }}'
+    label: '{{ value }}{{ unit }}'
     unit_of_measurment: ' Mireds'
     thumb: flat
     range:
@@ -676,7 +676,7 @@ type: custom:service-call
 entries:
   - type: spinbox
     icon: mdi:brightness-4
-    label: '{{ VALUE }}{{ UNIT }}'
+    label: '{{ value }}{{ unit }}'
     unit_of_measurement: '%'
     step: 5
     debounceTime: 1000
@@ -689,7 +689,7 @@ entries:
       service: light.turn_on
       data:
         entity_id: light.sunroom_ceiling
-        brightness_pct: '{{ VALUE }}'
+        brightness_pct: '{{ value }}'
     decrement:
       icon: mdi:brightness-3
       label: down
@@ -919,7 +919,7 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
-        label: '{{ VALUE }}{{ UNIT }}'
+        label: '{{ value }}{{ unit }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -927,7 +927,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: '{{ VALUE }}'
+            brightness_pct: '{{ value }}'
         style:
           flex-basis: 200%
       - type: slider
@@ -937,8 +937,8 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            color_temp: '{{ VALUE }}'
-        label: '{{ VALUE }}{{ UNIT }}'
+            color_temp: '{{ value }}'
+        label: '{{ value }}{{ unit }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -954,7 +954,7 @@ features:
       - type: spinbox
         haptics: true
         icon: mdi:brightness-4
-        label: '{{ VALUE }}{{ UNIT }}'
+        label: '{{ value }}{{ unit }}'
         unit_of_measurement: '%'
         step: 5
         debounceTime: 1000
@@ -966,7 +966,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: '{{ VALUE }}'
+            brightness_pct: '{{ value }}'
         decrement:
           icon: mdi:brightness-3
           label: down
@@ -1036,7 +1036,7 @@ features:
               initial
             {% endif %}
       - type: slider
-        label: '{{ VALUE }}{{ UNIT }}'
+        label: '{{ value }}{{ unit }}'
         unit_of_measurement: '%'
         value_attribute: brightness
         icon: mdi:brightness-4
@@ -1044,7 +1044,7 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: '{{ VALUE }}'
+            brightness_pct: '{{ value }}'
             entity_id: light.sunroom_ceiling
         style:
           flex-basis: 200%
@@ -1074,7 +1074,7 @@ features:
         icon: mdi:palette
         data:
           hs_color:
-            - '{{ VALUE }}'
+            - '{{ value }}'
             - 100
           entity_id: light.sunroom_ceiling
         style:
@@ -1089,9 +1089,9 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            color_temp: '{{ VALUE }}'
+            color_temp: '{{ value }}'
             entity_id: light.sunroom_ceiling
-        label: '{{ VALUE }}{{ UNIT }}'
+        label: '{{ value }}{{ unit }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
@@ -1109,7 +1109,7 @@ features:
           action: call-service
           service: cover.set_cover_position
           data:
-            position: '{{ VALUE }}'
+            position: '{{ value }}'
             entity_id: cover.sunroom_curtains
         value_attribute: current_position
         icon: mdi:curtains
@@ -1123,7 +1123,7 @@ features:
           action: call-service
           service: media_player.volume_set
           data:
-            volume_level: '{{ VALUE }}'
+            volume_level: '{{ value }}'
             entity_id: media_player.spotify
         value_attribute: volume_level
         icon: mdi:spotify
@@ -1147,7 +1147,7 @@ features:
           action: call-service
           service: media_player.media_seek
           data:
-            seek_position: '{{ VALUE }}'
+            seek_position: '{{ value }}'
             entity_id: media_player.spotify
         value_attribute: media_position
         range:
@@ -1155,8 +1155,8 @@ features:
           - '{{ state_attr("media_player.spotify", "media_duration") }}'
         thumb: line
         label: >-
-          {{ (VALUE / 60) | int }}:{{ 0 if (VALUE - 60*((VALUE / 60) | int)) < 10
-          else "" }}{{ (VALUE - 60*((VALUE / 60) | int)) | int }}/{{
+          {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
+          else "" }}{{ (value - 60*((value / 60) | int)) | int }}/{{
           (state_attr("media_player.spotify", "media_duration") / 60) |
           int }}:{{ 0 if (state_attr("media_player.spotify",
           "media_duration") - 60*((state_attr("media_player.spotify",
@@ -1167,8 +1167,8 @@ features:
         style:
           '--color': rgb(31, 223, 100)
           '--tooltip-label': >-
-            {{ (VALUE / 60) | int }}:{{ 0 if (VALUE - 60*((VALUE / 60) | int)) < 10
-            else "" }}{{ (VALUE - 60*((VALUE / 60) | int)) | int }}
+            {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
+            else "" }}{{ (value - 60*((value / 60) | int)) | int }}
         background_style:
           height: 39%
           border-radius: 32px
@@ -1286,7 +1286,7 @@ features:
       - type: slider
         thumb: flat
         entity_id: input_number.slider_test
-        label: '{{ VALUE }}'
+        label: '{{ value }}'
         style:
           '--label-color': var(--disabled-color)
 type: tile
@@ -1308,7 +1308,7 @@ features:
     entries:
       - type: spinbox
         icon: mdi:thermometer
-        label: '{{ VALUE }}{{ UNIT }}'
+        label: '{{ value }}{{ unit }}'
         step: 1
         debounceTime: 1000
         value_from_hass_delay: 5000
@@ -1321,7 +1321,7 @@ features:
           service: climate.set_temperature
           data:
             entity_id: climate.downstairs_thermostat
-            temperature: '{{ VALUE }}'
+            temperature: '{{ value }}'
         hold_action:
           action: repeat
         style:
@@ -1334,7 +1334,7 @@ features:
         label: XKCD
         momentary_end_action:
           action: url
-          url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
+          url_path: https://xkcd.com/{{ 1000* hold_secs }}
 type: tile
 entity: climate.downstairs_thermostat
 ```
@@ -1352,7 +1352,7 @@ features:
       - type: button
         value_attribute: elapsed
         label: >-
-          {% set minutes = (VALUE / 60) | int %} {% set seconds = (VALUE - 60 *
+          {% set minutes = (value / 60) | int %} {% set seconds = (value - 60 *
           minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
           seconds | int }}
         style:
@@ -1377,7 +1377,7 @@ features:
             }}
       - type: button
         value_attribute: duration
-        label: '{% set hms = VALUE.split(":") %} {{ hms[1] | int }}:{{ hms[2] }}'
+        label: '{% set hms = value.split(":") %} {{ hms[1] | int }}:{{ hms[2] }}'
         style:
           overflow: visible
           height: 12px
