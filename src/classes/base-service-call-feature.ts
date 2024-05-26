@@ -491,9 +491,12 @@ export class BaseServiceCallFeature extends LitElement {
 			...context,
 		};
 
-		str = renderTemplate(this.hass, str as string, context);
+		const res = renderTemplate(this.hass, str as string, context);
+		if (res != str) {
+			return res;
+		}
 
-		// Legacy VALUE interpolation (and others)
+		// Legacy string interpolation
 		if (typeof str == 'string') {
 			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
 				if (str.includes(key)) {
