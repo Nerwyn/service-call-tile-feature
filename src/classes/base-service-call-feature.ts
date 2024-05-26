@@ -493,7 +493,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 		// Legacy VALUE interpolation (and others)
 		if (typeof str == 'string') {
-			for (const key in ['VALUE', 'HOLD_SECS', 'UNIT']) {
+			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
 				if (str.includes(key)) {
 					if (str == key) {
 						str = context[key as keyof object] as string;
