@@ -499,20 +499,17 @@ export class BaseServiceCallFeature extends LitElement {
 		// Legacy string interpolation
 		if (typeof str == 'string') {
 			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
-				if (str.includes(key)) {
-					if (str == key) {
-						str = context[key as keyof object] as string;
-					} else if ((str ?? '').toString().includes(key)) {
-						str = (str ?? '')
-							.toString()
-							.replace(
-								new RegExp(key, 'g'),
-								(
-									(context[key as keyof object] ??
-										'') as string
-								).toString(),
-							);
-					}
+				if (str == key) {
+					return context[key as keyof object] as string;
+				} else if ((str ?? '').toString().includes(key)) {
+					return (str ?? '')
+						.toString()
+						.replace(
+							new RegExp(key, 'g'),
+							(
+								(context[key as keyof object] ?? '') as string
+							).toString(),
+						);
 				}
 			}
 		}
