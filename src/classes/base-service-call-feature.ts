@@ -566,6 +566,7 @@ export class BaseServiceCallFeature extends LitElement {
 				this.precision !== undefined
 			) {
 				context.VALUE = Number(value).toFixed(this.precision);
+				context.value = Number(value).toFixed(this.precision);
 			}
 			const text: string = this.renderTemplate(
 				entry.label as string,
