@@ -428,10 +428,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						(
-							calc(-100vw - 8px) 0 0 100vw var(--color),
-							-4px 0 0 6px var(--color)
-						)
+						calc(-100vw - 8px) 0 0 100vw var(--color),
+						-4px 0 0 6px var(--color)
 					);
 				}
 
@@ -449,10 +447,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						(
-							calc(-100vw - 8px) 0 0 100vw var(--color),
-							-4px 0 0 6px var(--color)
-						)
+						calc(-100vw - 8px) 0 0 100vw var(--color),
+						-4px 0 0 6px var(--color)
 					);
 				}
 
@@ -503,7 +499,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						(0 7px 0 0 #ffffff, 0 -7px 0 0 #ffffff)
+						0 7px 0 0 #ffffff,
+						0 -7px 0 0 #ffffff
 					);
 				}
 
@@ -521,7 +518,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						(0 7px 0 0 #ffffff, 0 -7px 0 0 #ffffff)
+						0 7px 0 0 #ffffff,
+						0 -7px 0 0 #ffffff
 					);
 				}
 
