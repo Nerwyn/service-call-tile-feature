@@ -493,15 +493,11 @@ export class BaseServiceCallFeature extends LitElement {
 			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
 				if (str == key) {
 					return context[key as keyof object] as string;
-				} else if ((str ?? '').toString().includes(key)) {
-					str = (str ?? '')
-						.toString()
-						.replace(
-							new RegExp(key, 'g'),
-							(
-								(context[key as keyof object] ?? '') as string
-							).toString(),
-						);
+				} else if (str.includes(key)) {
+					str = str.replace(
+						new RegExp(key, 'g'),
+						(context[key as keyof object] ?? '') as string,
+					);
 				}
 			}
 		}
