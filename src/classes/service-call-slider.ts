@@ -253,12 +253,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildSlider() {
 		const value = this.getValueFromHass ? this.value : this.currentValue;
+
 		switch (this.renderTemplate(this.entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
 				break;
 			case 'flat':
 				this.class = 'slider-flat-thumb';
+				break;
+			case 'round':
+				this.class = 'slider-round-thumb';
 				break;
 			default:
 				this.class = 'slider';
@@ -418,7 +422,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 30px;
-					width: 12px;
+					width: var(--thumb-width, 12px);
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
@@ -437,7 +441,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-moz-appearance: none;
 					height: 22px;
-					width: 4px;
+					width: var(--thumb-width, 4px);
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
@@ -456,7 +460,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 40px;
-					width: 16px;
+					width: var(--thumb-width, 16px);
 					background: var(--color);
 					cursor: pointer;
 					opacity: var(--opacity);
@@ -472,7 +476,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-moz-appearance: none;
 					height: 40px;
-					width: 16px;
+					width: var(--thumb-width, 16px);
 					border-color: var(--color);
 					background: var(--color);
 					cursor: pointer;
@@ -489,7 +493,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 28px;
-					width: 10px;
+					width: var(--thumb-width, 10px);
 					border-style: solid;
 					border-color: #ffffff;
 					border-width: 3px;
@@ -508,7 +512,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					appearance: none;
 					-moz-appearance: none;
 					height: 24px;
-					width: 4px;
+					width: var(--thumb-width, 4px);
 					border-style: solid;
 					border-color: #ffffff;
 					border-width: 3px;
@@ -521,6 +525,39 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						0 7px 0 0 #ffffff,
 						0 -7px 0 0 #ffffff
 					);
+				}
+
+				.slider-round-thumb::-webkit-slider-thumb {
+					appearance: none;
+					-webkit-appearance: none;
+					height: 40px;
+					width: var(--thumb-width, 40px);
+					background: var(--color);
+					cursor: pointer;
+					opacity: var(--opacity);
+					z-index: 2;
+					box-shadow: var(
+						--thumb-box-shadow,
+						calc(-100vw - 20px) 0 0 100vw var(--color)
+					);
+					border-radius: var(--thumb-border-radius, 0);
+				}
+
+				.slider-round-thumb::-moz-range-thumb {
+					appearance: none;
+					-moz-appearance: none;
+					height: 40px;
+					width: var(--thumb-width, 40px);
+					border-color: var(--color);
+					background: var(--color);
+					cursor: pointer;
+					opacity: var(--opacity);
+					z-index: 2;
+					box-shadow: var(
+						--thumb-box-shadow,
+						calc(-100vw - 20px) 0 0 100vw var(--color)
+					);
+					border-radius: var(--thumb-border-radius, 0);
 				}
 
 				.slider-off::-webkit-slider-thumb {

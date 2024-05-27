@@ -35,7 +35,7 @@ export interface IEntry
 
 export type TileFeatureType = 'button' | 'slider' | 'selector' | 'spinbox';
 
-export type ThumbType = 'default' | 'line' | 'flat';
+export type ThumbType = 'default' | 'line' | 'flat' | 'round';
 
 export interface ISliderOptions {
 	range?: [number, number];
