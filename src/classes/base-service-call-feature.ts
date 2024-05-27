@@ -494,7 +494,7 @@ export class BaseServiceCallFeature extends LitElement {
 				if (str == key) {
 					return context[key as keyof object] as string;
 				} else if ((str ?? '').toString().includes(key)) {
-					return (str ?? '')
+					str = (str ?? '')
 						.toString()
 						.replace(
 							new RegExp(key, 'g'),
