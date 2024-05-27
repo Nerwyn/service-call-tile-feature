@@ -427,7 +427,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					cursor: pointer;
 					opacity: var(--opacity);
 					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--color),
+						calc(-100vw - 8px) 0 0 100vw var(--color),
 						-4px 0 0 6px var(--color);
 				}
 
@@ -444,7 +444,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					cursor: pointer;
 					opacity: var(--opacity);
 					box-shadow:
-						calc(-100vw - 6px) 0 0 100vw var(--color),
+						calc(-100vw - 8px) 0 0 100vw var(--color),
 						-4px 0 0 6px var(--color);
 				}
 
@@ -457,7 +457,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					cursor: pointer;
 					opacity: var(--opacity);
 					z-index: 2;
-					box-shadow: -100vw 0 0 100vw var(--color);
+					box-shadow: calc(-100vw - 8px) 0 0 100vw var(--color);
 					border-radius: var(--thumb-border-radius, 0);
 				}
 
@@ -471,7 +471,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					cursor: pointer;
 					opacity: var(--opacity);
 					z-index: 2;
-					box-shadow: -100vw 0 0 100vw var(--color);
+					box-shadow: calc(-100vw - 8px) 0 0 100vw var(--color);
 					border-radius: var(--thumb-border-radius, 0);
 				}
 
