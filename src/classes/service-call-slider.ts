@@ -398,7 +398,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					-moz-appearance: none;
 					height: inherit;
-					border-radius: 10px;
 					background: none;
 					z-index: 2;
 				}
@@ -422,7 +421,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					width: 12px;
 					border-style: solid;
 					border-width: 4px;
-					border-radius: 12px;
+					border-radius: var(--thumb-border-radius, 12px);
 					border-color: var(--color);
 					background: #ffffff;
 					cursor: pointer;
@@ -439,7 +438,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					width: 4px;
 					border-style: solid;
 					border-width: 4px;
-					border-radius: 12px;
+					border-radius: var(--thumb-border-radius, 12px);
 					border-color: var(--color);
 					background: #ffffff;
 					cursor: pointer;
@@ -459,6 +458,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					z-index: 2;
 					box-shadow: -100vw 0 0 100vw var(--color);
+					border-radius: var(--thumb-border-radius, 0);
 				}
 
 				.slider-flat-thumb::-moz-range-thumb {
@@ -472,7 +472,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					z-index: 2;
 					box-shadow: -100vw 0 0 100vw var(--color);
-					border-radius: 0px;
+					border-radius: var(--thumb-border-radius, 0);
 				}
 
 				.slider-line-thumb::-webkit-slider-thumb {
@@ -483,7 +483,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-color: #ffffff;
 					border-width: 3px;
-					border-radius: 12px;
+					border-radius: var(--thumb-border-radius, 12px);
 					background: #8a8c99;
 					cursor: pointer;
 					opacity: var(--opacity);
@@ -500,7 +500,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-color: #ffffff;
 					border-width: 3px;
-					border-radius: 12px;
+					border-radius: var(--thumb-border-radius, 12px);
 					background: #8a8c99;
 					cursor: pointer;
 					opacity: var(--opacity);

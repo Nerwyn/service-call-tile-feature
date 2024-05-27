@@ -641,6 +641,7 @@ export class BaseServiceCallFeature extends LitElement {
 					height: 40px;
 					width: 100%;
 					border: none;
+					border-radius: 10px;
 					padding: 0px;
 					box-sizing: border-box;
 					outline: 0px;
@@ -672,7 +673,6 @@ export class BaseServiceCallFeature extends LitElement {
 					background: var(--background, var(--disabled-color));
 					opacity: var(--background-opacity);
 					z-index: 1;
-					border-radius: 10px;
 				}
 
 				ha-icon {
