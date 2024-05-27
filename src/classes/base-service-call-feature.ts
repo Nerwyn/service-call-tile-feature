@@ -30,7 +30,7 @@ export class BaseServiceCallFeature extends LitElement {
 	valueUpdateInterval?: ReturnType<typeof setInterval>;
 
 	unitOfMeasurement: string = '';
-	precision: number = 0;
+	precision?: number;
 
 	buttonPressStart?: number;
 	buttonPressEnd?: number;
@@ -555,7 +555,7 @@ export class BaseServiceCallFeature extends LitElement {
 			if (
 				value != undefined &&
 				typeof value == 'number' &&
-				this.precision !== undefined
+				this.precision != undefined
 			) {
 				context.VALUE = Number(value).toFixed(this.precision);
 				context.value = Number(value).toFixed(this.precision);
