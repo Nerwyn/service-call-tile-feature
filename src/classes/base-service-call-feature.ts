@@ -459,14 +459,6 @@ export class BaseServiceCallFeature extends LitElement {
 				}
 			}
 		}
-
-		if (
-			this.value != undefined &&
-			typeof this.value == 'number' &&
-			!this.precision
-		) {
-			this.value = Math.trunc(Number(this.value));
-		}
 	}
 
 	renderTemplate(
