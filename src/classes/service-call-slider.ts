@@ -391,7 +391,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		const slider = (this.renderRoot as DocumentFragment).getElementById(
 			'slider',
 		) as HTMLInputElement;
-		console.log(slider.offsetWidth);
 		this.setTooltip(slider.offsetWidth);
 	}
 
