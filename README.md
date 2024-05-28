@@ -1136,10 +1136,12 @@ features:
         range:
           - 0
           - 1
-        thumb: flat
+        thumb: round
         style:
           '--color': rgb(31, 223, 100)
           flex-direction: row
+          border-radius: 40px
+          '--tooltip-label': '{{ (value * 100) | int }}%'
         icon_style:
           padding: 8px
           flex: auto
@@ -1153,10 +1155,11 @@ features:
             seek_position: '{{ value }}'
             entity_id: media_player.spotify
         value_attribute: media_position
+        value_from_hass_delay: 5000
         range:
           - 0
           - '{{ state_attr("media_player.spotify", "media_duration") }}'
-        thumb: line
+        thumb: flat
         label: >-
           {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
           else "" }}{{ (value - 60*((value / 60) | int)) | int }}/{{
@@ -1173,7 +1176,7 @@ features:
             {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
             else "" }}{{ (value - 60*((value / 60) | int)) | int }}
         background_style:
-          height: 39%
+          height: 12px
           border-radius: 32px
 
 type: tile
