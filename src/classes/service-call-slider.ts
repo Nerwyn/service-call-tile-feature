@@ -386,7 +386,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	updated() {
+	firstUpdated() {
 		this.setTooltip(this.offsetWidth);
 	}
 
