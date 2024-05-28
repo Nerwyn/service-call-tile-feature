@@ -471,10 +471,10 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 		context = {
 			VALUE: this.value as string,
-			HOLD_SECS: holdSecs ?? 0,
+			HOLD_SECS: holdSecs,
 			UNIT: this.unitOfMeasurement,
 			value: this.value as string,
-			hold_secs: holdSecs ?? 0,
+			hold_secs: holdSecs,
 			unit: this.unitOfMeasurement,
 			config: {
 				...this.entry,
@@ -482,6 +482,20 @@ export class BaseServiceCallFeature extends LitElement {
 			},
 			...context,
 		};
+
+		let value: string | number = context['value' as keyof typeof context];
+		if (
+			value != undefined &&
+			typeof value == 'number' &&
+			this.precision != undefined
+		) {
+			value = Number(value).toFixed(this.precision);
+			context = {
+				...context,
+				VALUE: value,
+				value: value,
+			};
+		}
 
 		const res = renderTemplate(this.hass, str as string, context);
 		if (res != str) {
@@ -529,33 +543,33 @@ export class BaseServiceCallFeature extends LitElement {
 		return style;
 	}
 
-	buildIcon(entry: IEntry = this.entry) {
+	buildBackground(entry: IEntry = this.entry, context?: object) {
+		return html`
+			<div
+				class="background"
+				style=${styleMap(
+					this.buildStyle(entry.background_style ?? {}, context),
+				)}
+			></div>
+		`;
+	}
+
+	buildIcon(entry: IEntry = this.entry, context?: object) {
 		let icon = html``;
 		if ('icon' in entry) {
 			icon = html`<ha-icon
-				.icon=${this.renderTemplate(entry.icon as string)}
-				style=${styleMap(this.buildStyle(entry.icon_style ?? {}))}
+				.icon=${this.renderTemplate(entry.icon as string, context)}
+				style=${styleMap(
+					this.buildStyle(entry.icon_style ?? {}, context),
+				)}
 			></ha-icon>`;
 		}
 		return icon;
 	}
 
-	buildLabel(entry: IEntry = this.entry, value = this.value) {
+	buildLabel(entry: IEntry = this.entry, context?: object) {
 		let label = html``;
 		if ('label' in entry) {
-			const context = {
-				VALUE: value as string,
-				value: value as string,
-			};
-
-			if (
-				value != undefined &&
-				typeof value == 'number' &&
-				this.precision != undefined
-			) {
-				context.VALUE = Number(value).toFixed(this.precision);
-				context.value = Number(value).toFixed(this.precision);
-			}
 			const text: string = this.renderTemplate(
 				entry.label as string,
 				context,
@@ -564,7 +578,7 @@ export class BaseServiceCallFeature extends LitElement {
 				// prettier-ignore
 				label = html`<pre
 					class="label"
-					style=${styleMap(this.buildStyle(entry.label_style ?? {}))}
+					style=${styleMap(this.buildStyle(entry.label_style ?? {}, context))}
 				>${text}</pre>`;
 			}
 		}
@@ -616,17 +630,6 @@ export class BaseServiceCallFeature extends LitElement {
 			e.stopPropagation();
 			return false;
 		}
-	}
-
-	buildBackground() {
-		return html`
-			<div
-				class="background"
-				style=${styleMap(
-					this.buildStyle(this.entry.background_style ?? {}),
-				)}
-			></div>
-		`;
 	}
 
 	static get styles(): CSSResult | CSSResult[] {

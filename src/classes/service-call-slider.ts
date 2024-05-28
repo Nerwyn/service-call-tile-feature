@@ -2,7 +2,7 @@ import { html, css, CSSResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
-import { IAction } from '../models/interfaces';
+import { IAction, IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
@@ -197,46 +197,39 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			) || (Number(value) as number) > this.range[0];
 	}
 
-	buildLabel() {
-		const value = this.getValueFromHass ? this.value : this.currentValue;
-		return this.sliderOn ? super.buildLabel(this.entry, value) : html``;
+	buildLabel(entry: IEntry = this.entry, context?: object) {
+		return this.sliderOn ? super.buildLabel(entry, context) : html``;
 	}
 
-	buildTooltip() {
-		const context = {
-			VALUE: `${Number(this.currentValue).toFixed(this.precision)}`,
-			OFFSET: this.tooltipOffset,
-			value: `${Number(this.currentValue).toFixed(this.precision)}`,
-			offset: this.tooltipOffset,
-		};
+	buildTooltip(entry: IEntry = this.entry, context: object) {
 		const style: StyleInfo = this.buildStyle(
 			{
-				...this.entry.tooltip_style,
+				...entry.tooltip_style,
 				'--tooltip-label': `"${
-					this.entry.tooltip_style?.['--tooltip-label'] ??
-					this.entry.style?.['--tooltip-label'] ??
+					entry.tooltip_style?.['--tooltip-label'] ??
+					entry.style?.['--tooltip-label'] ??
 					`{{ VALUE }}{{ UNIT }}`
 				}"`,
 				'--tooltip-offset':
-					this.entry.tooltip_style?.['--tooltip-offset'] ??
-					this.entry.style?.['--tooltip-offset'] ??
+					entry.tooltip_style?.['--tooltip-offset'] ??
+					entry.style?.['--tooltip-offset'] ??
 					'{{ OFFSET }}px',
 				'--tooltip-transform':
-					this.entry.tooltip_style?.['--tooltip-transform'] ??
-					this.entry.style?.['--tooltip-transform'] ??
+					entry.tooltip_style?.['--tooltip-transform'] ??
+					entry.style?.['--tooltip-transform'] ??
 					'translateX(var(--tooltip-offset))',
 				'--tooltip-display':
-					this.entry.tooltip_style?.['--tooltip-display'] ??
-					this.entry.style?.['--tooltip-display'] ??
+					entry.tooltip_style?.['--tooltip-display'] ??
+					entry.style?.['--tooltip-display'] ??
 					'initial',
 			},
 			context,
 		);
 
 		// Deprecated tooltip hide/show field
-		if ('tooltip' in this.entry) {
+		if ('tooltip' in entry) {
 			style['--tooltip-display'] = this.renderTemplate(
-				this.entry.tooltip as unknown as string,
+				entry.tooltip as unknown as string,
 			)
 				? 'initial'
 				: 'none';
@@ -251,10 +244,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	buildSlider() {
-		const value = this.getValueFromHass ? this.value : this.currentValue;
+	buildSlider(entry: IEntry = this.entry, context: object) {
+		const value = context['value' as keyof typeof context] as number;
 
-		switch (this.renderTemplate(this.entry.thumb as string)) {
+		switch (this.renderTemplate(entry.thumb as string)) {
 			case 'line':
 				this.class = 'slider-line-thumb';
 				break;
@@ -268,10 +261,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.class = 'slider';
 				break;
 		}
-		this.setSliderState(value as number);
-		const style = this.buildStyle(this.entry.slider_style ?? {});
+		this.setSliderState(value);
+		const style = this.buildStyle(entry.slider_style ?? {}, context);
 		if (
-			this.renderTemplate(this.entry.tap_action?.action as string) ==
+			this.renderTemplate(entry.tap_action?.action as string, context) ==
 			'none'
 		) {
 			style['pointer-events'] = 'none';
@@ -373,11 +366,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
+		const context = {
+			VALUE: this.getValueFromHass ? this.value : this.currentValue,
+			OFFSET: this.tooltipOffset,
+			value: this.getValueFromHass ? this.value : this.currentValue,
+			offset: this.tooltipOffset,
+		};
+
 		return html`
-			${this.buildTooltip()}
+			${this.buildTooltip(undefined, context)}
 			<div class="container">
-				${this.buildBackground()}${this.buildSlider()}
-				${this.buildIcon()}${this.buildLabel()}
+				${this.buildBackground(undefined, context)}
+				${this.buildSlider(undefined, context)}
+				${this.buildIcon(undefined, context)}
+				${this.buildLabel(undefined, context)}
 			</div>
 		`;
 	}
