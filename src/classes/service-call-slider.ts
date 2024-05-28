@@ -11,7 +11,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	@state() sliderOn: boolean = true;
 	@state() currentValue = this.value;
 
-	class: string = 'slider';
 	oldValue?: number;
 	newValue?: number;
 	speed: number = 2;
@@ -52,13 +51,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i -= this.speed;
 					this.currentValue = i;
-					this.setTooltip(slider, this.showTooltip);
+					this.setTooltip(slider);
 
 					if (end >= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip(slider, this.showTooltip);
+						this.setTooltip(slider);
 					}
 				}, 1);
 			} else if (start < end) {
@@ -66,13 +65,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i += this.speed;
 					this.currentValue = i;
-					this.setTooltip(slider, this.showTooltip);
+					this.setTooltip(slider);
 
 					if (end <= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip(slider, this.showTooltip);
+						this.setTooltip(slider);
 					}
 				}, 1);
 			} else {
@@ -175,16 +174,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	setTooltip(slider: HTMLInputElement, show: boolean) {
-		if (show) {
-			this.tooltipOffset = Math.round(
-				(slider.offsetWidth / (this.range[1] - this.range[0])) *
-					(Number(this.currentValue) -
-						(this.range[0] + this.range[1]) / 2),
-			);
-		}
+	setTooltip(slider: HTMLInputElement, show?: boolean) {
+		this.tooltipOffset = Math.round(
+			(slider.offsetWidth / (this.range[1] - this.range[0])) *
+				(Number(this.currentValue) -
+					(this.range[0] + this.range[1]) / 2),
+		);
 
-		this.showTooltip = show;
+		if (show != undefined) {
+			this.showTooltip = show;
+		}
 	}
 
 	setSliderState(value: number) {
@@ -247,20 +246,23 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	buildSlider(entry: IEntry = this.entry, context: object) {
 		const value = context['value' as keyof typeof context] as number;
 
+		let sliderClass = 'slider ';
 		switch (this.renderTemplate(entry.thumb as string)) {
 			case 'line':
-				this.class = 'slider-line-thumb';
+				sliderClass += 'line-thumb';
 				break;
 			case 'flat':
-				this.class = 'slider-flat-thumb';
+				sliderClass += 'flat-thumb';
 				break;
 			case 'round':
-				this.class = 'slider-round-thumb';
+				sliderClass += 'round-thumb';
 				break;
 			default:
-				this.class = 'slider';
+				sliderClass += 'default-thumb';
 				break;
 		}
+		sliderClass = `${sliderClass}${this.sliderOn ? '' : ' off'}`;
+
 		this.setSliderState(value);
 		const style = this.buildStyle(entry.slider_style ?? {}, context);
 		if (
@@ -273,7 +275,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		return html`
 			<input
 				type="range"
-				class="${this.sliderOn ? this.class : 'slider-off'}"
+				class="${sliderClass}"
 				style=${styleMap(style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
@@ -384,6 +386,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
+	updated() {
+		this.setTooltip(
+			this.getElementsByClassName('slider')[0] as HTMLInputElement,
+		);
+	}
+
 	static get styles() {
 		return [
 			super.styles as CSSResult,
@@ -395,11 +403,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					--opacity: 1;
 				}
 
-				.slider,
-				.slider-line-thumb,
-				.slider-flat-thumb,
-				.slider-round-thumb,
-				.slider-off {
+				.slider {
 					position: absolute;
 					appearance: none;
 					-webkit-appearance: none;
@@ -410,19 +414,20 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				}
 
 				.slider,
-				.slider-flat-thumb,
-				.slider-round-thumb,
-				.slider-off {
+				.default-thumb,
+				.flat-thumb,
+				.round-thumb,
+				.off {
 					width: inherit;
 					overflow: hidden;
 					touch-action: pan-y;
 				}
 
-				.slider-line-thumb {
+				.line-thumb {
 					width: calc(100% - 5px);
 				}
 
-				.slider::-webkit-slider-thumb {
+				.default-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 30px;
@@ -441,7 +446,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					);
 				}
 
-				.slider::-moz-range-thumb {
+				.default-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
 					height: 22px;
@@ -460,7 +465,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					);
 				}
 
-				.slider-flat-thumb::-webkit-slider-thumb {
+				.flat-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 40px;
@@ -476,7 +481,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 0);
 				}
 
-				.slider-flat-thumb::-moz-range-thumb {
+				.flat-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
 					height: 40px;
@@ -493,7 +498,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 0);
 				}
 
-				.slider-line-thumb::-webkit-slider-thumb {
+				.line-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 28px;
@@ -512,7 +517,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					);
 				}
 
-				.slider-line-thumb::-moz-range-thumb {
+				.line-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
 					height: 24px;
@@ -531,7 +536,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					);
 				}
 
-				.slider-round-thumb::-webkit-slider-thumb {
+				.round-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
 					height: 40px;
@@ -547,7 +552,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 40px);
 				}
 
-				.slider-round-thumb::-moz-range-thumb {
+				.round-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
 					height: 40px;
@@ -564,11 +569,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 40px);
 				}
 
-				.slider-off::-webkit-slider-thumb {
+				.off::-webkit-slider-thumb {
 					visibility: hidden;
 				}
 
-				.slider-off::-moz-range-thumb {
+				.off::-moz-range-thumb {
 					visibility: hidden;
 				}
 
