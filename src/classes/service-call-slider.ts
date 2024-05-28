@@ -387,7 +387,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	firstUpdated() {
+	updated() {
 		const slider = (this.renderRoot as DocumentFragment).getElementById(
 			'slider',
 		) as HTMLInputElement;
