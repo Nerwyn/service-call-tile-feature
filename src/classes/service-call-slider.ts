@@ -8,6 +8,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@state() showTooltip: boolean = false;
+	@state() tooltipOffset: number = 0;
 	@state() sliderOn: boolean = true;
 	@state() currentValue = this.value;
 
@@ -19,7 +20,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	intervalId?: ReturnType<typeof setTimeout>;
 
 	precision: number = 0;
-	tooltipOffset: number = 0;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
@@ -274,6 +274,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 		return html`
 			<input
+				id="slider"
 				type="range"
 				class="${sliderClass}"
 				style=${styleMap(style)}
@@ -387,7 +388,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	firstUpdated() {
-		this.setTooltip(this.offsetWidth);
+		const slider = (this.renderRoot as DocumentFragment).getElementById(
+			'slider',
+		) as HTMLInputElement;
+		console.log(slider.offsetWidth);
+		this.setTooltip(slider.offsetWidth);
 	}
 
 	static get styles() {
