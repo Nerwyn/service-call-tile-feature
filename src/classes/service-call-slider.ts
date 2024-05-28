@@ -393,12 +393,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			const slider = (this.renderRoot as DocumentFragment).getElementById(
 				'slider',
 			) as HTMLInputElement;
-			this.setTooltip(offsetWidth);
+			this.setTooltip(slider.offsetWidth);
 			if (slider.offsetWidth == offsetWidth) {
 				clearInterval(interval);
 			}
 			offsetWidth = slider.offsetWidth;
-		}, 10);
+		}, 200);
 	}
 
 	static get styles() {
