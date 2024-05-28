@@ -153,7 +153,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.initialX = currentX;
 		} else if (
 			Math.abs(currentX - this.initialX) <
-			Math.abs(currentY - this.initialY) - 20
+			Math.abs(currentY - this.initialY) - 40
 		) {
 			this.swiping = true;
 			this.getValueFromHass = true;
@@ -387,11 +387,18 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	updated() {
-		const slider = (this.renderRoot as DocumentFragment).getElementById(
-			'slider',
-		) as HTMLInputElement;
-		this.setTooltip(slider.offsetWidth);
+	firstUpdated() {
+		let offsetWidth: number;
+		const interval = setInterval(() => {
+			const slider = (this.renderRoot as DocumentFragment).getElementById(
+				'slider',
+			) as HTMLInputElement;
+			this.setTooltip(offsetWidth);
+			if (slider.offsetWidth == offsetWidth) {
+				clearInterval(interval);
+			}
+			offsetWidth = slider.offsetWidth;
+		}, 10);
 	}
 
 	static get styles() {
