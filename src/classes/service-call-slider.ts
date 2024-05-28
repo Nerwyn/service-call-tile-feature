@@ -245,6 +245,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 	buildSlider(entry: IEntry = this.entry, context: object) {
 		const value = context['value' as keyof typeof context] as number;
+		this.setSliderState(value);
 
 		let sliderClass = 'slider ';
 		switch (this.renderTemplate(entry.thumb as string)) {
@@ -263,7 +264,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 		sliderClass = `${sliderClass}${this.sliderOn ? '' : ' off'}`;
 
-		this.setSliderState(value);
 		const style = this.buildStyle(entry.slider_style ?? {}, context);
 		if (
 			this.renderTemplate(entry.tap_action?.action as string, context) ==
