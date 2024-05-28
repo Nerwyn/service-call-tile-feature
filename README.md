@@ -1122,17 +1122,17 @@ features:
   - type: custom:service-call
     entries:
       - type: slider
+        entity_id: media_player.spotify
         tap_action:
           action: call-service
           service: media_player.volume_set
           data:
             volume_level: '{{ value }}'
-            entity_id: media_player.spotify
         value_attribute: volume_level
         icon: mdi:spotify
         label: |
-          {{ state_attr("media_player.spotify", "media_title") }}
-          {{ state_attr("media_player.spotify", "media_artist") }}
+          {{ state_attr(config.entity, "media_title") }}
+          {{ state_attr(config.entity, "media_artist") }}
         range:
           - 0
           - 1
@@ -1142,11 +1142,39 @@ features:
           flex-direction: row
           border-radius: 40px
           '--tooltip-label': '{{ (value * 100) | int }}%'
+          flex-basis: 500%
         icon_style:
+          color: rgb(37, 79, 55)
           padding: 8px
           flex: auto
+          position: absolute
+          '--offset': '{{ offset }}px'
+          left: clamp(0%, calc(0.86 * ({{ offset }}px + 50%)), calc(100% - 40px))
         label_style:
           left: '-16px'
+      - type: button
+        entity_id: media_player.spotify
+        icon: mdi:play-pause
+        tap_action:
+          action: call-service
+          service: media_player.media_play_pause
+  - type: custom:service-call
+    entries:
+      - type: button
+        entity_id: media_player.spotify
+        value_attribute: media_position
+        tap_action:
+          action: call-service
+          service: media_player.media_previous_track
+        label: >-
+          {% set minutes = (value / 60) | int %} {% set seconds = (value - 60 *
+          minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
+          seconds | int }}
+        style:
+          overflow: visible
+          height: 12px
+          border-radius: 0px
+          '--color': none
       - type: slider
         tap_action:
           action: call-service
@@ -1154,31 +1182,38 @@ features:
           data:
             seek_position: '{{ value }}'
             entity_id: media_player.spotify
+        entity_id: media_player.spotify
         value_attribute: media_position
         value_from_hass_delay: 5000
         range:
           - 0
-          - '{{ state_attr("media_player.spotify", "media_duration") }}'
+          - '{{ state_attr(config.entity, "media_duration") }}'
         thumb: flat
-        label: >-
-          {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
-          else "" }}{{ (value - 60*((value / 60) | int)) | int }}/{{
-          (state_attr("media_player.spotify", "media_duration") / 60) |
-          int }}:{{ 0 if (state_attr("media_player.spotify",
-          "media_duration") - 60*((state_attr("media_player.spotify",
-          "media_duration") / 60) | int)) < 10 else "" }}{{
-          (state_attr("media_player.spotify", "media_duration") -
-          60*((state_attr("media_player.spotify", "media_duration") /
-          60) | int)) | int }}
         style:
           '--color': rgb(31, 223, 100)
           '--tooltip-label': >-
-            {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10
-            else "" }}{{ (value - 60*((value / 60) | int)) | int }}
-        background_style:
+            {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) <
+            10 else "" }}{{ (value - 60*((value / 60) | int)) | int }}
+          flex-basis: 1200%
+          height: 10px
+      - type: button
+        entity_id: media_player.spotify
+        value_attribute: media_position
+        tap_action:
+          action: call-service
+          service: media_player.media_next_track
+        label: >-
+          {{ (state_attr(config.entity, "media_duration") / 60) | int }}:{{ 0 if
+          (state_attr(config.entity, "media_duration") -
+          60*((state_attr(config.entity, "media_duration") / 60) | int)) < 10
+          else "" }}{{ (state_attr(config.entity, "media_duration") -
+          60*((state_attr(config.entity, "media_duration") / 60) | int)) | int
+          }}
+        style:
+          overflow: visible
           height: 12px
-          border-radius: 32px
-
+          border-radius: 0px
+          '--color': none
 type: tile
 entity: binary_sensor.sun_room
 color: accent
