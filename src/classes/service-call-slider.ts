@@ -38,7 +38,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = end;
 
 			this.currentValue = start;
-			this.setTooltip(slider.offsetWidth, true);
+			this.setTooltip(true);
 
 			if (end > this.range[0]) {
 				this.sliderOn = true;
@@ -51,13 +51,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i -= this.speed;
 					this.currentValue = i;
-					this.setTooltip(slider.offsetWidth);
+					this.setTooltip();
 
 					if (end >= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip(slider.offsetWidth);
+						this.setTooltip();
 					}
 				}, 1);
 			} else if (start < end) {
@@ -65,13 +65,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i += this.speed;
 					this.currentValue = i;
-					this.setTooltip(slider.offsetWidth);
+					this.setTooltip();
 
 					if (end <= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip(slider.offsetWidth);
+						this.setTooltip();
 					}
 				}, 1);
 			} else {
@@ -85,7 +85,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 			this.setValue();
 			this.currentValue = this.value ?? 0;
-			this.setTooltip(slider.offsetWidth, false);
+			this.setTooltip(false);
 		}
 	}
 
@@ -97,14 +97,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			clearTimeout(this.getValueFromHassTimer);
 			this.currentValue = slider.value;
 			this.value = slider.value;
-			this.setTooltip(slider.offsetWidth, true);
+			this.setTooltip(true);
 			this.sliderOn = true;
 		}
 	}
 
-	onEnd(e: MouseEvent | TouchEvent) {
-		const slider = e.currentTarget as HTMLInputElement;
-		this.setTooltip(slider.offsetWidth, false);
+	onEnd(_e: MouseEvent | TouchEvent) {
+		this.setTooltip(false);
 		this.setValue();
 
 		if (!this.swiping) {
@@ -131,8 +130,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	onMove(e: MouseEvent | TouchEvent) {
-		const slider = e.currentTarget as HTMLInputElement;
-
 		let currentX: number;
 		if ('clientX' in e) {
 			currentX = e.clientX;
@@ -159,7 +156,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.getValueFromHass = true;
 			this.setValue();
 			this.currentValue = this.value ?? 0;
-			this.setTooltip(slider.offsetWidth, false);
+			this.setTooltip(false);
 			this.setSliderState(this.currentValue as number);
 		}
 	}
@@ -174,9 +171,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	setTooltip(offsetWidth: number, show?: boolean) {
+	setTooltip(show?: boolean) {
 		this.tooltipOffset = Math.round(
-			(offsetWidth / (this.range[1] - this.range[0])) *
+			(this.offsetWidth / (this.range[1] - this.range[0])) *
 				(Number(this.currentValue) -
 					(this.range[0] + this.range[1]) / 2),
 		);
@@ -374,6 +371,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			OFFSET: this.tooltipOffset,
 			value: this.getValueFromHass ? this.value : this.currentValue,
 			offset: this.tooltipOffset,
+			width: this.offsetWidth,
 		};
 
 		return html`
@@ -390,14 +388,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	updated() {
 		let offsetWidth: number;
 		const interval = setInterval(() => {
-			const slider = (this.renderRoot as DocumentFragment).getElementById(
-				'slider',
-			) as HTMLInputElement;
-			this.setTooltip(slider.offsetWidth);
-			if (slider.offsetWidth == offsetWidth) {
+			this.setTooltip();
+			if (this.offsetWidth == offsetWidth) {
 				clearInterval(interval);
 			}
-			offsetWidth = slider.offsetWidth;
+			offsetWidth = this.offsetWidth;
 		}, 200);
 	}
 
