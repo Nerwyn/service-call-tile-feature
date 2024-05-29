@@ -387,7 +387,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	firstUpdated() {
+	updated() {
 		let offsetWidth: number;
 		const interval = setInterval(() => {
 			const slider = (this.renderRoot as DocumentFragment).getElementById(
