@@ -1148,8 +1148,7 @@ features:
           padding: 8px
           flex: auto
           position: absolute
-          '--offset': '{{ offset }}px'
-          left: clamp(0%, calc(0.86 * ({{ offset }}px + 50%)), calc(100% - 40px))
+          left: '{{ (offset + (width / 2)) * ((width - 40) / width) }}px'
         label_style:
           left: '-16px'
       - type: button
