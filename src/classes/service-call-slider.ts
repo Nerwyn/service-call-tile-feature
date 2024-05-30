@@ -366,6 +366,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
+		if (this.offsetWidth) {
+			this.setTooltip();
+		}
+
 		const context = {
 			VALUE: this.getValueFromHass ? this.value : this.currentValue,
 			OFFSET: this.tooltipOffset,
