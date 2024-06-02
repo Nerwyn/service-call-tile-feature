@@ -2,6 +2,7 @@ import { html, css, CSSResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
 
@@ -209,6 +210,11 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				</button>
 			`;
 		}
+	}
+
+	buildLabel(entry: IEntry = this.entry, context?: object) {
+		const value = context ? context['value' as keyof object] : undefined;
+		return value != undefined ? super.buildLabel(entry, context) : html``;
 	}
 
 	render() {

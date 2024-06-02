@@ -469,7 +469,9 @@ export class BaseServiceCallFeature extends LitElement {
 		if (this.buttonPressStart && this.buttonPressEnd) {
 			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
 		}
+
 		context = {
+			renderTemplate: '',
 			VALUE: this.value as string,
 			HOLD_SECS: holdSecs,
 			UNIT: this.unitOfMeasurement,
@@ -479,6 +481,12 @@ export class BaseServiceCallFeature extends LitElement {
 			config: {
 				...this.entry,
 				entity: this.entityId,
+			},
+			...context,
+		};
+		context = {
+			renderTemplate: (str2: string) => {
+				return this.renderTemplate(str2, context);
 			},
 			...context,
 		};
