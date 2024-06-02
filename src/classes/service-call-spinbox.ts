@@ -111,7 +111,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	}
 
 	operateValue(operator: 'increment' | 'decrement') {
-		const prevValue = parseFloat(this.value as string);
+		const prevValue = parseFloat((this.value ?? this.range[0]) as string);
 		let newValue = this.value as number;
 		switch (operator) {
 			case 'increment':
