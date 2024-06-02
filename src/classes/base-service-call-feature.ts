@@ -484,8 +484,7 @@ export class BaseServiceCallFeature extends LitElement {
 			...context,
 		};
 		context = {
-			renderTemplate: (str2: string) =>
-				this.renderTemplate(str2, context),
+			render: (str2: string) => this.renderTemplate(str2, context),
 			...context,
 		};
 

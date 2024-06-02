@@ -228,7 +228,7 @@ Haptics are disabled for tile features by default, but can be enabled by setting
 
 Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
 
-You can include the current value of a tile feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a `momentary_end_action`. Each tile feature can also reference it's entry using `config` within templates. `config.entity` will return `config.entity_id` with it's template rendered (if it has one), and other templated config fields can be rendered within templates by wrapping them in the function `renderTemplate` within a template.
+You can include the current value of a tile feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a `momentary_end_action`. Each tile feature can also reference it's entry using `config` within templates. `config.entity` will return `config.entity_id` with it's template rendered (if it has one), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template.
 
 ## Actions
 
