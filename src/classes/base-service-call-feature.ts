@@ -485,10 +485,10 @@ export class BaseServiceCallFeature extends LitElement {
 			...context,
 		};
 		context = {
+			...context,
 			renderTemplate: (str2: string) => {
 				return this.renderTemplate(str2, context);
 			},
-			...context,
 		};
 
 		let value: string | number = context['value' as keyof typeof context];
