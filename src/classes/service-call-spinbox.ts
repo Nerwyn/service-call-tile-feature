@@ -206,7 +206,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 						),
 					)}
 				>
-					${this.buildIcon(actions)}${this.buildLabel(actions)}
+					${this.buildIcon(actions)}${super.buildLabel(actions)}
 				</button>
 			`;
 		}
