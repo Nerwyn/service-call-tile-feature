@@ -213,8 +213,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 	}
 
 	buildLabel(entry: IEntry = this.entry, context?: object) {
-		const value = context ? context['value' as keyof object] : undefined;
-		return value != undefined ? super.buildLabel(entry, context) : html``;
+		return this.value != undefined
+			? super.buildLabel(entry, context)
+			: html``;
 	}
 
 	render() {
