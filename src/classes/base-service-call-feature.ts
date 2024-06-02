@@ -471,7 +471,6 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 
 		context = {
-			renderTemplate: '',
 			VALUE: this.value as string,
 			HOLD_SECS: holdSecs,
 			UNIT: this.unitOfMeasurement,
@@ -485,10 +484,9 @@ export class BaseServiceCallFeature extends LitElement {
 			...context,
 		};
 		context = {
+			renderTemplate: (str2: string) =>
+				this.renderTemplate(str2, context),
 			...context,
-			renderTemplate: (str2: string) => {
-				return this.renderTemplate(str2, context);
-			},
 		};
 
 		let value: string | number = context['value' as keyof typeof context];
