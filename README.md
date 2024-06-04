@@ -1148,7 +1148,7 @@ features:
           padding: 8px
           flex: auto
           position: absolute
-          left: '{{ (offset + (width / 2)) * ((width - 40) / width) }}px'
+          transform: translateX({{ offset * ((width - 40) / width) }}px)
         label_style:
           left: '-16px'
       - type: button
