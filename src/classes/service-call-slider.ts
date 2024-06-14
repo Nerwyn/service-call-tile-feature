@@ -320,7 +320,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			];
 		}
 
-		if (!('tap_action' in this.entry)) {
+		if (!this.entry.tap_action) {
 			const tap_action = {} as IAction;
 			tap_action.action = 'call-service';
 			switch (domain) {
@@ -334,11 +334,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 
 			const data = tap_action.data ?? {};
-			if (!('value' in data)) {
-				data.value = 'VALUE';
+			if (!data.value) {
+				data.value = '{{ value }}';
 				tap_action.data = data;
 			}
-			if (!('entity_id' in data)) {
+			if (!data.entity_id) {
 				data.entity_id = this.entityId as string;
 				tap_action.data = data;
 			}

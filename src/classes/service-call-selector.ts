@@ -42,9 +42,9 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 		for (const i in entries) {
 			if (
-				!('tap_action' in entries[i]) &&
-				!('double_tap_action' in entries[i]) &&
-				!('hold_action' in entries[i])
+				!entries[i].tap_action &&
+				!entries[i].double_tap_action &&
+				!entries[i].hold_action
 			) {
 				const [domain, _service] = (this.entityId ?? '').split('.');
 				const tap_action = {} as IAction;
@@ -60,11 +60,11 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				}
 
 				const data = tap_action.data ?? {};
-				if (!('option' in data)) {
+				if (!data.option) {
 					data.option = options[i];
 					tap_action.data = data;
 				}
-				if (!('entity_id' in data)) {
+				if (!data.entity_id) {
 					data.entity_id = this.entityId as string;
 					tap_action.data = data;
 				}

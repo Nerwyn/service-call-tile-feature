@@ -53,10 +53,10 @@ class ServiceCallTileFeature extends LitElement {
 		config = structuredClone(config);
 
 		// Rename buttons to entries
-		if ('buttons' in config && !('entries' in config)) {
-			(config as IConfig).entries = (
-				config as Record<'buttons', IEntry[]>
-			).buttons as IEntry[];
+		if ('buttons' in config) {
+			config.entries.push(
+				...(config as Record<'buttons', IEntry[]>).buttons,
+			);
 		}
 
 		for (let entry of config.entries) {
@@ -64,14 +64,14 @@ class ServiceCallTileFeature extends LitElement {
 			for (let option of entry.options ?? []) {
 				option = this.updateDeprecatedEntryFields(option);
 			}
-			if ('increment' in entry) {
+			if (entry.increment) {
 				entry.increment = this.updateDeprecatedEntryFields(
-					entry.increment as IEntry,
+					entry.increment,
 				);
 			}
-			if ('decrement' in entry) {
+			if (entry.decrement) {
 				entry.decrement = this.updateDeprecatedEntryFields(
-					entry.decrement as IEntry,
+					entry.decrement,
 				);
 			}
 		}
@@ -119,22 +119,19 @@ class ServiceCallTileFeature extends LitElement {
 				const action = entry[actionType as keyof IActions] as IAction;
 
 				// Populate action field
-				if (!('action' in action)) {
-					if ('service' in action) {
-						(action as IAction).action = 'call-service';
-					} else if ('navigation_path' in action) {
-						(action as IAction).action = 'navigate';
-					} else if ('url_path' in action) {
-						(action as IAction).action = 'url';
-					} else if ('fire-dom-event' in action) {
-						(action as IAction).action = 'fire-dom-event';
-					} else if (
-						'pipeline_id' in action ||
-						'start_listening' in action
-					) {
-						(action as IAction).action = 'assist';
+				if (!action.action) {
+					if (action.service) {
+						action.action = 'call-service';
+					} else if (action.navigation_path) {
+						action.action = 'navigate';
+					} else if (action.url_path) {
+						action.action = 'url';
+					} else if (action.browser_mod) {
+						action.action = 'fire-dom-event';
+					} else if (action.pipeline_id || action.start_listening) {
+						action.action = 'assist';
 					} else {
-						(action as IAction).action = 'none';
+						action.action = 'none';
 					}
 				}
 
@@ -195,11 +192,7 @@ class ServiceCallTileFeature extends LitElement {
 					entry[actionType as keyof IActions] ?? ({} as IAction);
 				if (['call-service', 'more-info'].includes(action.action)) {
 					const data = action.data ?? ({} as IData);
-					if (
-						!('entity_id' in data) &&
-						!('device_id' in data) &&
-						!('area_id' in data)
-					) {
+					if (!data.entity_id && !data.device_id && !data.area_id) {
 						data.entity_id = entry.entity_id ?? parentEntityId;
 						action.data = data;
 						entry[actionType as keyof IActions] = action;
@@ -282,13 +275,13 @@ class ServiceCallTileFeature extends LitElement {
 					}
 				}
 
-				if ('increment' in entry) {
+				if (entry.increment) {
 					entry.increment = this.populateMissingEntityId(
 						entry.increment as IEntry,
 						entry.entity_id as string,
 					);
 				}
-				if ('decrement' in entry) {
+				if (entry.decrement) {
 					entry.decrement = this.populateMissingEntityId(
 						entry.decrement as IEntry,
 						entry.entity_id as string,

@@ -10,13 +10,7 @@ import {
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
-import {
-	IEntry,
-	IConfirmation,
-	IAction,
-	IActions,
-	ActionType,
-} from '../models/interfaces';
+import { IEntry, IAction, IActions, ActionType } from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -240,12 +234,9 @@ export class BaseServiceCallFeature extends LitElement {
 				this.fireHapticEvent('warning');
 
 				let text: string;
-				if (
-					confirmation != true &&
-					'text' in (confirmation as IConfirmation)
-				) {
+				if (confirmation != true && confirmation && confirmation.text) {
 					text = this.renderTemplate(
-						(confirmation as IConfirmation).text as string,
+						confirmation.text as string,
 					) as string;
 				} else {
 					text = `Are you sure you want to run action '${
@@ -257,9 +248,9 @@ export class BaseServiceCallFeature extends LitElement {
 						return false;
 					}
 				} else {
-					if ('exemptions' in (confirmation as IConfirmation)) {
+					if (confirmation && confirmation.exemptions) {
 						if (
-							!(confirmation as IConfirmation).exemptions
+							!confirmation.exemptions
 								?.map((exemption) =>
 									this.renderTemplate(exemption.user),
 								)
@@ -525,12 +516,11 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	resetGetValueFromHass() {
-		const valueFromHassDelay =
-			'value_from_hass_delay' in this.entry
-				? (this.renderTemplate(
-						this.entry.value_from_hass_delay as unknown as string,
-				  ) as number)
-				: 1000;
+		const valueFromHassDelay = this.entry.value_from_hass_delay
+			? (this.renderTemplate(
+					this.entry.value_from_hass_delay as unknown as string,
+			  ) as number)
+			: 1000;
 		this.getValueFromHassTimer = setTimeout(
 			() => (this.getValueFromHass = true),
 			valueFromHassDelay,
@@ -561,7 +551,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	buildIcon(entry: IEntry = this.entry, context?: object) {
 		let icon = html``;
-		if ('icon' in entry) {
+		if (entry.icon) {
 			icon = html`<ha-icon
 				.icon=${this.renderTemplate(entry.icon as string, context)}
 				style=${styleMap(
@@ -574,7 +564,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	buildLabel(entry: IEntry = this.entry, context?: object) {
 		let label = html``;
-		if ('label' in entry) {
+		if (entry.label) {
 			const text: string = this.renderTemplate(
 				entry.label as string,
 				context,

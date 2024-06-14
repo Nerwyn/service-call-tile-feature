@@ -28,7 +28,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		this.clickCount++;
 
 		if (
-			'double_tap_action' in this.entry &&
+			this.entry.double_tap_action &&
 			this.renderTemplate(
 				this.entry.double_tap_action?.action as string,
 			) != 'none'
@@ -41,13 +41,13 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				this.endAction();
 			} else {
 				// Single tap action is triggered if double tap is not within 200ms
-				const doubleTapWindow: number =
-					'double_tap_window' in (this.entry.double_tap_action ?? {})
-						? (this.renderTemplate(
-								this.entry.double_tap_action
-									?.double_tap_window as unknown as string,
-						  ) as number)
-						: 200;
+				const doubleTapWindow: number = this.entry.double_tap_action
+					.double_tap_window
+					? (this.renderTemplate(
+							this.entry.double_tap_action
+								.double_tap_window as unknown as string,
+					  ) as number)
+					: 200;
 				if (!this.clickTimer) {
 					this.clickTimer = setTimeout(() => {
 						this.fireHapticEvent('light');
@@ -76,7 +76,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		}
 
 		if (
-			'momentary_start_action' in this.entry &&
+			this.entry.momentary_start_action &&
 			this.renderTemplate(
 				this.entry.momentary_start_action?.action ?? 'none',
 			) != 'none'
@@ -85,21 +85,19 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			this.buttonPressStart = performance.now();
 			this.sendAction('momentary_start_action');
 		} else if (
-			'momentary_end_action' in this.entry &&
+			this.entry.momentary_end_action &&
 			this.renderTemplate(
 				this.entry.momentary_end_action?.action ?? 'none',
 			) != 'none'
 		) {
 			this.fireHapticEvent('light');
 			this.buttonPressStart = performance.now();
-		} else if (!this.holdTimer && 'hold_action' in this.entry) {
-			const holdTime =
-				'hold_time' in (this.entry.hold_action ?? {})
-					? (this.renderTemplate(
-							this.entry.hold_action
-								?.hold_time as unknown as string,
-					  ) as number)
-					: 500;
+		} else if (!this.holdTimer && this.entry.hold_action) {
+			const holdTime = this.entry.hold_action.hold_time
+				? (this.renderTemplate(
+						this.entry.hold_action?.hold_time as unknown as string,
+				  ) as number)
+				: 500;
 			const holdAction = this.renderTemplate(
 				this.entry.hold_action?.action as string,
 			);
@@ -109,13 +107,13 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					if (!this.swiping) {
 						this.hold = true;
 						if (holdAction == 'repeat') {
-							const repeatDelay =
-								'repeat_delay' in (this.entry.hold_action ?? {})
-									? (this.renderTemplate(
-											this.entry.hold_action
-												?.repeat_delay as unknown as string,
-									  ) as number)
-									: 100;
+							const repeatDelay = this.entry.hold_action
+								?.repeat_delay
+								? (this.renderTemplate(
+										this.entry.hold_action
+											?.repeat_delay as unknown as string,
+								  ) as number)
+								: 100;
 							if (!this.holdInterval) {
 								this.holdInterval = setInterval(() => {
 									this.fireHapticEvent('selection');
@@ -136,7 +134,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		if (!this.swiping) {
 			if (
-				'momentary_end_action' in this.entry &&
+				this.entry.momentary_end_action &&
 				this.renderTemplate(
 					this.entry.momentary_end_action?.action as string,
 				) != 'none'
@@ -146,7 +144,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				this.sendAction('momentary_end_action');
 				this.endAction();
 			} else if (
-				'momentary_start_action' in this.entry &&
+				this.entry.momentary_start_action &&
 				this.renderTemplate(
 					this.entry.momentary_start_action?.action as string,
 				) != 'none'

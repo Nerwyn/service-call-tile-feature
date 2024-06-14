@@ -34,26 +34,24 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				'repeat' &&
 			!this.holdTimer
 		) {
-			const holdTime =
-				'hold_time' in (this.entry.hold_action ?? {})
-					? (this.renderTemplate(
-							this.entry[operator]?.hold_action
-								?.hold_time as unknown as string,
-					  ) as number)
-					: 500;
+			const holdTime = this.entry.hold_action?.hold_time
+				? (this.renderTemplate(
+						this.entry[operator]?.hold_action
+							?.hold_time as unknown as string,
+				  ) as number)
+				: 500;
 			this.holdTimer = setTimeout(() => {
 				clearTimeout(this.debounceTimer);
 				clearTimeout(this.getValueFromHassTimer);
 				this.getValueFromHass = false;
 
 				if (!this.swiping) {
-					const repeatDelay =
-						'repeat_delay' in (this.entry.hold_action ?? {})
-							? (this.renderTemplate(
-									this.entry.hold_action
-										?.repeat_delay as unknown as string,
-							  ) as number)
-							: 100;
+					const repeatDelay = this.entry.hold_action?.repeat_delay
+						? (this.renderTemplate(
+								this.entry.hold_action
+									?.repeat_delay as unknown as string,
+						  ) as number)
+						: 100;
 					if (!this.holdInterval) {
 						this.holdInterval = setInterval(() => {
 							this.operateValue(operator);
@@ -137,7 +135,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 	buildButton(operator: 'increment' | 'decrement') {
 		const actions = this.entry[operator] ?? {};
-		if (!('icon' in actions)) {
+		if (!actions.icon) {
 			actions.icon = operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
 		}
 
@@ -250,7 +248,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
-		if ('debounce_time' in this.entry) {
+		if (this.entry.debounce_time) {
 			this.debounceTime = parseFloat(
 				this.renderTemplate(
 					this.entry.debounce_time as unknown as string,
