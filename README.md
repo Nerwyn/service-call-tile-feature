@@ -594,8 +594,7 @@ entries:
 | style.--thumb-border-radius | string       | Border radius of the slider thumb. Default varies by thumb style.                                                                                                                                                                       |
 | style.--thumb-box-shadow    | string       | Box shadow of the slider thumb. Default varies by thumb style.                                                                                                                                                                          |
 | style.--tooltip-label       | string       | Tooltip label template, defaults to `{{ value }}{{ unit }}`.                                                                                                                                                                            |
-| style.--tooltip-offset      | string       | Tooltip offset from center, defaults to `{{ offset }}px`.                                                                                                                                                                               |
-| style.--tooltip-transform   | CSS function | Tooltip location transform function, defaults to `translateX(var(--tooltip-offset))`.                                                                                                                                                   |
+| style.--tooltip-transform   | CSS function | Tooltip location transform function, defaults to `translate(var(--thumb-offset), -35px)`.                                                                                                                                               |
 | style.--tooltip-display     | string       | Tooltip display value, set to `none` to hide tooltip, defaults to `initial`.                                                                                                                                                            |
 
 ```yaml
@@ -1148,7 +1147,7 @@ features:
           padding: 8px
           flex: auto
           position: absolute
-          transform: translateX({{ offset * ((width - 40) / width) }}px)
+          transform: translateX(var(--thumb-offset))
         label_style:
           left: '-16px'
       - type: button
