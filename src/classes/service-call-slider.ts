@@ -19,6 +19,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	step: number = 1;
 	intervalId?: ReturnType<typeof setTimeout>;
 
+	sliderClass: string = 'slider ';
 	thumbWidth: number = 0;
 	sliderWidth: number = 0;
 	resizeObserver = new ResizeObserver((entries) => {
@@ -254,30 +255,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildSlider(entry: IEntry = this.entry, context: object) {
-		const value = context['value' as keyof typeof context] as number;
-		this.setSliderState(value);
-
-		let sliderClass = 'slider ';
-		switch (this.renderTemplate(entry.thumb as string)) {
-			case 'line':
-				sliderClass += 'line-thumb';
-				this.thumbWidth = 10;
-				break;
-			case 'flat':
-				sliderClass += 'flat-thumb';
-				this.thumbWidth = 16;
-				break;
-			case 'round':
-				sliderClass += 'round-thumb';
-				this.thumbWidth = 40;
-				break;
-			default:
-				sliderClass += 'default-thumb';
-				this.thumbWidth = 12;
-				break;
-		}
-		sliderClass = `${sliderClass}${this.sliderOn ? '' : ' off'}`;
-
 		const style = this.buildStyle(entry.slider_style ?? {}, context);
 		if (
 			this.renderTemplate(entry.tap_action?.action as string, context) ==
@@ -286,11 +263,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			style['pointer-events'] = 'none';
 		}
 
+		const value = context['value' as keyof typeof context] as number;
 		return html`
 			<input
 				id="slider"
 				type="range"
-				class="${sliderClass}"
+				class="${this.sliderClass}"
 				style=${styleMap(style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
@@ -388,6 +366,27 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		} else {
 			this.precision = 0;
 		}
+
+		switch (this.renderTemplate(this.entry.thumb as string)) {
+			case 'line':
+				this.sliderClass += 'line-thumb';
+				this.thumbWidth = 10;
+				break;
+			case 'flat':
+				this.sliderClass += 'flat-thumb';
+				this.thumbWidth = 16;
+				break;
+			case 'round':
+				this.sliderClass += 'round-thumb';
+				this.thumbWidth = 40;
+				break;
+			default:
+				this.sliderClass += 'default-thumb';
+				this.thumbWidth = 12;
+				break;
+		}
+		this.setSliderState(context['value' as keyof typeof context] as number);
+		this.sliderClass = `${this.sliderClass}${this.sliderOn ? '' : ' off'}`;
 
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
