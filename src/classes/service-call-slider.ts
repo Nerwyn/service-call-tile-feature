@@ -388,6 +388,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
+		this.resizeObserver.observe(
+			this.shadowRoot?.querySelector('.container') ?? this,
+		);
 		this.thumbWidth = parseInt(
 			(
 				(this.renderTemplate(
@@ -402,9 +405,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				'50'
 			).replace('px', ''),
 		);
-		this.resizeObserver.observe(
-			this.shadowRoot?.querySelector('.container') ?? this,
-		);
+		this.setThumbOffset();
+		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
 
 		return html`
 			${this.buildTooltip(undefined, context)}
