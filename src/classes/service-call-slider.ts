@@ -198,7 +198,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			),
 			maxOffset,
 		);
-		console.log(this.thumbOffset);
 	}
 
 	setSliderState(value: number) {
@@ -408,6 +407,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		);
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
+		console.log(this.thumbOffset);
 
 		return html`
 			${this.buildTooltip(undefined, context)}
@@ -418,6 +418,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				${this.buildLabel(undefined, context)}
 			</div>
 		`;
+	}
+
+	disconnectedCallback(): void {
+		super.disconnectedCallback();
+		this.resizeObserver.disconnect();
 	}
 
 	static get styles() {
