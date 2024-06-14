@@ -27,6 +27,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.sliderWidth = entry.contentRect.width;
 			this.setThumbOffset();
 		}
+		console.log('Resizing!');
 	});
 
 	onInput(e: InputEvent) {
@@ -107,7 +108,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			clearTimeout(this.getValueFromHassTimer);
 			this.currentValue = slider.value;
 			this.value = slider.value;
-			this.setThumbOffset;
+			this.setThumbOffset();
 			this.showTooltip = true;
 			this.sliderOn = true;
 		}
@@ -133,6 +134,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.getValueFromHass = true;
 			this.setValue();
 			this.currentValue = this.value ?? 0;
+			this.setThumbOffset();
+			this.setSliderState(this.currentValue as number);
 		}
 
 		this.endAction();
@@ -168,7 +171,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.currentValue = this.value ?? 0;
 			this.setThumbOffset();
 			this.showTooltip = false;
-			this.setSliderState(this.currentValue as number);
+			this.setSliderState(this.value as number);
 		}
 	}
 
@@ -407,7 +410,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		);
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
-		console.log(this.thumbOffset);
 
 		return html`
 			${this.buildTooltip(undefined, context)}
