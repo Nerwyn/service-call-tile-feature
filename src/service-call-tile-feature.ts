@@ -53,6 +53,9 @@ class ServiceCallTileFeature extends LitElement {
 		config = structuredClone(config);
 
 		// Rename buttons to entries
+		if (!config.entries) {
+			config.entries = [];
+		}
 		if ('buttons' in config) {
 			config.entries.push(
 				...(config as Record<'buttons', IEntry[]>).buttons,
