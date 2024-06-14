@@ -8,7 +8,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
 	@state() showTooltip: boolean = false;
-	@state() tooltipOffset: number = 0;
+	@state() thumbOffset: number = 0;
 	@state() sliderOn: boolean = true;
 	@state() currentValue = this.value;
 
@@ -19,7 +19,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	step: number = 1;
 	intervalId?: ReturnType<typeof setTimeout>;
 
-	precision: number = 0;
+	thumbWidth: number = 0;
+	sliderWidth: number = 0;
+	resizeObserver = new ResizeObserver((entries) => {
+		for (const entry of entries) {
+			this.sliderWidth = entry.contentRect.width;
+			this.setThumbOffset();
+		}
+	});
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
@@ -38,7 +45,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.newValue = end;
 
 			this.currentValue = start;
-			this.setTooltip(true);
+			this.setThumbOffset();
+			this.showTooltip = true;
 
 			if (end > this.range[0]) {
 				this.sliderOn = true;
@@ -51,13 +59,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i -= this.speed;
 					this.currentValue = i;
-					this.setTooltip();
+					this.setThumbOffset();
 
 					if (end >= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip();
+						this.setThumbOffset();
 					}
 				}, 1);
 			} else if (start < end) {
@@ -65,13 +73,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				this.intervalId = setInterval(() => {
 					i += this.speed;
 					this.currentValue = i;
-					this.setTooltip();
+					this.setThumbOffset();
 
 					if (end <= i) {
 						clearInterval(this.intervalId);
 						this.intervalId = undefined;
 						this.currentValue = end;
-						this.setTooltip();
+						this.setThumbOffset();
 					}
 				}, 1);
 			} else {
@@ -85,7 +93,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			}
 			this.setValue();
 			this.currentValue = this.value ?? 0;
-			this.setTooltip(false);
+			this.setThumbOffset();
+			this.showTooltip = false;
 		}
 	}
 
@@ -97,13 +106,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			clearTimeout(this.getValueFromHassTimer);
 			this.currentValue = slider.value;
 			this.value = slider.value;
-			this.setTooltip(true);
+			this.setThumbOffset;
+			this.showTooltip = true;
 			this.sliderOn = true;
 		}
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
-		this.setTooltip(false);
+		this.setThumbOffset();
+		this.showTooltip = false;
 		this.setValue();
 
 		if (!this.swiping) {
@@ -118,9 +129,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.fireHapticEvent('light');
 			this.sendAction('tap_action');
 		} else {
-			if (this.value == undefined) {
-				this.getValueFromHass = true;
-			}
+			this.getValueFromHass = true;
 			this.setValue();
 			this.currentValue = this.value ?? 0;
 		}
@@ -156,7 +165,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.getValueFromHass = true;
 			this.setValue();
 			this.currentValue = this.value ?? 0;
-			this.setTooltip(false);
+			this.setThumbOffset();
+			this.showTooltip = false;
 			this.setSliderState(this.currentValue as number);
 		}
 	}
@@ -171,16 +181,22 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		}
 	}
 
-	setTooltip(show?: boolean) {
-		this.tooltipOffset = Math.round(
-			(this.offsetWidth / (this.range[1] - this.range[0])) *
-				(Number(this.currentValue) -
-					(this.range[0] + this.range[1]) / 2),
+	setThumbOffset() {
+		const maxOffset = (this.sliderWidth - this.thumbWidth) / 2;
+		const value = Number(
+			this.getValueFromHass ? this.value : this.currentValue,
 		);
-
-		if (show != undefined) {
-			this.showTooltip = show;
-		}
+		this.thumbOffset = Math.min(
+			Math.max(
+				Math.round(
+					((this.sliderWidth - this.thumbWidth) /
+						(this.range[1] - this.range[0])) *
+						(value - (this.range[0] + this.range[1]) / 2),
+				),
+				-1 * maxOffset,
+			),
+			maxOffset,
+		);
 	}
 
 	setSliderState(value: number) {
@@ -204,16 +220,12 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				'--tooltip-label': `"${
 					entry.tooltip_style?.['--tooltip-label'] ??
 					entry.style?.['--tooltip-label'] ??
-					`{{ VALUE }}{{ UNIT }}`
+					`{{ value }}{{ unit }}`
 				}"`,
-				'--tooltip-offset':
-					entry.tooltip_style?.['--tooltip-offset'] ??
-					entry.style?.['--tooltip-offset'] ??
-					'{{ OFFSET }}px',
 				'--tooltip-transform':
 					entry.tooltip_style?.['--tooltip-transform'] ??
 					entry.style?.['--tooltip-transform'] ??
-					'translateX(var(--tooltip-offset))',
+					'translate(var(--thumb-offset), -35px)',
 				'--tooltip-display':
 					entry.tooltip_style?.['--tooltip-display'] ??
 					entry.style?.['--tooltip-display'] ??
@@ -248,15 +260,19 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		switch (this.renderTemplate(entry.thumb as string)) {
 			case 'line':
 				sliderClass += 'line-thumb';
+				this.thumbWidth = 10;
 				break;
 			case 'flat':
 				sliderClass += 'flat-thumb';
+				this.thumbWidth = 16;
 				break;
 			case 'round':
 				sliderClass += 'round-thumb';
+				this.thumbWidth = 40;
 				break;
 			default:
 				sliderClass += 'default-thumb';
+				this.thumbWidth = 12;
 				break;
 		}
 		sliderClass = `${sliderClass}${this.sliderOn ? '' : ' off'}`;
@@ -297,6 +313,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		if (this.getValueFromHass) {
 			this.currentValue = this.value;
 		}
+		const context = {
+			VALUE: this.getValueFromHass ? this.value : this.currentValue,
+			value: this.getValueFromHass ? this.value : this.currentValue,
+		};
 
 		const [domain, _service] = (this.entityId ?? '').split('.');
 
@@ -305,11 +325,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				parseFloat(
 					this.renderTemplate(
 						this.entry.range[0] as unknown as string,
+						context,
 					) as string,
 				),
 				parseFloat(
 					this.renderTemplate(
 						this.entry.range[1] as unknown as string,
+						context,
 					) as string,
 				),
 			];
@@ -366,17 +388,23 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
-		if (this.offsetWidth) {
-			this.setTooltip();
-		}
-
-		const context = {
-			VALUE: this.getValueFromHass ? this.value : this.currentValue,
-			OFFSET: this.tooltipOffset,
-			value: this.getValueFromHass ? this.value : this.currentValue,
-			offset: this.tooltipOffset,
-			width: this.offsetWidth,
-		};
+		this.thumbWidth = parseInt(
+			(
+				(this.renderTemplate(
+					this.entry.slider_style?.['--thumb-width'] as string,
+					context,
+				) as string) ??
+				(this.renderTemplate(
+					this.entry.style?.['--thumb-width'] as string,
+					context,
+				) as string) ??
+				(this.style.getPropertyValue('--thumb-width') as string) ??
+				'50'
+			).replace('px', ''),
+		);
+		this.resizeObserver.observe(
+			this.shadowRoot?.querySelector('.container') ?? this,
+		);
 
 		return html`
 			${this.buildTooltip(undefined, context)}
@@ -389,23 +417,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	updated() {
-		let offsetWidth: number;
-		const interval = setInterval(() => {
-			this.setTooltip();
-			if (this.offsetWidth == offsetWidth) {
-				clearInterval(interval);
-			}
-			offsetWidth = this.offsetWidth;
-		}, 200);
-	}
-
 	static get styles() {
 		return [
 			super.styles as CSSResult,
 			css`
 				:host {
 					overflow: visible;
+					pointer-events: none;
 
 					--color: var(--tile-color);
 					--opacity: 1;
@@ -418,6 +436,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-moz-appearance: none;
 					height: inherit;
 					background: none;
+					pointer-events: all;
 					z-index: 2;
 				}
 
@@ -449,7 +468,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 8px) 0 0 100vw var(--color),
+						calc(-100vw - (var(--thumb-width, 8px) / 2)) 0 0 100vw
+							var(--color),
 						-4px 0 0 6px var(--color)
 					);
 				}
@@ -468,7 +488,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 8px) 0 0 100vw var(--color),
+						calc(-100vw - (var(--thumb-width, 4px) / 2)) 0 0 100vw
+							var(--color),
 						-4px 0 0 6px var(--color)
 					);
 				}
@@ -484,7 +505,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 8px) 0 0 100vw var(--color)
+						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
+							var(--color)
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -501,7 +523,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 8px) 0 0 100vw var(--color)
+						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
+							var(--color)
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -555,7 +578,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 20px) 0 0 100vw var(--color)
+						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
+							var(--color)
 					);
 					border-radius: var(--thumb-border-radius, 40px);
 				}
@@ -572,7 +596,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - 20px) 0 0 100vw var(--color)
+						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
+							var(--color)
 					);
 					border-radius: var(--thumb-border-radius, 40px);
 				}
@@ -595,7 +620,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					height: 20px;
 					width: fit-content;
 					line-height: 20px;
-					top: -29px;
 					transform: var(--tooltip-transform);
 					display: var(--tooltip-display);
 				}

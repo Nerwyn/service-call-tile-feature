@@ -234,7 +234,7 @@ export class BaseServiceCallFeature extends LitElement {
 				this.fireHapticEvent('warning');
 
 				let text: string;
-				if (confirmation != true && confirmation && confirmation.text) {
+				if (confirmation != true && confirmation?.text) {
 					text = this.renderTemplate(
 						confirmation.text as string,
 					) as string;
@@ -248,7 +248,7 @@ export class BaseServiceCallFeature extends LitElement {
 						return false;
 					}
 				} else {
-					if (confirmation && confirmation.exemptions) {
+					if (confirmation?.exemptions) {
 						if (
 							!confirmation.exemptions
 								?.map((exemption) =>
@@ -516,11 +516,9 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	resetGetValueFromHass() {
-		const valueFromHassDelay = this.entry.value_from_hass_delay
-			? (this.renderTemplate(
-					this.entry.value_from_hass_delay as unknown as string,
-			  ) as number)
-			: 1000;
+		const valueFromHassDelay = this.renderTemplate(
+			this.entry.value_from_hass_delay ?? 1000,
+		) as number;
 		this.getValueFromHassTimer = setTimeout(
 			() => (this.getValueFromHass = true),
 			valueFromHassDelay,
