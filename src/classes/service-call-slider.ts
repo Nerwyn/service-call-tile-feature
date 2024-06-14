@@ -367,6 +367,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.precision = 0;
 		}
 
+		this.sliderClass = 'slider ';
 		switch (this.renderTemplate(this.entry.thumb as string)) {
 			case 'line':
 				this.sliderClass += 'line-thumb';
