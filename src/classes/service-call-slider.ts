@@ -27,7 +27,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			this.sliderWidth = entry.contentRect.width;
 			this.setThumbOffset();
 		}
-		console.log('Resizing!');
 	});
 
 	onInput(e: InputEvent) {
@@ -394,7 +393,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
 		);
-		this.thumbWidth = parseInt(
+		const customThumbWidth = parseInt(
 			(
 				(this.renderTemplate(
 					this.entry.slider_style?.['--thumb-width'] as string,
@@ -408,6 +407,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				'50'
 			).replace('px', ''),
 		);
+		if (customThumbWidth) {
+			this.thumbWidth = customThumbWidth;
+		}
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
 
