@@ -197,6 +197,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			),
 			maxOffset,
 		);
+		console.log(this.thumbOffset);
 	}
 
 	setSliderState(value: number) {
