@@ -29,16 +29,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildListEntry(entry: IEntry) {
-		const entity_id = (entry.entity_id ??
-			entry.tap_action?.target?.entity_id ??
-			entry.tap_action?.data?.entity_id ??
-			entry.double_tap_action?.target?.entity_id ??
-			entry.double_tap_action?.data?.entity_id ??
-			entry.hold_action?.target?.entity_id ??
-			entry.hold_action?.data?.entity_id ??
-			this.stateObj ??
-			'') as string;
-
 		return html`
 			<div class="feature">
 				<div class="handle">
@@ -48,11 +38,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 				<div class="feature-content">
 					<div>
-						<span>
-							${entry.type ?? 'Button'}${entity_id
-								? ' - ' + entity_id
-								: ''}
-						</span>
+						<span>${entry.type ?? 'Button'}</span>
 					</div>
 				</div>
 				<ha-icon-button
@@ -73,19 +59,25 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return html`
-			<ha-sortable>
-				<div class="features">
-					${this.config.entries.map((entry) =>
-						this.buildListEntry(entry),
-					)}
-				</div>
-				<ha-sortable> </ha-sortable
-			></ha-sortable>
+			<div class="content">
+				<ha-sortable>
+					<div class="features">
+						${this.config.entries.map((entry) =>
+							this.buildListEntry(entry),
+						)}
+					</div>
+					<ha-sortable> </ha-sortable
+				></ha-sortable>
+			</div>
 		`;
 	}
 
 	static get styles() {
 		return css`
+			.content {
+				padding: 12px;
+			}
+
 			.feature {
 				display: flex;
 				align-items: center;
