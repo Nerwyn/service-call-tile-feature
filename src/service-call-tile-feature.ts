@@ -36,6 +36,10 @@ class ServiceCallTileFeature extends LitElement {
 		super();
 	}
 
+	static getConfigElement() {
+		return document.createElement('service-call-editor');
+	}
+
 	static getStubConfig() {
 		return {
 			type: 'custom:service-call',
