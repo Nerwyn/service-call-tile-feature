@@ -33,6 +33,32 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		return html` <h1>Custom Action Tile Feature</h1> `;
+		return html`
+			<ha-sortable>
+				<div class="features">
+					${this.config.entries.map((row) => {
+						return html`
+							<div class="feature">
+								<div class="handle">
+									<ha-icon .icon="mdi:dots-grid"></ha-icon>
+								</div>
+								<div class="feature-content">
+									<div>
+										<span>${row.type}</span>
+									</div>
+								</div>
+								<ha-icon-button
+									class="edit-icon"
+								></ha-icon-button>
+								<ha-icon-button
+									class="remove-icon"
+								></ha-icon-button>
+							</div>
+						`;
+					})}
+				</div>
+				<ha-sortable> </ha-sortable
+			></ha-sortable>
+		`;
 	}
 }
