@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
@@ -59,6 +59,38 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 				<ha-sortable> </ha-sortable
 			></ha-sortable>
+		`;
+	}
+
+	static get styles() {
+		return css`
+			.feature {
+				display: flex;
+				align-items: center;
+
+				.handle {
+					cursor: grab;
+					padding-right: 8px;
+					padding-inline-end: 8px;
+					padding-inline-start: initial;
+					direction: var(--direction);
+				}
+			}
+
+			.feature-content {
+				height: 60px;
+				font-size: 16px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex-grow: 1;
+			}
+
+			.edit-icon,
+			.remove-icon {
+				color: var(--secondary-text-color);
+				--mdc-icon-button-size: 36px;
+			}
 		`;
 	}
 }
