@@ -31,14 +31,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	itemMoved(e: CustomEvent) {
 		e.stopPropagation();
 		const { i, j } = e.detail;
-		const entries = this.config.entries ?? [];
+		const entries = this.config.entries.concat();
 		const entry = entries.splice(i, 1)[0];
 		entries.splice(j, 0, entry);
 		const config = {
 			...this.config,
 			entries: entries,
 		};
-		this.setConfig(config);
+		this.configChanged(config);
 	}
 
 	buildListEntry(entry: IEntry) {
