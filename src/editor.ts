@@ -121,6 +121,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				pointer-events: all;
 				--mdc-icon-button-size: 36px;
 			}
+			ha-icon {
+				display: flex;
+			}
 		`;
 	}
 }
