@@ -54,12 +54,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 				<ha-icon-button class="edit-icon">
 					<ha-icon .icon="${'mdi:pencil'}"></ha-icon>
-					></ha-icon-button
-				>
+				</ha-icon-button>
 				<ha-icon-button class="remove-icon">
 					<ha-icon .icon="${'mdi:delete'}"></ha-icon>
-					></ha-icon-button
-				>
+				</ha-icon-button>
 			</div>
 		`;
 	}
