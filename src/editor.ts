@@ -26,18 +26,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		});
 		event.detail = { config: config };
 		this.dispatchEvent(event);
+		this.requestUpdate();
 	}
 
-	itemMoved(e: CustomEvent) {
+	entryMoved(e: CustomEvent) {
 		e.stopPropagation();
-		const { i, j } = e.detail;
+		const { oldIndex, newIndex } = e.detail;
 		const entries = this.config.entries.concat();
-		const entry = entries.splice(i, 1)[0];
-		entries.splice(j, 0, entry);
+		entries.splice(newIndex, 0, entries.splice(oldIndex, 1)[0]);
 		const config = {
 			...this.config,
 			entries: entries,
 		};
+		console.log(config.entries);
 		this.configChanged(config);
 	}
 
@@ -75,7 +76,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			<div class="content">
 				<ha-sortable
 					handle-selector=".handle"
-					@item-moved=${this.itemMoved}
+					@item-moved=${this.entryMoved}
 				>
 					<div class="features">
 						${this.config.entries.map((entry) =>
