@@ -45,15 +45,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`
 			<div class="feature">
 				<div class="handle">
-					<ha-icon .icon="${entry.icon ?? 'mdi:drag'}"></ha-icon>
+					<ha-icon .icon="${'mdi:drag'}"></ha-icon>
 				</div>
 				<div class="feature-content">
 					<div>
 						<span>${entry.type ?? 'Button'}</span>
 					</div>
 				</div>
-				<ha-icon class="edit-icon" .icon="${'mdi:pencil'}"></ha-icon>
-				<ha-icon class="remove-icon" .icon="${'mdi:delete'}"></ha-icon>
+				<ha-icon-button
+					class="edit-icon"
+					.icon="${'mdi:pencil'}"
+				></ha-icon-button>
+				<ha-icon-button
+					class="remove-icon"
+					.icon="${'mdi:delete'}"
+				></ha-icon-button>
 			</div>
 		`;
 	}
