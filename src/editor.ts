@@ -28,6 +28,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.dispatchEvent(event);
 	}
 
+	itemMoved(e: CustomEvent) {
+		e.stopPropagation();
+		const { i, j } = e.detail;
+		const entries = this.config.entries ?? [];
+		const entry = entries.splice(i, 1)[0];
+		entries.splice(j, 0, entry);
+		const config = {
+			...this.config,
+			entries: entries,
+		};
+		this.setConfig(config);
+	}
+
 	buildListEntry(entry: IEntry) {
 		return html`
 			<div class="feature">
@@ -60,7 +73,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 		return html`
 			<div class="content">
-				<ha-sortable>
+				<ha-sortable
+					handle-selector=".handle"
+					@item-moved=${this.itemMoved}
+				>
 					<div class="features">
 						${this.config.entries.map((entry) =>
 							this.buildListEntry(entry),
