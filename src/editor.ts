@@ -12,7 +12,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property({ attribute: false }) private stateObj!: HassEntity;
 
 	static get properties() {
-		return { hass: {}, _config: {} };
+		return { hass: {}, config: {} };
 	}
 
 	setConfig(config: IConfig) {
@@ -45,7 +45,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`
 			<div class="feature">
 				<div class="handle">
-					<ha-icon .icon="${'mdi:drag'}"></ha-icon>
+					<ha-icon .icon="${entry.icon ?? 'mdi:drag'}"></ha-icon>
 				</div>
 				<div class="feature-content">
 					<div>
