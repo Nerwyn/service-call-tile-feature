@@ -10,8 +10,8 @@ env = 'production';
 module.exports = {
 	mode: env,
 	entry: {
-		main: './src/service-call-tile-feature.ts',
-		editor: './src/service-call-tile-feature-editor.ts',
+		'service-call-tile-feature': './src/[name].ts',
+		'service-call-tile-feature-editor': './src/[name].ts',
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
