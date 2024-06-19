@@ -234,14 +234,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			const entryYamlEditor = html`
 				<div class="yaml-editor">
-					<ha-code-editor>
-						mode="yaml" autofocus autocomplete-entities
-						autocomplete-icons .hass=${this.hass}
-						.value=${this.yaml} .error=${Boolean(this.errors)}
+					<ha-code-editor
+						mode="yaml"
+						autofocus
+						autocomplete-entities
+						autocomplete-icons
+						.hass=${this.hass}
+						.value=${this.yaml}
+						.error=${Boolean(this.errors)}
 						@value-changed=${this.handleYAMLChanged}
 						@keydown=${(e: CustomEvent) => e.stopPropagation()}
 						dir="ltr"
-					</ha-code-editor>
+					></ha-code-editor>
 				</div>
 			`;
 			return html`
@@ -393,6 +397,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+
+				ha-icon {
+					color: var(
+						--mdc-dialog-content-ink-color,
+						rgba(0, 0, 0, 0.6)
+					);
+				}
 			}
 			.back-title {
 				display: flex;
@@ -407,6 +418,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.gui-editor,
 			.yaml-editor {
 				padding: 8px 0px;
+				width: 100%;
 			}
 			ha-code-editor {
 				--code-mirror-max-height: calc(100vh - 245px);
