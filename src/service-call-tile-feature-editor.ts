@@ -120,15 +120,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							this.buildListEntry(entry),
 						)}
 					</div>
-					<ha-sortable> </ha-sortable
-				></ha-sortable>
+				</ha-sortable>
 				<ha-button-menu
 					fixed
 					@action=${this.addEntry}
 					@closed=${(e: CustomEvent) => e.stopPropagation}
 				>
-					<ha-button>
-						slot="trigger" outlined .label="ADD CUSTOM FEATURE"
+					<ha-button
+						slot="trigger"
+						outlined
+						.label="ADD CUSTOM FEATURE"
+					>
 						<ha-icon .icon=${'mdi:plus'}></ha-icon>
 					</ha-button>
 					${TileFeatures.map((tileFeatureType) =>
