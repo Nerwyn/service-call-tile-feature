@@ -54,7 +54,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		console.error(`Not implemented! ${i}`);
+		// console.error(`Not implemented! ${i}`);
+		const event = new Event('edit-detail-element', {
+			bubbles: true,
+			composed: true,
+		});
+		event.detail = {
+			subElementConfig: {
+				i,
+				type: 'feature',
+				elementConfig: this.config.entries[i],
+			},
+		};
+		this.dispatchEvent(event);
+		this.requestUpdate();
 	}
 
 	removeEntry(e: CustomEvent) {
