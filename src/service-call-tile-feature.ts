@@ -16,6 +16,7 @@ import {
 	IAction,
 	IData,
 } from './models/interfaces';
+import { ServiceCallTileFeatureEditor } from './service-call-tile-feature-editor';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
@@ -377,6 +378,7 @@ class ServiceCallTileFeature extends LitElement {
 	}
 }
 
+customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
 customElements.define('service-call', ServiceCallTileFeature);
 
 window.customTileFeatures = window.customTileFeatures || [];

@@ -6,7 +6,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 
 import { IConfig, IEntry } from './models/interfaces';
 
-class ServiceCallTileFeatureEditor extends LitElement {
+export class ServiceCallTileFeatureEditor extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) private config!: IConfig;
 	@property({ attribute: false }) private stateObj!: HassEntity;
@@ -127,5 +127,3 @@ class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 }
-
-customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
