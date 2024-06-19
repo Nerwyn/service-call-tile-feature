@@ -39,7 +39,6 @@
 		"@typescript-eslint/parser": "latest",
 		"eslint": "latest",
 		"eslint-config-prettier": "latest",
-		"husky": "latest",
 		"prettier": "latest",
 		"pretty-quick": "latest",
 		"ts-loader": "latest",
