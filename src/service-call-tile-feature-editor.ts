@@ -128,7 +128,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		if (this.entryEditorIndex) {
+		if (this.entryEditorIndex >= 0) {
 			return html`
 				<div class="header">
 					<div class="back-title">
