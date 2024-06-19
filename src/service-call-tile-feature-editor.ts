@@ -8,7 +8,7 @@ import { IConfig, IEntry } from './models/interfaces';
 
 class ServiceCallTileFeatureEditor extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
-	@property({ attribute: false }) private _config!: IConfig;
+	@property({ attribute: false }) private config!: IConfig;
 	@property({ attribute: false }) private stateObj!: HassEntity;
 
 	static get properties() {
@@ -16,7 +16,7 @@ class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	setConfig(config: IConfig) {
-		this._config = config;
+		this.config = config;
 	}
 
 	configChanged(config: IConfig) {
@@ -32,10 +32,10 @@ class ServiceCallTileFeatureEditor extends LitElement {
 	entryMoved(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
-		const entries = this._config.entries.concat();
+		const entries = this.config.entries.concat();
 		entries.splice(newIndex, 0, entries.splice(oldIndex, 1)[0]);
 		const config = {
-			...this._config,
+			...this.config,
 			entries: entries,
 		};
 		this.configChanged(config);
@@ -74,7 +74,7 @@ class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${this.entryMoved}
 				>
 					<div class="features">
-						${this._config.entries.map((entry) =>
+						${this.config.entries.map((entry) =>
 							this.buildListEntry(entry),
 						)}
 					</div>
