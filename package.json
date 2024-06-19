@@ -32,6 +32,7 @@
 		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "latest",
 		"eslint": "latest",
+		"eslint-plugin-prettier": "latest",
 		"eslint-config-prettier": "latest",
 		"prettier": "latest",
 		"pretty-quick": "latest",
