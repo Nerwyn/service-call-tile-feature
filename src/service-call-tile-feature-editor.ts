@@ -61,7 +61,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		console.log(i);
 		const entries = this.config.entries.concat();
 		entries.splice(i, 1);
 		this.entriesChanged(entries);
@@ -132,7 +131,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						)}
 					</div>
 				</ha-sortable>
-				<ha-button-menu fixed @action=${this.addEntry}>
+				<ha-button-menu
+					fixed
+					@action=${this.addEntry}
+					@closed=${(e: CustomEvent) => e.stopPropagation()}
+				>
 					<ha-button
 						slot="trigger"
 						outlined
@@ -171,6 +174,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			ha-icon {
 				display: flex;
 				color: var(--secondary-text-color);
+				--mdc-icon-size: 100%;
 			}
 			ha-button-menu {
 				margin-top: 8px;
