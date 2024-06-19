@@ -16,6 +16,17 @@ interface EntryEditorConfig {
 	entry: IEntry;
 }
 
+declare global {
+	interface HASSDomEvents {
+		'edit-entry': {
+			entryConfig: {
+				index: number;
+				entry: IEntry;
+			};
+		};
+	}
+}
+
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) private config!: IConfig;
@@ -90,7 +101,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		entries.push({
 			type: TileFeatures[i],
 		});
-		console.log(entries);
 		this.entriesChanged(entries);
 	}
 
@@ -284,6 +294,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				color: var(--secondary-text-color);
 				pointer-events: all;
 				--mdc-icon-button-size: 36px;
+			}
+
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.back-title {
+				display: flex;
+				align-items: center;
+				font-size: 18px;
 			}
 		`;
 	}
