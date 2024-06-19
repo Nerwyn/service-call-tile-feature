@@ -118,10 +118,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.yamlConfig = yamlConfig;
 		const entries = this.config.entries.concat();
 		try {
-			entries[this.entryEditorIndex] = load(this.yaml) as any;
+			entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
 			this.errors = undefined;
-		} catch (err: any) {
-			this.errors = [err.message];
+		} catch (e) {
+			this.errors = [(e as Error).message];
 		}
 		this.entriesChanged(entries);
 	}
