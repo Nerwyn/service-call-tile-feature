@@ -26,9 +26,11 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
 		"@material/mwc-ripple": "latest",
+		"@types/js-yaml": "latest",
 		"custom-card-helpers": "latest",
 		"ha-nunjucks": "latest",
-		"lit": "latest"
+		"lit": "latest",
+		"js-yaml": "latest"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "latest",

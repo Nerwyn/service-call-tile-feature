@@ -1,8 +1,9 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
+
+import { dump, load } from 'js-yaml';
 
 import {
 	IConfig,
@@ -14,10 +15,12 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() private config!: IConfig;
-	@property() private stateObj!: HassEntity;
 
 	@state() entryEditorIndex: number = -1;
 	@state() guiMode: boolean = true;
+	@state() yamlConfig?: string;
+	@state() errors?: string[];
+	@state() warnings?: string[];
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -45,6 +48,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.configChanged(config);
 	}
 
+	/**
+	 * Handle reordering entries
+	 */
 	moveEntry(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
@@ -53,6 +59,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	/**
+	 * Open edit window for an individual entry
+	 */
 	editEntry(e: CustomEvent) {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -60,6 +69,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entryEditorIndex = i;
 	}
 
+	/**
+	 * Remove an individual entry
+	 */
 	removeEntry(e: CustomEvent) {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -69,6 +81,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	/**
+	 * Add a new entry, opening the custom tile feature dropdown list
+	 */
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
 		const entries = this.config.entries.concat();
@@ -78,14 +93,63 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	/**
+	 * Return to the entries list
+	 */
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
 	}
 
+	/**
+	 * Switch between GUI and YAML mode
+	 */
 	toggleMode(_e: CustomEvent) {
 		this.guiMode = !this.guiMode;
 	}
 
+	get yaml(): string {
+		if (!this.yamlConfig) {
+			this.yamlConfig = dump(this.config.entries[this.entryEditorIndex]);
+		}
+		return this.yamlConfig || '';
+	}
+
+	set yaml(yamlConfig: string) {
+		this.yamlConfig = yamlConfig;
+		const entries = this.config.entries.concat();
+		try {
+			entries[this.entryEditorIndex] = load(this.yaml) as any;
+			this.errors = undefined;
+		} catch (err: any) {
+			this.errors = [err.message];
+		}
+		this.entriesChanged(entries);
+	}
+
+	handleGUIChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const entry = e.detail.entry;
+		Object.keys(entry).forEach((key) => {
+			if (entry[key] === undefined) {
+				delete entry[key];
+			}
+		});
+		const entries = this.config.entries.concat();
+		entries[this.entryEditorIndex] = entry;
+		this.entriesChanged(entries);
+	}
+
+	handleYAMLChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const newYaml = e.detail.value;
+		if (newYaml != this.yaml) {
+			this.yaml = newYaml;
+		}
+	}
+
+	/**
+	 * Build custom tile features entries list
+	 */
 	buildListEntry(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
@@ -115,6 +179,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
+	/**
+	 * Build list of custom tile feature types to display after clicking add custom feature
+	 */
 	buildAddEntryListItem(tileFeatureType: TileFeatureType) {
 		return html`
 			<ha-list-item .value=${tileFeatureType}>
@@ -129,17 +196,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (this.entryEditorIndex >= 0) {
-			return html`
+			const entry = this.config.entries[this.entryEditorIndex];
+			const header = html`
 				<div class="header">
 					<div class="back-title">
 						<ha-icon-button-prev
 							.label=${this.hass!.localize('ui.common.back')}
 							@click=${this.exitEditEntry}
 						></ha-icon-button-prev>
-						<span slot="title">
-							${this.config.entries[this.entryEditorIndex].type ??
-							'Button'}
-						</span>
+						<span slot="title"> ${entry.type ?? 'Button'} </span>
 					</div>
 					<ha-icon-button
 						class="gui-mode-button"
@@ -156,6 +221,63 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								: 'mdi:list-box-outline'}"
 						></ha-icon>
 					</ha-icon-button>
+				</div>
+			`;
+			let entryGuiEditor: TemplateResult<1>;
+			switch (entry.type) {
+				case 'slider':
+				case 'selector':
+				case 'spinbox':
+				case 'button':
+				default:
+					entryGuiEditor = html`<div class="gui-editor"></div>`;
+			}
+			const entryYamlEditor = html`
+				<div class="yaml-editor">
+					<ha-code-editor>
+						mode="yaml" autofocus autocomplete-entities
+						autocomplete-icons .hass=${this.hass}
+						.value=${this.yaml} .error=${Boolean(this.errors)}
+						@value-changed=${this.handleYAMLChanged}
+						@keydown=${(e: CustomEvent) => e.stopPropagation()}
+						dir="ltr"
+					</ha-code-editor>
+				</div>
+			`;
+			return html`
+				${header}
+				<div class="wrapper">
+					${this.guiMode ? entryGuiEditor : entryYamlEditor}
+					${this.errors && this.errors.length > 0
+						? html`<div class="error">
+								${this.hass.localize(
+									'ui.errors.config.error_detected',
+								)}:
+								<br />
+								<ul>
+									${this.errors!.map(
+										(error) => html`<li>${error}</li>`,
+									)}
+								</ul>
+						  </div>`
+						: html``}
+					${this.warnings && this.warnings.length > 0
+						? html` <ha-alert
+								alert-type="warning"
+								.title="${this.hass.localize(
+									'ui.errors.config.editor_not_supported',
+								)}:"
+						  >
+								<ul>
+									${this.warnings!.map(
+										(warning) => html`<li>${warning}</li>`,
+									)}
+								</ul>
+								${this.hass.localize(
+									'ui.errors.config.edit_in_yaml_supported',
+								)}
+						  </ha-alert>`
+						: html``}
 				</div>
 			`;
 		}
@@ -276,6 +398,42 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: flex;
 				align-items: center;
 				font-size: 18px;
+			}
+
+			.wrapper {
+				display: flex;
+				width: 100%;
+			}
+			.gui-editor,
+			.yaml-editor {
+				padding: 8px 0px;
+			}
+			ha-code-editor {
+				--code-mirror-max-height: calc(100vh - 245px);
+			}
+			.error,
+			.warning,
+			.info {
+				word-break: break-word;
+				margin-top: 8px;
+			}
+			.error {
+				color: var(--error-color);
+			}
+			.warning {
+				color: var(--warning-color);
+			}
+			.warning ul,
+			.error ul {
+				margin: 4px 0;
+			}
+			.warning li,
+			.error li {
+				white-space: pre-wrap;
+			}
+			ha-circular-progress {
+				display: block;
+				margin: auto;
 			}
 		`;
 	}
