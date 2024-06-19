@@ -19,10 +19,7 @@ interface EntryEditorConfig {
 declare global {
 	interface HASSDomEvents {
 		'edit-entry': {
-			entryConfig: {
-				index: number;
-				entry: IEntry;
-			};
+			entryConfig: EntryEditorConfig;
 		};
 	}
 }
@@ -84,6 +81,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		this.dispatchEvent(event);
+		this.requestUpdate();
 	}
 
 	removeEntry(e: CustomEvent) {
