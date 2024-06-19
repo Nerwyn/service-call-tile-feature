@@ -61,12 +61,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+		console.log(i);
 		const entries = this.config.entries.concat();
 		entries.splice(i, 1);
 		this.entriesChanged(entries);
 	}
 
-	async addEntry(e: CustomEvent) {
+	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
 		console.log(i);
 		const entries = this.config.entries.concat();
@@ -77,7 +78,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	buildListEntry(entry: IEntry) {
+	buildListEntry(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
 				<div class="handle">
@@ -88,10 +89,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						<span>${entry.type ?? 'Button'}</span>
 					</div>
 				</div>
-				<ha-icon-button class="edit-icon" @click=${this.editEntry}>
+				<ha-icon-button
+					class="edit-icon"
+					.index=${i}
+					@click=${this.editEntry}
+				>
 					<ha-icon .icon="${'mdi:pencil'}"></ha-icon>
 				</ha-icon-button>
-				<ha-icon-button class="remove-icon" @click=${this.removeEntry}>
+				<ha-icon-button
+					class="remove-icon"
+					.index=${i}
+					@click=${this.removeEntry}
+				>
 					<ha-icon .icon="${'mdi:delete'}"></ha-icon>
 				</ha-icon-button>
 			</div>
@@ -118,8 +127,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${this.moveEntry}
 				>
 					<div class="features">
-						${this.config.entries.map((entry) =>
-							this.buildListEntry(entry),
+						${this.config.entries.map((entry, i) =>
+							this.buildListEntry(entry, i),
 						)}
 					</div>
 				</ha-sortable>
@@ -159,7 +168,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				font-size: inherit;
 				font-weight: inherit;
 			}
-			ha-svg-icon,
 			ha-icon {
 				display: flex;
 				color: var(--secondary-text-color);
