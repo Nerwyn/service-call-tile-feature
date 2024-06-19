@@ -98,6 +98,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	 */
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
+		this.yamlConfig = undefined;
 	}
 
 	/**
@@ -412,7 +413,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			.wrapper {
-				display: flex;
 				width: 100%;
 			}
 			.gui-editor,
