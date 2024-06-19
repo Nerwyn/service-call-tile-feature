@@ -11,7 +11,7 @@ module.exports = {
 	mode: env,
 	entry: {
 		main: './src/service-call-tile-feature.ts',
-		editor: './service-call-tile-feature-editor.ts',
+		editor: './src/service-call-tile-feature-editor.ts',
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
