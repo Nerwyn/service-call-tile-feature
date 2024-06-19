@@ -8,8 +8,7 @@
 		"build": "npx webpack",
 		"prelint": "tsc --noemit",
 		"lint": "eslint ./src --fix --ext .ts --config ./.eslintrc.js",
-		"pretty-quick": "pretty-quick",
-		"postinstall": "husky install",
+		"pretty-quick": "pretty-quick --staged",
 		"build-css": "tcm src"
 	},
 	"repository": {
@@ -23,11 +22,6 @@
 		"url": "https://github.com/Nerwyn/service-call-tile-feature/issues"
 	},
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
-	"husky": {
-		"hooks": {
-			"pre-commit": "pretty-quick --staged"
-		}
-	},
 	"dependencies": {
 		"@material/mwc-ripple": "latest",
 		"custom-card-helpers": "latest",

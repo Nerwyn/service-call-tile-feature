@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+npm pretty-quick
 npm run lint
 npm run build
 git add dist/
