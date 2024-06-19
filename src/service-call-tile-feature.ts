@@ -27,9 +27,9 @@ console.info(
 );
 
 class ServiceCallTileFeature extends LitElement {
-	@property({ attribute: false }) hass!: HomeAssistant;
-	@property({ attribute: false }) private config!: IConfig;
-	@property({ attribute: false }) private stateObj!: HassEntity;
+	@property() hass!: HomeAssistant;
+	@property() private _config!: IConfig;
+	@property() private stateObj!: HassEntity;
 
 	constructor() {
 		super();
@@ -81,7 +81,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		this.config = config;
+		this._config = config;
 	}
 
 	updateDeprecatedEntryFields(entry: IEntry) {
@@ -218,24 +218,24 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	render() {
-		if (!this.config || !this.hass || !this.stateObj) {
+		if (!this._config || !this.hass || !this.stateObj) {
 			return null;
 		}
 
 		// Render template context
 		const context = {
 			config: {
-				...this.config,
+				...this._config,
 				entity: this.stateObj.entity_id,
 			},
 		};
 
 		// Hide and show checks
-		if ('hide' in this.config) {
+		if ('hide' in this._config) {
 			if (
 				renderTemplate(
 					this.hass,
-					this.config.hide as unknown as string,
+					this._config.hide as unknown as string,
 					context,
 				)
 			) {
@@ -246,11 +246,11 @@ class ServiceCallTileFeature extends LitElement {
 				this.style.removeProperty('display');
 			}
 		}
-		if ('show' in this.config) {
+		if ('show' in this._config) {
 			if (
 				renderTemplate(
 					this.hass,
-					this.config.show as unknown as string,
+					this._config.show as unknown as string,
 					context,
 				)
 			) {
@@ -263,7 +263,7 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		for (let entry of this.config.entries) {
+		for (let entry of this._config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
 				entry = this.populateMissingEntityId(
