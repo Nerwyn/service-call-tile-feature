@@ -10,6 +10,9 @@
 		"lint": "eslint ./src --fix --ext .ts --config ./.eslintrc.js",
 		"build-css": "tcm src"
 	},
+	"lint-staged": {
+		"*": "prettier -w"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Nerwyn/service-call-tile-feature.git"
