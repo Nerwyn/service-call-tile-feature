@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -11,10 +11,18 @@ import {
 	TileFeatureType,
 } from './models/interfaces';
 
+interface EntryEditorConfig {
+	index: number;
+	entry: IEntry;
+}
+
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) private config!: IConfig;
 	@property({ attribute: false }) private stateObj!: HassEntity;
+
+	@state() entryEditorConfig?: EntryEditorConfig;
+	@state() guiMode: boolean = true;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -54,20 +62,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		// console.error(`Not implemented! ${i}`);
-		const event = new Event('edit-detail-element', {
+		const event = new Event('edit-entry', {
 			bubbles: true,
 			composed: true,
 		});
 		event.detail = {
-			subElementConfig: {
-				i,
-				type: 'feature',
-				elementConfig: this.config.entries[i],
+			entryConfig: {
+				index: i,
+				entry: this.config.entries[i],
 			},
 		};
 		this.dispatchEvent(event);
-		this.requestUpdate();
 	}
 
 	removeEntry(e: CustomEvent) {
@@ -81,13 +86,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
-		console.log(i);
 		const entries = this.config.entries.concat();
 		entries.push({
 			type: TileFeatures[i],
 		});
 		console.log(entries);
 		this.entriesChanged(entries);
+	}
+
+	openEntryEditor(e: CustomEvent) {
+		this.entryEditorConfig = e.detail.entryConfig;
+	}
+
+	exitEntryEditor(_e: CustomEvent) {
+		this.entryEditorConfig = undefined;
+	}
+
+	toggleMode(_e: CustomEvent) {
+		this.guiMode = !this.guiMode;
 	}
 
 	buildListEntry(entry: IEntry, i: number) {
@@ -132,8 +148,39 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
+		if (this.entryEditorConfig) {
+			return html`
+				<div class="header">
+					<div class="back-title">
+						<ha-icon-button-prev
+							.label=${this.hass!.localize('ui.common.back')}
+							@click=${this.exitEntryEditor}
+						></ha-icon-button-prev>
+						<span slot="title">
+							${this.entryEditorConfig.entry.type ?? 'Button'}
+						</span>
+					</div>
+					<ha-icon-button
+						class="gui-mode-button"
+						@click=${this.toggleMode}
+						.label=${this.hass.localize(
+							this.guiMode
+								? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
+								: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
+						)}
+					>
+						<ha-icon
+							.icon="${this.guiMode
+								? 'mdi:code-braces'
+								: 'mdi:list-box-outline'}"
+						></ha-icon>
+					</ha-icon-button>
+				</div>
+			`;
+		}
+
 		return html`
-			<div class="content">
+			<div class="content" @edit-entry=${this.openEntryEditor}>
 				<ha-sortable
 					handle-selector=".handle"
 					@item-moved=${this.moveEntry}
@@ -219,6 +266,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				align-items: center;
 				justify-content: space-between;
 				flex-grow: 1;
+			}
+			span {
 				text-transform: capitalize;
 			}
 			.feature-content div {
