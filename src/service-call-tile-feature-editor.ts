@@ -68,10 +68,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	async addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
+		console.log(i);
 		const entries = this.config.entries.concat();
 		entries.push({
 			type: TileFeatures[i],
 		});
+		console.log(entries);
 		this.entriesChanged(entries);
 	}
 
