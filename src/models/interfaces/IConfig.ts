@@ -33,7 +33,13 @@ export interface IEntry
 	label_style?: StyleInfo;
 }
 
-export type TileFeatureType = 'button' | 'slider' | 'selector' | 'spinbox';
+export const TileFeatures = [
+	'button',
+	'slider',
+	'selector',
+	'spinbox',
+] as const;
+export type TileFeatureType = (typeof TileFeatures)[number];
 
 export type ThumbType = 'default' | 'line' | 'flat' | 'round';
 
