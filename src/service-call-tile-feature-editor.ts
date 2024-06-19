@@ -174,6 +174,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			ha-icon {
 				display: flex;
 				color: var(--secondary-text-color);
+			}
+			ha-svg-icon {
 				--mdc-icon-size: 100%;
 			}
 			ha-button-menu {
