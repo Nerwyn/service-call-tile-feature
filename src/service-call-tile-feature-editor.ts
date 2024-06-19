@@ -11,25 +11,12 @@ import {
 	TileFeatureType,
 } from './models/interfaces';
 
-interface EntryEditorConfig {
-	index: number;
-	entry: IEntry;
-}
-
-declare global {
-	interface HASSDomEvents {
-		'edit-entry': {
-			entryConfig: EntryEditorConfig;
-		};
-	}
-}
-
 export class ServiceCallTileFeatureEditor extends LitElement {
-	@property({ attribute: false }) hass!: HomeAssistant;
-	@property({ attribute: false }) private config!: IConfig;
-	@property({ attribute: false }) private stateObj!: HassEntity;
+	@property() hass!: HomeAssistant;
+	@property() private config!: IConfig;
+	@property() private stateObj!: HassEntity;
 
-	@state() entryEditorConfig?: EntryEditorConfig;
+	@state() entryEditorIndex: number = -1;
 	@state() guiMode: boolean = true;
 
 	static get properties() {
@@ -70,18 +57,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		const event = new Event('edit-entry', {
-			bubbles: true,
-			composed: true,
-		});
-		event.detail = {
-			entryConfig: {
-				index: i,
-				entry: this.config.entries[i],
-			},
-		};
-		this.dispatchEvent(event);
-		this.requestUpdate();
+		this.entryEditorIndex = i;
 	}
 
 	removeEntry(e: CustomEvent) {
@@ -102,12 +78,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	openEntryEditor(e: CustomEvent) {
-		this.entryEditorConfig = e.detail.entryConfig;
-	}
-
-	exitEntryEditor(_e: CustomEvent) {
-		this.entryEditorConfig = undefined;
+	exitEditEntry(_e: CustomEvent) {
+		this.entryEditorIndex = -1;
 	}
 
 	toggleMode(_e: CustomEvent) {
@@ -156,16 +128,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		if (this.entryEditorConfig) {
+		if (this.entryEditorIndex) {
 			return html`
 				<div class="header">
 					<div class="back-title">
 						<ha-icon-button-prev
 							.label=${this.hass!.localize('ui.common.back')}
-							@click=${this.exitEntryEditor}
+							@click=${this.exitEditEntry}
 						></ha-icon-button-prev>
 						<span slot="title">
-							${this.entryEditorConfig.entry.type ?? 'Button'}
+							${this.config.entries[this.entryEditorIndex].type ??
+							'Button'}
 						</span>
 					</div>
 					<ha-icon-button
@@ -188,7 +161,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return html`
-			<div class="content" @edit-entry=${this.openEntryEditor}>
+			<div class="content">
 				<ha-sortable
 					handle-selector=".handle"
 					@item-moved=${this.moveEntry}
