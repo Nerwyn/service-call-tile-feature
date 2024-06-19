@@ -86,10 +86,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						<span>${entry.type ?? 'Button'}</span>
 					</div>
 				</div>
-				<ha-icon-button class="edit-icon">
+				<ha-icon-button class="edit-icon" @click=${this.editEntry}>
 					<ha-icon .icon="${'mdi:pencil'}"></ha-icon>
 				</ha-icon-button>
-				<ha-icon-button class="remove-icon">
+				<ha-icon-button class="remove-icon" @click=${this.removeEntry}>
 					<ha-icon .icon="${'mdi:delete'}"></ha-icon>
 				</ha-icon-button>
 			</div>
@@ -127,7 +127,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						outlined
 						.label="${'ADD CUSTOM FEATURE'}"
 					>
-						<ha-icon .icon=${'mdi:plus'}></ha-icon>
+						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 					</ha-button>
 					${TileFeatures.map((tileFeatureType) =>
 						this.buildAddEntryListItem(tileFeatureType),
