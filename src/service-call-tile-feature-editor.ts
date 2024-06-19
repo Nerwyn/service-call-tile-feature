@@ -175,11 +175,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: flex;
 				color: var(--secondary-text-color);
 			}
-			ha-svg-icon {
-				--mdc-icon-size: 100%;
-			}
 			ha-button-menu {
 				margin-top: 8px;
+				--mdc-icon-size: 100%;
 			}
 			ha-list-item {
 				text-transform: capitalize;
