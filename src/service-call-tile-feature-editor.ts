@@ -225,14 +225,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						>
 						</ha-entity-picker>
 						<ha-expansion-panel .header=${'Appearance'}>
-							<div slot="header" role="heading" aria-level="3">
+							<div
+								class="panel-header"
+								slot="header"
+								role="heading"
+								aria-level="3"
+							>
 								<ha-icon .icon=${'mdi:palette'}></ha-icon>
 								Appearance
 							</div>
 							<div class="content"></div>
 						</ha-expansion-panel>
 						<ha-expansion-panel .header=${'Actions'}>
-							<div slot="header" role="heading" aria-level="3">
+							<div
+								class="panel-header"
+								slot="header"
+								role="heading"
+								aria-level="3"
+							>
 								<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
 								Actions
 							</div>
@@ -402,10 +412,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			.header {
-				display: inline-flex;
 				justify-content: space-between;
 				align-items: center;
-				gap: 4px;
 
 				ha-icon {
 					color: var(
@@ -454,13 +462,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.error li {
 				white-space: pre-wrap;
 			}
-			ha-circular-progress {
-				display: block;
-				margin: auto;
-			}
 
 			ha-expansion-panel {
 				border: solid 1px var(--outline-color);
+			}
+			.panel-header {
+				display: inline-flex;
+				gap: 4px;
 			}
 		`;
 	}
