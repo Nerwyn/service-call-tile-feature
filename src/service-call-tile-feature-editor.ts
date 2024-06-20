@@ -412,6 +412,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			.header {
+				display: inline-flex;
 				justify-content: space-between;
 				align-items: center;
 
