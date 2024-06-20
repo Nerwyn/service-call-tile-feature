@@ -14,7 +14,7 @@ import {
 
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
-	@property() private config!: IConfig;
+	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
 	@state() guiMode: boolean = true;
@@ -30,27 +30,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.config = config;
 	}
 
-	configChanged(config: IConfig) {
+	entriesChanged(entries: IEntry[]) {
 		const event = new Event('config-changed', {
 			bubbles: true,
 			composed: true,
 		});
-		event.detail = { config: config };
+		event.detail = {
+			config: {
+				...this.config,
+				entries: entries,
+			},
+		};
 		this.dispatchEvent(event);
 		this.requestUpdate();
 	}
 
-	entriesChanged(entries: IEntry[]) {
-		const config = {
-			...this.config,
-			entries: entries,
-		};
-		this.configChanged(config);
-	}
-
-	/**
-	 * Handle reordering entries
-	 */
 	moveEntry(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
@@ -59,9 +53,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	/**
-	 * Open edit window for an individual entry
-	 */
 	editEntry(e: CustomEvent) {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -69,9 +60,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entryEditorIndex = i;
 	}
 
-	/**
-	 * Remove an individual entry
-	 */
 	removeEntry(e: CustomEvent) {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -81,9 +69,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	/**
-	 * Add a new entry, opening the custom tile feature dropdown list
-	 */
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
 		const entries = this.config.entries.concat();
@@ -93,17 +78,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	/**
-	 * Return to the entries list
-	 */
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
 		this.yamlConfig = undefined;
 	}
 
-	/**
-	 * Switch between GUI and YAML mode
-	 */
 	toggleMode(_e: CustomEvent) {
 		this.guiMode = !this.guiMode;
 	}
@@ -148,9 +127,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	/**
-	 * Build custom tile features entries list
-	 */
 	buildListEntry(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
@@ -180,9 +156,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	/**
-	 * Build list of custom tile feature types to display after clicking add custom feature
-	 */
 	buildAddEntryListItem(tileFeatureType: TileFeatureType) {
 		return html`
 			<ha-list-item .value=${tileFeatureType}>
@@ -196,6 +169,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
+		this.config.entries = this.config.entries ?? [];
 		if (this.entryEditorIndex >= 0) {
 			const entry = this.config.entries[this.entryEditorIndex];
 			const header = html`
@@ -231,7 +205,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				case 'spinbox':
 				case 'button':
 				default:
-					entryGuiEditor = html`<div class="gui-editor"></div>`;
+					entryGuiEditor = html`<div class="gui-editor">
+						<ha-entity-picker
+							hass=${this.hass}
+							label=${'Entity'}
+							allow-custom-entity
+						>
+						</ha-entity-picker>
+					</div>`;
 			}
 			const entryYamlEditor = html`
 				<div class="yaml-editor">
