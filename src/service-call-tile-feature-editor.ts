@@ -128,7 +128,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleEntityChange(e: CustomEvent) {
-		const entries = this.config.entries;
+		const entries = this.config.entries.concat();
 		const entry = entries[this.entryEditorIndex];
 		entry.entity_id =
 			(e.target as HTMLTextAreaElement)?.value ?? entry.entity_id ?? '';
@@ -179,7 +179,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		this.config.entries = this.config.entries ?? [];
 		if (this.entryEditorIndex >= 0) {
 			const entry = this.config.entries[this.entryEditorIndex];
 			const header = html`
