@@ -224,6 +224,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							@change=${this.handleEntityChange}
 						>
 						</ha-entity-picker>
+						<ha-expansion-panel header=${'Appearance'}>
+							<div slot="header" role="heading" aria-level="3">
+								<ha-icon .icon=${'mdi:palette'}></ha-icon>
+							</div>
+						</ha-expansion-panel>
 					</div>`;
 			}
 			const entryYamlEditor = html`
@@ -410,6 +415,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			.gui-editor,
 			.yaml-editor {
+				display: inline-flex;
+				flex-direction: column;
+				gap: 24px;
 				padding: 8px 0px;
 				width: 100%;
 			}
