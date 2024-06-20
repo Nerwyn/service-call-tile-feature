@@ -129,7 +129,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleEntityChange(e: CustomEvent) {
 		const entries = this.config.entries.concat();
-		const entry = entries[this.entryEditorIndex];
+		let entry = entries[this.entryEditorIndex];
 		entry.entity_id =
 			(e.target as HTMLTextAreaElement)?.value ?? entry.entity_id ?? '';
 		console.log(entry.entity_id);
