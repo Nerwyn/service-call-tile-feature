@@ -227,6 +227,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						<ha-expansion-panel .header=${'Appearance'}>
 							<div slot="header" role="heading" aria-level="3">
 								<ha-icon .icon=${'mdi:palette'}></ha-icon>
+								Appearance
+							</div>
+							<div class="content"></div>
+						</ha-expansion-panel>
+						<ha-expansion-panel .header=${'Actions'}>
+							<div slot="header" role="heading" aria-level="3">
+								<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
+								Actions
 							</div>
 							<div class="content"></div>
 						</ha-expansion-panel>
@@ -394,9 +402,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			.header {
-				display: flex;
+				display: inline-flex;
 				justify-content: space-between;
 				align-items: center;
+				gap: 4px;
 
 				ha-icon {
 					color: var(
