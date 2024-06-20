@@ -224,10 +224,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							@change=${this.handleEntityChange}
 						>
 						</ha-entity-picker>
-						<ha-expansion-panel header=${'Appearance'}>
+						<ha-expansion-panel .header=${'Appearance'}>
 							<div slot="header" role="heading" aria-level="3">
 								<ha-icon .icon=${'mdi:palette'}></ha-icon>
 							</div>
+							<div class="content"></div>
 						</ha-expansion-panel>
 					</div>`;
 			}
@@ -447,6 +448,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			ha-circular-progress {
 				display: block;
 				margin: auto;
+			}
+
+			ha-expansion-panel {
+				border: solid 1px var(--outline-color);
 			}
 		`;
 	}
