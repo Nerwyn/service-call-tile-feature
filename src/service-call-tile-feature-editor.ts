@@ -127,6 +127,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
+	handleEntityChange(e: CustomEvent) {
+		const entries = this.config.entries;
+		const entry = entries[this.entryEditorIndex];
+		entry.entity_id =
+			(e.target as HTMLTextAreaElement)?.value ?? entry.entity_id ?? '';
+		console.log(entry.entity_id);
+		entries[this.entryEditorIndex] = entry;
+		this.entriesChanged(entries);
+	}
+
 	buildListEntry(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
@@ -207,9 +217,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				default:
 					entryGuiEditor = html`<div class="gui-editor">
 						<ha-entity-picker
-							hass=${this.hass}
-							label=${'Entity'}
+							.hass=${this.hass}
+							.label=${'Entity'}
 							allow-custom-entity
+							@change=${this.handleEntityChange}
 						>
 						</ha-entity-picker>
 					</div>`;
