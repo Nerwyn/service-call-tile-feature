@@ -29,8 +29,8 @@ console.info(
 
 class ServiceCallTileFeature extends LitElement {
 	@property() hass!: HomeAssistant;
-	@property() private config!: IConfig;
-	@property() private stateObj!: HassEntity;
+	@property() config!: IConfig;
+	@property() stateObj!: HassEntity;
 
 	constructor() {
 		super();

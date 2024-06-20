@@ -2,7 +2,6 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
 
 import { dump, load } from 'js-yaml';
 
@@ -16,7 +15,6 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
-	@property() private stateObj!: HassEntity;
 
 	@state() entryEditorIndex: number = -1;
 	@state() guiMode: boolean = true;
@@ -220,9 +218,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						<ha-entity-picker
 							.hass=${this.hass}
 							.label=${'Entity'}
-							.value=${entry.entity_id ??
-							this.stateObj.entity_id ??
-							''}
+							.value=${entry.entity_id ?? ''}
 							allow-custom-entity
 							@change=${this.handleEntityChange}
 						>
