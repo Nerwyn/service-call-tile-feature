@@ -84,6 +84,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	toggleMode(_e: CustomEvent) {
+		this.yamlConfig = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
@@ -133,7 +134,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			...entries[this.entryEditorIndex],
 			entity_id: (e.target as HTMLTextAreaElement)?.value,
 		};
-		console.log(entry.entity_id);
 		entries[this.entryEditorIndex] = entry;
 		this.entriesChanged(entries);
 	}
