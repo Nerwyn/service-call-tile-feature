@@ -14,6 +14,7 @@ import {
 	TileFeatureType,
 	IActions,
 	IAction,
+	ActionTypes,
 	IData,
 } from './models/interfaces';
 import { ServiceCallTileFeatureEditor } from './service-call-tile-feature-editor';
@@ -113,50 +114,47 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		// For each type of action
-		const actionTypes = [
-			'tap_action',
-			'hold_action',
-			'double_tap_action',
-			'momentary_start_action',
-			'momentary_end_action',
-		];
-		for (const actionType of actionTypes) {
+		for (const actionType of ActionTypes) {
 			if (actionType in entry) {
 				const action = entry[actionType as keyof IActions] as IAction;
-
-				// Populate action field
-				if (!action.action) {
-					if (action.service) {
-						action.action = 'call-service';
-					} else if (action.navigation_path) {
-						action.action = 'navigate';
-					} else if (action.url_path) {
-						action.action = 'url';
-					} else if (action.browser_mod) {
-						action.action = 'fire-dom-event';
-					} else if (action.pipeline_id || action.start_listening) {
-						action.action = 'assist';
-					} else {
-						action.action = 'none';
+				if (action) {
+					// Populate action field
+					if (!action.action) {
+						if (action.service) {
+							action.action = 'call-service';
+						} else if (action.navigation_path) {
+							action.action = 'navigate';
+						} else if (action.url_path) {
+							action.action = 'url';
+						} else if (action.browser_mod) {
+							action.action = 'fire-dom-event';
+						} else if (
+							action.pipeline_id ||
+							action.start_listening
+						) {
+							action.action = 'assist';
+						} else {
+							action.action = 'none';
+						}
 					}
-				}
 
-				// Merge service_data, target, and data fields
-				if (
-					['data', 'target', 'service_data'].some(
-						(key) => key in action,
-					)
-				) {
-					action.data = {
-						...action.data,
-						...(
-							action as unknown as Record<
-								string,
-								IData | undefined
-							>
-						).service_data,
-						...action.target,
-					};
+					// Merge service_data, target, and data fields
+					if (
+						['data', 'target', 'service_data'].some(
+							(key) => key in action,
+						)
+					) {
+						action.data = {
+							...action.data,
+							...(
+								action as unknown as Record<
+									string,
+									IData | undefined
+								>
+							).service_data,
+							...action.target,
+						};
+					}
 				}
 			}
 		}
@@ -191,8 +189,7 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	populateMissingEntityId(entry: IEntry, parentEntityId: string) {
-		const actionTypes = ['tap_action', 'hold_action', 'double_tap_action'];
-		for (const actionType of actionTypes) {
+		for (const actionType of ActionTypes) {
 			if (actionType in entry) {
 				const action =
 					entry[actionType as keyof IActions] ?? ({} as IAction);

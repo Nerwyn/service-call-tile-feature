@@ -9,8 +9,8 @@ import {
 	IConfig,
 	IEntry,
 	IAction,
-	TileFeatures,
 	TileFeatureType,
+	TileFeatureTypes,
 } from './models/interfaces';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
@@ -84,7 +84,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = e.detail.index as number;
 		const entries = this.config.entries.concat();
 		entries.push({
-			type: TileFeatures[i],
+			type: TileFeatureTypes[i],
 		});
 		this.entriesChanged(entries);
 	}
@@ -343,7 +343,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					>
 						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 					</ha-button>
-					${TileFeatures.map((tileFeatureType) =>
+					${TileFeatureTypes.map((tileFeatureType) =>
 						this.buildAddEntryListItem(tileFeatureType),
 					)}
 				</ha-button-menu>
