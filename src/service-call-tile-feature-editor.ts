@@ -46,6 +46,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.requestUpdate();
 	}
 
+	entryChanged(entry: IEntry) {
+		const entries = this.config.entries.concat();
+		const updatedEntry = {
+			...entries[this.entryEditorIndex],
+			...entry,
+		};
+		entries[this.entryEditorIndex] = updatedEntry;
+		this.entriesChanged(entries);
+	}
+
 	moveEntry(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
@@ -117,21 +127,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleEntityChange(e: CustomEvent) {
-		const entries = this.config.entries.concat();
-		const entry = {
-			...entries[this.entryEditorIndex],
+		this.entryChanged({
 			entity_id: (e.target as HTMLTextAreaElement)?.value,
-		};
-		entries[this.entryEditorIndex] = entry;
-		this.entriesChanged(entries);
+		});
 	}
 
 	handleActionChange(e: CustomEvent) {
 		const actionType = (e.target as HTMLTextAreaElement)?.title;
 		const action: IAction = e.detail.value;
-
-		console.log(actionType);
-		console.log(action);
+		this.entryChanged({
+			[actionType]: action,
+		});
 	}
 
 	buildListEntry(entry: IEntry, i: number) {
