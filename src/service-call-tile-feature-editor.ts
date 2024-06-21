@@ -127,13 +127,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleActionChange(e: CustomEvent) {
-		const label = (
-			e.currentTarget as unknown as CustomEvent & Record<'label', string>
-		).label;
-		const actionType = label.toLowerCase().replace('(optional)', '').trim();
+		const actionType = (e.target as HTMLTextAreaElement)?.title;
+		const action = e.detail.value;
 
 		console.log(actionType);
-		console.log((e as CustomEvent & Record<'value', IAction>).value);
+		console.log(action);
 	}
 
 	buildListEntry(entry: IEntry, i: number) {
@@ -253,7 +251,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									.selector=${uiActionSelector}
 									.value=${entry.tap_action ?? {}}
 									.label=${'Tap action (optional)'}
-									@change=${this.handleActionChange}
+									title=${'tap_action'}
+									@value-changed=${this.handleActionChange}
 								>
 								</ha-selector-ui_action>
 							</div>
