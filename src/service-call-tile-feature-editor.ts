@@ -8,6 +8,7 @@ import { dump, load } from 'js-yaml';
 import {
 	IConfig,
 	IEntry,
+	IAction,
 	TileFeatures,
 	TileFeatureType,
 } from './models/interfaces';
@@ -107,19 +108,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
-	handleGUIChanged(e: CustomEvent) {
-		e.stopPropagation();
-		const entry = e.detail.entry;
-		Object.keys(entry).forEach((key) => {
-			if (entry[key] === undefined) {
-				delete entry[key];
-			}
-		});
-		const entries = this.config.entries.concat();
-		entries[this.entryEditorIndex] = entry;
-		this.entriesChanged(entries);
-	}
-
 	handleYAMLChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const newYaml = e.detail.value;
@@ -136,6 +124,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		entries[this.entryEditorIndex] = entry;
 		this.entriesChanged(entries);
+	}
+
+	handleActionChange(e: CustomEvent) {
+		const label = (
+			e.currentTarget as unknown as CustomEvent & Record<'label', string>
+		).label;
+		const actionType = label.toLowerCase().replace('(optional)', '').trim();
+
+		console.log(actionType);
+		console.log((e as CustomEvent & Record<'value', IAction>).value);
 	}
 
 	buildListEntry(entry: IEntry, i: number) {
@@ -209,6 +207,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 			`;
 			let entryGuiEditor: TemplateResult<1>;
+			const uiActionSelector = {
+				uiaction: {},
+			};
 			switch (entry.type) {
 				case 'slider':
 				case 'selector':
@@ -246,7 +247,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
 								Actions
 							</div>
-							<div class="content"></div>
+							<div class="content">
+								<ha-selector-ui_action
+									.hass=${this.hass}
+									.selector=${uiActionSelector}
+									.value=${entry.tap_action ?? {}}
+									.label=${'Tap action (optional)'}
+									@change=${this.handleActionChange}
+								>
+								</ha-selector-ui_action>
+							</div>
 						</ha-expansion-panel>
 					</div>`;
 			}
