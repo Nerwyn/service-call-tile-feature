@@ -128,7 +128,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleActionChange(e: CustomEvent) {
 		const actionType = (e.target as HTMLTextAreaElement)?.title;
-		const action = e.detail.value;
+		const action: IAction = e.detail.value;
 
 		console.log(actionType);
 		console.log(action);
