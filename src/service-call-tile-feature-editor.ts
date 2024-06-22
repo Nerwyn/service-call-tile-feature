@@ -340,7 +340,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.selector=${{ text: {} }}
 							.required=${false}
 							id="label"
-							@input=${this.handleTextChange}
+							@change=${this.handleTextChange}
 						>
 						</ha-selector-text>
 						<ha-selector-icon
@@ -351,7 +351,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.selector=${{ text: {} }}
 							.required=${false}
 							id="icon"
-							@input=${this.handleTextChange}
+							@change=${this.handleTextChange}
 						>
 						</ha-selector-icon>
 					</div>
@@ -616,7 +616,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					var(--form-grid-column-count, auto-fit),
 					minmax(var(--form-grid-min-width, 200px), 1fr)
 				);
-				grap: 24px 8px;
+				gap: 24px 8px;
 			}
 		`;
 	}
