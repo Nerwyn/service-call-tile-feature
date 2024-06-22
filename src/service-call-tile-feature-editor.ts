@@ -20,6 +20,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
+	@state() actionsTabIndex: number = 0;
+
 	@state() guiMode: boolean = true;
 	@state() yamlConfig?: string;
 	@state() errors?: string[];
@@ -142,6 +144,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		});
 	}
 
+	handleActionsTabSelected(e: CustomEvent) {
+		if (!e.detail.value) {
+			return;
+		}
+		this.actionsTabIndex = e.detail.value.id;
+	}
+
 	buildEntryListItem(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
@@ -241,8 +250,57 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildButtonGuiEditor(entry: IEntry) {
+	buildActionSelector(entry: IEntry, actionType: ActionType, label: string) {
 		const uiActionSelector = { uiaction: {} };
+		return html` <ha-selector-ui_action
+			.hass=${this.hass}
+			.selector=${uiActionSelector}
+			.value=${entry[actionType as keyof IEntry] ?? {}}
+			.label=${label}
+			title=${actionType}
+			@value-changed=${this.handleActionChange}
+		></ha-selector-ui_action>`;
+	}
+
+	buildButtonGuiEditor(entry: IEntry) {
+		let actionSelectors: TemplateResult<1>;
+		switch (this.actionsTabIndex) {
+			case 1:
+				actionSelectors = html`
+					${this.buildActionSelector(
+						entry,
+						'momentary_start_action',
+						'Start action (optional)',
+					)}
+					${this.buildActionSelector(
+						entry,
+						'momentary_end_action',
+						'End action (optional)',
+					)}
+				`;
+				break;
+			case 0:
+			default:
+				actionSelectors = html`
+					${this.buildActionSelector(
+						entry,
+						'tap_action',
+						'Tap action (optional)',
+					)}
+					${this.buildActionSelector(
+						entry,
+						'double_tap_action',
+						'Double tap action (optional)',
+					)}
+					${this.buildActionSelector(
+						entry,
+						'hold_action',
+						'Hold action (optional)',
+					)}
+				`;
+				break;
+		}
+
 		return html`<div class="gui-editor">
 			<ha-entity-picker
 				.hass=${this.hass}
@@ -275,27 +333,27 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Actions
 				</div>
 				<div class="content">
-					${ActionTypes.map((actionType: ActionType) => {
-						return html`<ha-selector-ui_action
-							.hass=${this.hass}
-							.selector=${uiActionSelector}
-							.value=${entry[actionType as keyof IEntry] ?? {}}
-							.label=${`${
-								actionType.charAt(0).toUpperCase() +
-								actionType.replace('_', ' ').slice(1)
-							} (optional)`}
-							title=${actionType}
-							@value-changed=${this.handleActionChange}
-						></ha-selector-ui_action>`;
-					})}
-					</ha-selector-ui_action>
+					<paper-tabs
+						scrollable
+						hide-scroll-buttons
+						.selected=${this.actionsTabIndex}
+						@selected-item-changed=${this.handleActionsTabSelected}
+					>
+						<paper-tab id="default" .dialogInitialFocus=${true}
+							>default</paper-tab
+						>
+						<paper-tab id="momentary" .dialogInitialFocus=${false}
+							>momentary</paper-tab
+						>
+					</paper-tabs>
+					${actionSelectors}
 				</div>
 			</ha-expansion-panel>
 		</div>`;
 	}
 
 	buildEntryYamlEditor() {
-		html`
+		return html`
 			<div class="yaml-editor">
 				<ha-code-editor
 					mode="yaml"

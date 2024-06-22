@@ -67,5 +67,5 @@ export const ActionTypes = [
 	'double_tap_action',
 	'momentary_start_action',
 	'momentary_end_action',
-];
+] as const;
 export type ActionType = (typeof ActionTypes)[number];
