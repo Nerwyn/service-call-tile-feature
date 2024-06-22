@@ -2,7 +2,6 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
 
 import { dump, load } from 'js-yaml';
 
@@ -17,7 +16,6 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
-	@property() stateObj!: HassEntity;
 
 	@state() entryEditorIndex: number = -1;
 	@state() selectedActionsTabIndex: number = 0;
@@ -273,9 +271,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
+		const actionsNoRepeat = Actions.concat();
+		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 		const defaultUiActions = {
 			ui_action: {
-				actions: Actions.concat().splice(Actions.indexOf('repeat'), 1),
+				actions: actionsNoRepeat,
 				default_action: 'none',
 			},
 		};
@@ -332,7 +332,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				entity: {},
 			})}
 			${this.buildSelector(entry, 'Attribute', 'value_attribute', {
-				attribute: { entity_id: entry.entity_id ?? '' },
+				attribute: { entity_id: entry.entity_id ?? undefined },
 			})}
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
@@ -460,7 +460,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	render() {
-		console.log(this.stateObj);
 		if (!this.hass) {
 			return html``;
 		}
