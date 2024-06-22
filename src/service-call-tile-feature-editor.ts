@@ -22,7 +22,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() selectedActionsTabIndex: number = 0;
 
 	@state() guiMode: boolean = true;
-	@state() yamlConfig?: string;
 	@state() errors?: string[];
 	@state() warnings?: string[];
 
@@ -94,38 +93,32 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
-		this.yamlConfig = undefined;
 	}
 
 	toggleMode(_e: CustomEvent) {
-		this.yamlConfig = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
 	get yaml(): string {
-		if (!this.yamlConfig) {
-			this.yamlConfig = dump(this.config.entries[this.entryEditorIndex]);
-		}
-		return this.yamlConfig || '';
+		return dump(this.config.entries[this.entryEditorIndex]) || '';
 	}
 
-	set yaml(yamlConfig: string) {
-		this.yamlConfig = yamlConfig;
-		const entries = this.config.entries.concat();
+	set yaml(yaml: string) {
+		let entry: IEntry;
 		try {
-			entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
+			entry = load(yaml) as IEntry;
 			this.errors = undefined;
+			this.entryChanged(entry);
 		} catch (e) {
 			this.errors = [(e as Error).message];
 		}
-		this.entriesChanged(entries);
 	}
 
 	handleYAMLChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const newYaml = e.detail.value;
-		if (newYaml != this.yaml) {
-			this.yaml = newYaml;
+		const yaml = e.detail.value;
+		if (yaml != this.yaml) {
+			this.yaml = yaml;
 		}
 	}
 
