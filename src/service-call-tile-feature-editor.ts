@@ -257,7 +257,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		key: keyof IEntry,
 		selector: object,
 	) {
-		const hass = this.hass;
+		const hass = structuredClone(this.hass);
 		hass.localize = (key, values) => {
 			const customActions = {
 				'ui.panel.lovelace.editor.action-editor.actions.repeat':
