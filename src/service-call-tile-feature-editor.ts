@@ -70,6 +70,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+		console.log(i);
 		this.entryEditorIndex = i;
 	}
 
