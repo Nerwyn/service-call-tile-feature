@@ -8,7 +8,6 @@ import { dump, load } from 'js-yaml';
 import {
 	IConfig,
 	IEntry,
-	IAction,
 	TileFeatureType,
 	TileFeatureTypes,
 	ActionType,
@@ -131,16 +130,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleEntryYAMLChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const newYaml = e.detail.value;
-		if (newYaml != this.yaml) {
-			this.yaml = newYaml;
+		const yaml = e.detail.value;
+		if (yaml != this.yaml) {
+			this.yaml = yaml;
 		}
 	}
 
 	handleTextChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		const value = e.detail.value;
-		console.log(`${key}: ${value}`);
 		this.entryChanged({
 			[key]: value,
 		});
@@ -317,6 +315,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				@value-changed=${this.handleTextChange}
 			>
 			</ha-selector-entity>
+			<ha-selector-attribute
+				.hass=${this.hass}
+				.selector=${{ attribute: { entity_id: entry.entity_id } }}
+				.label=${'Attribute'}
+				.value=${entry.entity_id ?? ''}
+				.required=${false}
+				id="entity_id"
+				@value-changed=${this.handleTextChange}
+			>
+			</ha-selector-attribute>
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
@@ -333,7 +341,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.value=${entry.label ?? ''}
 							.name=${'Label'}
 							.label=${'Label'}
-							.selector=${{ text: {} }}
+							.selector=${{ text: { multiline: true } }}
 							.required=${false}
 							id="label"
 							@value-changed=${this.handleTextChange}
@@ -350,6 +358,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							@value-changed=${this.handleTextChange}
 						>
 						</ha-selector-icon>
+						<ha-selector-text
+							.value=${entry.label ?? ''}
+							.name=${'Units'}
+							.label=${'Units'}
+							.selector=${{ text: {} }}
+							.required=${false}
+							id="unit_of_measurement"
+							@value-changed=${this.handleTextChange}
+						>
 					</div>
 				</div>
 			</ha-expansion-panel>
