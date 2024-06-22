@@ -257,18 +257,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		key: keyof IEntry,
 		selector: object,
 	) {
-		const hass = structuredClone(this.hass);
-		hass.localize = (key, values) => {
-			const customActions = {
+		const hass = this.hass;
+		hass.localize = (key, values, checkCustomActions = true) => {
+			const customActions: Record<string, string> = {
 				'ui.panel.lovelace.editor.action-editor.actions.repeat':
 					'Repeat',
 				'ui.panel.lovelace.editor.action-editor.actions.fire-dom-event':
 					'Fire DOM Event',
 			};
-			if (Object.keys(customActions).includes(key)) {
-				return key.split('.')[-1];
+			if (
+				checkCustomActions &&
+				Object.keys(customActions).includes(key)
+			) {
+				return customActions[key];
 			}
-			return this.hass.localize(key, values);
+			return this.hass.localize(key, values, false);
 		};
 
 		return html` <ha-selector
