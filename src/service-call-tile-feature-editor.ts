@@ -322,7 +322,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				.label=${'Attribute'}
 				.name=${'Attribute'}
 				.required=${false}
-				id="entity_id"
+				id="value_attribute"
 				@value-changed=${this.handleTextChange}
 			>
 			</ha-selector>
@@ -337,7 +337,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					<ha-selector-text
+					<ha-selector
 						.value=${entry.label ?? ''}
 						.name=${'Label'}
 						.label=${'Label'}
@@ -345,27 +345,27 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.required=${false}
 						id="label"
 						@value-changed=${this.handleTextChange}
-					></ha-selector-text>
+					></ha-selector>
 					<div class="form">
-						<ha-selector-icon
+						<ha-selector
 							.hass=${this.hass}
 							.value=${entry.icon ?? ''}
 							.name=${'Icon'}
 							.label=${'Icon'}
-							.selector=${{ text: {} }}
+							.selector=${{ icon: {} }}
 							.required=${false}
 							id="icon"
 							@value-changed=${this.handleTextChange}
-						></ha-selector-icon>
-						<ha-selector-text
-							.value=${entry.label ?? ''}
+						></ha-selector>
+						<ha-selector
+							.value=${entry.unit_of_measurement ?? ''}
 							.name=${'Units'}
 							.label=${'Units'}
 							.selector=${{ text: {} }}
 							.required=${false}
 							id="unit_of_measurement"
 							@value-changed=${this.handleTextChange}
-						></ha-selector-text>
+						></ha-selector>
 					</div>
 				</div>
 			</ha-expansion-panel>
