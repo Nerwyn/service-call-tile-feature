@@ -344,9 +344,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildSelector(entry, 'Entity', 'entity_id', {
 				entity: {},
 			})}
-			${this.buildSelector(entry, 'Attribute', 'value_attribute', {
-				attribute: { entity_id: entry.entity_id ?? undefined },
-			})}
+			${entry.entity_id
+				? this.buildSelector(entry, 'Attribute', 'value_attribute', {
+						attribute: { entity_id: entry.entity_id },
+				  })
+				: html``}
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
