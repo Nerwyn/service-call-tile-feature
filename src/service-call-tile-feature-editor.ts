@@ -138,20 +138,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleTextChange(e: CustomEvent) {
-		const target = e.target as HTMLTextAreaElement;
-		const key = target.id;
-		const value = target.value;
+		const key = (e.target as HTMLElement).id;
+		const value = e.detail.value;
 		console.log(`${key}: ${value}`);
 		this.entryChanged({
 			[key]: value,
-		});
-	}
-
-	handleActionChange(e: CustomEvent) {
-		const actionType = (e.target as HTMLTextAreaElement)?.title;
-		const action: IAction = e.detail.value;
-		this.entryChanged({
-			[actionType]: action,
 		});
 	}
 
@@ -269,8 +260,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.selector=${uiActionSelector}
 			.value=${entry[actionType as keyof IEntry] ?? {}}
 			.label=${label}
-			title=${actionType}
-			@value-changed=${this.handleActionChange}
+			id=${actionType}
+			@value-changed=${this.handleTextChange}
 		></ha-selector-ui_action>`;
 	}
 
@@ -315,15 +306,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return html`<div class="gui-editor">
-			<ha-entity-picker
+			<ha-selector-entity
 				.hass=${this.hass}
+				.selector=${{ text: {} }}
 				.label=${'Entity'}
 				.value=${entry.entity_id ?? ''}
+				.required=${false}
 				allow-custom-entity
 				id="entity_id"
-				@change=${this.handleTextChange}
+				@value-changed=${this.handleTextChange}
 			>
-			</ha-entity-picker>
+			</ha-selector-entity>
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
@@ -343,7 +336,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.selector=${{ text: {} }}
 							.required=${false}
 							id="label"
-							@change=${this.handleTextChange}
+							@value-changed=${this.handleTextChange}
 						>
 						</ha-selector-text>
 						<ha-selector-icon
@@ -354,7 +347,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.selector=${{ text: {} }}
 							.required=${false}
 							id="icon"
-							@change=${this.handleTextChange}
+							@value-changed=${this.handleTextChange}
 						>
 						</ha-selector-icon>
 					</div>
