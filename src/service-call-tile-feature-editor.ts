@@ -344,8 +344,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					>
 						<paper-tab
 							id="default"
-							class="iron-selected"
 							.dialogInitialFocus=${true}
+							focused
 							>default</paper-tab
 						>
 						<paper-tab id="momentary" .dialogInitialFocus=${false}
