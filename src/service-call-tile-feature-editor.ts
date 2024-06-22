@@ -227,7 +227,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			<div class="header">
 				<div class="back-title">
 					<ha-icon-button-prev
-						.label=${this.hass!.localize('ui.common.back')}
+						.label=${this.hass.localize('ui.common.back')}
 						@click=${this.exitEditEntry}
 					></ha-icon-button-prev>
 					<span slot="title"> ${entry.type ?? 'Button'} </span>
@@ -257,8 +257,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		key: keyof IEntry,
 		selector: object,
 	) {
+		const hass = this.hass;
+		hass.localize = (key, values) => {
+			const customActions = {
+				'ui.panel.lovelace.editor.action-editor.actions.repeat':
+					'Repeat',
+				'ui.panel.lovelace.editor.action-editor.actions.fire-dom-event':
+					'Fire DOM Event',
+			};
+			if (Object.keys(customActions).includes(key)) {
+				return key.split('.')[-1];
+			}
+			return this.hass.localize(key, values);
+		};
+
 		return html` <ha-selector
-			.hass=${this.hass}
+			.hass=${hass}
 			.selector=${selector}
 			.value=${entry[key] ?? ''}
 			.label="${label}"
