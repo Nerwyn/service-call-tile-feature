@@ -20,7 +20,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
-	@state() actionsTabIndex: number = 0;
+	@state() selectedActionsTab: string = 'default';
 
 	@state() guiMode: boolean = true;
 	@state() yamlConfig?: string;
@@ -148,7 +148,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (!e.detail.value) {
 			return;
 		}
-		this.actionsTabIndex = e.detail.value.id;
+		this.selectedActionsTab = e.detail.value.id;
 	}
 
 	buildEntryListItem(entry: IEntry, i: number) {
@@ -264,8 +264,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
-		switch (this.actionsTabIndex) {
-			case 1:
+		switch (this.selectedActionsTab) {
+			case 'momentary':
 				actionSelectors = html`
 					${this.buildActionSelector(
 						entry,
@@ -279,7 +279,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					)}
 				`;
 				break;
-			case 0:
+			case 'default':
 			default:
 				actionSelectors = html`
 					${this.buildActionSelector(
@@ -334,9 +334,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 				<div class="content">
 					<paper-tabs
+						class="tab-selector"
 						scrollable
 						hide-scroll-buttons
-						.selected=${this.actionsTabIndex}
+						.selected=${this.selectedActionsTab}
 						@selected-item-changed=${this.handleActionsTabSelected}
 					>
 						<paper-tab id="default" .dialogInitialFocus=${true}
@@ -570,6 +571,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.panel-header {
 				display: inline-flex;
 				gap: 4px;
+			}
+
+			.tab-selector {
+				color: var(--primary-text-color);
+				text-transform: uppercase;
+				margin-bottom: 16px;
+				border-bottom: 1px solid; var(--divider-color);
+				--paper-tabs-selection-bar-color: var(--primary-color);
 			}
 		`;
 	}
