@@ -138,9 +138,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleTextChange(e: CustomEvent) {
+		const target = e.target as HTMLTextAreaElement;
+		const key = target.id;
+		const value = target.value;
+		console.log(`${key}: ${value}`);
 		this.entryChanged({
-			[(e.target as HTMLElement)?.id]: (e.target as HTMLTextAreaElement)
-				?.value,
+			[key]: value,
 		});
 	}
 
