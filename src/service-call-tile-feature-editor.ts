@@ -342,7 +342,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						)}
 						@selected-item-changed=${this.handleActionsTabSelected}
 					>
-						<paper-tab id="default" .dialogInitialFocus=${true}
+						<paper-tab
+							id="default"
+							class="iron-selected"
+							.dialogInitialFocus=${true}
 							>default</paper-tab
 						>
 						<paper-tab id="momentary" .dialogInitialFocus=${false}
@@ -447,6 +450,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: inline-flex;
 				flex-direction: column;
 				gap: 24px;
+				box-sizing: border-box;
+				width: 100%;
 			}
 
 			ha-expansion-panel {
@@ -578,7 +583,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.tab-selector {
 				color: var(--primary-text-color);
 				text-transform: uppercase;
-				margin-bottom: 16px;
 				border-bottom: 1px solid var(--divider-color);
 				--paper-tabs-selection-bar-color: var(--primary-color);
 			}
