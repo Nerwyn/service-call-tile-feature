@@ -19,7 +19,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
-	@state() selectedActionsTab: string = 'default';
+	@state() selectedActionsTabIndex: number = 0;
 
 	@state() guiMode: boolean = true;
 	@state() yamlConfig?: string;
@@ -144,10 +144,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
-		if (!e.detail.value) {
+		const i = e.detail.index;
+		if (this.selectedActionsTabIndex == i) {
 			return;
 		}
-		this.selectedActionsTab = e.detail.value.id;
+		this.selectedActionsTabIndex = i;
 	}
 
 	buildEntryListItem(entry: IEntry, i: number) {
@@ -264,8 +265,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
 
-		switch (this.selectedActionsTab) {
-			case 'momentary':
+		switch (this.selectedActionsTabIndex) {
+			case 1:
 				actionSelectors = html`
 					${this.buildActionSelector(
 						entry,
@@ -279,7 +280,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					)}
 				`;
 				break;
-			case 'default':
+			case 0:
 			default:
 				actionSelectors = html`
 					${this.buildActionSelector(
@@ -333,22 +334,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Actions
 				</div>
 				<div class="content">
-					<paper-tabs
+					<mwc-tab-bar
 						class="tab-selector"
-						scrollable
-						hide-scroll-buttons
-						.selected=${['default', 'momentary'].indexOf(
-							this.selectedActionsTab,
-						)}
-						@selected-item-changed=${this.handleActionsTabSelected}
+						.activeIndex=${this.selectedActionsTabIndex}
+						@MDCTabBar:activated=${this.handleActionsTabSelected}
 					>
-						<paper-tab id="default" .dialogInitialFocus=${true}
-							>default</paper-tab
-						>
-						<paper-tab id="momentary" .dialogInitialFocus=${false}
-							>momentary</paper-tab
-						>
-					</paper-tabs>
+						<mwc-tab .label="default" dialogInitialFocus></mwc-tab>
+						<mwc-tab .label="momentary"></mwc-tab>
+					</mwc-tab-bar>
 					${actionSelectors}
 				</div>
 			</ha-expansion-panel>
@@ -434,14 +427,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return this.buildEntryList();
-	}
-
-	updated() {
-		const actionsTabs = this.shadowRoot?.querySelector('.tab-selector');
-		if (actionsTabs) {
-			// eslint-disable-next-line
-			(actionsTabs as unknown as Record<string, Function>).notifyResize();
-		}
 	}
 
 	static get styles() {
@@ -590,6 +575,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				text-transform: uppercase;
 				border-bottom: 1px solid var(--divider-color);
 				--paper-tabs-selection-bar-color: var(--primary-color);
+				--paper-tab-ink: var(--primary-color);
 			}
 		`;
 	}
