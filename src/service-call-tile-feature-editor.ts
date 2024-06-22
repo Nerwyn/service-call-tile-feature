@@ -436,7 +436,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return this.buildEntryList();
 	}
 
-	firstUpdated() {
+	updated() {
 		const actionsTabs = this.shadowRoot?.querySelector('.tab-selector');
 		if (actionsTabs) {
 			console.log(actionsTabs);
