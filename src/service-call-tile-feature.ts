@@ -52,6 +52,31 @@ class ServiceCallTileFeature extends LitElement {
 		};
 	}
 
+	entriesChanged(entries: IEntry[]) {
+		const event = new Event('config-changed', {
+			bubbles: true,
+			composed: true,
+		});
+		event.detail = {
+			config: {
+				...this.config,
+				entries: entries,
+			},
+		};
+		this.dispatchEvent(event);
+		this.requestUpdate();
+	}
+
+	entryChanged(index: number, entry: IEntry) {
+		const entries = this.config.entries.concat();
+		const updatedEntry = {
+			...entries[index],
+			...entry,
+		};
+		entries[index] = updatedEntry;
+		this.entriesChanged(entries);
+	}
+
 	setConfig(config: IConfig) {
 		if (!config) {
 			throw new Error('Invalid configuration');
@@ -261,7 +286,7 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		for (let entry of this.config.entries) {
+		for (let [i, entry] of this.config.entries.entries()) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
 				entry = this.populateMissingEntityId(
@@ -290,6 +315,7 @@ class ServiceCallTileFeature extends LitElement {
 						entry.entity_id as string,
 					);
 				}
+				this.entryChanged(i, entry);
 			}
 
 			const context = {
