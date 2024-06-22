@@ -307,8 +307,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			<ha-selector-entity
 				.hass=${this.hass}
 				.selector=${{ text: {} }}
-				.label=${'Entity'}
 				.value=${entry.entity_id ?? ''}
+				.label=${'Entity'}
 				.required=${false}
 				allow-custom-entity
 				id="entity_id"
@@ -317,9 +317,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			</ha-selector-entity>
 			<ha-selector-attribute
 				.hass=${this.hass}
-				.selector=${{ attribute: { entity_id: entry.entity_id } }}
+				.selector=${{ attribute: { entity_id: entry.entity_id ?? '' } }}
+				.value=${entry.value_attribute ?? ''}
 				.label=${'Attribute'}
-				.value=${entry.entity_id ?? ''}
 				.required=${false}
 				id="entity_id"
 				@value-changed=${this.handleTextChange}
@@ -336,17 +336,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
+					<ha-selector-text
+						.value=${entry.label ?? ''}
+						.name=${'Label'}
+						.label=${'Label'}
+						.selector=${{ text: { multiline: true } }}
+						.required=${false}
+						id="label"
+						@value-changed=${this.handleTextChange}
+					></ha-selector-text>
 					<div class="form">
-						<ha-selector-text
-							.value=${entry.label ?? ''}
-							.name=${'Label'}
-							.label=${'Label'}
-							.selector=${{ text: { multiline: true } }}
-							.required=${false}
-							id="label"
-							@value-changed=${this.handleTextChange}
-						>
-						</ha-selector-text>
 						<ha-selector-icon
 							.hass=${this.hass}
 							.value=${entry.icon ?? ''}
@@ -356,8 +355,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.required=${false}
 							id="icon"
 							@value-changed=${this.handleTextChange}
-						>
-						</ha-selector-icon>
+						></ha-selector-icon>
 						<ha-selector-text
 							.value=${entry.label ?? ''}
 							.name=${'Units'}
@@ -366,7 +364,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							.required=${false}
 							id="unit_of_measurement"
 							@value-changed=${this.handleTextChange}
-						>
+						></ha-selector-text>
 					</div>
 				</div>
 			</ha-expansion-panel>
