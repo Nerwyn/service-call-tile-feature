@@ -440,7 +440,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionsTabs = this.shadowRoot?.querySelector('.tab-selector');
 		if (actionsTabs) {
 			// eslint-disable-next-line
-			// @ts-ignore
 			(actionsTabs as unknown as Record<string, Function>).notifyResize();
 		}
 	}
