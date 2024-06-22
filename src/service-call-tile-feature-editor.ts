@@ -339,8 +339,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.activeIndex=${this.selectedActionsTabIndex}
 						@MDCTabBar:activated=${this.handleActionsTabSelected}
 					>
-						<mwc-tab .label="default" dialogInitialFocus></mwc-tab>
-						<mwc-tab .label="momentary"></mwc-tab>
+						<mwc-tab
+							.label=${'default'}
+							dialogInitialFocus
+						></mwc-tab>
+						<mwc-tab .label=${'momentary'}></mwc-tab>
 					</mwc-tab-bar>
 					${actionSelectors}
 				</div>
