@@ -24,6 +24,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
 	@state() warnings?: string[];
+	@state() entryYaml?: string;
+	@state() styleYaml: Record<string, string> = {
+		outer: '',
+		background: '',
+		icon: '',
+		label: '',
+		slider: '',
+		tooltip: '',
+	};
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -93,38 +102,45 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
+		this.entryYaml = undefined;
 	}
 
 	toggleMode(_e: CustomEvent) {
+		this.entryYaml = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
 	get yaml(): string {
-		return dump(this.config.entries[this.entryEditorIndex]) || '';
+		if (!this.entryYaml) {
+			this.entryYaml = dump(this.config.entries[this.entryEditorIndex]);
+		}
+		return this.entryYaml || '';
 	}
 
 	set yaml(yaml: string) {
-		let entry: IEntry;
+		this.entryYaml = yaml;
+		const entries = this.config.entries.concat();
 		try {
-			entry = load(yaml) as IEntry;
+			entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
 			this.errors = undefined;
-			this.entryChanged(entry);
 		} catch (e) {
 			this.errors = [(e as Error).message];
 		}
+		this.entriesChanged(entries);
 	}
 
-	handleYAMLChanged(e: CustomEvent) {
+	handleEntryYAMLChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const yaml = e.detail.value;
-		if (yaml != this.yaml) {
-			this.yaml = yaml;
+		const newYaml = e.detail.value;
+		if (newYaml != this.yaml) {
+			this.yaml = newYaml;
 		}
 	}
 
-	handleEntityChange(e: CustomEvent) {
+	handleTextChange(e: CustomEvent) {
 		this.entryChanged({
-			entity_id: (e.target as HTMLTextAreaElement)?.value,
+			[(e.target as HTMLElement)?.id]: (e.target as HTMLTextAreaElement)
+				?.value,
 		});
 	}
 
@@ -301,7 +317,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				.label=${'Entity'}
 				.value=${entry.entity_id ?? ''}
 				allow-custom-entity
-				@change=${this.handleEntityChange}
+				id="entity_id"
+				@change=${this.handleTextChange}
 			>
 			</ha-entity-picker>
 			<ha-expansion-panel .header=${'Appearance'}>
@@ -314,7 +331,31 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					<ha-icon .icon=${'mdi:palette'}></ha-icon>
 					Appearance
 				</div>
-				<div class="content"></div>
+				<div class="content">
+					<div class="form">
+						<ha-selector-text
+							.value=${entry.label ?? ''}
+							.name=${'Label'}
+							.label=${'Label'}
+							.selector=${{ text: {} }}
+							.required=${false}
+							id="label"
+							@input=${this.handleTextChange}
+						>
+						</ha-selector-text>
+						<ha-selector-icon
+							.hass=${this.hass}
+							.value=${entry.icon ?? ''}
+							.name=${'Icon'}
+							.label=${'Icon'}
+							.selector=${{ text: {} }}
+							.required=${false}
+							id="icon"
+							@input=${this.handleTextChange}
+						>
+						</ha-selector-icon>
+					</div>
+				</div>
 			</ha-expansion-panel>
 			<ha-expansion-panel .header=${'Actions'}>
 				<div
@@ -355,7 +396,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.hass=${this.hass}
 					.value=${this.yaml}
 					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleYAMLChanged}
+					@value-changed=${this.handleEntryYAMLChanged}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
@@ -444,11 +485,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: block;
 				--expansion-panel-content-padding: 0;
 				border-radius: 6px;
-			}
-			h3 {
-				margin: 0;
-				font-size: inherit;
-				font-weight: inherit;
 			}
 			ha-icon {
 				display: flex;
@@ -572,6 +608,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				border-bottom: 1px solid var(--divider-color);
 				--paper-tabs-selection-bar-color: var(--primary-color);
 				--paper-tab-ink: var(--primary-color);
+			}
+
+			.form {
+				display: grid;
+				grid-template-columns: repeat(
+					var(--form-grid-column-count, auto-fit),
+					minmax(var(--form-grid-min-width, 200px), 1fr)
+				);
+				grap: 24px 8px;
 			}
 		`;
 	}
