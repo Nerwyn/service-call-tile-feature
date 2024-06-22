@@ -263,6 +263,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
+
 		switch (this.selectedActionsTab) {
 			case 'momentary':
 				actionSelectors = html`
@@ -336,7 +337,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						class="tab-selector"
 						scrollable
 						hide-scroll-buttons
-						.selected=${this.selectedActionsTab}
+						.selected=${['default', 'momentary'].indexOf(
+							this.selectedActionsTab,
+						)}
 						@selected-item-changed=${this.handleActionsTabSelected}
 					>
 						<paper-tab id="default" .dialogInitialFocus=${true}
@@ -576,7 +579,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				color: var(--primary-text-color);
 				text-transform: uppercase;
 				margin-bottom: 16px;
-				border-bottom: 1px solid; var(--divider-color);
+				border-bottom: 1px solid var(--divider-color);
 				--paper-tabs-selection-bar-color: var(--primary-color);
 			}
 		`;
