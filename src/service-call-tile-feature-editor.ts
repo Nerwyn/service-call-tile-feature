@@ -11,7 +11,6 @@ import {
 	IEntry,
 	TileFeatureType,
 	TileFeatureTypes,
-	ActionType,
 	Actions,
 } from './models/interfaces';
 
