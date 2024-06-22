@@ -2,6 +2,7 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
+import { HassEntity } from 'home-assistant-js-websocket';
 
 import { dump, load } from 'js-yaml';
 
@@ -11,11 +12,13 @@ import {
 	TileFeatureType,
 	TileFeatureTypes,
 	ActionType,
+	Actions,
 } from './models/interfaces';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
+	@property() stateObj!: HassEntity;
 
 	@state() entryEditorIndex: number = -1;
 	@state() selectedActionsTabIndex: number = 0;
@@ -251,81 +254,87 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildActionSelector(entry: IEntry, actionType: ActionType, label: string) {
-		const uiActionSelector = { uiaction: {} };
-		return html` <ha-selector-ui_action
+	buildSelector(
+		entry: IEntry,
+		label: string,
+		key: keyof IEntry,
+		selector: object,
+	) {
+		return html` <ha-selector
 			.hass=${this.hass}
-			.selector=${uiActionSelector}
-			.value=${entry[actionType as keyof IEntry] ?? {}}
-			.label=${label}
-			id=${actionType}
+			.selector=${selector}
+			.value=${entry[key] ?? ''}
+			.label="${label}"
+			.name="${label}"
+			.required=${false}
+			id="${key}"
 			@value-changed=${this.handleTextChange}
-		></ha-selector-ui_action>`;
+		></ha-selector>`;
 	}
 
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
+		const defaultUiActions = {
+			ui_action: {
+				actions: Actions.concat().splice(Actions.indexOf('repeat'), 1),
+				default_action: 'none',
+			},
+		};
 
 		switch (this.selectedActionsTabIndex) {
 			case 1:
 				actionSelectors = html`
-					${this.buildActionSelector(
+					${this.buildSelector(
 						entry,
-						'momentary_start_action',
 						'Start action (optional)',
+						'momentary_start_action',
+						defaultUiActions,
 					)}
-					${this.buildActionSelector(
+					${this.buildSelector(
 						entry,
-						'momentary_end_action',
 						'End action (optional)',
+						'momentary_end_action',
+						defaultUiActions,
 					)}
 				`;
 				break;
 			case 0:
 			default:
 				actionSelectors = html`
-					${this.buildActionSelector(
+					${this.buildSelector(
 						entry,
-						'tap_action',
 						'Tap action (optional)',
+						'tap_action',
+						defaultUiActions,
 					)}
-					${this.buildActionSelector(
+					${this.buildSelector(
 						entry,
-						'double_tap_action',
 						'Double tap action (optional)',
+						'double_tap_action',
+						defaultUiActions,
 					)}
-					${this.buildActionSelector(
+					${this.buildSelector(
 						entry,
-						'hold_action',
 						'Hold action (optional)',
+						'hold_action',
+						{
+							ui_action: {
+								actions: Actions,
+								default_action: 'none',
+							},
+						},
 					)}
 				`;
 				break;
 		}
 
 		return html`<div class="gui-editor">
-			<ha-selector-entity
-				.hass=${this.hass}
-				.selector=${{ text: {} }}
-				.value=${entry.entity_id ?? ''}
-				.label=${'Entity'}
-				.required=${false}
-				allow-custom-entity
-				id="entity_id"
-				@value-changed=${this.handleTextChange}
-			>
-			</ha-selector-entity>
-			<ha-selector
-				.hass=${this.hass}
-				.selector=${{ attribute: { entity_id: entry.entity_id ?? '' } }}
-				.value=${entry.value_attribute ?? ''}
-				.label=${'Attribute'}
-				.name=${'Attribute'}
-				.required=${false}
-				id="value_attribute"
-				@value-changed=${this.handleTextChange}
-			>
-			</ha-selector>
+			${this.buildSelector(entry, 'Entity', 'entity_id', {
+				entity: {},
+			})}
+			${this.buildSelector(entry, 'Attribute', 'value_attribute', {
+				attribute: { entity_id: entry.entity_id ?? '' },
+			})}
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
@@ -337,35 +346,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					<ha-selector
-						.value=${entry.label ?? ''}
-						.name=${'Label'}
-						.label=${'Label'}
-						.selector=${{ text: { multiline: true } }}
-						.required=${false}
-						id="label"
-						@value-changed=${this.handleTextChange}
-					></ha-selector>
+					${this.buildSelector(entry, 'Label', 'label', {
+						text: { multiline: true },
+					})}
 					<div class="form">
-						<ha-selector
-							.hass=${this.hass}
-							.value=${entry.icon ?? ''}
-							.name=${'Icon'}
-							.label=${'Icon'}
-							.selector=${{ icon: {} }}
-							.required=${false}
-							id="icon"
-							@value-changed=${this.handleTextChange}
-						></ha-selector>
-						<ha-selector
-							.value=${entry.unit_of_measurement ?? ''}
-							.name=${'Units'}
-							.label=${'Units'}
-							.selector=${{ text: {} }}
-							.required=${false}
-							id="unit_of_measurement"
-							@value-changed=${this.handleTextChange}
-						></ha-selector>
+						${this.buildSelector(entry, 'Icon', 'icon', {
+							icon: {},
+						})}${this.buildSelector(
+							entry,
+							'Units',
+							'unit_of_measurement',
+							{
+								text: {},
+							},
+						)}
 					</div>
 				</div>
 			</ha-expansion-panel>
@@ -467,6 +461,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	render() {
+		console.log(this.stateObj);
 		if (!this.hass) {
 			return html``;
 		}

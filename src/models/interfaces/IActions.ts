@@ -1,12 +1,14 @@
-export type Action =
-	| 'call-service'
-	| 'navigate'
-	| 'url'
-	| 'assist'
-	| 'more-info'
-	| 'fire-dom-event'
-	| 'repeat'
-	| 'none';
+export const Actions = [
+	'call-service',
+	'navigate',
+	'url',
+	'assist',
+	'more-info',
+	'fire-dom-event',
+	'repeat',
+	'none',
+] as const;
+export type Action = (typeof Actions)[number];
 
 export interface IData {
 	[key: string]: string | string[] | number | number[] | boolean;
