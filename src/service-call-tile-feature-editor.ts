@@ -342,10 +342,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						)}
 						@selected-item-changed=${this.handleActionsTabSelected}
 					>
-						<paper-tab
-							id="default"
-							.dialogInitialFocus=${true}
-							focused
+						<paper-tab id="default" .dialogInitialFocus=${true}
 							>default</paper-tab
 						>
 						<paper-tab id="momentary" .dialogInitialFocus=${false}
@@ -437,6 +434,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return this.buildEntryList();
+	}
+
+	firstUpdated() {
+		const actionsTabs = this.querySelector('.tab-selector');
+		if (actionsTabs) {
+			(actionsTabs as unknown as Record<string, Function>).notifyResize();
+		}
 	}
 
 	static get styles() {
