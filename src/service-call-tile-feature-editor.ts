@@ -315,16 +315,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				@value-changed=${this.handleTextChange}
 			>
 			</ha-selector-entity>
-			<ha-selector-attribute
+			<ha-selector
 				.hass=${this.hass}
 				.selector=${{ attribute: { entity_id: entry.entity_id ?? '' } }}
 				.value=${entry.value_attribute ?? ''}
 				.label=${'Attribute'}
+				.name=${'Attribute'}
 				.required=${false}
 				id="entity_id"
 				@value-changed=${this.handleTextChange}
 			>
-			</ha-selector-attribute>
+			</ha-selector>
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
