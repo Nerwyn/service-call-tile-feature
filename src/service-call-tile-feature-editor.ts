@@ -439,8 +439,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	updated() {
 		const actionsTabs = this.shadowRoot?.querySelector('.tab-selector');
 		if (actionsTabs) {
-			console.log(actionsTabs);
-			(actionsTabs as unknown as Record<string, Function>)._onResize();
+			(
+				actionsTabs as unknown as Record<'notifyResize', Function>
+			).notifyResize();
 		}
 	}
 
