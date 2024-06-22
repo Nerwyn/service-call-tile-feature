@@ -260,13 +260,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const hass: HomeAssistant = {
 			...this.hass,
 			localize: (key, values) => {
-				return this.hass.localize(key, {
-					...values,
+				const value = {
 					'ui.panel.lovelace.editor.action-editor.actions.repeat':
 						'Repeat',
 					'ui.panel.lovelace.editor.action-editor.actions.fire-dom-event':
 						'Fire DOM Event',
-				});
+				}[key];
+				return value ?? this.hass.localize(key, values);
 			},
 		};
 
