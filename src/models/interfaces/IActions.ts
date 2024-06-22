@@ -65,9 +65,6 @@ export const ActionTypes = [
 	'tap_action',
 	'hold_action',
 	'double_tap_action',
-	'multi_tap_action',
-	'multi_hold_action',
-	'multi_double_tap_action',
 	'momentary_start_action',
 	'momentary_end_action',
 ];

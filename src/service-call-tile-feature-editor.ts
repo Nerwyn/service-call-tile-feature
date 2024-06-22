@@ -11,6 +11,8 @@ import {
 	IAction,
 	TileFeatureType,
 	TileFeatureTypes,
+	ActionTypes,
+	ActionType,
 } from './models/interfaces';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
@@ -140,7 +142,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		});
 	}
 
-	buildListEntry(entry: IEntry, i: number) {
+	buildEntryListItem(entry: IEntry, i: number) {
 		return html`
 			<div class="feature">
 				<div class="handle">
@@ -177,148 +179,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	render() {
-		if (!this.hass) {
-			return html``;
-		}
-
-		if (this.entryEditorIndex >= 0) {
-			const entry = this.config.entries[this.entryEditorIndex];
-			const header = html`
-				<div class="header">
-					<div class="back-title">
-						<ha-icon-button-prev
-							.label=${this.hass!.localize('ui.common.back')}
-							@click=${this.exitEditEntry}
-						></ha-icon-button-prev>
-						<span slot="title"> ${entry.type ?? 'Button'} </span>
-					</div>
-					<ha-icon-button
-						class="gui-mode-button"
-						@click=${this.toggleMode}
-						.label=${this.hass.localize(
-							this.guiMode
-								? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
-								: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
-						)}
-					>
-						<ha-icon
-							.icon="${this.guiMode
-								? 'mdi:code-braces'
-								: 'mdi:list-box-outline'}"
-						></ha-icon>
-					</ha-icon-button>
-				</div>
-			`;
-			let entryGuiEditor: TemplateResult<1>;
-			const uiActionSelector = {
-				uiaction: {},
-			};
-			switch (entry.type) {
-				case 'slider':
-				case 'selector':
-				case 'spinbox':
-				case 'button':
-				default:
-					entryGuiEditor = html`<div class="gui-editor">
-						<ha-entity-picker
-							.hass=${this.hass}
-							.label=${'Entity'}
-							.value=${entry.entity_id ?? ''}
-							allow-custom-entity
-							@change=${this.handleEntityChange}
-						>
-						</ha-entity-picker>
-						<ha-expansion-panel .header=${'Appearance'}>
-							<div
-								class="panel-header"
-								slot="header"
-								role="heading"
-								aria-level="3"
-							>
-								<ha-icon .icon=${'mdi:palette'}></ha-icon>
-								Appearance
-							</div>
-							<div class="content"></div>
-						</ha-expansion-panel>
-						<ha-expansion-panel .header=${'Actions'}>
-							<div
-								class="panel-header"
-								slot="header"
-								role="heading"
-								aria-level="3"
-							>
-								<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
-								Actions
-							</div>
-							<div class="content">
-								<ha-selector-ui_action
-									.hass=${this.hass}
-									.selector=${uiActionSelector}
-									.value=${entry.tap_action ?? {}}
-									.label=${'Tap action (optional)'}
-									title=${'tap_action'}
-									@value-changed=${this.handleActionChange}
-								>
-								</ha-selector-ui_action>
-							</div>
-						</ha-expansion-panel>
-					</div>`;
-			}
-			const entryYamlEditor = html`
-				<div class="yaml-editor">
-					<ha-code-editor
-						mode="yaml"
-						autofocus
-						autocomplete-entities
-						autocomplete-icons
-						.hass=${this.hass}
-						.value=${this.yaml}
-						.error=${Boolean(this.errors)}
-						@value-changed=${this.handleYAMLChanged}
-						@keydown=${(e: CustomEvent) => e.stopPropagation()}
-						dir="ltr"
-					></ha-code-editor>
-				</div>
-			`;
-			return html`
-				${header}
-				<div class="wrapper">
-					${this.guiMode ? entryGuiEditor : entryYamlEditor}
-					${this.errors && this.errors.length > 0
-						? html`<div class="error">
-								${this.hass.localize(
-									'ui.errors.config.error_detected',
-								)}:
-								<br />
-								<ul>
-									${this.errors!.map(
-										(error) => html`<li>${error}</li>`,
-									)}
-								</ul>
-						  </div>`
-						: html``}
-					${this.warnings && this.warnings.length > 0
-						? html` <ha-alert
-								alert-type="warning"
-								.title="${this.hass.localize(
-									'ui.errors.config.editor_not_supported',
-								)}:"
-						  >
-								<ul>
-									${this.warnings!.map(
-										(warning) => html`<li>${warning}</li>`,
-									)}
-								</ul>
-								${this.hass.localize(
-									'ui.errors.config.edit_in_yaml_supported',
-								)}
-						  </ha-alert>`
-						: html``}
-				</div>
-			`;
-		}
-
+	buildEntryList() {
 		return html`
 			<div class="content">
 				<ha-sortable
@@ -327,7 +188,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				>
 					<div class="features">
 						${this.config.entries.map((entry, i) =>
-							this.buildListEntry(entry, i),
+							this.buildEntryListItem(entry, i),
 						)}
 					</div>
 				</ha-sortable>
@@ -351,6 +212,169 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
+	buildEntryHeader(entry: IEntry) {
+		return html`
+			<div class="header">
+				<div class="back-title">
+					<ha-icon-button-prev
+						.label=${this.hass!.localize('ui.common.back')}
+						@click=${this.exitEditEntry}
+					></ha-icon-button-prev>
+					<span slot="title"> ${entry.type ?? 'Button'} </span>
+				</div>
+				<ha-icon-button
+					class="gui-mode-button"
+					@click=${this.toggleMode}
+					.label=${this.hass.localize(
+						this.guiMode
+							? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
+							: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
+					)}
+				>
+					<ha-icon
+						.icon="${this.guiMode
+							? 'mdi:code-braces'
+							: 'mdi:list-box-outline'}"
+					></ha-icon>
+				</ha-icon-button>
+			</div>
+		`;
+	}
+
+	buildButtonGuiEditor(entry: IEntry) {
+		const uiActionSelector = { uiaction: {} };
+		return html`<div class="gui-editor">
+			<ha-entity-picker
+				.hass=${this.hass}
+				.label=${'Entity'}
+				.value=${entry.entity_id ?? ''}
+				allow-custom-entity
+				@change=${this.handleEntityChange}
+			>
+			</ha-entity-picker>
+			<ha-expansion-panel .header=${'Appearance'}>
+				<div
+					class="panel-header"
+					slot="header"
+					role="heading"
+					aria-level="3"
+				>
+					<ha-icon .icon=${'mdi:palette'}></ha-icon>
+					Appearance
+				</div>
+				<div class="content"></div>
+			</ha-expansion-panel>
+			<ha-expansion-panel .header=${'Actions'}>
+				<div
+					class="panel-header"
+					slot="header"
+					role="heading"
+					aria-level="3"
+				>
+					<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
+					Actions
+				</div>
+				<div class="content">
+					${ActionTypes.map((actionType: ActionType) => {
+						return html`<ha-selector-ui_action
+							.hass=${this.hass}
+							.selector=${uiActionSelector}
+							.value=${entry[actionType as keyof IEntry] ?? {}}
+							.label=${`${
+								actionType.charAt(0).toUpperCase() +
+								actionType.replace('_', ' ').slice(1)
+							} (optional)`}
+							title=${actionType}
+							@value-changed=${this.handleActionChange}
+						></ha-selector-ui_action>`;
+					})}
+					</ha-selector-ui_action>
+				</div>
+			</ha-expansion-panel>
+		</div>`;
+	}
+
+	buildEntryYamlEditor() {
+		html`
+			<div class="yaml-editor">
+				<ha-code-editor
+					mode="yaml"
+					autofocus
+					autocomplete-entities
+					autocomplete-icons
+					.hass=${this.hass}
+					.value=${this.yaml}
+					.error=${Boolean(this.errors)}
+					@value-changed=${this.handleYAMLChanged}
+					@keydown=${(e: CustomEvent) => e.stopPropagation()}
+					dir="ltr"
+				></ha-code-editor>
+			</div>
+		`;
+	}
+
+	buildEntryEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
+
+		let entryGuiEditor: TemplateResult<1>;
+		switch (entry.type) {
+			case 'slider':
+			case 'selector':
+			case 'spinbox':
+			case 'button':
+			default:
+				entryGuiEditor = this.buildButtonGuiEditor(entry);
+		}
+		return html`
+			${this.buildEntryHeader(entry)}
+			<div class="wrapper">
+				${this.guiMode ? entryGuiEditor : this.buildEntryYamlEditor()}
+				${this.errors && this.errors.length > 0
+					? html`<div class="error">
+							${this.hass.localize(
+								'ui.errors.config.error_detected',
+							)}:
+							<br />
+							<ul>
+								${this.errors!.map(
+									(error) => html`<li>${error}</li>`,
+								)}
+							</ul>
+					  </div>`
+					: html``}
+				${this.warnings && this.warnings.length > 0
+					? html` <ha-alert
+							alert-type="warning"
+							.title="${this.hass.localize(
+								'ui.errors.config.editor_not_supported',
+							)}:"
+					  >
+							<ul>
+								${this.warnings!.map(
+									(warning) => html`<li>${warning}</li>`,
+								)}
+							</ul>
+							${this.hass.localize(
+								'ui.errors.config.edit_in_yaml_supported',
+							)}
+					  </ha-alert>`
+					: html``}
+			</div>
+		`;
+	}
+
+	render() {
+		if (!this.hass) {
+			return html``;
+		}
+
+		if (this.entryEditorIndex >= 0) {
+			this.buildEntryEditor();
+		}
+
+		return this.buildEntryList();
+	}
+
 	static get styles() {
 		return css`
 			:host {
@@ -359,6 +383,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			.content {
 				padding: 12px;
+				display: inline-flex;
+				flex-direction: column;
+				gap: 24px;
 			}
 
 			ha-expansion-panel {
