@@ -323,7 +323,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						autocomplete-icons
 						.hass=${this.hass}
 						.value=${this.getStyleYaml(
-							Object.keys(fields)[
+							['style'].concat(Object.keys(fields))[
 								this.selectedStyleTabIndex
 							] as keyof IEntry,
 						)}
