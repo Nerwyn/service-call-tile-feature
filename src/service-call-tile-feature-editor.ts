@@ -157,8 +157,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleStyleYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const field = (e.target as HTMLElement).previousElementSibling
-			?.children[this.selectedStyleTabIndex].id as keyof IEntry;
+		const field = (e.target as HTMLElement).parentElement
+			?.previousElementSibling?.children[this.selectedStyleTabIndex]
+			.id as keyof IEntry;
 		const yaml = e.detail.value;
 		if (yaml != this.styleYaml) {
 			this.setStyleYaml(yaml, field);
@@ -166,6 +167,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
+		this.styleYaml = undefined;
 		const i = e.detail.index;
 		if (this.selectedStyleTabIndex == i) {
 			return;
@@ -291,7 +293,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildStyleEditor(fields: Record<string, string>) {
 		return html`
 			<div>
-				<div class="header">CSS Styles</div>
+				<div class="style-header">CSS Styles</div>
 				<mwc-tab-bar
 					class="tab-selector"
 					.activeIndex=${this.selectedStyleTabIndex}
@@ -744,6 +746,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					minmax(var(--form-grid-min-width, 200px), 1fr)
 				);
 				gap: 24px 8px;
+			}
+
+			.style-header {
+				font-weight: 500;
 			}
 		`;
 	}
