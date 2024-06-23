@@ -52,31 +52,6 @@ class ServiceCallTileFeature extends LitElement {
 		};
 	}
 
-	entriesChanged(entries: IEntry[]) {
-		const event = new Event('config-changed', {
-			bubbles: true,
-			composed: true,
-		});
-		event.detail = {
-			config: {
-				...this.config,
-				entries: entries,
-			},
-		};
-		this.dispatchEvent(event);
-		this.requestUpdate();
-	}
-
-	entryChanged(index: number, entry: IEntry) {
-		const entries = this.config.entries.concat();
-		const updatedEntry = {
-			...entries[index],
-			...entry,
-		};
-		entries[index] = updatedEntry;
-		this.entriesChanged(entries);
-	}
-
 	setConfig(config: IConfig) {
 		if (!config) {
 			throw new Error('Invalid configuration');
@@ -316,7 +291,6 @@ class ServiceCallTileFeature extends LitElement {
 						entry.entity_id as string,
 					);
 				}
-				this.entryChanged(i, entry);
 			}
 
 			const context = {

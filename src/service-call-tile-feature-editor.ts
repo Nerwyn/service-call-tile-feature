@@ -370,6 +370,119 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		></ha-selector>`;
 	}
 
+	buildMainFeatureOptions(
+		entry: IEntry,
+		additionalOptions: TemplateResult<1> = html``,
+		additionalFormOptions: TemplateResult<1> = html``,
+	) {
+		return html`
+			${this.buildSelector(entry, 'Entity', 'entity_id', {
+				entity: {},
+			})}
+			${
+				entry.entity_id
+					? this.buildSelector(
+							entry,
+							'Attribute',
+							'value_attribute',
+							{
+								attribute: { entity_id: entry.entity_id },
+							},
+					  )
+					: html``
+			}
+			${additionalOptions}
+			<div class="form">
+				${this.buildSelector(
+					entry,
+					'Autofill Entity',
+					'autofill_entity_id',
+					{
+						boolean: {},
+					},
+					true,
+				)}
+				${this.buildSelector(
+					entry,
+					'Haptics',
+					'haptics',
+					{
+						boolean: {},
+					},
+					false,
+				)}
+				${additionalFormOptions}
+			</div>
+		</div> `;
+	}
+
+	buildAppearancePanel(
+		entry: IEntry,
+		additionalAppearanceOptions: TemplateResult<1> = html``,
+	) {
+		return html`
+			<ha-expansion-panel .header=${'Appearance'}>
+				<div
+					class="panel-header"
+					slot="header"
+					role="heading"
+					aria-level="3"
+				>
+					<ha-icon .icon=${'mdi:palette'}></ha-icon>
+					Appearance
+				</div>
+				<div class="content">
+					${this.buildSelector(entry, 'Label', 'label', {
+						text: { multiline: true },
+					})}
+					<div class="form">
+						${this.buildSelector(entry, 'Icon', 'icon', {
+							icon: {},
+						})}${this.buildSelector(
+							entry,
+							'Units',
+							'unit_of_measurement',
+							{
+								text: {},
+							},
+						)}
+					</div>
+					${additionalAppearanceOptions}
+				</div>
+			</ha-expansion-panel>
+		`;
+	}
+
+	buildActionsPanel(actionSelectors: TemplateResult<1>) {
+		return html`
+			<ha-expansion-panel .header=${'Actions'}>
+				<div
+					class="panel-header"
+					slot="header"
+					role="heading"
+					aria-level="3"
+				>
+					<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
+					Actions
+				</div>
+				<div class="content">
+					<mwc-tab-bar
+						class="tab-selector"
+						.activeIndex=${this.selectedActionsTabIndex}
+						@MDCTabBar:activated=${this.handleActionsTabSelected}
+					>
+						<mwc-tab
+							.label=${'default'}
+							dialogInitialFocus
+						></mwc-tab>
+						<mwc-tab .label=${'momentary'}></mwc-tab>
+					</mwc-tab-bar>
+					${actionSelectors}
+				</div>
+			</ha-expansion-panel>
+		`;
+	}
+
 	buildButtonGuiEditor(entry: IEntry) {
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
@@ -380,7 +493,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				default_action: 'none',
 			},
 		};
-
 		switch (this.selectedActionsTabIndex) {
 			case 1:
 				actionSelectors = html`
@@ -429,92 +541,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return html`<div class="gui-editor">
-			${this.buildSelector(entry, 'Entity', 'entity_id', {
-				entity: {},
-			})}
-			${entry.entity_id
-				? this.buildSelector(entry, 'Attribute', 'value_attribute', {
-						attribute: { entity_id: entry.entity_id },
-				  })
-				: html``}
-			<div class="form">
-				${this.buildSelector(
-					entry,
-					'Autofill Entity',
-					'autofill_entity_id',
-					{
-						boolean: {},
-					},
-					true,
-				)}
-				${this.buildSelector(
-					entry,
-					'Haptics',
-					'haptics',
-					{
-						boolean: {},
-					},
-					false,
-				)}
-			</div>
-			<ha-expansion-panel .header=${'Appearance'}>
-				<div
-					class="panel-header"
-					slot="header"
-					role="heading"
-					aria-level="3"
-				>
-					<ha-icon .icon=${'mdi:palette'}></ha-icon>
-					Appearance
-				</div>
-				<div class="content">
-					${this.buildSelector(entry, 'Label', 'label', {
-						text: { multiline: true },
-					})}
-					<div class="form">
-						${this.buildSelector(entry, 'Icon', 'icon', {
-							icon: {},
-						})}${this.buildSelector(
-							entry,
-							'Units',
-							'unit_of_measurement',
-							{
-								text: {},
-							},
-						)}
-					</div>
-					${this.buildStyleEditor({
-						background_style: 'Background',
-						icon_style: 'Icon',
-						label_style: 'Label',
-					})}
-				</div>
-			</ha-expansion-panel>
-			<ha-expansion-panel .header=${'Actions'}>
-				<div
-					class="panel-header"
-					slot="header"
-					role="heading"
-					aria-level="3"
-				>
-					<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
-					Actions
-				</div>
-				<div class="content">
-					<mwc-tab-bar
-						class="tab-selector"
-						.activeIndex=${this.selectedActionsTabIndex}
-						@MDCTabBar:activated=${this.handleActionsTabSelected}
-					>
-						<mwc-tab
-							.label=${'default'}
-							dialogInitialFocus
-						></mwc-tab>
-						<mwc-tab .label=${'momentary'}></mwc-tab>
-					</mwc-tab-bar>
-					${actionSelectors}
-				</div>
-			</ha-expansion-panel>
+			${this.buildMainFeatureOptions(entry)}
+			${this.buildAppearancePanel(
+				entry,
+				this.buildStyleEditor({
+					background_style: 'Background',
+					icon_style: 'Icon',
+					label_style: 'Label',
+				}),
+			)}
+			${this.buildActionsPanel(actionSelectors)}
 		</div>`;
 	}
 
