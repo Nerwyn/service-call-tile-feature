@@ -157,7 +157,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleStyleYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const field = (e.target as HTMLElement).id as keyof IEntry;
+		const field = (e.target as HTMLElement).previousElementSibling
+			?.children[this.selectedStyleTabIndex].id as keyof IEntry;
 		const yaml = e.detail.value;
 		if (yaml != this.styleYaml) {
 			this.setStyleYaml(yaml, field);
@@ -289,42 +290,44 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildStyleEditor(fields: Record<string, string>) {
 		return html`
-			<div class="header">CSS Styles</div>
-			<mwc-tab-bar
-				class="tab-selector"
-				.activeIndex=${this.selectedStyleTabIndex}
-				@MDCTabBar:activated=${this.handleStyleTabSelected}
-			>
-				<mwc-tab
-					.label=${'Outer'}
-					id="${'style'}"
-					dialogInitialFocus
-				></mwc-tab>
-				${Object.keys(fields).map(
-					(field) =>
-						html`<mwc-tab
-							.label=${fields[field]}
-							id="${field}"
-						></mwc-tab>`,
-				)}
-			</mwc-tab-bar>
-			<div class="yaml-editor">
-				<ha-code-editor
-					mode="yaml"
-					autofocus
-					autocomplete-entities
-					autocomplete-icons
-					.hass=${this.hass}
-					.value=${this.getStyleYaml(
-						Object.keys(fields)[
-							this.selectedStyleTabIndex
-						] as keyof IEntry,
+			<div>
+				<div class="header">CSS Styles</div>
+				<mwc-tab-bar
+					class="tab-selector"
+					.activeIndex=${this.selectedStyleTabIndex}
+					@MDCTabBar:activated=${this.handleStyleTabSelected}
+				>
+					<mwc-tab
+						.label=${'Outer'}
+						id="${'style'}"
+						dialogInitialFocus
+					></mwc-tab>
+					${Object.keys(fields).map(
+						(field) =>
+							html`<mwc-tab
+								.label=${fields[field]}
+								id="${field}"
+							></mwc-tab>`,
 					)}
-					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleStyleYamlChanged}
-					@keydown=${(e: CustomEvent) => e.stopPropagation()}
-					dir="ltr"
-				></ha-code-editor>
+				</mwc-tab-bar>
+				<div class="yaml-editor">
+					<ha-code-editor
+						mode="yaml"
+						autofocus
+						autocomplete-entities
+						autocomplete-icons
+						.hass=${this.hass}
+						.value=${this.getStyleYaml(
+							Object.keys(fields)[
+								this.selectedStyleTabIndex
+							] as keyof IEntry,
+						)}
+						.error=${Boolean(this.errors)}
+						@value-changed=${this.handleStyleYamlChanged}
+						@keydown=${(e: CustomEvent) => e.stopPropagation()}
+						dir="ltr"
+					></ha-code-editor>
+				</div>
 			</div>
 		`;
 	}
