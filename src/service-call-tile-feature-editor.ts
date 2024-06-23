@@ -24,13 +24,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() errors?: string[];
 	@state() warnings?: string[];
 	@state() entryYaml?: string;
-	@state() styleYaml: Record<string, string> = {
-		outer: '',
-		background: '',
-		icon: '',
-		label: '',
-		slider: '',
-		tooltip: '',
+	@state() styleYaml: Record<string, string | undefined> = {
+		outer: undefined,
+		background: undefined,
+		icon: undefined,
+		label: undefined,
+		slider: undefined,
+		tooltip: undefined,
 	};
 
 	static get properties() {
@@ -102,10 +102,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
 		this.entryYaml = undefined;
+		for (const key in this.styleYaml) {
+			this.styleYaml[key] = undefined;
+		}
 	}
 
-	toggleMode(_e: CustomEvent) {
+	toggleGuiMode(_e: CustomEvent) {
 		this.entryYaml = undefined;
+		for (const key in this.styleYaml) {
+			this.styleYaml[key] = undefined;
+		}
 		this.guiMode = !this.guiMode;
 	}
 
@@ -136,7 +142,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleTextChange(e: CustomEvent) {
+	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		const value = e.detail.value;
 		this.entryChanged({
@@ -234,7 +240,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				</div>
 				<ha-icon-button
 					class="gui-mode-button"
-					@click=${this.toggleMode}
+					@click=${this.toggleGuiMode}
 					.label=${this.hass.localize(
 						this.guiMode
 							? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
@@ -256,6 +262,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		label: string,
 		key: keyof IEntry,
 		selector: object,
+		backupValue: string | number | boolean | object = '',
 	) {
 		const hass: HomeAssistant = {
 			...this.hass,
@@ -270,15 +277,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 
-		return html` <ha-selector
+		return html`<ha-selector
 			.hass=${hass}
 			.selector=${selector}
-			.value=${entry[key] ?? ''}
+			.value=${entry[key] ?? backupValue}
 			.label="${label}"
 			.name="${label}"
 			.required=${false}
 			id="${key}"
-			@value-changed=${this.handleTextChange}
+			@value-changed=${this.handleSelectorChange}
 		></ha-selector>`;
 	}
 
@@ -344,11 +351,38 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildSelector(entry, 'Entity', 'entity_id', {
 				entity: {},
 			})}
-			${entry.entity_id
-				? this.buildSelector(entry, 'Attribute', 'value_attribute', {
-						attribute: { entity_id: entry.entity_id },
-				  })
-				: html``}
+			${
+				entry.entity_id
+					? this.buildSelector(
+							entry,
+							'Attribute',
+							'value_attribute',
+							{
+								attribute: { entity_id: entry.entity_id },
+							},
+					  )
+					: html``
+			}
+			<div class="form>
+				  ${this.buildSelector(
+						entry,
+						'Autofill Entity',
+						'autofill_entity_id',
+						{
+							boolean: {},
+						},
+						true,
+					)}
+				${this.buildSelector(
+					entry,
+					'Haptics',
+					'haptics',
+					{
+						boolean: {},
+					},
+					false,
+				)}
+			</div>
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
 					class="panel-header"
