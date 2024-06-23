@@ -287,7 +287,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildStyleEditors(fields: (keyof IEntry)[]) {
+	buildStyleEditor(fields: Record<string, string>) {
 		return html`
 			<div class="header">CSS Styles</div>
 			<mwc-tab-bar
@@ -300,9 +300,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					id="${'style'}"
 					dialogInitialFocus
 				></mwc-tab>
-				${fields.map(
+				${Object.keys(fields).map(
 					(field) =>
-						html`<mwc-tab .label=${field} id="${field}"></mwc-tab>`,
+						html`<mwc-tab
+							.label=${fields[field]}
+							id="${field}"
+						></mwc-tab>`,
 				)}
 			</mwc-tab-bar>
 			<div class="yaml-editor">
@@ -313,7 +316,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					autocomplete-icons
 					.hass=${this.hass}
 					.value=${this.getStyleYaml(
-						fields[this.selectedStyleTabIndex],
+						Object.keys(fields)[
+							this.selectedStyleTabIndex
+						] as keyof IEntry,
 					)}
 					.error=${Boolean(this.errors)}
 					@value-changed=${this.handleStyleYamlChanged}
@@ -469,6 +474,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							},
 						)}
 					</div>
+					${this.buildStyleEditor({
+						background_style: 'Background',
+						icon_style: 'Icon',
+						label_style: 'Label',
+					})}
 				</div>
 			</ha-expansion-panel>
 			<ha-expansion-panel .header=${'Actions'}>
