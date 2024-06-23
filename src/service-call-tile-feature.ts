@@ -261,8 +261,7 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		//eslint-disable-next-line prefer-const
-		for (let [i, entry] of this.config.entries.entries()) {
+		for (let entry of this.config.entries) {
 			// Set entity ID to tile card entity ID if no other ID is present
 			if (entry.autofill_entity_id ?? true) {
 				entry = this.populateMissingEntityId(
