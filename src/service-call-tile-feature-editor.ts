@@ -1,5 +1,6 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { StyleInfo } from 'lit/directives/style-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 
@@ -19,19 +20,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	@state() entryEditorIndex: number = -1;
 	@state() selectedActionsTabIndex: number = 0;
+	@state() selectedStyleTabIndex: number = 0;
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
 	@state() warnings?: string[];
 	@state() entryYaml?: string;
-	@state() styleYaml: Record<string, string | undefined> = {
-		outer: undefined,
-		background: undefined,
-		icon: undefined,
-		label: undefined,
-		slider: undefined,
-		tooltip: undefined,
-	};
+	@state() styleYaml?: string;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -102,16 +97,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
 		this.entryYaml = undefined;
-		for (const key in this.styleYaml) {
-			this.styleYaml[key] = undefined;
-		}
+		this.styleYaml = undefined;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
 		this.entryYaml = undefined;
-		for (const key in this.styleYaml) {
-			this.styleYaml[key] = undefined;
-		}
+		this.styleYaml = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
@@ -128,13 +119,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		try {
 			entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
 			this.errors = undefined;
+			this.entriesChanged(entries);
 		} catch (e) {
 			this.errors = [(e as Error).message];
 		}
-		this.entriesChanged(entries);
 	}
 
-	handleEntryYAMLChanged(e: CustomEvent) {
+	handleEntryYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const yaml = e.detail.value;
 		if (yaml != this.yaml) {
@@ -142,12 +133,43 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleSelectorChange(e: CustomEvent) {
-		const key = (e.target as HTMLElement).id;
-		const value = e.detail.value;
-		this.entryChanged({
-			[key]: value,
-		});
+	getStyleYaml(field: keyof IEntry): string {
+		if (!this.styleYaml) {
+			this.styleYaml = dump(
+				this.config.entries[this.entryEditorIndex][field],
+			);
+		}
+		return this.styleYaml || '';
+	}
+
+	setStyleYaml(yaml: string, field: keyof IEntry) {
+		this.styleYaml = yaml;
+		try {
+			const entry = {
+				[field]: load(this.getStyleYaml(field)) as StyleInfo,
+			};
+			this.errors = undefined;
+			this.entryChanged(entry);
+		} catch (e) {
+			this.errors = [(e as Error).message];
+		}
+	}
+
+	handleStyleYamlChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const field = (e.target as HTMLElement).id as keyof IEntry;
+		const yaml = e.detail.value;
+		if (yaml != this.styleYaml) {
+			this.setStyleYaml(yaml, field);
+		}
+	}
+
+	handleStyleTabSelected(e: CustomEvent) {
+		const i = e.detail.index;
+		if (this.selectedStyleTabIndex == i) {
+			return;
+		}
+		this.selectedStyleTabIndex = i;
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
@@ -156,6 +178,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return;
 		}
 		this.selectedActionsTabIndex = i;
+	}
+
+	handleSelectorChange(e: CustomEvent) {
+		const key = (e.target as HTMLElement).id;
+		const value = e.detail.value;
+		this.entryChanged({
+			[key]: value,
+		});
 	}
 
 	buildEntryListItem(entry: IEntry, i: number) {
@@ -253,6 +283,43 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: 'mdi:list-box-outline'}"
 					></ha-icon>
 				</ha-icon-button>
+			</div>
+		`;
+	}
+
+	buildStyleEditors(fields: (keyof IEntry)[]) {
+		return html`
+			<div class="header">CSS Styles</div>
+			<mwc-tab-bar
+				class="tab-selector"
+				.activeIndex=${this.selectedStyleTabIndex}
+				@MDCTabBar:activated=${this.handleStyleTabSelected}
+			>
+				<mwc-tab
+					.label=${'Outer'}
+					id="${'style'}"
+					dialogInitialFocus
+				></mwc-tab>
+				${fields.map(
+					(field) =>
+						html`<mwc-tab .label=${field} id="${field}"></mwc-tab>`,
+				)}
+			</mwc-tab-bar>
+			<div class="yaml-editor">
+				<ha-code-editor
+					mode="yaml"
+					autofocus
+					autocomplete-entities
+					autocomplete-icons
+					.hass=${this.hass}
+					.value=${this.getStyleYaml(
+						fields[this.selectedStyleTabIndex],
+					)}
+					.error=${Boolean(this.errors)}
+					@value-changed=${this.handleStyleYamlChanged}
+					@keydown=${(e: CustomEvent) => e.stopPropagation()}
+					dir="ltr"
+				></ha-code-editor>
 			</div>
 		`;
 	}
@@ -443,7 +510,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.hass=${this.hass}
 					.value=${this.yaml}
 					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleEntryYAMLChanged}
+					@value-changed=${this.handleEntryYamlChanged}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
