@@ -142,12 +142,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return this.styleYaml || '';
 	}
 
-	setStyleYaml(yaml: string, field: keyof IEntry) {
+	setStyleYaml(field: keyof IEntry, yaml?: string) {
 		this.styleYaml = yaml;
+		console.log(yaml);
 		try {
-			const entry = {
-				[field]: load(this.getStyleYaml(field)) as StyleInfo,
-			};
+			const entry = { [field]: {} };
+			if (yaml) {
+				entry[field] = load(this.getStyleYaml(field)) as StyleInfo;
+			}
 			this.errors = undefined;
 			this.entryChanged(entry);
 		} catch (e) {
@@ -160,10 +162,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const field = (e.target as HTMLElement).parentElement
 			?.previousElementSibling?.children[this.selectedStyleTabIndex]
 			.id as keyof IEntry;
-		console.log(field);
 		const yaml = e.detail.value;
 		if (yaml != this.styleYaml) {
-			this.setStyleYaml(yaml, field);
+			this.setStyleYaml(field, yaml);
 		}
 	}
 
