@@ -754,6 +754,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 			.style-header {
 				font-weight: 500;
+				margin-left: 4px;
 			}
 		`;
 	}

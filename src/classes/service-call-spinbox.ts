@@ -170,6 +170,9 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				config: {
 					...actions,
 					entity: this.renderTemplate(actions.entity_id ?? ''),
+					attribute: this.renderTemplate(
+						actions.value_attribute ?? '',
+					),
 					operator: operator,
 				},
 			};

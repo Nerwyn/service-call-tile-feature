@@ -19,6 +19,7 @@ export class BaseServiceCallFeature extends LitElement {
 
 	@state() value?: string | number | boolean = 0;
 	entityId?: string;
+	valueAttribute?: string;
 	getValueFromHass: boolean = true;
 	getValueFromHassTimer?: ReturnType<typeof setTimeout>;
 	valueUpdateInterval?: ReturnType<typeof setInterval>;
@@ -283,14 +284,14 @@ export class BaseServiceCallFeature extends LitElement {
 			clearInterval(this.valueUpdateInterval);
 			this.valueUpdateInterval = undefined;
 
-			let valueAttribute = (
+			this.valueAttribute = (
 				this.renderTemplate(
 					this.entry.value_attribute as string,
 				) as string
 			).toLowerCase();
 			if (!this.hass.states[this.entityId]) {
 				this.value = undefined;
-			} else if (valueAttribute == 'state') {
+			} else if (this.valueAttribute == 'state') {
 				this.value = this.hass.states[this.entityId].state;
 			} else {
 				let value:
@@ -300,13 +301,16 @@ export class BaseServiceCallFeature extends LitElement {
 					| string[]
 					| number[]
 					| undefined;
-				const indexMatch = valueAttribute.match(/\[\d+\]$/);
+				const indexMatch = this.valueAttribute.match(/\[\d+\]$/);
 				if (indexMatch) {
 					const index = parseInt(indexMatch[0].replace(/\[|\]/g, ''));
-					valueAttribute = valueAttribute.replace(indexMatch[0], '');
+					this.valueAttribute = this.valueAttribute.replace(
+						indexMatch[0],
+						'',
+					);
 					value =
 						this.hass.states[this.entityId].attributes[
-							valueAttribute
+							this.valueAttribute
 						];
 					if (value && Array.isArray(value) && value.length) {
 						value = value[index];
@@ -316,12 +320,12 @@ export class BaseServiceCallFeature extends LitElement {
 				} else {
 					value =
 						this.hass.states[this.entityId].attributes[
-							valueAttribute
+							this.valueAttribute
 						];
 				}
 
-				if (value != undefined || valueAttribute == 'elapsed') {
-					switch (valueAttribute) {
+				if (value != undefined || this.valueAttribute == 'elapsed') {
+					switch (this.valueAttribute) {
 						case 'brightness':
 							this.value = Math.round(
 								(100 * parseInt((value as string) ?? 0)) / 255,
@@ -471,6 +475,7 @@ export class BaseServiceCallFeature extends LitElement {
 			config: {
 				...this.entry,
 				entity: this.entityId,
+				attribute: this.valueAttribute,
 			},
 			...context,
 		};

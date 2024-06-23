@@ -323,11 +323,17 @@ class ServiceCallTileFeature extends LitElement {
 				config: {
 					...entry,
 					entity: '',
+					attribute: '',
 				},
 			};
 			context.config.entity = renderTemplate(
 				this.hass,
 				entry.entity_id ?? '',
+				context,
+			) as string;
+			context.config.attribute = renderTemplate(
+				this.hass,
+				entry.value_attribute ?? '',
 				context,
 			) as string;
 			const style: StyleInfo = {};
