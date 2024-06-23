@@ -351,28 +351,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildSelector(entry, 'Entity', 'entity_id', {
 				entity: {},
 			})}
-			${
-				entry.entity_id
-					? this.buildSelector(
-							entry,
-							'Attribute',
-							'value_attribute',
-							{
-								attribute: { entity_id: entry.entity_id },
-							},
-					  )
-					: html``
-			}
-			<div class="form>
-				  ${this.buildSelector(
-						entry,
-						'Autofill Entity',
-						'autofill_entity_id',
-						{
-							boolean: {},
-						},
-						true,
-					)}
+			${entry.entity_id
+				? this.buildSelector(entry, 'Attribute', 'value_attribute', {
+						attribute: { entity_id: entry.entity_id },
+				  })
+				: html``}
+			<div class="form">
+				${this.buildSelector(
+					entry,
+					'Autofill Entity',
+					'autofill_entity_id',
+					{
+						boolean: {},
+					},
+					true,
+				)}
 				${this.buildSelector(
 					entry,
 					'Haptics',
