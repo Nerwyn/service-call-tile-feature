@@ -135,16 +135,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	getStyleYaml(field: keyof IEntry): string {
 		if (!this.styleYaml) {
-			this.styleYaml = dump(
+			const styleYaml = dump(
 				this.config.entries[this.entryEditorIndex][field],
 			);
+			this.styleYaml = styleYaml == '{}' ? '' : this.styleYaml;
 		}
 		return this.styleYaml || '';
 	}
 
 	setStyleYaml(field: keyof IEntry, yaml?: string) {
 		this.styleYaml = yaml;
-		console.log(yaml);
 		try {
 			const entry = { [field]: {} };
 			if (yaml) {
