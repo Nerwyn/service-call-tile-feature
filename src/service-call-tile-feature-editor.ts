@@ -138,7 +138,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			const styleYaml = dump(
 				this.config.entries[this.entryEditorIndex][field],
 			);
-			this.styleYaml = styleYaml == '{}' ? '' : styleYaml;
+			this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
 		}
 		return this.styleYaml || '';
 	}
@@ -169,13 +169,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
-		this.styleYaml = undefined;
 		const i = e.detail.index;
 		if (this.selectedStyleTabIndex == i) {
 			return;
 		}
 		const field = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
+		this.styleYaml = undefined;
 		this.getStyleYaml(field);
 	}
 
