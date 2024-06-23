@@ -160,6 +160,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const field = (e.target as HTMLElement).parentElement
 			?.previousElementSibling?.children[this.selectedStyleTabIndex]
 			.id as keyof IEntry;
+		console.log(field);
 		const yaml = e.detail.value;
 		if (yaml != this.styleYaml) {
 			this.setStyleYaml(yaml, field);
@@ -172,7 +173,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.selectedStyleTabIndex == i) {
 			return;
 		}
+		const field = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
+		this.getStyleYaml(field);
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
