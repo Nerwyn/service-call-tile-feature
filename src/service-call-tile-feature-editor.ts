@@ -138,7 +138,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			const styleYaml = dump(
 				this.config.entries[this.entryEditorIndex][field],
 			);
-			this.styleYaml = styleYaml == '{}' ? '' : this.styleYaml;
+			this.styleYaml = styleYaml == '{}' ? '' : styleYaml;
 		}
 		return this.styleYaml || '';
 	}
