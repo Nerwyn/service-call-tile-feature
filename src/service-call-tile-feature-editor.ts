@@ -154,7 +154,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			const styleYaml = dump(styleObj);
 			this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
 		}
-		console.log(this.styleKey);
 		return this.styleYaml || '';
 	}
 
@@ -256,8 +255,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryList() {
-		this.styleYaml = undefined;
 		this.styleKey = 'root';
+		this.getStyleYaml();
 		return html`
 			<div class="content">
 				<ha-sortable
@@ -335,11 +334,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildStyleEditor(fields: Record<string, string>) {
-		this.styleYaml = undefined;
 		this.styleKey = ['style'].concat(Object.keys(fields))[
 			this.selectedStyleTabIndex
 		] as keyof IEntry;
-		console.log(this.styleKey);
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
