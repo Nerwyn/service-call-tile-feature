@@ -103,20 +103,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
-		this.entryYaml = undefined;
-		this.styleYaml = undefined;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
-		this.entryYaml = undefined;
-		this.styleYaml = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
 	get yaml(): string {
-		if (!this.entryYaml) {
-			this.entryYaml = dump(this.config.entries[this.entryEditorIndex]);
-		}
+		this.entryYaml = dump(this.config.entries[this.entryEditorIndex]);
 		return this.entryYaml || '';
 	}
 
@@ -141,18 +135,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	getStyleYaml(): string {
-		if (!this.styleYaml) {
-			let styleObj: StyleInfo;
-			if (this.styleKey == 'root') {
-				styleObj = this.config.style ?? {};
-			} else {
-				styleObj = this.config.entries[this.entryEditorIndex][
-					this.styleKey as keyof IEntry
-				] as StyleInfo;
-			}
-			const styleYaml = dump(styleObj);
-			this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
+		let styleObj: StyleInfo;
+		if (this.styleKey == 'root') {
+			styleObj = this.config.style ?? {};
+		} else {
+			styleObj = this.config.entries[this.entryEditorIndex][
+				this.styleKey as keyof IEntry
+			] as StyleInfo;
 		}
+		const styleYaml = dump(styleObj);
+		this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
+
 		return this.styleYaml || '';
 	}
 
@@ -196,7 +189,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.styleKey = (e.target as HTMLElement).children[i]
 			.id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
-		this.styleYaml = undefined;
 		this.getStyleYaml();
 	}
 
@@ -262,7 +254,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${this.moveEntry}
 				>
 					<div class="features">
-						${this.config.entries.map((entry, i) => this.buildEntryListItem(entry, i))}
+						${this.config.entries.map((entry, i) =>
+							this.buildEntryListItem(entry, i),
+						)}
 					</div>
 				</ha-sortable>
 			</div>
@@ -282,7 +276,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					this.buildAddEntryListItem(tileFeatureType),
 				)}
 			</ha-button-menu>
-			<div class="style-header>CSS Styles</div>
+			<div class="style-header">CSS Styles</div>
 			<div class="yaml-editor">
 				<ha-code-editor
 					mode="yaml"
@@ -694,7 +688,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				color: var(--secondary-text-color);
 			}
 			ha-button-menu {
-				margin-top: 8px;
+				margin: 0 24px 12px;
 				--mdc-icon-size: 100%;
 			}
 			ha-list-item {
