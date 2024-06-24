@@ -142,7 +142,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	getStyleYaml(): string {
-		if (!this.styleYaml) {
+		if (this.styleYaml == undefined) {
 			let styleObj: StyleInfo;
 			if (this.styleKey == 'root') {
 				styleObj = this.config.style ?? {};
@@ -159,7 +159,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	setStyleYaml(yaml?: string) {
 		this.styleYaml = yaml;
-		console.log(yaml);
 		try {
 			if (this.styleKey == 'root') {
 				const config = {
