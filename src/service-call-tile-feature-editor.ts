@@ -160,20 +160,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	setStyleYaml(yaml?: string) {
 		this.styleYaml = yaml;
 		try {
-			if (yaml || yaml == '') {
-				if (this.styleKey == 'root') {
-					const config = {
-						style: load(this.getStyleYaml()),
-					} as IConfig;
-					this.configChanged(config);
-				} else {
-					const entry = {
-						[this.styleKey as keyof IEntry]: load(
-							this.getStyleYaml(),
-						) as StyleInfo,
-					};
-					this.entryChanged(entry);
-				}
+			if (this.styleKey == 'root') {
+				const config = {
+					style: load(this.getStyleYaml()),
+				} as IConfig;
+				this.configChanged(config);
+			} else {
+				const entry = {
+					[this.styleKey as keyof IEntry]: load(
+						this.getStyleYaml(),
+					) as StyleInfo,
+				};
+				this.entryChanged(entry);
 			}
 			this.errors = undefined;
 		} catch (e) {
