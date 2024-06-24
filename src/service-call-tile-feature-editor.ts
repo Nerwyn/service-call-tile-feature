@@ -159,8 +159,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	setStyleYaml(yaml?: string) {
 		this.styleYaml = yaml;
+		console.log(yaml);
 		try {
 			if (this.styleKey == 'root') {
+				if (yaml == '') {
+				} else {
+				}
 				const config = {
 					style: load(this.getStyleYaml()),
 				} as IConfig;
@@ -299,6 +303,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					dir="ltr"
 				></ha-code-editor>
 			</div>
+			${this.buildErrorWarningPanel()}
 		`;
 	}
 
@@ -625,37 +630,43 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildEntryHeader(entry)}
 			<div class="wrapper">
 				${this.guiMode ? entryGuiEditor : this.buildEntryYamlEditor()}
-				${this.errors && this.errors.length > 0
-					? html`<div class="error">
-							${this.hass.localize(
-								'ui.errors.config.error_detected',
-							)}:
-							<br />
-							<ul>
-								${this.errors!.map(
-									(error) => html`<li>${error}</li>`,
-								)}
-							</ul>
-					  </div>`
-					: html``}
-				${this.warnings && this.warnings.length > 0
-					? html` <ha-alert
-							alert-type="warning"
-							.title="${this.hass.localize(
-								'ui.errors.config.editor_not_supported',
-							)}:"
-					  >
-							<ul>
-								${this.warnings!.map(
-									(warning) => html`<li>${warning}</li>`,
-								)}
-							</ul>
-							${this.hass.localize(
-								'ui.errors.config.edit_in_yaml_supported',
-							)}
-					  </ha-alert>`
-					: html``}
+				${this.buildErrorWarningPanel()}
 			</div>
+		`;
+	}
+
+	buildErrorWarningPanel() {
+		return html`
+			${this.errors && this.errors.length > 0
+				? html`<div class="error">
+						${this.hass.localize(
+							'ui.errors.config.error_detected',
+						)}:
+						<br />
+						<ul>
+							${this.errors!.map(
+								(error) => html`<li>${error}</li>`,
+							)}
+						</ul>
+				  </div>`
+				: html``}
+			${this.warnings && this.warnings.length > 0
+				? html` <ha-alert
+						alert-type="warning"
+						.title="${this.hass.localize(
+							'ui.errors.config.editor_not_supported',
+						)}:"
+				  >
+						<ul>
+							${this.warnings!.map(
+								(warning) => html`<li>${warning}</li>`,
+							)}
+						</ul>
+						${this.hass.localize(
+							'ui.errors.config.edit_in_yaml_supported',
+						)}
+				  </ha-alert>`
+				: html``}
 		`;
 	}
 
