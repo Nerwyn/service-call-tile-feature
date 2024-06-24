@@ -4,8 +4,7 @@ import { IActions } from './IActions';
 
 export interface IConfig {
 	type: string;
-	hide?: boolean;
-	show?: boolean;
+	style?: StyleInfo;
 	entries: IEntry[];
 }
 

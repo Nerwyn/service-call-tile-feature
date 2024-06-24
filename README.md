@@ -149,17 +149,16 @@ entries:
 
 # Base Config
 
-| Name    | Type    | Description/Value                                                                                               |
-| ------- | ------- | --------------------------------------------------------------------------------------------------------------- |
-| type    | string  | `custom:service-call`                                                                                           |
-| hide    | boolean | Whether to hide this row of entries. Should be set using a template. Defaults to false.                         |
-| show    | boolean | Whether to show this row of entries. Should be set using a template. Defaults to true. Supercedes hide if true. |
-| entries | array   | List of entries to include in a tile features row.                                                              |
+| Name    | Type      | Description/Value                                         |
+| ------- | --------- | --------------------------------------------------------- |
+| type    | string    | `custom:service-call`                                     |
+| style   | StyleInfo | CSS style properties to set to the overall outer feature. |
+| entries | array     | List of entries to include in a tile features row.        |
 
 ```yaml
 type: custom:service-call
-hide: '{{ is_state("light.lounge", "off") }}'
-show: '{{ is_state("light.lounge", "on") }}'
+style:
+  padding: 0px 12px
 entries: []
 ```
 
@@ -178,7 +177,7 @@ The custom service call feature is actually a row of entries, each of which have
 | icon                | string    | The name of the icon to use.                                                                                                                             |
 | label               | string    | A string to place either underneath the icon or by itself.                                                                                               |
 | unit_of_measurement | string    | A string to append to the end of the label, if it exists.                                                                                                |
-| style               | StyleInfo | CSS style properties to set to the feature, further explained below.                                                                                     |
+| style               | StyleInfo | CSS style properties to set to the feature.                                                                                                              |
 | haptics             | boolean   | Enable haptics on the feature, defaults to `false`.                                                                                                      |
 
 ```yaml

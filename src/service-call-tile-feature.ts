@@ -228,7 +228,19 @@ class ServiceCallTileFeature extends LitElement {
 			},
 		};
 
-		// Hide and show checks
+		// Outer element style
+		if (this.config.style) {
+			for (const key in this.config.style) {
+				const value = renderTemplate(
+					this.hass,
+					this.config.style[key] as string,
+					context,
+				) as string;
+				this.style.setProperty(key, value);
+			}
+		}
+
+		// Deprecated hide and show checks
 		if ('hide' in this.config) {
 			if (
 				renderTemplate(
@@ -237,10 +249,8 @@ class ServiceCallTileFeature extends LitElement {
 					context,
 				)
 			) {
-				context.config.hide = true;
 				this.style.setProperty('display', 'none');
 			} else {
-				context.config.hide = false;
 				this.style.removeProperty('display');
 			}
 		}
@@ -252,10 +262,8 @@ class ServiceCallTileFeature extends LitElement {
 					context,
 				)
 			) {
-				context.config.show = true;
 				this.style.removeProperty('display');
 			} else {
-				context.config.show = false;
 				this.style.setProperty('display', 'none');
 			}
 		}

@@ -27,6 +27,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() warnings?: string[];
 	@state() entryYaml?: string;
 	@state() styleYaml?: string;
+	@state() styleKey?: string;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -36,7 +37,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.config = config;
 	}
 
-	entriesChanged(entries: IEntry[]) {
+	configChanged(config: IConfig) {
 		const event = new Event('config-changed', {
 			bubbles: true,
 			composed: true,
@@ -44,11 +45,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		event.detail = {
 			config: {
 				...this.config,
-				entries: entries,
+				...config,
 			},
 		};
 		this.dispatchEvent(event);
 		this.requestUpdate();
+	}
+
+	entriesChanged(entries: IEntry[]) {
+		this.configChanged({
+			entries: entries,
+		} as IConfig);
 	}
 
 	entryChanged(entry: IEntry) {
@@ -133,25 +140,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	getStyleYaml(field: keyof IEntry): string {
+	getStyleYaml(): string {
 		if (!this.styleYaml) {
-			const styleYaml = dump(
-				this.config.entries[this.entryEditorIndex][field],
-			);
+			let styleObj: StyleInfo;
+			if (this.styleKey == 'root') {
+				styleObj = this.config.style ?? {};
+			} else {
+				styleObj = this.config.entries[this.entryEditorIndex][
+					this.styleKey as keyof IEntry
+				] as StyleInfo;
+			}
+			const styleYaml = dump(styleObj);
 			this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
 		}
 		return this.styleYaml || '';
 	}
 
-	setStyleYaml(field: keyof IEntry, yaml?: string) {
+	setStyleYaml(yaml?: string) {
 		this.styleYaml = yaml;
 		try {
-			const entry = { [field]: {} };
 			if (yaml) {
-				entry[field] = load(this.getStyleYaml(field)) as StyleInfo;
+				if (this.styleKey == 'root') {
+					const config = {
+						style: load(this.getStyleYaml()),
+					} as IConfig;
+					this.configChanged(config);
+				} else {
+					const entry = {
+						[this.styleKey as keyof IEntry]: load(
+							this.getStyleYaml(),
+						) as StyleInfo,
+					};
+					this.entryChanged(entry);
+				}
 			}
 			this.errors = undefined;
-			this.entryChanged(entry);
 		} catch (e) {
 			this.errors = [(e as Error).message];
 		}
@@ -159,12 +182,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleStyleYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const field = (e.target as HTMLElement).parentElement
-			?.previousElementSibling?.children[this.selectedStyleTabIndex]
-			.id as keyof IEntry;
 		const yaml = e.detail.value;
 		if (yaml != this.styleYaml) {
-			this.setStyleYaml(field, yaml);
+			this.setStyleYaml(yaml);
 		}
 	}
 
@@ -173,10 +193,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.selectedStyleTabIndex == i) {
 			return;
 		}
-		const field = (e.target as HTMLElement).children[i].id as keyof IEntry;
+		this.styleKey = (e.target as HTMLElement).children[i]
+			.id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
 		this.styleYaml = undefined;
-		this.getStyleYaml(field);
+		this.getStyleYaml();
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
@@ -233,6 +254,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryList() {
+		this.styleKey = 'root';
 		return html`
 			<div class="content">
 				<ha-sortable
@@ -240,27 +262,40 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${this.moveEntry}
 				>
 					<div class="features">
-						${this.config.entries.map((entry, i) =>
-							this.buildEntryListItem(entry, i),
-						)}
+						${this.config.entries.map((entry, i) => this.buildEntryListItem(entry, i))}
 					</div>
 				</ha-sortable>
-				<ha-button-menu
-					fixed
-					@action=${this.addEntry}
-					@closed=${(e: CustomEvent) => e.stopPropagation()}
+			</div>
+			<ha-button-menu
+				fixed
+				@action=${this.addEntry}
+				@closed=${(e: CustomEvent) => e.stopPropagation()}
+			>
+				<ha-button
+					slot="trigger"
+					outlined
+					.label="${'ADD CUSTOM FEATURE'}"
 				>
-					<ha-button
-						slot="trigger"
-						outlined
-						.label="${'ADD CUSTOM FEATURE'}"
-					>
-						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-					</ha-button>
-					${TileFeatureTypes.map((tileFeatureType) =>
-						this.buildAddEntryListItem(tileFeatureType),
-					)}
-				</ha-button-menu>
+					<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+				</ha-button>
+				${TileFeatureTypes.map((tileFeatureType) =>
+					this.buildAddEntryListItem(tileFeatureType),
+				)}
+			</ha-button-menu>
+			<div class="style-header>CSS Styles</div>
+			<div class="yaml-editor">
+				<ha-code-editor
+					mode="yaml"
+					autofocus
+					autocomplete-entities
+					autocomplete-icons
+					.hass=${this.hass}
+					.value=${this.getStyleYaml()}
+					.error=${Boolean(this.errors)}
+					@value-changed=${this.handleStyleYamlChanged}
+					@keydown=${(e: CustomEvent) => e.stopPropagation()}
+					dir="ltr"
+				></ha-code-editor>
 			</div>
 		`;
 	}
@@ -295,6 +330,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildStyleEditor(fields: Record<string, string>) {
+		this.styleKey = ['style'].concat(Object.keys(fields))[
+			this.selectedStyleTabIndex
+		] as keyof IEntry;
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
@@ -323,11 +361,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						autocomplete-entities
 						autocomplete-icons
 						.hass=${this.hass}
-						.value=${this.getStyleYaml(
-							['style'].concat(Object.keys(fields))[
-								this.selectedStyleTabIndex
-							] as keyof IEntry,
-						)}
+						.value=${this.getStyleYaml()}
 						.error=${Boolean(this.errors)}
 						@value-changed=${this.handleStyleYamlChanged}
 						@keydown=${(e: CustomEvent) => e.stopPropagation()}
