@@ -162,9 +162,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		console.log(yaml);
 		try {
 			if (this.styleKey == 'root') {
-				if (yaml == '') {
-				} else {
-				}
 				const config = {
 					style: load(this.getStyleYaml()),
 				} as IConfig;
