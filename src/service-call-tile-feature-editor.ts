@@ -204,9 +204,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				range[index] = value;
 			} else {
 				if (index == 0) {
-					value[index] = 0; // TODO use domain defaults
+					range[index] = 0; // TODO use domain defaults
 				} else {
-					value[index] = 100; // TODO use domain defaults
+					range[index] = 100; // TODO use domain defaults
 				}
 			}
 			this.entryChanged({
