@@ -200,7 +200,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			const range = (this.config.entries[
 				this.entryEditorIndex
 			].range?.concat() as [number, number]) ?? [0, 100];
-			range[index] = value;
+			range[index] = value ?? index ? 100 : 0; // TODO use domain defaults
 			this.entryChanged({
 				range: range,
 			});
@@ -593,7 +593,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.0' as keyof IEntry,
 						{
 							number: {
-								max: entry.range?.[1],
+								max: entry.range?.[1], // TODO use domain defaults
 								step: entry.step ?? 1,
 								mode: 'box',
 								unit_of_measurement: entry.unit_of_measurement,
@@ -606,7 +606,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.1' as keyof IEntry,
 						{
 							number: {
-								min: entry.range?.[0],
+								min: entry.range?.[0], // TODO use domain defaults
 								step: entry.step ?? 1,
 								mode: 'box',
 								unit_of_measurement: entry.unit_of_measurement,
@@ -619,9 +619,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'step',
 						{
 							number: {
-								min: 0,
+								min: 0, // TODO use domain defaults
 								step: Math.min(
-									0.01,
+									1,
 									((entry.range?.[1] ?? 1) -
 										(entry.range?.[0] ?? 0)) /
 										100,
