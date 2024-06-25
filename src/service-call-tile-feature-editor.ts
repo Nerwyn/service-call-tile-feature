@@ -570,7 +570,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildAppearancePanel(
 				html`${this.buildSelector('Thumb Type', 'thumb', {
 					select: {
-						mode: 'list',
+						mode: 'dropdown',
 						options: ThumbTypes,
 						reorder: false,
 					},
