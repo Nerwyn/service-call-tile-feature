@@ -484,7 +484,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildButtonGuiEditor() {
-		let actionsTabBar = html`
+		const actionsTabBar = html`
 			<mwc-tab-bar
 				class="tab-selector"
 				.activeIndex=${this.selectedActionsTabIndex}
