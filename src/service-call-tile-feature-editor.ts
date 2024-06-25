@@ -582,7 +582,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				html`
 					${this.buildSelector(
 						'Min',
-						'range',
+						'range.0' as keyof IEntry,
 						{
 							number: {
 								max: entry.range?.[1],
@@ -595,7 +595,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					)}
 					${this.buildSelector(
 						'Max',
-						'range',
+						'range.1' as keyof IEntry,
 						{
 							number: {
 								min: entry.range?.[0],
@@ -618,18 +618,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						},
 						1,
 					)}
-					${(this.buildSelector(
-						'Post Action Value Retrieval Delay',
+					${this.buildSelector(
+						'Update After Action Delay',
 						'value_from_hass_delay',
 						{
 							number: {
 								min: 0,
+								step: 0,
 								mode: 'box',
 								unit_of_measurement: 'ms',
 							},
 						},
-					),
-					1000)}
+						1000,
+					)}
 				`,
 			)}
 			${this.buildAppearancePanel(html`
