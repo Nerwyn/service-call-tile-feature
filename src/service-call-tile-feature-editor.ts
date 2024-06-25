@@ -478,25 +478,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
 					Actions
 				</div>
-				<div class="content">
-					<mwc-tab-bar
-						class="tab-selector"
-						.activeIndex=${this.selectedActionsTabIndex}
-						@MDCTabBar:activated=${this.handleActionsTabSelected}
-					>
-						<mwc-tab
-							.label=${'default'}
-							dialogInitialFocus
-						></mwc-tab>
-						<mwc-tab .label=${'momentary'}></mwc-tab>
-					</mwc-tab-bar>
-					${actionSelectors}
-				</div>
+				<div class="content">${actionSelectors}</div>
 			</ha-expansion-panel>
 		`;
 	}
 
 	buildButtonGuiEditor() {
+		let actionsTabBar = html`
+			<mwc-tab-bar
+				class="tab-selector"
+				.activeIndex=${this.selectedActionsTabIndex}
+				@MDCTabBar:activated=${this.handleActionsTabSelected}
+			>
+				<mwc-tab .label=${'default'} dialogInitialFocus></mwc-tab>
+				<mwc-tab .label=${'momentary'}></mwc-tab>
+			</mwc-tab-bar>
+		`;
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
@@ -509,6 +506,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.selectedActionsTabIndex) {
 			case 1:
 				actionSelectors = html`
+					${actionsTabBar}
 					${this.buildSelector(
 						'Start action (optional)',
 						'momentary_start_action',
@@ -524,6 +522,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 0:
 			default:
 				actionSelectors = html`
+					${actionsTabBar}
 					${this.buildSelector(
 						'Tap action (optional)',
 						'tap_action',
