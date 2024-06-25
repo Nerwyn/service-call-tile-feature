@@ -497,7 +497,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildButtonGuiEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
