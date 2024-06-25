@@ -458,9 +458,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		</div> `;
 	}
 
-	buildAppearancePanel(
-		additionalAppearanceOptions: TemplateResult<1> = html``,
-	) {
+	buildAppearancePanel(appearanceOptions: TemplateResult<1> = html``) {
 		return html`
 			<ha-expansion-panel .header=${'Appearance'}>
 				<div
@@ -472,28 +470,26 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					<ha-icon .icon=${'mdi:palette'}></ha-icon>
 					Appearance
 				</div>
-				<div class="content">
-					${this.buildSelector('Label', 'label', {
-						text: { multiline: true },
-					})}
-					<div class="form">
-						${this.buildSelector('Icon', 'icon', {
-							icon: {},
-						})}${this.buildSelector(
-							'Units',
-							'unit_of_measurement',
-							{
-								text: {},
-							},
-						)}
-					</div>
-					${additionalAppearanceOptions}
-				</div>
+				<div class="content">${appearanceOptions}</div>
 			</ha-expansion-panel>
 		`;
 	}
 
+	buildCommonAppearanceOptions() {
+		return html` ${this.buildSelector('Label', 'label', {
+				text: { multiline: true },
+			})}
+			<div class="form">
+				${this.buildSelector('Icon', 'icon', {
+					icon: {},
+				})}${this.buildSelector('Units', 'unit_of_measurement', {
+					text: {},
+				})}
+			</div>`;
+	}
+
 	buildActionsPanel(actionSelectors: TemplateResult<1>) {
+		// TODO - set target entity ID to feature entity ID when autofill is set to true.
 		return html`
 			<ha-expansion-panel .header=${'Actions'}>
 				<div
@@ -576,13 +572,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 		return html`<div class="gui-editor">
 			${this.buildMainFeatureOptions()}
-			${this.buildAppearancePanel(
-				this.buildStyleEditor({
+			${this.buildAppearancePanel(html`
+				${this.buildCommonAppearanceOptions()}
+				${this.buildStyleEditor({
 					background_style: 'Background',
 					icon_style: 'Icon',
 					label_style: 'Label',
-				}),
-			)}
+				})}
+			`)}
 			${this.buildActionsPanel(actionSelectors)}
 		</div>`;
 	}
@@ -674,7 +671,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					label_style: 'Label',
 					slider_style: 'Slider',
 					tooltip_style: 'Tooltip',
-				})},
+				})}
 			`)}
 			${this.buildActionsPanel(
 				this.buildSelector('Action', 'tap_action', {
@@ -724,11 +721,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`<div class="gui-editor">
 			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(
-				this.buildStyleEditor({
+				html`${this.buildCommonAppearanceOptions()}
+				${this.buildStyleEditor({
 					background_style: 'Background',
 					icon_style: 'Icon',
 					label_style: 'Label',
-				}),
+				})}`,
 			)}
 			${this.buildActionsPanel(actionSelectors)}
 		</div>`;
