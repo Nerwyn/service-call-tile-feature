@@ -24,6 +24,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
+	@state() yamlString?: string;
 	@state() yamlKey?: string;
 
 	static get properties() {
@@ -74,7 +75,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	editEntry(e: CustomEvent) {
-		this.yamlKey = undefined;
+		this.yamlString = undefined;
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
@@ -101,11 +102,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
-		this.yamlKey = undefined;
+		this.yamlString = undefined;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
-		this.yamlKey = undefined;
+		this.yamlString = undefined;
 		this.guiMode = !this.guiMode;
 		if (!this.guiMode) {
 			this.yamlKey = 'entry';
@@ -113,7 +114,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	get yaml(): string {
-		if (this.yaml == undefined) {
+		if (this.yamlString == undefined) {
 			let yamlObj;
 			switch (this.yamlKey) {
 				case 'root':
@@ -129,13 +130,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					break;
 			}
 			const yaml = dump(yamlObj);
-			this.yaml = yaml.trim() == '{}' ? '' : yaml;
+			this.yamlString = yaml.trim() == '{}' ? '' : yaml;
 		}
-		return this.yaml || '';
+		return this.yamlString || '';
 	}
 
 	set yaml(yaml: string | undefined) {
-		this.yaml = yaml;
+		this.yamlString = yaml;
 		try {
 			let updatedField: IConfig | IEntry[] | IEntry;
 			switch (this.yamlKey) {
@@ -167,15 +168,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleEntryYamlChanged(e: CustomEvent) {
-		e.stopPropagation();
-		const yaml = e.detail.value;
-		if (yaml != this.yaml) {
-			this.yaml = yaml;
-		}
-	}
-
-	handleStyleYamlChanged(e: CustomEvent) {
+	handleYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const yaml = e.detail.value;
 		if (yaml != this.yaml) {
@@ -190,7 +183,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
-		this.yaml = undefined;
+		this.yamlString = undefined;
 		this.yaml;
 	}
 
@@ -249,7 +242,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildEntryList() {
 		this.yamlKey = 'root';
-		this.yaml;
 		return html`
 			<div class="content">
 				<ha-sortable
@@ -289,7 +281,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.hass=${this.hass}
 					.value=${this.yaml}
 					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleStyleYamlChanged}
+					@value-changed=${this.handleYamlChanged}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
@@ -361,7 +353,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.hass=${this.hass}
 						.value=${this.yaml}
 						.error=${Boolean(this.errors)}
-						@value-changed=${this.handleStyleYamlChanged}
+						@value-changed=${this.handleYamlChanged}
 						@keydown=${(e: CustomEvent) => e.stopPropagation()}
 						dir="ltr"
 					></ha-code-editor>
@@ -597,7 +589,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.hass=${this.hass}
 					.value=${this.yaml}
 					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleEntryYamlChanged}
+					@value-changed=${this.handleYamlChanged}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
