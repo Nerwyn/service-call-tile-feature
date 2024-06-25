@@ -287,7 +287,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildEntryHeader(entry: IEntry) {
+	buildEntryHeader() {
+		const entry = this.config.entries[this.entryEditorIndex];
 		return html`
 			<div class="header">
 				<div class="back-title">
@@ -575,7 +576,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		</div>`;
 	}
 
+	buildEntryGuiEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
+		switch (entry.type) {
+			case 'slider':
+			case 'selector':
+			case 'spinbox':
+			case 'button':
+			default:
+				return this.buildButtonGuiEditor(entry);
+		}
+	}
+
 	buildEntryYamlEditor() {
+		this.yamlString = undefined;
 		this.yamlKey = 'entry';
 		return html`
 			<div class="yaml-editor">
@@ -596,21 +610,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
-
-		let entryGuiEditor: TemplateResult<1>;
-		switch (entry.type) {
-			case 'slider':
-			case 'selector':
-			case 'spinbox':
-			case 'button':
-			default:
-				entryGuiEditor = this.buildButtonGuiEditor(entry);
-		}
 		return html`
-			${this.buildEntryHeader(entry)}
+			${this.buildEntryHeader()}
 			<div class="wrapper">
-				${this.guiMode ? entryGuiEditor : this.buildEntryYamlEditor()}
+				${this.guiMode
+					? this.buildEntryGuiEditor()
+					: this.buildEntryYamlEditor()}
 				${this.buildErrorPanel()}
 			</div>
 		`;
