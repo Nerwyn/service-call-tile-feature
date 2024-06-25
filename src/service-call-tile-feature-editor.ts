@@ -574,6 +574,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						options: ThumbTypes,
 						reorder: false,
 					},
+					'default'
 				})}
 				${this.buildStyleEditor({
 					background_style: 'Background',
