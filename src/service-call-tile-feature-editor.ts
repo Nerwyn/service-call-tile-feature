@@ -612,6 +612,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						{
 							number: {
 								min: 0,
+								step: Math.min(
+									0.01,
+									((entry.range?.[1] ?? 1) -
+										(entry.range?.[0] ?? 0)) /
+										100,
+								),
 								mode: 'box',
 								unit_of_measurement: entry.unit_of_measurement,
 							},
