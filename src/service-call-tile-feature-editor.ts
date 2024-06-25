@@ -24,10 +24,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
-	@state() warnings?: string[];
-	@state() entryYaml?: string;
-	@state() styleYaml?: string;
-	@state() styleKey?: string;
+	@state() yamlKey?: string;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -77,7 +74,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	editEntry(e: CustomEvent) {
-		this.styleYaml = undefined;
+		this.yamlKey = undefined;
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
@@ -104,30 +101,62 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.entryEditorIndex = -1;
-		this.entryYaml = undefined;
-		this.styleYaml = undefined;
+		this.yamlKey = undefined;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
-		this.entryYaml = undefined;
-		this.styleYaml = undefined;
+		this.yamlKey = undefined;
 		this.guiMode = !this.guiMode;
+		if (!this.guiMode) {
+			this.yamlKey = 'entry';
+		}
 	}
 
 	get yaml(): string {
-		if (!this.entryYaml) {
-			this.entryYaml = dump(this.config.entries[this.entryEditorIndex]);
+		if (this.yaml == undefined) {
+			let yamlObj;
+			switch (this.yamlKey) {
+				case 'root':
+					yamlObj = this.config.style ?? {};
+					break;
+				case 'entry':
+					yamlObj = this.config.entries[this.entryEditorIndex];
+					break;
+				default:
+					yamlObj = this.config.entries[this.entryEditorIndex][
+						this.yamlKey as keyof IEntry
+					] as StyleInfo;
+					break;
+			}
+			const yaml = dump(yamlObj);
+			this.yaml = yaml.trim() == '{}' ? '' : yaml;
 		}
-		return this.entryYaml || '';
+		return this.yaml || '';
 	}
 
-	set yaml(yaml: string) {
-		this.entryYaml = yaml;
-		const entries = this.config.entries.concat();
+	set yaml(yaml: string | undefined) {
+		this.yaml = yaml;
 		try {
-			entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
+			switch (this.yamlKey) {
+				case 'root':
+					this.configChanged({
+						style: load(this.yaml),
+					} as IConfig);
+					break;
+				case 'entry':
+					const entries = this.config.entries.concat();
+					entries[this.entryEditorIndex] = load(this.yaml) as IEntry;
+					this.entriesChanged(entries);
+					break;
+				default:
+					this.entryChanged({
+						[this.yamlKey as keyof IEntry]: load(
+							this.yaml,
+						) as StyleInfo,
+					});
+					break;
+			}
 			this.errors = undefined;
-			this.entriesChanged(entries);
 		} catch (e) {
 			this.errors = [(e as Error).message];
 		}
@@ -141,49 +170,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	getStyleYaml(): string {
-		if (this.styleYaml == undefined) {
-			let styleObj: StyleInfo;
-			if (this.styleKey == 'root') {
-				styleObj = this.config.style ?? {};
-			} else {
-				styleObj = this.config.entries[this.entryEditorIndex][
-					this.styleKey as keyof IEntry
-				] as StyleInfo;
-			}
-			const styleYaml = dump(styleObj);
-			this.styleYaml = styleYaml.trim() == '{}' ? '' : styleYaml;
-		}
-		return this.styleYaml || '';
-	}
-
-	setStyleYaml(yaml?: string) {
-		this.styleYaml = yaml;
-		try {
-			if (this.styleKey == 'root') {
-				const config = {
-					style: load(this.getStyleYaml()),
-				} as IConfig;
-				this.configChanged(config);
-			} else {
-				const entry = {
-					[this.styleKey as keyof IEntry]: load(
-						this.getStyleYaml(),
-					) as StyleInfo,
-				};
-				this.entryChanged(entry);
-			}
-			this.errors = undefined;
-		} catch (e) {
-			this.errors = [(e as Error).message];
-		}
-	}
-
 	handleStyleYamlChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const yaml = e.detail.value;
-		if (yaml != this.styleYaml) {
-			this.setStyleYaml(yaml);
+		if (yaml != this.yaml) {
+			this.yaml = yaml;
 		}
 	}
 
@@ -192,11 +183,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.selectedStyleTabIndex == i) {
 			return;
 		}
-		this.styleKey = (e.target as HTMLElement).children[i]
-			.id as keyof IEntry;
+		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.selectedStyleTabIndex = i;
-		this.styleYaml = undefined;
-		this.getStyleYaml();
+		this.yaml = undefined;
+		this.yaml;
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
@@ -253,8 +243,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryList() {
-		this.styleKey = 'root';
-		this.getStyleYaml();
+		this.yamlKey = 'root';
+		this.yaml;
 		return html`
 			<div class="content">
 				<ha-sortable
@@ -292,14 +282,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					autocomplete-entities
 					autocomplete-icons
 					.hass=${this.hass}
-					.value=${this.getStyleYaml()}
+					.value=${this.yaml}
 					.error=${Boolean(this.errors)}
 					@value-changed=${this.handleStyleYamlChanged}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
 			</div>
-			${this.buildErrorWarningPanel()}
+			${this.buildErrorPanel()}
 		`;
 	}
 
@@ -333,7 +323,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildStyleEditor(fields: Record<string, string>) {
-		this.styleKey = ['style'].concat(Object.keys(fields))[
+		this.yamlKey = ['style'].concat(Object.keys(fields))[
 			this.selectedStyleTabIndex
 		] as keyof IEntry;
 		return html`
@@ -364,7 +354,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						autocomplete-entities
 						autocomplete-icons
 						.hass=${this.hass}
-						.value=${this.getStyleYaml()}
+						.value=${this.yaml}
 						.error=${Boolean(this.errors)}
 						@value-changed=${this.handleStyleYamlChanged}
 						@keydown=${(e: CustomEvent) => e.stopPropagation()}
@@ -626,12 +616,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildEntryHeader(entry)}
 			<div class="wrapper">
 				${this.guiMode ? entryGuiEditor : this.buildEntryYamlEditor()}
-				${this.buildErrorWarningPanel()}
+				${this.buildErrorPanel()}
 			</div>
 		`;
 	}
 
-	buildErrorWarningPanel() {
+	buildErrorPanel() {
 		return html`
 			${this.errors && this.errors.length > 0
 				? html`<div class="error">
@@ -645,23 +635,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							)}
 						</ul>
 				  </div>`
-				: html``}
-			${this.warnings && this.warnings.length > 0
-				? html` <ha-alert
-						alert-type="warning"
-						.title="${this.hass.localize(
-							'ui.errors.config.editor_not_supported',
-						)}:"
-				  >
-						<ul>
-							${this.warnings!.map(
-								(warning) => html`<li>${warning}</li>`,
-							)}
-						</ul>
-						${this.hass.localize(
-							'ui.errors.config.edit_in_yaml_supported',
-						)}
-				  </ha-alert>`
 				: html``}
 		`;
 	}
