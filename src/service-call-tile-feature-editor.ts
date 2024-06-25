@@ -561,12 +561,90 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		</div>`;
 	}
 
+	buildSliderGuiEditor() {
+		const actionsNoRepeat = Actions.concat();
+		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
+		const defaultUiActions = {
+			ui_action: {
+				actions: actionsNoRepeat,
+				default_action: 'call-service',
+			},
+		};
+		const actionSelectors = html`
+			${this.buildSelector('Action', 'tap_action', defaultUiActions)}
+		`;
+
+		return html`<div class="gui-editor">
+			${this.buildMainFeatureOptions()}
+			${this.buildAppearancePanel(
+				this.buildStyleEditor({
+					background_style: 'Background',
+					icon_style: 'Icon',
+					label_style: 'Label',
+					slider_style: 'Slider',
+					tooltip_style: 'Tooltip',
+				}),
+			)}
+			${this.buildActionsPanel(actionSelectors)}
+		</div>`;
+	}
+
+	buildSelectorGuiEditor() {
+		return html`<div class="gui-editor">
+			${this.buildMainFeatureOptions()}
+			${this.buildAppearancePanel(
+				this.buildStyleEditor({
+					background_style: 'Background',
+				}),
+			)}
+		</div>`;
+	}
+
+	buildSpinboxGuiEditor() {
+		const actionsNoRepeat = Actions.concat();
+		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
+		const defaultTapActions = {
+			ui_action: {
+				actions: actionsNoRepeat,
+				default_action: 'call-service',
+			},
+		};
+		const defaultHoldActions = {
+			ui_action: {
+				actions: ['repeat', 'none'],
+				default_action: 'none',
+			},
+		};
+		const actionSelectors = html`
+			${this.buildSelector('Tap action', 'tap_action', defaultTapActions)}
+			${this.buildSelector(
+				'Hold action (optional)',
+				'hold_action',
+				defaultHoldActions,
+			)}
+		`;
+		return html`<div class="gui-editor">
+			${this.buildMainFeatureOptions()}
+			${this.buildAppearancePanel(
+				this.buildStyleEditor({
+					background_style: 'Background',
+					icon_style: 'Icon',
+					label_style: 'Label',
+				}),
+			)}
+			${this.buildActionsPanel(actionSelectors)}
+		</div>`;
+	}
+
 	buildEntryGuiEditor() {
 		const entry = this.config.entries[this.entryEditorIndex];
 		switch (entry.type) {
 			case 'slider':
+				return this.buildSliderGuiEditor();
 			case 'selector':
+				return this.buildSelectorGuiEditor();
 			case 'spinbox':
+				return this.buildSpinboxGuiEditor();
 			case 'button':
 			default:
 				return this.buildButtonGuiEditor();
