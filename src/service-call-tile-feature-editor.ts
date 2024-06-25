@@ -196,46 +196,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		const value = e.detail.value;
-		this.entryChanged({
-			[key]: value,
-		});
-	}
-
-	buildEntryListItem(entry: IEntry, i: number) {
-		return html`
-			<div class="feature">
-				<div class="handle">
-					<ha-icon .icon="${'mdi:drag'}"></ha-icon>
-				</div>
-				<div class="feature-content">
-					<div>
-						<span>${entry.type ?? 'Button'}</span>
-					</div>
-				</div>
-				<ha-icon-button
-					class="edit-icon"
-					.index=${i}
-					@click=${this.editEntry}
-				>
-					<ha-icon .icon="${'mdi:pencil'}"></ha-icon>
-				</ha-icon-button>
-				<ha-icon-button
-					class="remove-icon"
-					.index=${i}
-					@click=${this.removeEntry}
-				>
-					<ha-icon .icon="${'mdi:delete'}"></ha-icon>
-				</ha-icon-button>
-			</div>
-		`;
-	}
-
-	buildAddEntryListItem(tileFeatureType: TileFeatureType) {
-		return html`
-			<ha-list-item .value=${tileFeatureType}>
-				${tileFeatureType}
-			</ha-list-item>
-		`;
+		if (['range.0', 'range.1'].includes(key)) {
+			const index = parseInt(key.split('.')[1]);
+			const range = this.config.entries[this.entryEditorIndex].range ?? [
+				0, 100,
+			];
+			range[index] = value;
+			this.entryChanged({
+				range: range,
+			});
+		} else {
+			this.entryChanged({
+				[key]: value,
+			});
+		}
 	}
 
 	buildEntryList() {
@@ -247,8 +221,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${this.moveEntry}
 				>
 					<div class="features">
-						${this.config.entries.map((entry, i) =>
-							this.buildEntryListItem(entry, i),
+						${this.config.entries.map(
+							(entry, i) => html`
+								<div class="feature">
+									<div class="handle">
+										<ha-icon
+											.icon="${'mdi:drag'}"
+										></ha-icon>
+									</div>
+									<div class="feature-content">
+										<div>
+											<span
+												>${entry.type ?? 'Button'}</span
+											>
+										</div>
+									</div>
+									<ha-icon-button
+										class="edit-icon"
+										.index=${i}
+										@click=${this.editEntry}
+									>
+										<ha-icon
+											.icon="${'mdi:pencil'}"
+										></ha-icon>
+									</ha-icon-button>
+									<ha-icon-button
+										class="remove-icon"
+										.index=${i}
+										@click=${this.removeEntry}
+									>
+										<ha-icon
+											.icon="${'mdi:delete'}"
+										></ha-icon>
+									</ha-icon-button>
+								</div>
+							`,
 						)}
 					</div>
 				</ha-sortable>
@@ -265,8 +272,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				>
 					<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 				</ha-button>
-				${TileFeatureTypes.map((tileFeatureType) =>
-					this.buildAddEntryListItem(tileFeatureType),
+				${TileFeatureTypes.map(
+					(tileFeatureType) => html`
+						<ha-list-item .value=${tileFeatureType}>
+							${tileFeatureType}
+						</ha-list-item>
+					`,
 				)}
 			</ha-button-menu>
 			<div class="root-style-header">CSS Styles</div>
@@ -562,13 +573,68 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildSliderGuiEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
 		return html`<div class="gui-editor">
-			${this.buildMainFeatureOptions()}
-			${this.buildAppearancePanel(
-				html`${this.buildSelector(
+			${this.buildMainFeatureOptions(
+				undefined,
+				html`
+					${this.buildSelector(
+						'Min',
+						'range',
+						{
+							number: {
+								max: entry.range?.[1],
+								step: entry.step ?? 1,
+								mode: 'box',
+								unit_of_measurement: entry.unit_of_measurement,
+							},
+						},
+						0,
+					)}
+					${this.buildSelector(
+						'Max',
+						'range',
+						{
+							number: {
+								min: entry.range?.[0],
+								step: entry.step ?? 1,
+								mode: 'box',
+								unit_of_measurement: entry.unit_of_measurement,
+							},
+						},
+						100,
+					)}
+					${this.buildSelector(
+						'Step',
+						'step',
+						{
+							number: {
+								min: 0,
+								mode: 'box',
+								unit_of_measurement: entry.unit_of_measurement,
+							},
+						},
+						1,
+					)}
+					${(this.buildSelector(
+						'Post Action Value Retrieval Delay',
+						'value_from_hass_delay',
+						{
+							number: {
+								min: 0,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+					),
+					1000)}
+				`,
+			)}
+			${this.buildAppearancePanel(html`
+				${this.buildSelector(
 					'Thumb Type',
 					'thumb',
 					{
@@ -586,8 +652,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					label_style: 'Label',
 					slider_style: 'Slider',
 					tooltip_style: 'Tooltip',
-				})} `,
-			)}
+				})},
+			`)}
 			${this.buildActionsPanel(
 				this.buildSelector('Action', 'tap_action', {
 					ui_action: {
