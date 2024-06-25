@@ -288,7 +288,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryHeader(entry: IEntry) {
-		this.yamlKey = 'entry';
 		return html`
 			<div class="header">
 				<div class="back-title">
@@ -577,6 +576,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryYamlEditor() {
+		this.yamlKey = 'entry';
 		return html`
 			<div class="yaml-editor">
 				<ha-code-editor
