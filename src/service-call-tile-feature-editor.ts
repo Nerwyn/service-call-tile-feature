@@ -108,9 +108,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	toggleGuiMode(_e: CustomEvent) {
 		this.yamlString = undefined;
 		this.guiMode = !this.guiMode;
-		if (!this.guiMode) {
-			this.yamlKey = 'entry';
-		}
 	}
 
 	get yaml(): string {
@@ -291,6 +288,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryHeader(entry: IEntry) {
+		this.yamlKey = 'entry';
 		return html`
 			<div class="header">
 				<div class="back-title">
