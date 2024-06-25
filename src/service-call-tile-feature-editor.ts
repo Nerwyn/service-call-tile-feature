@@ -195,7 +195,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		const value = e.detail.value;
-		if (['range.0', 'range.1'].includes(key)) {
+		if (key.startsWith('range.')) {
 			const index = parseInt(key.split('.')[1]);
 			const range = (this.config.entries[
 				this.entryEditorIndex
@@ -391,10 +391,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 
+		let value;
+		if (key.startsWith('range.')) {
+			const index = parseInt(key.split('.')[1]);
+			value = entry.range?.[index];
+		} else {
+			value = entry[key];
+		}
+
 		return html`<ha-selector
 			.hass=${hass}
 			.selector=${selector}
-			.value=${entry[key] ?? backupValue}
+			.value=${value ?? backupValue}
 			.label="${label}"
 			.name="${label}"
 			.required=${false}
