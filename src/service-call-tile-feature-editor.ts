@@ -9,7 +9,6 @@ import { dump, load } from 'js-yaml';
 import {
 	IConfig,
 	IEntry,
-	TileFeatureType,
 	TileFeatureTypes,
 	Actions,
 	ThumbTypes,
