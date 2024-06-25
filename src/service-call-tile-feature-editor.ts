@@ -361,12 +361,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildSelector(
-		entry: IEntry,
 		label: string,
 		key: keyof IEntry,
 		selector: object,
 		backupValue: string | number | boolean | object = '',
 	) {
+		const entry = this.config.entries[this.entryEditorIndex];
 		const hass: HomeAssistant = {
 			...this.hass,
 			localize: (key, values) => {
@@ -393,30 +393,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildMainFeatureOptions(
-		entry: IEntry,
 		additionalOptions: TemplateResult<1> = html``,
 		additionalFormOptions: TemplateResult<1> = html``,
 	) {
+		const entry = this.config.entries[this.entryEditorIndex];
 		return html`
-			${this.buildSelector(entry, 'Entity', 'entity_id', {
+			${this.buildSelector('Entity', 'entity_id', {
 				entity: {},
 			})}
 			${
 				entry.entity_id
-					? this.buildSelector(
-							entry,
-							'Attribute',
-							'value_attribute',
-							{
-								attribute: { entity_id: entry.entity_id },
-							},
-					  )
+					? this.buildSelector('Attribute', 'value_attribute', {
+							attribute: { entity_id: entry.entity_id },
+					  })
 					: html``
 			}
 			${additionalOptions}
 			<div class="form">
 				${this.buildSelector(
-					entry,
 					'Autofill Entity',
 					'autofill_entity_id',
 					{
@@ -425,7 +419,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					true,
 				)}
 				${this.buildSelector(
-					entry,
 					'Haptics',
 					'haptics',
 					{
@@ -439,7 +432,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildAppearancePanel(
-		entry: IEntry,
 		additionalAppearanceOptions: TemplateResult<1> = html``,
 	) {
 		return html`
@@ -454,14 +446,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					${this.buildSelector(entry, 'Label', 'label', {
+					${this.buildSelector('Label', 'label', {
 						text: { multiline: true },
 					})}
 					<div class="form">
-						${this.buildSelector(entry, 'Icon', 'icon', {
+						${this.buildSelector('Icon', 'icon', {
 							icon: {},
 						})}${this.buildSelector(
-							entry,
 							'Units',
 							'unit_of_measurement',
 							{
@@ -505,7 +496,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildButtonGuiEditor(entry: IEntry) {
+	buildButtonGuiEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
@@ -519,13 +511,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 1:
 				actionSelectors = html`
 					${this.buildSelector(
-						entry,
 						'Start action (optional)',
 						'momentary_start_action',
 						defaultUiActions,
 					)}
 					${this.buildSelector(
-						entry,
 						'End action (optional)',
 						'momentary_end_action',
 						defaultUiActions,
@@ -536,19 +526,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			default:
 				actionSelectors = html`
 					${this.buildSelector(
-						entry,
 						'Tap action (optional)',
 						'tap_action',
 						defaultUiActions,
 					)}
 					${this.buildSelector(
-						entry,
 						'Double tap action (optional)',
 						'double_tap_action',
 						defaultUiActions,
 					)}
 					${this.buildSelector(
-						entry,
 						'Hold action (optional)',
 						'hold_action',
 						{
@@ -563,9 +550,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return html`<div class="gui-editor">
-			${this.buildMainFeatureOptions(entry)}
+			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(
-				entry,
 				this.buildStyleEditor({
 					background_style: 'Background',
 					icon_style: 'Icon',
@@ -584,7 +570,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 'spinbox':
 			case 'button':
 			default:
-				return this.buildButtonGuiEditor(entry);
+				return this.buildButtonGuiEditor();
 		}
 	}
 
