@@ -40,7 +40,8 @@ export const TileFeatureTypes = [
 ] as const;
 export type TileFeatureType = (typeof TileFeatureTypes)[number];
 
-export type ThumbType = 'default' | 'line' | 'flat' | 'round';
+export const ThumbTypes = ['default', 'line', 'flat', 'round'] as const;
+export type ThumbType = (typeof ThumbTypes)[number];
 
 export interface ISliderOptions {
 	range?: [number, number];

@@ -12,6 +12,7 @@ import {
 	TileFeatureType,
 	TileFeatureTypes,
 	Actions,
+	ThumbTypes,
 } from './models/interfaces';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
@@ -563,28 +564,33 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildSliderGuiEditor() {
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
-		const defaultUiActions = {
-			ui_action: {
-				actions: actionsNoRepeat,
-				default_action: 'call-service',
-			},
-		};
-		const actionSelectors = html`
-			${this.buildSelector('Action', 'tap_action', defaultUiActions)}
-		`;
 
 		return html`<div class="gui-editor">
 			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(
-				this.buildStyleEditor({
+				html`${this.buildSelector('Thumb Type', 'thumb', {
+					select: {
+						mode: 'list',
+						options: ThumbTypes,
+						reorder: false,
+					},
+				})}
+				${this.buildStyleEditor({
 					background_style: 'Background',
 					icon_style: 'Icon',
 					label_style: 'Label',
 					slider_style: 'Slider',
 					tooltip_style: 'Tooltip',
+				})} `,
+			)}
+			${this.buildActionsPanel(
+				this.buildSelector('Action', 'tap_action', {
+					ui_action: {
+						actions: actionsNoRepeat,
+						default_action: 'call-service',
+					},
 				}),
 			)}
-			${this.buildActionsPanel(actionSelectors)}
 		</div>`;
 	}
 
