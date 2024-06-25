@@ -568,14 +568,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`<div class="gui-editor">
 			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(
-				html`${this.buildSelector('Thumb Type', 'thumb', {
-					select: {
-						mode: 'dropdown',
-						options: ThumbTypes,
-						reorder: false,
+				html`${this.buildSelector(
+					'Thumb Type',
+					'thumb',
+					{
+						select: {
+							mode: 'dropdown',
+							options: ThumbTypes,
+							reorder: false,
+						},
 					},
-					'default'
-				})}
+					'default',
+				)}
 				${this.buildStyleEditor({
 					background_style: 'Background',
 					icon_style: 'Icon',
