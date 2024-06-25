@@ -200,7 +200,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			const range = (this.config.entries[
 				this.entryEditorIndex
 			].range?.concat() as [number, number]) ?? [0, 100];
-			range[index] = value ?? index ? 100 : 0; // TODO use domain defaults
+			if (value != undefined) {
+				range[index] = value;
+			} else {
+				if (index == 0) {
+					value[index] = 0; // TODO use domain defaults
+				} else {
+					value[index] = 100; // TODO use domain defaults
+				}
+			}
 			this.entryChanged({
 				range: range,
 			});
