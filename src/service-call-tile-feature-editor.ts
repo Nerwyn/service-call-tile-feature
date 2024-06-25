@@ -197,9 +197,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const value = e.detail.value;
 		if (['range.0', 'range.1'].includes(key)) {
 			const index = parseInt(key.split('.')[1]);
-			const range = this.config.entries[this.entryEditorIndex].range ?? [
-				0, 100,
-			];
+			const range = (this.config.entries[
+				this.entryEditorIndex
+			].range?.concat() as [number, number]) ?? [0, 100];
 			range[index] = value;
 			this.entryChanged({
 				range: range,
