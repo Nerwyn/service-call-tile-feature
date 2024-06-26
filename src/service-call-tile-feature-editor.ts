@@ -696,6 +696,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildSpinboxGuiEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 		const defaultTapActions = {
@@ -718,8 +719,82 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				defaultHoldActions,
 			)}
 		`;
+
 		return html`<div class="gui-editor">
-			${this.buildMainFeatureOptions()}
+			${this.buildMainFeatureOptions(
+				this.buildSelector(
+					'Step',
+					'step',
+					{
+						number: {
+							min: 0, // TODO use domain defaults
+							step: Math.min(
+								1,
+								((entry.range?.[1] ?? 1) -
+									(entry.range?.[0] ?? 0)) /
+									100,
+							),
+							mode: 'box',
+							unit_of_measurement: entry.unit_of_measurement,
+						},
+					},
+					1,
+				),
+				html`
+					${this.buildSelector(
+						'Min',
+						'range.0' as keyof IEntry,
+						{
+							number: {
+								max: entry.range?.[1], // TODO use domain defaults
+								step: entry.step ?? 1,
+								mode: 'box',
+								unit_of_measurement: entry.unit_of_measurement,
+							},
+						},
+						0,
+					)}
+					${this.buildSelector(
+						'Max',
+						'range.1' as keyof IEntry,
+						{
+							number: {
+								min: entry.range?.[0], // TODO use domain defaults
+								step: entry.step ?? 1,
+								mode: 'box',
+								unit_of_measurement: entry.unit_of_measurement,
+							},
+						},
+						100,
+					)}
+					${this.buildSelector(
+						'Update After Action Delay',
+						'value_from_hass_delay',
+						{
+							number: {
+								min: 0,
+								step: 1,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						1000,
+					)}
+					${this.buildSelector(
+						'Debounce Time',
+						'debounce_time',
+						{
+							number: {
+								min: 0,
+								step: 1,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						1000,
+					)}
+				`,
+			)}
 			${this.buildAppearancePanel(
 				html`${this.buildCommonAppearanceOptions()}
 				${this.buildStyleEditor({
@@ -827,8 +902,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 			ha-expansion-panel {
 				display: block;
-				--expansion-panel-content-padding: 0;
 				border-radius: 6px;
+				border: solid 1px var(--outline-color);
+				--ha-card-border-radius: 6px;
+				--expansion-panel-content-padding: 0;
 			}
 			ha-icon {
 				display: flex;
@@ -938,9 +1015,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				white-space: pre-wrap;
 			}
 
-			ha-expansion-panel {
-				border: solid 1px var(--outline-color);
-			}
 			.panel-header {
 				display: inline-flex;
 				gap: 4px;
