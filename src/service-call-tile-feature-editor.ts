@@ -437,6 +437,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			${additionalOptions}
 			<div class="form">
+				${additionalFormOptions}
 				${this.buildSelector(
 					'Autofill Entity',
 					'autofill_entity_id',
@@ -453,7 +454,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					},
 					false,
 				)}
-				${additionalFormOptions}
 			</div>
 		</div> `;
 	}
