@@ -217,6 +217,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleOptionsTabSelected(e: CustomEvent) {
+		this.yamlString = undefined;
 		const i = e.detail.index;
 		if (this.optionsTabIndex == i) {
 			return;
@@ -240,7 +241,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.styleTabIndex = i;
 		this.yamlString = undefined;
-		this.yaml;
 	}
 
 	handleSelectorChange(e: CustomEvent) {
