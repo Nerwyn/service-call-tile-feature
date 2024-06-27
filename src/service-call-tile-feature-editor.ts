@@ -708,9 +708,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							${i ? '' : 'dialogInitialFocus'}
 						>
 							${option.icon
-								? `<ha-icon
-								.icon="${option.icon}"
-							></ha-icon>`
+								? html`<ha-icon
+										.icon="${option.icon}"
+								  ></ha-icon>`
 								: ''}
 						</mwc-tab>
 					`,
