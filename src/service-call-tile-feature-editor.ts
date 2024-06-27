@@ -702,7 +702,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					(option, i) => html`
 						<mwc-tab
 							.label=${option.label ?? `Option ${i + 1}`}
-							hasImageIcon
+							?hasImageIcon=${Boolean(option.icon)}
 							${i ? '' : 'dialogInitialFocus'}
 						>
 							${option.icon
