@@ -318,6 +318,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryHeader() {
+		const entry = this.config.entries[this.entryEditorIndex];
 		return html`
 			<div class="header">
 				<div class="back-title">
@@ -325,9 +326,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.label=${this.hass.localize('ui.common.back')}
 						@click=${this.exitEditEntry}
 					></ha-icon-button-prev>
-					<span slot="title">
-						${this.activeEntry?.type ?? 'Button'}
-					</span>
+					<span slot="title"> ${entry?.type ?? 'Button'} </span>
 				</div>
 				<ha-icon-button
 					class="gui-mode-button"
