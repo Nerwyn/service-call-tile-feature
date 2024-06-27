@@ -9,6 +9,7 @@ import { dump, load } from 'js-yaml';
 import {
 	IConfig,
 	IEntry,
+	IOption,
 	TileFeatureTypes,
 	Actions,
 	ThumbTypes,
@@ -18,6 +19,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
 
+	@state() activeEntry?: IEntry | IOption;
 	@state() entryEditorIndex: number = -1;
 	@state() optionsTabIndex: number = 1;
 	@state() actionsTabIndex: number = 0;
@@ -316,7 +318,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryHeader() {
-		const entry = this.config.entries[this.entryEditorIndex];
 		return html`
 			<div class="header">
 				<div class="back-title">
@@ -324,7 +325,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.label=${this.hass.localize('ui.common.back')}
 						@click=${this.exitEditEntry}
 					></ha-icon-button-prev>
-					<span slot="title"> ${entry.type ?? 'Button'} </span>
+					<span slot="title">
+						${this.activeEntry?.type ?? 'Button'}
+					</span>
 				</div>
 				<ha-icon-button
 					class="gui-mode-button"
@@ -393,7 +396,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		selector: object,
 		backupValue: string | number | boolean | object = '',
 	) {
-		const entry = this.config.entries[this.entryEditorIndex];
 		const hass: HomeAssistant = {
 			...this.hass,
 			localize: (key, values) => {
@@ -410,9 +412,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let value;
 		if (key.startsWith('range.')) {
 			const index = parseInt(key.split('.')[1]);
-			value = entry.range?.[index];
+			value = this.activeEntry?.range?.[index];
 		} else {
-			value = entry[key];
+			value = this.activeEntry?.[key];
 		}
 
 		return html`<ha-selector
@@ -431,15 +433,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		additionalOptions: TemplateResult<1> = html``,
 		additionalFormOptions: TemplateResult<1> = html``,
 	) {
-		const entry = this.config.entries[this.entryEditorIndex];
 		return html`
 			${this.buildSelector('Entity', 'entity_id', {
 				entity: {},
 			})}
 			${
-				entry.entity_id
+				this.activeEntry?.entity_id
 					? this.buildSelector('Attribute', 'value_attribute', {
-							attribute: { entity_id: entry.entity_id },
+							attribute: {
+								entity_id: this.activeEntry.entity_id,
+							},
 					  })
 					: ''
 			}
@@ -577,7 +580,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 
-		return html`<div class="gui-editor">
+		return html`
 			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(html`
 				${this.buildCommonAppearanceOptions()}
@@ -588,15 +591,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				})}
 			`)}
 			${this.buildActionsPanel(actionSelectors)}
-		</div>`;
+		`;
 	}
 
 	buildSliderGuiEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
-		return html`<div class="gui-editor">
+		return html`
 			${this.buildMainFeatureOptions(
 				undefined,
 				html`
@@ -605,10 +607,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.0' as keyof IEntry,
 						{
 							number: {
-								max: entry.range?.[1], // TODO use domain defaults
-								step: entry.step ?? 1,
+								max: this.activeEntry?.range?.[1], // TODO use domain defaults
+								step: this.activeEntry?.step ?? 1,
 								mode: 'box',
-								unit_of_measurement: entry.unit_of_measurement,
+								unit_of_measurement:
+									this.activeEntry?.unit_of_measurement,
 							},
 						},
 						0,
@@ -618,10 +621,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.1' as keyof IEntry,
 						{
 							number: {
-								min: entry.range?.[0], // TODO use domain defaults
-								step: entry.step ?? 1,
+								min: this.activeEntry?.range?.[0], // TODO use domain defaults
+								step: this.activeEntry?.step ?? 1,
 								mode: 'box',
-								unit_of_measurement: entry.unit_of_measurement,
+								unit_of_measurement:
+									this.activeEntry?.unit_of_measurement,
 							},
 						},
 						100,
@@ -634,12 +638,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								min: 0, // TODO use domain defaults
 								step: Math.min(
 									1,
-									((entry.range?.[1] ?? 1) -
-										(entry.range?.[0] ?? 0)) /
+									((this.activeEntry?.range?.[1] ?? 1) -
+										(this.activeEntry?.range?.[0] ?? 0)) /
 										100,
 								),
 								mode: 'box',
-								unit_of_measurement: entry.unit_of_measurement,
+								unit_of_measurement:
+									this.activeEntry?.unit_of_measurement,
 							},
 						},
 						1,
@@ -660,6 +665,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				`,
 			)}
 			${this.buildAppearancePanel(html`
+				${this.buildCommonAppearanceOptions()}
 				${this.buildSelector(
 					'Thumb Type',
 					'thumb',
@@ -688,23 +694,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					},
 				}),
 			)}
-		</div>`;
+		`;
 	}
 
 	buildSelectorGuiEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
 		const optionsTabBar = html`
 			<mwc-tab-bar
 				.activeIndex=${this.optionsTabIndex}
 				@MDCTabBar:activated=${this.handleOptionsTabSelected}
 			>
-				${entry.options?.map(
+				<mwc-tab .label=${'Selector'} dialogInitialFocus></mwc-tab>
+				${this.activeEntry?.options?.map(
 					(option, i) => html`
 						<mwc-tab
 							.label=${option.label ??
 							(option.icon ? '' : `Option ${i + 1}`)}
 							?hasImageIcon=${Boolean(option.icon)}
-							${i ? '' : 'dialogInitialFocus'}
 						>
 							${option.icon
 								? html`<ha-icon
@@ -718,19 +723,30 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			</mwc-tab-bar>
 		`;
 
-		return html`<div class="gui-editor">
+		let selectorGuiEditor: TemplateResult<1>;
+		switch (this.optionsTabIndex) {
+			case 0:
+				selectorGuiEditor = html` ${this.buildAppearancePanel(html`
+					${this.optionsTabIndex
+						? this.buildCommonAppearanceOptions()
+						: ''}
+					${this.buildStyleEditor({
+						background_style: 'Background',
+					})},
+				`)}`;
+				break;
+			default:
+				selectorGuiEditor = this.buildButtonGuiEditor();
+				break;
+		}
+
+		return html`
 			${optionsTabBar}${this.buildMainFeatureOptions()}
-			${this.buildAppearancePanel(html`
-				${this.buildCommonAppearanceOptions()}
-				${this.buildStyleEditor({
-					background_style: 'Background',
-				})},
-			`)}
-		</div>`;
+			${selectorGuiEditor}
+		`;
 	}
 
 	buildSpinboxGuiEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 		const defaultTapActions = {
@@ -764,107 +780,124 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			</mwc-tab-bar>
 		`;
 
-		return html`<div class="gui-editor">
-			${optionsTabBar}
-			${this.buildMainFeatureOptions(
-				this.buildSelector(
-					'Step',
-					'step',
-					{
-						number: {
-							min: 0, // TODO use domain defaults
-							step: Math.min(
-								1,
-								((entry.range?.[1] ?? 1) -
-									(entry.range?.[0] ?? 0)) /
-									100,
-							),
-							mode: 'box',
-							unit_of_measurement: entry.unit_of_measurement,
-						},
-					},
-					1,
-				),
-				html`
-					${this.buildSelector(
-						'Min',
-						'range.0' as keyof IEntry,
-						{
-							number: {
-								max: entry.range?.[1], // TODO use domain defaults
-								step: entry.step ?? 1,
-								mode: 'box',
-								unit_of_measurement: entry.unit_of_measurement,
+		let spinboxGuiEditor: TemplateResult<1>;
+		switch (this.optionsTabIndex) {
+			case 1:
+				spinboxGuiEditor = html`
+					${this.buildMainFeatureOptions(
+						this.buildSelector(
+							'Step',
+							'step',
+							{
+								number: {
+									min: 0, // TODO use domain defaults
+									step: Math.min(
+										1,
+										((this.activeEntry?.range?.[1] ?? 1) -
+											(this.activeEntry?.range?.[0] ??
+												0)) /
+											100,
+									),
+									mode: 'box',
+									unit_of_measurement:
+										this.activeEntry?.unit_of_measurement,
+								},
 							},
-						},
-						0,
+							1,
+						),
+						html`
+							${this.buildSelector(
+								'Min',
+								'range.0' as keyof IEntry,
+								{
+									number: {
+										max: this.activeEntry?.range?.[1], // TODO use domain defaults
+										step: this.activeEntry?.step ?? 1,
+										mode: 'box',
+										unit_of_measurement:
+											this.activeEntry
+												?.unit_of_measurement,
+									},
+								},
+								0,
+							)}
+							${this.buildSelector(
+								'Max',
+								'range.1' as keyof IEntry,
+								{
+									number: {
+										min: this.activeEntry?.range?.[0], // TODO use domain defaults
+										step: this.activeEntry?.step ?? 1,
+										mode: 'box',
+										unit_of_measurement:
+											this.activeEntry
+												?.unit_of_measurement,
+									},
+								},
+								100,
+							)}
+							${this.buildSelector(
+								'Update After Action Delay',
+								'value_from_hass_delay',
+								{
+									number: {
+										min: 0,
+										step: 1,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								1000,
+							)}
+							${this.buildSelector(
+								'Debounce Time',
+								'debounce_time',
+								{
+									number: {
+										min: 0,
+										step: 1,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								1000,
+							)}
+						`,
 					)}
-					${this.buildSelector(
-						'Max',
-						'range.1' as keyof IEntry,
-						{
-							number: {
-								min: entry.range?.[0], // TODO use domain defaults
-								step: entry.step ?? 1,
-								mode: 'box',
-								unit_of_measurement: entry.unit_of_measurement,
-							},
-						},
-						100,
+					${this.buildAppearancePanel(
+						html`${this.buildCommonAppearanceOptions()}
+						${this.buildStyleEditor({
+							background_style: 'Background',
+							icon_style: 'Icon',
+							label_style: 'Label',
+						})}`,
 					)}
-					${this.buildSelector(
-						'Update After Action Delay',
-						'value_from_hass_delay',
-						{
-							number: {
-								min: 0,
-								step: 1,
-								mode: 'box',
-								unit_of_measurement: 'ms',
-							},
-						},
-						1000,
-					)}
-					${this.buildSelector(
-						'Debounce Time',
-						'debounce_time',
-						{
-							number: {
-								min: 0,
-								step: 1,
-								mode: 'box',
-								unit_of_measurement: 'ms',
-							},
-						},
-						1000,
-					)}
-				`,
-			)}
-			${this.buildAppearancePanel(
-				html`${this.buildCommonAppearanceOptions()}
-				${this.buildStyleEditor({
-					background_style: 'Background',
-					icon_style: 'Icon',
-					label_style: 'Label',
-				})}`,
-			)}
-			${this.buildActionsPanel(actionSelectors)}
-		</div>`;
+					${this.buildActionsPanel(actionSelectors)}
+				`;
+				break;
+			default:
+				spinboxGuiEditor = this.buildButtonGuiEditor();
+				break;
+		}
+
+		return html`${optionsTabBar}${spinboxGuiEditor}`;
 	}
 
 	buildEntryGuiEditor() {
-		const entry = this.config.entries[this.entryEditorIndex];
-		switch (entry.type) {
+		this.activeEntry = this.config.entries[this.entryEditorIndex];
+		let entryGuiEditor: TemplateResult<1>;
+		switch (this.activeEntry.type) {
 			case 'slider':
-				return this.buildSliderGuiEditor();
+				entryGuiEditor = this.buildSliderGuiEditor();
 			case 'selector':
-				return this.buildSelectorGuiEditor();
+				entryGuiEditor = this.buildSelectorGuiEditor();
 			case 'spinbox':
-				return this.buildSpinboxGuiEditor();
+				entryGuiEditor = this.buildSpinboxGuiEditor();
 			case 'button':
 			default:
-				return this.buildButtonGuiEditor();
+				entryGuiEditor = this.buildButtonGuiEditor();
 		}
+		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
 	}
 
 	buildEntryYamlEditor() {
