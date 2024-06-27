@@ -719,11 +719,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 		return html`<div class="gui-editor">
 			${optionsTabBar}${this.buildMainFeatureOptions()}
-			${this.buildAppearancePanel(
-				this.buildStyleEditor({
+			${this.buildAppearancePanel(html`
+				${this.buildCommonAppearanceOptions()}
+				${this.buildStyleEditor({
 					background_style: 'Background',
-				}),
-			)}
+				})},
+			`)}
 		</div>`;
 	}
 
