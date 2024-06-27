@@ -78,8 +78,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					...oldEntry,
 					options: options,
 				};
-				console.log('Selector Option updated');
-				console.log(updatedEntry);
 				break;
 			}
 			case 'decrement':
@@ -166,7 +164,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					yamlObj = this.config.entries[this.entryEditorIndex];
 					break;
 				default:
-					yamlObj = this.config.entries[this.entryEditorIndex][
+					yamlObj = this.activeEntry?.[
 						this.yamlKey as keyof IEntry
 					] as StyleInfo;
 					break;
@@ -784,8 +782,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						this.optionsTabIndex - 1
 					];
 				this.activeEntryType = 'option';
-				console.log('Selector tab switched');
-				console.log(this.activeEntry);
 				selectorGuiEditor = this.buildButtonGuiEditor();
 				break;
 		}
