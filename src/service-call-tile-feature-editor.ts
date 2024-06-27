@@ -67,7 +67,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const oldEntry = entries[this.entryEditorIndex];
 		let updatedEntry: IEntry | IOption;
 		switch (this.activeEntryType) {
-			case 'option':
+			case 'option': {
 				const options = oldEntry.options ?? [];
 				const oldOption = options[this.optionsTabIndex - 1];
 				options[this.optionsTabIndex - 1] = {
@@ -79,6 +79,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					options: options,
 				};
 				break;
+			}
 			case 'decrement':
 				updatedEntry = {
 					...oldEntry,
