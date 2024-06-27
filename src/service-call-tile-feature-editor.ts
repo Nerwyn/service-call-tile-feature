@@ -709,9 +709,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						>
 							${option.icon
 								? `<ha-icon
-								.icon=${option.icon}
-							>
-							</ha-icon>`
+								.icon="${option.icon}"
+							></ha-icon>`
 								: ''}
 						</mwc-tab>
 					`,
