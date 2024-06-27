@@ -776,16 +776,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				`)}`;
 				break;
 			default:
-				selectorGuiEditor = this.buildButtonGuiEditor();
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].options?.[
 						this.optionsTabIndex - 1
 					];
 				this.activeEntryType = 'option';
+				selectorGuiEditor = this.buildButtonGuiEditor();
 				break;
 		}
 
-		return html` ${optionsTabBar} ${selectorGuiEditor} `;
+		return html`${optionsTabBar}${selectorGuiEditor}`;
 	}
 
 	buildSpinboxGuiEditor() {
@@ -827,14 +827,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 0:
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].decrement;
-				spinboxGuiEditor = this.buildButtonGuiEditor();
 				this.activeEntryType = 'decrement';
+				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
 			case 2:
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].increment;
-				spinboxGuiEditor = this.buildButtonGuiEditor();
 				this.activeEntryType = 'increment';
+				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
 			case 1:
 			default:
