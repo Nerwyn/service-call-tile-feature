@@ -889,13 +889,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.activeEntry.type) {
 			case 'slider':
 				entryGuiEditor = this.buildSliderGuiEditor();
+				break;
 			case 'selector':
 				entryGuiEditor = this.buildSelectorGuiEditor();
+				break;
 			case 'spinbox':
 				entryGuiEditor = this.buildSpinboxGuiEditor();
+				break;
 			case 'button':
 			default:
 				entryGuiEditor = this.buildButtonGuiEditor();
+				break;
 		}
 		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
 	}
