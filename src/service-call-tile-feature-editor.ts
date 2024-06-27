@@ -726,24 +726,26 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let selectorGuiEditor: TemplateResult<1>;
 		switch (this.optionsTabIndex) {
 			case 0:
-				selectorGuiEditor = html` ${this.buildAppearancePanel(html`
+				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
+				${this.buildAppearancePanel(html`
 					${this.optionsTabIndex
 						? this.buildCommonAppearanceOptions()
 						: ''}
 					${this.buildStyleEditor({
 						background_style: 'Background',
-					})},
+					})}
 				`)}`;
 				break;
 			default:
 				selectorGuiEditor = this.buildButtonGuiEditor();
+				this.activeEntry =
+					this.config.entries[this.entryEditorIndex].options?.[
+						this.optionsTabIndex - 1
+					];
 				break;
 		}
 
-		return html`
-			${optionsTabBar}${this.buildMainFeatureOptions()}
-			${selectorGuiEditor}
-		`;
+		return html` ${optionsTabBar} ${selectorGuiEditor} `;
 	}
 
 	buildSpinboxGuiEditor() {
@@ -875,6 +877,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildActionsPanel(actionSelectors)}
 				`;
 				break;
+			case 0:
+				this.activeEntry =
+					this.config.entries[this.entryEditorIndex].decrement;
+			// falls through
+			case 2:
+				this.activeEntry =
+					this.config.entries[this.entryEditorIndex].increment;
+			// falls through
 			default:
 				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
