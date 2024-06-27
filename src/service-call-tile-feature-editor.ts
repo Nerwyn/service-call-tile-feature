@@ -19,7 +19,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
 
-	@state() activeEntry?: IEntry | IOption;
 	@state() entryEditorIndex: number = -1;
 	@state() optionsTabIndex: number = 1;
 	@state() actionsTabIndex: number = 0;
@@ -27,8 +26,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
-	@state() yamlString?: string;
-	@state() yamlKey?: string;
+
+	yamlString?: string;
+	yamlKey?: string;
+
+	activeEntry?: IEntry | IOption;
+	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -61,10 +64,46 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	entryChanged(entry: IEntry) {
 		const entries = this.config.entries.concat();
-		const updatedEntry = {
-			...entries[this.entryEditorIndex],
-			...entry,
-		};
+		const oldEntry = entries[this.entryEditorIndex];
+		let updatedEntry: IEntry | IOption;
+		switch (this.activeEntryType) {
+			case 'option':
+				const options = oldEntry.options ?? [];
+				const oldOption = options[this.optionsTabIndex - 1];
+				options[this.optionsTabIndex - 1] = {
+					...oldOption,
+					...entry,
+				};
+				updatedEntry = {
+					...oldEntry,
+					options: options,
+				};
+				break;
+			case 'decrement':
+				updatedEntry = {
+					...oldEntry,
+					decrement: {
+						...oldEntry.decrement,
+						...entry,
+					},
+				};
+				break;
+			case 'increment':
+				updatedEntry = {
+					...oldEntry,
+					increment: {
+						...oldEntry.increment,
+						...entry,
+					},
+				};
+				break;
+			case 'entry':
+			default:
+				updatedEntry = {
+					...oldEntry,
+					...entry,
+				};
+		}
 		entries[this.entryEditorIndex] = updatedEntry;
 		this.entriesChanged(entries);
 	}
@@ -741,6 +780,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					this.config.entries[this.entryEditorIndex].options?.[
 						this.optionsTabIndex - 1
 					];
+				this.activeEntryType = 'option';
 				break;
 		}
 
@@ -787,11 +827,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].decrement;
 				spinboxGuiEditor = this.buildButtonGuiEditor();
+				this.activeEntryType = 'decrement';
 				break;
 			case 2:
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].increment;
 				spinboxGuiEditor = this.buildButtonGuiEditor();
+				this.activeEntryType = 'increment';
 				break;
 			case 1:
 			default:
@@ -894,6 +936,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildEntryGuiEditor() {
 		this.activeEntry = this.config.entries[this.entryEditorIndex];
+		this.activeEntryType = 'entry';
 		let entryGuiEditor: TemplateResult<1>;
 		switch (this.activeEntry.type) {
 			case 'slider':
