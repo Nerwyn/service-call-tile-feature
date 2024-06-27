@@ -20,7 +20,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
-	@state() optionsTabIndex: number = 1;
+	@state() optionsTabIndex: number = 0;
 	@state() actionsTabIndex: number = 0;
 	@state() styleTabIndex: number = 0;
 
@@ -63,7 +63,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	entryChanged(entry: IEntry) {
-		const entries = this.config.entries.concat();
+		const entries = structuredClone(this.config.entries);
 		const oldEntry = entries[this.entryEditorIndex];
 		let updatedEntry: IEntry | IOption;
 		switch (this.activeEntryType) {
@@ -114,7 +114,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	moveEntry(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
-		const entries = this.config.entries.concat();
+		const entries = structuredClone(this.config.entries);
 		entries.splice(newIndex, 0, entries.splice(oldIndex, 1)[0]);
 		this.entriesChanged(entries);
 	}
@@ -131,14 +131,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		const entries = this.config.entries.concat();
+		const entries = structuredClone(this.config.entries);
 		entries.splice(i, 1);
 		this.entriesChanged(entries);
 	}
 
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
-		const entries = this.config.entries.concat();
+		const entries = structuredClone(this.config.entries);
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
@@ -189,7 +189,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					this.configChanged(updatedField);
 					break;
 				case 'entry':
-					updatedField = this.config.entries.concat();
+					updatedField = structuredClone(this.config.entries);
 					updatedField[this.entryEditorIndex] = load(
 						this.yaml,
 					) as IEntry;
@@ -250,7 +250,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const value = e.detail.value;
 		if (key.startsWith('range.')) {
 			const index = parseInt(key.split('.')[1]);
-			const range = (this.activeEntry?.range?.concat() as [
+			const range = (structuredClone(this.activeEntry?.range) as [
 				number,
 				number,
 			]) ?? [0, 100];
