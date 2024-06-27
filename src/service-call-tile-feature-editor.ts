@@ -19,8 +19,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
-	@state() selectedActionsTabIndex: number = 0;
-	@state() selectedStyleTabIndex: number = 0;
+	@state() optionsTabIndex: number = 1;
+	@state() actionsTabIndex: number = 0;
+	@state() styleTabIndex: number = 0;
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
@@ -173,23 +174,31 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleStyleTabSelected(e: CustomEvent) {
+	handleOptionsTabSelected(e: CustomEvent) {
 		const i = e.detail.index;
-		if (this.selectedStyleTabIndex == i) {
+		if (this.optionsTabIndex == i) {
 			return;
 		}
-		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
-		this.selectedStyleTabIndex = i;
-		this.yamlString = undefined;
-		this.yaml;
+		this.optionsTabIndex = i;
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
 		const i = e.detail.index;
-		if (this.selectedActionsTabIndex == i) {
+		if (this.actionsTabIndex == i) {
 			return;
 		}
-		this.selectedActionsTabIndex = i;
+		this.actionsTabIndex = i;
+	}
+
+	handleStyleTabSelected(e: CustomEvent) {
+		const i = e.detail.index;
+		if (this.styleTabIndex == i) {
+			return;
+		}
+		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
+		this.styleTabIndex = i;
+		this.yamlString = undefined;
+		this.yaml;
 	}
 
 	handleSelectorChange(e: CustomEvent) {
@@ -338,14 +347,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildStyleEditor(fields: Record<string, string>) {
 		this.yamlKey = ['style'].concat(Object.keys(fields))[
-			this.selectedStyleTabIndex
+			this.styleTabIndex
 		] as keyof IEntry;
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
 				<mwc-tab-bar
 					class="tab-selector"
-					.activeIndex=${this.selectedStyleTabIndex}
+					.activeIndex=${this.styleTabIndex}
 					@MDCTabBar:activated=${this.handleStyleTabSelected}
 				>
 					<mwc-tab
@@ -433,7 +442,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					? this.buildSelector('Attribute', 'value_attribute', {
 							attribute: { entity_id: entry.entity_id },
 					  })
-					: html``
+					: ''
 			}
 			${additionalOptions}
 			<div class="form">
@@ -476,7 +485,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildCommonAppearanceOptions() {
-		return html` ${this.buildSelector('Label', 'label', {
+		return html`${this.buildSelector('Label', 'label', {
 				text: { multiline: true },
 			})}
 			<div class="form">
@@ -510,7 +519,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionsTabBar = html`
 			<mwc-tab-bar
 				class="tab-selector"
-				.activeIndex=${this.selectedActionsTabIndex}
+				.activeIndex=${this.actionsTabIndex}
 				@MDCTabBar:activated=${this.handleActionsTabSelected}
 			>
 				<mwc-tab .label=${'default'} dialogInitialFocus></mwc-tab>
@@ -526,7 +535,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				default_action: 'none',
 			},
 		};
-		switch (this.selectedActionsTabIndex) {
+		switch (this.actionsTabIndex) {
 			case 1:
 				actionSelectors = html`
 					${actionsTabBar}
@@ -685,8 +694,33 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildSelectorGuiEditor() {
+		const entry = this.config.entries[this.entryEditorIndex];
+		const optionsTabBar = html`
+			<mwc-tab-bar
+				class="tab-selector"
+				.activeIndex=${this.optionsTabIndex}
+				@MDCTabBar:activated=${this.handleOptionsTabSelected}
+			>
+				${entry.options?.map(
+					(option, i) => html`
+						<mwc-tab
+							.label=${option.label ?? `Option ${i + 1}`}
+							${i ? '' : 'dialogInitialFocus'}
+						>
+							${option.icon
+								? `<ha-icon
+								.icon=${option.icon}
+							>
+							</ha-icon>`
+								: ''}
+						</mwc-tab>
+					`,
+				)}
+			</mwc-tab-bar>
+		`;
+
 		return html`<div class="gui-editor">
-			${this.buildMainFeatureOptions()}
+			${optionsTabBar}${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(
 				this.buildStyleEditor({
 					background_style: 'Background',
@@ -719,8 +753,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				defaultHoldActions,
 			)}
 		`;
+		const optionsTabBar = html`
+			<mwc-tab-bar
+				class="tab-selector"
+				.activeIndex=${this.optionsTabIndex}
+				@MDCTabBar:activated=${this.handleOptionsTabSelected}
+			>
+				<mwc-tab .label=${'Decrement'}></mwc-tab>
+				<mwc-tab .label=${'Center'} dialogInitialFocus></mwc-tab>
+				<mwc-tab .label=${'Increment'}></mwc-tab>
+			</mwc-tab-bar>
+		`;
 
 		return html`<div class="gui-editor">
+			${optionsTabBar}
 			${this.buildMainFeatureOptions(
 				this.buildSelector(
 					'Step',
@@ -869,7 +915,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							)}
 						</ul>
 				  </div>`
-				: html``}
+				: ''}
 		`;
 	}
 
