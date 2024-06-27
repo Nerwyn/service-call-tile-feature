@@ -353,7 +353,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			<div>
 				<div class="style-header">CSS Styles</div>
 				<mwc-tab-bar
-					class="tab-selector"
 					.activeIndex=${this.styleTabIndex}
 					@MDCTabBar:activated=${this.handleStyleTabSelected}
 				>
@@ -518,7 +517,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildButtonGuiEditor() {
 		const actionsTabBar = html`
 			<mwc-tab-bar
-				class="tab-selector"
 				.activeIndex=${this.actionsTabIndex}
 				@MDCTabBar:activated=${this.handleActionsTabSelected}
 			>
@@ -697,7 +695,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const entry = this.config.entries[this.entryEditorIndex];
 		const optionsTabBar = html`
 			<mwc-tab-bar
-				class="tab-selector"
 				.activeIndex=${this.optionsTabIndex}
 				@MDCTabBar:activated=${this.handleOptionsTabSelected}
 			>
@@ -705,8 +702,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					(option, i) => html`
 						<mwc-tab
 							.label=${option.label ?? `Option ${i + 1}`}
+							hasImageIcon
 							${i ? '' : 'dialogInitialFocus'}
-							${option.icon ? 'hasImageIcon' : ''}
 						>
 							${option.icon
 								? html`<ha-icon
@@ -756,7 +753,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 		const optionsTabBar = html`
 			<mwc-tab-bar
-				class="tab-selector"
 				.activeIndex=${this.optionsTabIndex}
 				@MDCTabBar:activated=${this.handleOptionsTabSelected}
 			>
@@ -1067,7 +1063,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				gap: 4px;
 			}
 
-			.tab-selector {
+			mwc-tab-bar {
 				color: var(--primary-text-color);
 				text-transform: uppercase;
 				border-bottom: 1px solid var(--divider-color);
