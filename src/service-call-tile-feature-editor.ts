@@ -999,15 +999,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryEditor() {
-		this.yamlString = undefined;
-		this.yamlKey = 'entry';
+		let editor: TemplateResult<1>;
+		if (this.guiMode) {
+			editor = this.buildEntryGuiEditor();
+		} else {
+			this.yamlString = undefined;
+			this.yamlKey = 'entry';
+			editor = this.buildYamlEditor();
+		}
+
 		return html`
 			${this.buildEntryHeader()}
-			<div class="wrapper">
-				${this.guiMode
-					? this.buildEntryGuiEditor()
-					: this.buildYamlEditor()}
-			</div>
+			<div class="wrapper">${editor}</div>
 		`;
 	}
 
