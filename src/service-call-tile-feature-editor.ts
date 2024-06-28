@@ -318,7 +318,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
 		let entries: IEntry[] | IOption[];
-		let handlers: Record<string, Function>;
+		let handlers: Record<string, (e: CustomEvent) => void>;
 		switch (field) {
 			case 'option':
 				entries = this.activeEntry?.options ?? [];
