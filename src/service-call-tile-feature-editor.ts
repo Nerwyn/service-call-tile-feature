@@ -803,7 +803,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						this.optionEditorIndex
 					];
 				this.activeEntryType = 'option';
-				selectorGuiEditor = html`${this.buildButtonGuiEditor()}`;
+				selectorGuiEditor = html`
+					${this.buildSelector('Option', 'option' as keyof IEntry, {
+						text: {},
+					})}
+					${this.buildButtonGuiEditor()}
+				`;
 				break;
 		}
 
