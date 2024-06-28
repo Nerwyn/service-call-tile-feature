@@ -794,7 +794,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.optionEditorIndex) {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
-				${this.buildEntryList()}${this.buildAddEntryButton()}
+				${this.buildEntryList('option')}${this.buildAddEntryButton()}
 				${this.buildStyleEditor({ background_style: 'Background' })}`;
 				break;
 			default:
