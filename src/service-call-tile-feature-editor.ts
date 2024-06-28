@@ -176,9 +176,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	addOption(_e: CustomEvent) {
 		const entry = structuredClone(this.activeEntry) as IOption;
 		const options = entry.options ?? [];
-		options.push({
-			type: 'button',
-		});
+		options.push({});
 		entry.options = options;
 		this.entryChanged(entry);
 	}
