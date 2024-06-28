@@ -392,39 +392,36 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildAddEntryButton() {
-		switch (this.activeEntryType) {
-			case 'option':
-				return html`
-					<ha-button slot="trigger" outlined .label="${'ADD OPTION'}">
-						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-					</ha-button>
-				`;
-				break;
-			case 'entry':
-			default:
-				return html`
-					<ha-button-menu
-						fixed
-						@action=${this.addEntry}
-						@closed=${(e: CustomEvent) => e.stopPropagation()}
-					>
-						<ha-button
-							slot="trigger"
-							outlined
-							.label="${'ADD CUSTOM FEATURE'}"
-						>
-							<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-						</ha-button>
-						${TileFeatureTypes.map(
-							(tileFeatureType) => html`
-								<ha-list-item .value=${tileFeatureType}>
-									${tileFeatureType}
-								</ha-list-item>
-							`,
-						)}
-					</ha-button-menu>
-				`;
-		}
+		return html`
+			<ha-button-menu
+				fixed
+				@action=${this.addEntry}
+				@closed=${(e: CustomEvent) => e.stopPropagation()}
+			>
+				<ha-button
+					slot="trigger"
+					outlined
+					.label="${'ADD CUSTOM FEATURE'}"
+				>
+					<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+				</ha-button>
+				${TileFeatureTypes.map(
+					(tileFeatureType) => html`
+						<ha-list-item .value=${tileFeatureType}>
+							${tileFeatureType}
+						</ha-list-item>
+					`,
+				)}
+			</ha-button-menu>
+		`;
+	}
+
+	buildAddOptionButton() {
+		return html`
+			<ha-button slot="trigger" outlined .label="${'ADD OPTION'}">
+				<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+			</ha-button>
+		`;
 	}
 
 	buildEntryHeader(field: 'entry' | 'option' = 'entry') {
@@ -451,21 +448,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					></ha-icon-button-prev>
 					<span slot="title"> ${title} </span>
 				</div>
-				<ha-icon-button
-					class="gui-mode-button"
-					@click=${this.toggleGuiMode}
-					.label=${this.hass.localize(
-						this.guiMode
-							? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
-							: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
-					)}
-				>
-					<ha-icon
-						.icon="${this.guiMode
-							? 'mdi:code-braces'
-							: 'mdi:list-box-outline'}"
-					></ha-icon>
-				</ha-icon-button>
+				${field == 'entry'
+					? html`<ha-icon-button
+							class="gui-mode-button"
+							@click=${this.toggleGuiMode}
+							.label=${this.hass.localize(
+								this.guiMode
+									? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
+									: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
+							)}
+					  >
+							<ha-icon
+								.icon="${this.guiMode
+									? 'mdi:code-braces'
+									: 'mdi:list-box-outline'}"
+							></ha-icon>
+					  </ha-icon-button>`
+					: ''}
 			</div>
 		`;
 	}
@@ -811,7 +810,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.optionEditorIndex) {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
-				${this.buildEntryList('option')}${this.buildAddEntryButton()}
+				${this.buildEntryList('option')}${this.buildAddOptionButton()}
 				${this.buildStyleEditor({ background_style: 'Background' })}`;
 				break;
 			default:
