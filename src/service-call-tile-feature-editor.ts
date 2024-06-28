@@ -20,9 +20,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 
 	@state() entryEditorIndex: number = -1;
-	@state() optionsTabIndex: number = 0;
 	@state() actionsTabIndex: number = 0;
 	@state() styleTabIndex: number = 0;
+	@state() optionEditorIndex: number = -1;
+	@state() spinboxTabIndex: number = 1;
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
@@ -69,8 +70,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.activeEntryType) {
 			case 'option': {
 				const options = oldEntry.options ?? [];
-				const oldOption = options[this.optionsTabIndex - 1];
-				options[this.optionsTabIndex - 1] = {
+				const oldOption = options[this.optionEditorIndex];
+				options[this.optionEditorIndex] = {
 					...oldOption,
 					...entry,
 				};
@@ -117,12 +118,30 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	moveOption(e: CustomEvent) {
+		e.stopPropagation();
+		const { oldIndex, newIndex } = e.detail;
+		const entry = structuredClone(this.activeEntry) as IOption;
+		const options = entry.options ?? [];
+		options.splice(newIndex, 0, options.splice(oldIndex, 1)[0]);
+		entry.options = options;
+		this.entryChanged(entry);
+	}
+
 	editEntry(e: CustomEvent) {
 		this.yamlString = undefined;
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
 		this.entryEditorIndex = i;
+	}
+
+	editOption(e: CustomEvent) {
+		this.yamlString = undefined;
+		const i = (
+			e.currentTarget as unknown as CustomEvent & Record<'index', number>
+		).index;
+		this.optionEditorIndex = i;
 	}
 
 	removeEntry(e: CustomEvent) {
@@ -134,6 +153,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	removeOption(e: CustomEvent) {
+		const i = (
+			e.currentTarget as unknown as CustomEvent & Record<'index', number>
+		).index;
+		const entry = structuredClone(this.activeEntry) as IOption;
+		const options = entry.options ?? [];
+		options.splice(i, 1);
+		entry.options = options;
+		this.entryChanged(entry);
+	}
+
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
 		const entries = structuredClone(this.config.entries);
@@ -143,9 +173,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.entriesChanged(entries);
 	}
 
+	addOption(_e: CustomEvent) {
+		const entry = structuredClone(this.activeEntry) as IOption;
+		const options = entry.options ?? [];
+		options.push({
+			type: 'button',
+		});
+		entry.options = options;
+		this.entryChanged(entry);
+	}
+
 	exitEditEntry(_e: CustomEvent) {
-		this.entryEditorIndex = -1;
 		this.yamlString = undefined;
+		this.entryEditorIndex = -1;
+	}
+
+	exitEditOption(_e: CustomEvent) {
+		this.yamlString = undefined;
+		this.optionEditorIndex = -1;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
@@ -216,13 +261,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleOptionsTabSelected(e: CustomEvent) {
+	handleSpinboxTabSelected(e: CustomEvent) {
 		this.yamlString = undefined;
 		const i = e.detail.index;
-		if (this.optionsTabIndex == i) {
+		if (this.spinboxTabIndex == i) {
 			return;
 		}
-		this.optionsTabIndex = i;
+		this.spinboxTabIndex = i;
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
@@ -234,13 +279,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
+		this.yamlString = undefined;
 		const i = e.detail.index;
 		if (this.styleTabIndex == i) {
 			return;
 		}
 		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
 		this.styleTabIndex = i;
-		this.yamlString = undefined;
 	}
 
 	handleSelectorChange(e: CustomEvent) {
@@ -271,16 +316,36 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	buildEntryList() {
-		this.yamlKey = 'root';
+	buildEntryList(field: 'entry' | 'option' = 'entry') {
+		let entries: IEntry[] | IOption[];
+		let handlers: Record<string, Function>;
+		switch (field) {
+			case 'option':
+				entries = this.activeEntry?.options ?? [];
+				handlers = {
+					move: this.moveOption,
+					edit: this.editOption,
+					remove: this.removeOption,
+				};
+				break;
+			case 'entry':
+			default:
+				entries = this.config.entries;
+				handlers = {
+					move: this.moveEntry,
+					edit: this.editEntry,
+					remove: this.removeEntry,
+				};
+				break;
+		}
 		return html`
 			<div class="content">
 				<ha-sortable
 					handle-selector=".handle"
-					@item-moved=${this.moveEntry}
+					@item-moved=${handlers.move}
 				>
 					<div class="features">
-						${this.config.entries.map(
+						${entries.map(
 							(entry, i) => html`
 								<div class="feature">
 									<div class="handle">
@@ -298,7 +363,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									<ha-icon-button
 										class="edit-icon"
 										.index=${i}
-										@click=${this.editEntry}
+										@click=${handlers.edit}
 									>
 										<ha-icon
 											.icon="${'mdi:pencil'}"
@@ -307,7 +372,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									<ha-icon-button
 										class="remove-icon"
 										.index=${i}
-										@click=${this.removeEntry}
+										@click=${handlers.remove}
 									>
 										<ha-icon
 											.icon="${'mdi:delete'}"
@@ -319,43 +384,43 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					</div>
 				</ha-sortable>
 			</div>
-			<ha-button-menu
-				fixed
-				@action=${this.addEntry}
-				@closed=${(e: CustomEvent) => e.stopPropagation()}
-			>
-				<ha-button
-					slot="trigger"
-					outlined
-					.label="${'ADD CUSTOM FEATURE'}"
-				>
-					<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-				</ha-button>
-				${TileFeatureTypes.map(
-					(tileFeatureType) => html`
-						<ha-list-item .value=${tileFeatureType}>
-							${tileFeatureType}
-						</ha-list-item>
-					`,
-				)}
-			</ha-button-menu>
-			<div class="root-style-header">CSS Styles</div>
-			<div class="yaml-editor">
-				<ha-code-editor
-					mode="yaml"
-					autofocus
-					autocomplete-entities
-					autocomplete-icons
-					.hass=${this.hass}
-					.value=${this.yaml}
-					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleYamlChanged}
-					@keydown=${(e: CustomEvent) => e.stopPropagation()}
-					dir="ltr"
-				></ha-code-editor>
-			</div>
-			${this.buildErrorPanel()}
 		`;
+	}
+
+	buildAddEntryButton() {
+		switch (this.activeEntryType) {
+			case 'option':
+				return html`
+					<ha-button slot="trigger" outlined .label="${'ADD OPTION'}">
+						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+					</ha-button>
+				`;
+				break;
+			case 'entry':
+			default:
+				return html`
+					<ha-button-menu
+						fixed
+						@action=${this.addEntry}
+						@closed=${(e: CustomEvent) => e.stopPropagation()}
+					>
+						<ha-button
+							slot="trigger"
+							outlined
+							.label="${'ADD CUSTOM FEATURE'}"
+						>
+							<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+						</ha-button>
+						${TileFeatureTypes.map(
+							(tileFeatureType) => html`
+								<ha-list-item .value=${tileFeatureType}>
+									${tileFeatureType}
+								</ha-list-item>
+							`,
+						)}
+					</ha-button-menu>
+				`;
+		}
 	}
 
 	buildEntryHeader() {
@@ -412,20 +477,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							></mwc-tab>`,
 					)}
 				</mwc-tab-bar>
-				<div class="yaml-editor">
-					<ha-code-editor
-						mode="yaml"
-						autofocus
-						autocomplete-entities
-						autocomplete-icons
-						.hass=${this.hass}
-						.value=${this.yaml}
-						.error=${Boolean(this.errors)}
-						@value-changed=${this.handleYamlChanged}
-						@keydown=${(e: CustomEvent) => e.stopPropagation()}
-						dir="ltr"
-					></ha-code-editor>
-				</div>
+				${this.buildYamlEditor()}
 			</div>
 		`;
 	}
@@ -738,55 +790,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildSelectorGuiEditor() {
-		const optionsTabBar = html`
-			<mwc-tab-bar
-				.activeIndex=${this.optionsTabIndex}
-				@MDCTabBar:activated=${this.handleOptionsTabSelected}
-			>
-				<mwc-tab .label=${'Selector'} dialogInitialFocus></mwc-tab>
-				${this.activeEntry?.options?.map(
-					(option, i) => html`
-						<mwc-tab
-							.label=${option.label ??
-							(option.icon ? '' : `Option ${i + 1}`)}
-							?hasImageIcon=${Boolean(option.icon)}
-						>
-							${option.icon
-								? html`<ha-icon
-										.icon="${option.icon}"
-										slot="icon"
-								  ></ha-icon>`
-								: ''}
-						</mwc-tab>
-					`,
-				)}
-			</mwc-tab-bar>
-		`;
-
 		let selectorGuiEditor: TemplateResult<1>;
-		switch (this.optionsTabIndex) {
-			case 0:
+		switch (this.optionEditorIndex) {
+			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
-				${this.buildAppearancePanel(html`
-					${this.optionsTabIndex
-						? this.buildCommonAppearanceOptions()
-						: ''}
-					${this.buildStyleEditor({
-						background_style: 'Background',
-					})}
-				`)}`;
+				${this.buildEntryList()}${this.buildAddEntryButton()}
+				${this.buildStyleEditor({ background_style: 'Background' })}`;
 				break;
 			default:
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].options?.[
-						this.optionsTabIndex - 1
+						this.optionEditorIndex
 					];
 				this.activeEntryType = 'option';
-				selectorGuiEditor = this.buildButtonGuiEditor();
+				selectorGuiEditor = html`${this.buildButtonGuiEditor()}`;
 				break;
 		}
 
-		return html`${optionsTabBar}${selectorGuiEditor}`;
+		return selectorGuiEditor;
 	}
 
 	buildSpinboxGuiEditor() {
@@ -812,10 +833,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				defaultHoldActions,
 			)}
 		`;
-		const optionsTabBar = html`
+		const spinboxTabBar = html`
 			<mwc-tab-bar
-				.activeIndex=${this.optionsTabIndex}
-				@MDCTabBar:activated=${this.handleOptionsTabSelected}
+				.activeIndex=${this.spinboxTabIndex}
+				@MDCTabBar:activated=${this.handleSpinboxTabSelected}
 			>
 				<mwc-tab .label=${'Decrement'}></mwc-tab>
 				<mwc-tab .label=${'Center'} dialogInitialFocus></mwc-tab>
@@ -824,7 +845,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 
 		let spinboxGuiEditor: TemplateResult<1>;
-		switch (this.optionsTabIndex) {
+		switch (this.spinboxTabIndex) {
 			case 0:
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].decrement;
@@ -933,7 +954,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 
-		return html`${optionsTabBar}${spinboxGuiEditor}`;
+		return html`${spinboxTabBar}${spinboxGuiEditor}`;
 	}
 
 	buildEntryGuiEditor() {
@@ -958,9 +979,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
 	}
 
-	buildEntryYamlEditor() {
-		this.yamlString = undefined;
-		this.yamlKey = 'entry';
+	buildYamlEditor() {
 		return html`
 			<div class="yaml-editor">
 				<ha-code-editor
@@ -980,13 +999,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryEditor() {
+		this.yamlString = undefined;
+		this.yamlKey = 'entry';
 		return html`
 			${this.buildEntryHeader()}
 			<div class="wrapper">
 				${this.guiMode
 					? this.buildEntryGuiEditor()
-					: this.buildEntryYamlEditor()}
-				${this.buildErrorPanel()}
+					: this.buildYamlEditor()}
 			</div>
 		`;
 	}
@@ -1014,11 +1034,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		if (this.entryEditorIndex >= 0) {
-			return this.buildEntryEditor();
+		let editor: TemplateResult<1>;
+		switch (this.entryEditorIndex) {
+			case -1:
+				this.yamlKey = 'root';
+				editor = html`
+					${this.buildEntryList()}${this.buildAddEntryButton()}
+					<div class="root-style-header">CSS Styles</div>
+					${this.buildYamlEditor()}${this.buildErrorPanel()}
+				`;
+				break;
+			default:
+				editor = html`${this.buildEntryEditor()}${this.buildErrorPanel()}`;
+				break;
 		}
-
-		return this.buildEntryList();
+		return editor;
 	}
 
 	static get styles() {
