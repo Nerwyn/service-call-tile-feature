@@ -319,6 +319,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
 		let entries: IEntry[] | IOption[];
 		let handlers: Record<string, (e: CustomEvent) => void>;
+		let backupType: string;
 		switch (field) {
 			case 'option':
 				entries = this.activeEntry?.options ?? [];
@@ -327,6 +328,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editOption,
 					remove: this.removeOption,
 				};
+				backupType = 'Option';
 				break;
 			case 'entry':
 			default:
@@ -336,6 +338,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editEntry,
 					remove: this.removeEntry,
 				};
+				backupType = 'Button';
 				break;
 		}
 		return html`
@@ -356,7 +359,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									<div class="feature-content">
 										<div>
 											<span
-												>${entry.type ?? 'Button'}</span
+												>${entry.type ??
+												backupType}</span
 											>
 										</div>
 									</div>
@@ -423,16 +427,29 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	buildEntryHeader() {
-		const entry = this.config.entries[this.entryEditorIndex];
+	buildEntryHeader(field: 'entry' | 'option' = 'entry') {
+		let title: string;
+		let exitHandler: (e: CustomEvent) => void;
+		switch (field) {
+			case 'option':
+				title = 'Selector Option';
+				exitHandler = this.exitEditOption;
+				break;
+			case 'entry':
+			default:
+				title =
+					this.config.entries[this.entryEditorIndex].type ?? 'Button';
+				exitHandler = this.exitEditEntry;
+				break;
+		}
 		return html`
 			<div class="header">
 				<div class="back-title">
 					<ha-icon-button-prev
 						.label=${this.hass.localize('ui.common.back')}
-						@click=${this.exitEditEntry}
+						@click=${exitHandler}
 					></ha-icon-button-prev>
-					<span slot="title"> ${entry?.type ?? 'Button'} </span>
+					<span slot="title"> ${title} </span>
 				</div>
 				<ha-icon-button
 					class="gui-mode-button"
@@ -804,6 +821,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					];
 				this.activeEntryType = 'option';
 				selectorGuiEditor = html`
+					${this.buildEntryHeader('option')}
 					${this.buildSelector('Option', 'option' as keyof IEntry, {
 						text: {},
 					})}
