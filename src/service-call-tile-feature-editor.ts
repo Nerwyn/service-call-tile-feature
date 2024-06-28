@@ -418,7 +418,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildAddOptionButton() {
 		return html`
-			<ha-button slot="trigger" outlined .label="${'ADD OPTION'}">
+			<ha-button
+				slot="trigger"
+				outlined
+				.label="${'ADD OPTION'}"
+				@click=${this.addOption}
+			>
 				<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 			</ha-button>
 		`;
@@ -1104,6 +1109,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			ha-button-menu {
 				margin: 0 18px 12px;
+			}
+			ha-button {
+				width: fit-content;
 				--mdc-icon-size: 100%;
 			}
 			ha-list-item {
