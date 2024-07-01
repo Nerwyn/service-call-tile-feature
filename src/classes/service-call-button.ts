@@ -2,8 +2,6 @@ import { html, css, CSSResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import '@material/web/ripple/ripple';
-
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
