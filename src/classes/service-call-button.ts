@@ -1,20 +1,14 @@
 import { html, css, CSSResult } from 'lit';
-import { customElement, property, queryAsync } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { Ripple } from '@material/mwc-ripple';
-import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
+import '@material/web/ripple/ripple';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
-	// https://github.com/home-assistant/frontend/blob/80edeebab9e6dfcd13751b5ed8ff005452826118/src/components/ha-control-button.ts#L31-L77
-	@property({ attribute: false }) _shouldRenderRipple = true;
-	@queryAsync('mwc-ripple') private _ripple!: Promise<Ripple | null>;
-	private _rippleHandlers: RippleHandlers = new RippleHandlers(() => {
-		return this._ripple;
-	});
+	@property({ attribute: false }) shouldRenderRipple = true;
 
 	clickTimer?: ReturnType<typeof setTimeout>;
 	clickCount: number = 0;
@@ -65,7 +59,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	onStart(e: TouchEvent | MouseEvent) {
-		this._rippleHandlers.startPress(e as unknown as Event);
 		this.swiping = false;
 		if ('targetTouches' in e) {
 			this.initialX = e.targetTouches[0].clientX;
@@ -130,8 +123,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	onEnd(e: TouchEvent | MouseEvent) {
-		this._rippleHandlers.endPress();
-
 		if (!this.swiping) {
 			if (
 				this.entry.momentary_end_action &&
@@ -195,7 +186,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	onMouseLeave(_e: MouseEvent) {
-		this._rippleHandlers.endHover();
 		this.endAction();
 		this.swiping = true;
 	}
@@ -217,8 +207,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	render() {
 		this.setValue();
 
-		const ripple = this._shouldRenderRipple
-			? html`<mwc-ripple></mwc-ripple>`
+		const ripple = this.shouldRenderRipple
+			? html`<md-ripple></md-ripple>`
 			: html``;
 
 		const button = html`<button
@@ -229,14 +219,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@mousedown=${this.onMouseDown}
 			@mouseup=${this.onMouseUp}
 			@mousemove=${this.onMouseMove}
-			@mouseenter=${this._rippleHandlers.startHover}
 			@mouseleave=${this.onMouseLeave}
 			@touchstart=${this.onTouchStart}
 			@touchend=${this.onTouchEnd}
 			@touchmove=${this.onTouchMove}
-			@touchcancel=${this._rippleHandlers.endPress}
-			@focus=${this._rippleHandlers.startFocus}
-			@blur=${this._rippleHandlers.endFocus}
 			@contextmenu=${this.onContextMenu}
 		>
 			${ripple}
@@ -252,6 +238,22 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				:host {
 					--opacity: 0.2;
 					--mdc-ripple-color: var(--color, var(--disabled-color));
+					--md-ripple-hover-opacity: var(
+						--ha-ripple-hover-opacity,
+						0.08
+					);
+					--md-ripple-pressed-opacity: var(
+						--ha-ripple-pressed-opacity,
+						0.12
+					);
+					--mdc-ripple-hover-color: var(
+						--ha-ripple-hover-color,
+						var(--ha-ripple-color, var(--secondary-text-color))
+					);
+					--md-ripple-pressed-color: var(
+						--ha-ripple-pressed-color,
+						var(--ha-ripple-color, var(--secondary-text-color))
+					);
 				}
 
 				button {

@@ -182,7 +182,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					id=${operator}
 					.hass=${this.hass}
 					.entry=${actions}
-					._shouldRenderRipple=${false}
+					.shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
 					style=${styleMap(
 						this.buildStyle(actions.style ?? {}, context),

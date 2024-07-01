@@ -91,7 +91,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					class=${optionClass}
 					.hass=${this.hass}
 					.entry=${entries[i]}
-					._shouldRenderRipple=${false}
+					.shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
 					style=${styleMap(

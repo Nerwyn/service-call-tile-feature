@@ -1192,7 +1192,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				--code-mirror-max-height: calc(100vh - 245px);
 			}
 			.error,
-			.warning,
 			.info {
 				word-break: break-word;
 				margin-top: 8px;
@@ -1200,10 +1199,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.error {
 				color: var(--error-color);
 			}
-			.warning {
-				color: var(--warning-color);
-			}
-			.warning ul,
 			.error ul {
 				margin: 4px 0;
 			}

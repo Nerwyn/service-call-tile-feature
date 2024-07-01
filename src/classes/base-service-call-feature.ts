@@ -654,6 +654,7 @@ export class BaseServiceCallFeature extends LitElement {
 					--color: unset;
 					--icon-color: inherit;
 					--icon-filter: none;
+					--mdc-icon-size: 20px;
 					--label-color: inherit;
 					--label-filter: none;
 					--background: var(--color, var(--state-inactive-color));
