@@ -113,7 +113,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 					--color: var(--tile-color);
 					--background: var(--disabled-color);
-					--hover-opacity: 0.3;
+					--hover-opacity: 0.2;
 				}
 
 				.option {
