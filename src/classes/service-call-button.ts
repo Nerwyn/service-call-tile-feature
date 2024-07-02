@@ -235,7 +235,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			css`
 				:host {
 					--opacity: 0.2;
-					--mdc-ripple-color: var(--color, var(--disabled-color));
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
 						0.08
@@ -244,6 +243,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 						--ha-ripple-pressed-opacity,
 						0.12
 					);
+					--ha-ripple-color: var(--secondary-text-color);
 					--mdc-ripple-hover-color: var(
 						--ha-ripple-hover-color,
 						var(--ha-ripple-color, var(--secondary-text-color))
