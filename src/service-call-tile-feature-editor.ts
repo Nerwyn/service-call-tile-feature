@@ -2,8 +2,8 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StyleInfo } from 'lit/directives/style-map.js';
 
-import 'tabs.js';
-import 'primary-tab.js';
+import '@material/web/tabs/tabs.js';
+import '@material/web/tabs/primary-tab.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
 
