@@ -277,10 +277,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
-		console.log(e);
+		this.yamlString = undefined;
 		const i = e.detail.value;
-		console.log(i);
-		console.log(this.styleTabIndex);
 		if (this.styleTabIndex == i) {
 			return;
 		}
@@ -488,7 +486,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.selected=${this.styleTabIndex}
 					@selected-changed=${this.handleStyleTabSelected}
 				>
-					<paper-tab>Outer</paper-tab>
+					<paper-tab dialogInitialFocus>Outer</paper-tab>
 					${Object.keys(fields).map(
 						(field) =>
 							html`<paper-tab>${fields[field]}</paper-tab>`,
