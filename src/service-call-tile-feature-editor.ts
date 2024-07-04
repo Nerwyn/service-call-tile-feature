@@ -23,6 +23,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() styleTabIndex: number = 0;
 	@state() optionEditorIndex: number = -1;
 	@state() spinboxTabIndex: number = 1;
+	@state() paperTabsWidth?: number;
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
@@ -30,6 +31,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlString?: string;
 	yamlKey?: string;
 	styleFields: string[] = [];
+	resizeObserver = new ResizeObserver((entries) => {
+		for (const entry of entries) {
+			this.paperTabsWidth = entry.contentRect.width;
+		}
+	});
 
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
@@ -1058,6 +1064,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
+		const paperTabs = this.shadowRoot?.querySelector('paper-tabs');
+		if (paperTabs) {
+			this.resizeObserver.observe(paperTabs);
+		}
+
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
 			case -1:
@@ -1073,6 +1084,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 		return editor;
+	}
+
+	disconnectedCallback(): void {
+		super.disconnectedCallback();
+		this.resizeObserver.disconnect();
 	}
 
 	static get styles() {
@@ -1212,7 +1228,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				--paper-tabs-selection-bar-color: var(--primary-color);
 				color: var(--primary-text-color);
 				text-transform: uppercase;
-				margin-bottom: 16px;
 				border-bottom: 1px solid var(--divider-color);
 			}
 
