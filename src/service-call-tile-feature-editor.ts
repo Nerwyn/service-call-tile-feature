@@ -277,7 +277,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleStyleTabSelected(e: CustomEvent) {
 		console.log(e);
-		console.log(e.detail);
 		const i = e.detail.value.id;
 		if (this.styleTabIndex == i) {
 			return;
@@ -483,7 +482,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					scrollable
 					hide-scroll-buttons
 					.selected=${this.styleTabIndex}
-					@selected-item-changed=${this.handleStyleTabSelected}
+					@selected-changed=${this.handleStyleTabSelected}
 				>
 					<paper-tab id="${'style'}" dialogInitialFocus
 						>Outer</paper-tab
