@@ -276,6 +276,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
+		console.log(e);
+		console.log(e.detail);
 		const i = e.detail.value.id;
 		if (this.styleTabIndex == i) {
 			return;
@@ -478,6 +480,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			<div>
 				<div class="style-header">CSS Styles</div>
 				<paper-tabs
+					scrollable
+					hide-scroll-buttons
 					.selected=${this.styleTabIndex}
 					@selected-item-changed=${this.handleStyleTabSelected}
 				>
@@ -1207,12 +1211,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				gap: 4px;
 			}
 
-			mwc-tab-bar {
+			paper-tabs {
+				--paper-tabs-selection-bar-color: var(--primary-color);
 				color: var(--primary-text-color);
 				text-transform: uppercase;
+				margin-bottom: 16px;
 				border-bottom: 1px solid var(--divider-color);
-				--paper-tabs-selection-bar-color: var(--primary-color);
-				--paper-tab-ink: var(--primary-color);
 			}
 
 			.form {
