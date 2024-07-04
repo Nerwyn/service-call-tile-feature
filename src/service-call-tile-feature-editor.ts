@@ -31,7 +31,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlKey?: string;
 	styleFields: string[] = [];
 	resizeObserver = new ResizeObserver((entries) => {
-		for (const entry of entries) {
+		for (const _ of entries) {
 			const actionsTabIndex = this.actionsTabIndex;
 			const styleTabIndex = this.styleTabIndex;
 			const spinboxTabIndex = this.spinboxTabIndex;
