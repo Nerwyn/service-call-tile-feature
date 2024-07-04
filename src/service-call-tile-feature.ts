@@ -400,6 +400,7 @@ window.customTileFeatures.push({
 });
 
 if (!window.structuredClone) {
+	// eslint-disable-next-line
 	// @ts-ignore
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 }
