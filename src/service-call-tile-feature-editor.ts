@@ -30,6 +30,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlString?: string;
 	yamlKey?: string;
 	styleFields: string[] = [];
+	resizeObserver = new ResizeObserver((entries) => {
+		for (const entry of entries) {
+			const actionsTabIndex = this.actionsTabIndex;
+			const styleTabIndex = this.styleTabIndex;
+			const spinboxTabIndex = this.spinboxTabIndex;
+
+			this.actionsTabIndex = -1;
+			this.styleTabIndex = -1;
+			this.spinboxTabIndex = -1;
+
+			this.actionsTabIndex = actionsTabIndex;
+			this.styleTabIndex = styleTabIndex;
+			this.spinboxTabIndex = spinboxTabIndex;
+		}
+	});
 
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
@@ -1068,6 +1083,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
+		const paperTabs = this.shadowRoot?.querySelector('.container');
+		if (paperTabs) {
+			this.resizeObserver.observe(paperTabs);
+		}
+
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
 			case -1:
@@ -1083,6 +1103,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 		return editor;
+	}
+
+	disconnectedCallback(): void {
+		super.disconnectedCallback();
+		this.resizeObserver.disconnect();
 	}
 
 	static get styles() {
