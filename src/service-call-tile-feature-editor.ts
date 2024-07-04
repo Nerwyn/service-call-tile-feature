@@ -1226,6 +1226,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			paper-tab.iron-selected {
 				box-shadow: inset 0 -2px 0 0 var(--primary-color);
+				transition: box-shadow 1s;
 			}
 
 			.form {
