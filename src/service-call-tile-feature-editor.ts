@@ -23,7 +23,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() styleTabIndex: number = 0;
 	@state() optionEditorIndex: number = -1;
 	@state() spinboxTabIndex: number = 1;
-	@state() paperTabsWidth?: number;
 
 	@state() guiMode: boolean = true;
 	@state() errors?: string[];
@@ -492,9 +491,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					hide-scroll-buttons
 					.selected=${this.styleTabIndex}
 					@selected-changed=${this.handleStyleTabSelected}
-					width=${this.paperTabsWidth}
 				>
-					<paper-tab .dialogInitialFocus=${true}>Outer</paper-tab>
+					<paper-tab>Outer</paper-tab>
 					${Object.keys(fields).map(
 						(field) =>
 							html`<paper-tab>${fields[field]}</paper-tab>`,
@@ -634,13 +632,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildButtonGuiEditor() {
 		const actionsTabBar = html`
-			<mwc-tab-bar
-				.activeIndex=${this.actionsTabIndex}
-				@MDCTabBar:activated=${this.handleActionsTabSelected}
+			<paper-tabs
+				scrollable
+				hide-scroll-buttons
+				.selected=${this.actionsTabIndex}
+				@selected-changed=${this.handleActionsTabSelected}
 			>
-				<mwc-tab .label=${'default'}></mwc-tab>
-				<mwc-tab .label=${'momentary'}></mwc-tab>
-			</mwc-tab-bar>
+				<paper-tab>Default</paper-tab>
+				<paper-tab>Momentary</paper-tab>
+			</paper-tabs>
 		`;
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
@@ -863,14 +863,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			)}
 		`;
 		const spinboxTabBar = html`
-			<mwc-tab-bar
-				.activeIndex=${this.spinboxTabIndex}
-				@MDCTabBar:activated=${this.handleSpinboxTabSelected}
+			<paper-tabs
+				scrollable
+				hide-scroll-buttons
+				.selected=${this.spinboxTabIndex}
+				@selected-changed=${this.handleSpinboxTabSelected}
 			>
-				<mwc-tab .label=${'Decrement'}></mwc-tab>
-				<mwc-tab .label=${'Center'}></mwc-tab>
-				<mwc-tab .label=${'Increment'}></mwc-tab>
-			</mwc-tab-bar>
+				<paper-tab>Decrement</paper-tab>
+				<paper-tab>Center</paper-tab>
+				<paper-tab>Increment</paper-tab>
+			</paper-tabs>
 		`;
 
 		let spinboxGuiEditor: TemplateResult<1>;
