@@ -29,6 +29,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	yamlString?: string;
 	yamlKey?: string;
+	styleFields: string[] = [];
 
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
@@ -276,11 +277,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
+		console.log(e);
 		const i = e.detail.value;
 		if (this.styleTabIndex == i) {
 			return;
 		}
-		this.yamlKey = (e.target as HTMLElement).children[i].id as keyof IEntry;
+		this.yamlKey = this.styleFields[i];
 		this.styleTabIndex = i;
 	}
 
@@ -474,6 +476,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.yamlKey = ['style'].concat(Object.keys(fields))[
 			this.styleTabIndex
 		] as keyof IEntry;
+		this.styleFields = ['style'].concat(Object.keys(fields));
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
@@ -483,14 +486,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.selected=${this.styleTabIndex}
 					@selected-changed=${this.handleStyleTabSelected}
 				>
-					<paper-tab id="${'style'}" dialogInitialFocus
-						>Outer</paper-tab
-					>
+					<paper-tab dialogInitialFocus>Outer</paper-tab>
 					${Object.keys(fields).map(
 						(field) =>
-							html`<paper-tab id="${field}"
-								>${fields[field]}</paper-tab
-							>`,
+							html`<paper-tab>${fields[field]}</paper-tab>`,
 					)}
 				</paper-tabs>
 				${this.buildYamlEditor()}
