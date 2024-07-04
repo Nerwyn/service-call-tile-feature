@@ -34,7 +34,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	resizeObserver = new ResizeObserver((entries) => {
 		for (const entry of entries) {
 			this.paperTabsWidth = entry.contentRect.width;
-			this.requestUpdate();
 		}
 	});
 
@@ -492,6 +491,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					hide-scroll-buttons
 					.selected=${this.styleTabIndex}
 					@selected-changed=${this.handleStyleTabSelected}
+					width=${this.paperTabsWidth}
 				>
 					<paper-tab dialogInitialFocus>Outer</paper-tab>
 					${Object.keys(fields).map(
