@@ -279,6 +279,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleStyleTabSelected(e: CustomEvent) {
 		console.log(e);
 		const i = e.detail.value;
+		console.log(i);
+		console.log(this.styleTabIndex);
 		if (this.styleTabIndex == i) {
 			return;
 		}
