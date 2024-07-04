@@ -27,9 +27,7 @@
 	"dependencies": {
 		"@material/web": "latest",
 		"@types/js-yaml": "latest",
-		"custom-card-helpers": "latest",
 		"ha-nunjucks": "latest",
-		"lit": "latest",
 		"js-yaml": "latest"
 	},
 	"devDependencies": {
