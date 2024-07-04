@@ -400,5 +400,6 @@ window.customTileFeatures.push({
 });
 
 if (!window.structuredClone) {
+	// @ts-ignore
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 }
