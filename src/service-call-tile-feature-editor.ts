@@ -31,11 +31,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlString?: string;
 	yamlKey?: string;
 	styleFields: string[] = [];
-	resizeObserver = new ResizeObserver((entries) => {
-		for (const entry of entries) {
-			this.paperTabsWidth = entry.contentRect.width;
-		}
-	});
 
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
@@ -139,6 +134,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+		this.styleTabIndex = 0;
+		this.actionsTabIndex = 0;
+		this.optionEditorIndex = -1;
+		this.spinboxTabIndex = 1;
 		this.entryEditorIndex = i;
 	}
 
@@ -147,6 +146,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+		this.styleTabIndex = 0;
+		this.actionsTabIndex = 0;
 		this.optionEditorIndex = i;
 	}
 
@@ -493,7 +494,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@selected-changed=${this.handleStyleTabSelected}
 					width=${this.paperTabsWidth}
 				>
-					<paper-tab dialogInitialFocus>Outer</paper-tab>
+					<paper-tab .dialogInitialFocus=${true}>Outer</paper-tab>
 					${Object.keys(fields).map(
 						(field) =>
 							html`<paper-tab>${fields[field]}</paper-tab>`,
@@ -1065,11 +1066,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		const paperTabs = this.shadowRoot?.querySelector('paper-tabs');
-		if (paperTabs) {
-			this.resizeObserver.observe(paperTabs);
-		}
-
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
 			case -1:
@@ -1085,11 +1081,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 		return editor;
-	}
-
-	disconnectedCallback(): void {
-		super.disconnectedCallback();
-		this.resizeObserver.disconnect();
 	}
 
 	static get styles() {
@@ -1226,10 +1217,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			paper-tabs {
-				--paper-tabs-selection-bar-color: var(--primary-color);
 				color: var(--primary-text-color);
 				text-transform: uppercase;
 				border-bottom: 1px solid var(--divider-color);
+				--paper-tabs-selection-bar-color: var(--primary-color);
 			}
 
 			.form {
