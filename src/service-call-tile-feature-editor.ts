@@ -486,7 +486,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.selected=${this.styleTabIndex}
 					@selected-changed=${this.handleStyleTabSelected}
 				>
-					<paper-tab dialogInitialFocus>Outer</paper-tab>
+					<paper-tab>Outer</paper-tab>
 					${Object.keys(fields).map(
 						(field) =>
 							html`<paper-tab>${fields[field]}</paper-tab>`,
