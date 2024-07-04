@@ -267,7 +267,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleSpinboxTabSelected(e: CustomEvent) {
 		this.yamlString = undefined;
-		const i = e.detail.index;
+		const i = e.detail.value;
 		if (this.spinboxTabIndex == i) {
 			return;
 		}
@@ -275,7 +275,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
-		const i = e.detail.index;
+		const i = e.detail.value;
 		if (this.actionsTabIndex == i) {
 			return;
 		}
