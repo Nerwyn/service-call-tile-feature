@@ -28,4 +28,9 @@ module.exports = {
 		],
 	},
 	devtool: env == 'production' ? false : 'eval',
+	externals: {
+		'@material/web/tabs/tabs.js': '@material/web/tabs/tabs.js',
+		'@material/web/tabs/primary-tab.js':
+			'@material/web/tabs/primary-tab.js',
+	},
 };
