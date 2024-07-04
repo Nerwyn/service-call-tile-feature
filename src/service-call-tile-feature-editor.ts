@@ -277,7 +277,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
-		this.yamlString = undefined;
+		console.log(e);
+		console.log(e.detail);
 		const i = e.detail.index;
 		if (this.styleTabIndex == i) {
 			return;
@@ -479,19 +480,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
-				<mwc-tab-bar
-					.activeIndex=${this.styleTabIndex}
-					@MDCTabBar:activated=${this.handleStyleTabSelected}
+				<md-tabs
+					.activeTabIndex=${this.styleTabIndex}
+					@change=${this.handleStyleTabSelected}
 				>
-					<mwc-tab .label=${'Outer'} id="${'style'}"></mwc-tab>
+					<md-primary-tab
+						.label=${'Outer'}
+						id="${'style'}"
+					></md-primary-tab>
 					${Object.keys(fields).map(
 						(field) =>
-							html`<mwc-tab
-								.label=${fields[field]}
-								id="${field}"
-							></mwc-tab>`,
+							html`<md-primary-tab id="${field}"
+								>${fields[field]}</md-primary-tab
+							>`,
 					)}
-				</mwc-tab-bar>
+				</md-tabs>
 				${this.buildYamlEditor()}
 			</div>
 		`;
