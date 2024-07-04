@@ -483,11 +483,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					.activeIndex=${this.styleTabIndex}
 					@MDCTabBar:activated=${this.handleStyleTabSelected}
 				>
-					<mwc-tab
-						.label=${'Outer'}
-						id="${'style'}"
-						dialogInitialFocus
-					></mwc-tab>
+					<mwc-tab .label=${'Outer'} id="${'style'}"></mwc-tab>
 					${Object.keys(fields).map(
 						(field) =>
 							html`<mwc-tab
@@ -634,7 +630,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				.activeIndex=${this.actionsTabIndex}
 				@MDCTabBar:activated=${this.handleActionsTabSelected}
 			>
-				<mwc-tab .label=${'default'} dialogInitialFocus></mwc-tab>
+				<mwc-tab .label=${'default'}></mwc-tab>
 				<mwc-tab .label=${'momentary'}></mwc-tab>
 			</mwc-tab-bar>
 		`;
@@ -864,7 +860,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				@MDCTabBar:activated=${this.handleSpinboxTabSelected}
 			>
 				<mwc-tab .label=${'Decrement'}></mwc-tab>
-				<mwc-tab .label=${'Center'} dialogInitialFocus></mwc-tab>
+				<mwc-tab .label=${'Center'}></mwc-tab>
 				<mwc-tab .label=${'Increment'}></mwc-tab>
 			</mwc-tab-bar>
 		`;
