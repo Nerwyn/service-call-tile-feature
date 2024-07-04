@@ -34,7 +34,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	resizeObserver = new ResizeObserver((entries) => {
 		for (const entry of entries) {
 			this.paperTabsWidth = entry.contentRect.width;
-			console.log(this.paperTabsWidth);
+			this.requestUpdate();
 		}
 	});
 
