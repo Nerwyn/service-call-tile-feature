@@ -2,8 +2,6 @@ import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StyleInfo } from 'lit/directives/style-map.js';
 
-import '@material/web/tabs/tabs.js';
-import '@material/web/tabs/primary-tab.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
 
@@ -278,9 +276,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleStyleTabSelected(e: CustomEvent) {
-		console.log(e);
-		console.log(e.detail);
-		const i = e.detail.index;
+		const i = e.detail.value.id;
 		if (this.styleTabIndex == i) {
 			return;
 		}
@@ -481,21 +477,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`
 			<div>
 				<div class="style-header">CSS Styles</div>
-				<md-tabs
-					.activeTabIndex=${this.styleTabIndex}
-					@change=${this.handleStyleTabSelected}
+				<paper-tabs
+					.selected=${this.styleTabIndex}
+					@selected-item-changed=${this.handleStyleTabSelected}
 				>
-					<md-primary-tab
-						.label=${'Outer'}
-						id="${'style'}"
-					></md-primary-tab>
+					<paper-tab id="${'style'}" dialogInitialFocus
+						>Outer</paper-tab
+					>
 					${Object.keys(fields).map(
 						(field) =>
-							html`<md-primary-tab id="${field}"
-								>${fields[field]}</md-primary-tab
+							html`<paper-tab id="${field}"
+								>${fields[field]}</paper-tab
 							>`,
 					)}
-				</md-tabs>
+				</paper-tabs>
 				${this.buildYamlEditor()}
 			</div>
 		`;

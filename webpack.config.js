@@ -28,13 +28,4 @@ module.exports = {
 		],
 	},
 	devtool: env == 'production' ? false : 'eval',
-	// externals: [/^@material\/web\/tabs\/(tabs|primary-tab)\.js/],
-	externals: {
-		['@material/web/tabs/tabs.js']: {
-			root: '@material/web/tabs/tabs.js',
-		},
-		['@material/web/tabs/primary-tab.js']: {
-			root: '@material/web/tabs/primary-tab.js',
-		},
-	},
 };
