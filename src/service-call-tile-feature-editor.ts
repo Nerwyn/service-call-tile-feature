@@ -1490,6 +1490,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			entries.push(entry);
 		}
+		console.log(entries);
 		this.entriesChanged(entries);
 	}
 
