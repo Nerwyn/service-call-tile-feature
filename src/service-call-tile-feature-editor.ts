@@ -1471,7 +1471,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 					// falls through
 					case 'slider': {
-						const [domain, _service] = entryEntityId.split('.');
+						const [domain, _service] = (entryEntityId ?? '').split(
+							'.',
+						);
 						if (['number', 'input_number'].includes(domain)) {
 							let rangeMin = entry.range?.[0];
 							let rangeMax = entry.range?.[1];
