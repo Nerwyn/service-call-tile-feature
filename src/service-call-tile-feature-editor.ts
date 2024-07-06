@@ -363,18 +363,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									attribute: '',
 								},
 							};
-							context.config.value_attribute =
-								this.renderTemplate(
-									entry.value_attribute as string,
-									context,
-								) as string;
+							context.config.attribute = this.renderTemplate(
+								entry.value_attribute as string,
+								context,
+							) as string;
 							context.config.entity = this.renderTemplate(
 								entry.entity_id as string,
 								context,
 							) as string;
 							const value = this.getFeatureValue(
-								context.config.entity_id as string,
-								context.config.value_attribute,
+								context.config.entity,
+								context.config.attribute,
 							);
 							context.VALUE = value;
 							context.value = value;
@@ -1169,7 +1168,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	getFeatureValue(entityId: string, valueAttribute: string) {
 		if (!this.hass.states[entityId]) {
 			return '';
-		} else if (valueAttribute == 'state') {
+		} else if (valueAttribute == 'state' || !valueAttribute) {
 			return this.hass.states[entityId].state;
 		} else {
 			const indexMatch = valueAttribute.match(/\[\d+\]$/);
