@@ -975,7 +975,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				this.activeEntry =
 					this.config.entries[this.entryEditorIndex].options?.[
 						this.optionEditorIndex
-					];
+					] ?? {};
 				this.activeEntryType = 'option';
 				selectorGuiEditor = html`
 					${this.buildEntryHeader('option')}
@@ -1067,13 +1067,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (this.spinboxTabIndex) {
 			case 0:
 				this.activeEntry =
-					this.config.entries[this.entryEditorIndex].decrement;
+					this.config.entries[this.entryEditorIndex].decrement ?? {};
 				this.activeEntryType = 'decrement';
 				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
 			case 2:
 				this.activeEntry =
-					this.config.entries[this.entryEditorIndex].increment;
+					this.config.entries[this.entryEditorIndex].increment ?? {};
 				this.activeEntryType = 'increment';
 				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
@@ -1202,7 +1202,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryGuiEditor() {
-		this.activeEntry = this.config.entries[this.entryEditorIndex];
+		this.activeEntry = this.config.entries[this.entryEditorIndex] ?? {};
 		this.activeEntryType = 'entry';
 		let entryGuiEditor: TemplateResult<1>;
 		switch (this.activeEntry.type) {
@@ -1340,20 +1340,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				attribute: '',
 			},
 		};
-		if ('value_attribute' in entry) {
-			context.config.attribute =
-				(this.renderTemplate(
-					entry.value_attribute ?? '',
-					context,
-				) as string) ?? '';
-		}
-		if ('entity_id' in entry) {
-			context.config.entity =
-				(this.renderTemplate(
-					entry.entity_id ?? '',
-					context,
-				) as string) ?? '';
-		}
+		context.config.attribute = this.renderTemplate(
+			entry.value_attribute ?? '',
+			context,
+		) as string;
+		context.config.entity = this.renderTemplate(
+			entry.entity_id ?? '',
+			context,
+		) as string;
 		const unit = this.renderTemplate(
 			entry.unit_of_measurement as string,
 			context,
