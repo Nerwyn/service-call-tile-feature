@@ -1458,23 +1458,25 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							}
 
 							if (!entry.step) {
-								entry.step =
-									this.hass.states[
-										entryEntityId as string
-									].attributes.step;
-							} else {
-								const entryContext =
-									this.getEntryContext(entry);
-								entry.step =
-									((this.renderTemplate(
-										entry.range[1],
-										entryContext,
-									) as unknown as number) -
-										(this.renderTemplate(
-											entry.range[0],
+								const defaultStep =
+									this.hass.states[entryEntityId as string]
+										?.attributes?.step;
+								if (defaultStep) {
+									entry.step = defaultStep;
+								} else {
+									const entryContext =
+										this.getEntryContext(entry);
+									entry.step =
+										((this.renderTemplate(
+											entry.range[1],
 											entryContext,
-										) as unknown as number)) /
-									100;
+										) as unknown as number) -
+											(this.renderTemplate(
+												entry.range[0],
+												entryContext,
+											) as unknown as number)) /
+										100;
+								}
 							}
 						}
 						break;
