@@ -414,7 +414,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 											  ></ha-icon>`
 											: ''}
 										<div>
-											<span
+											<span class="primary"
 												>${entryType ??
 												backupType}${label
 													? ` ⸱ ${label}`
@@ -426,8 +426,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 															.entity_id}${context
 															.config.attribute
 															? ` ⸱ ${context.config.attribute}`
-															: ''}<
-														/span></span
+															: ''}</span
 												  >`
 												: ''}
 										</div>
@@ -519,7 +518,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						.label=${this.hass.localize('ui.common.back')}
 						@click=${exitHandler}
 					></ha-icon-button-prev>
-					<span slot="title"> ${title} </span>
+					<span class="primary" slot="title">${title}</span>
 				</div>
 				${field == 'entry'
 					? html`<ha-icon-button
@@ -1355,7 +1354,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				flex-grow: 1;
 				gap: 8px;
 			}
-			span {
+			.primary:first-letter {
 				text-transform: capitalize;
 			}
 			.feature-content div {
