@@ -782,37 +782,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						this.activeEntry?.hold_action?.action ?? 'none',
 						this.getEntryContext(this.activeEntry as IEntry),
 					) != 'none'
-						? this.buildSelector(
-								'Hold Time',
-								'hold_time' as keyof IEntry,
-								{
-									number: {
-										min: 0,
-										step: 0,
-										mode: 'box',
-										unit_of_measurement: 'ms',
+						? html`<div class="form">
+								${this.buildSelector(
+									'Hold Time',
+									'hold_time' as keyof IEntry,
+									{
+										number: {
+											min: 0,
+											step: 0,
+											mode: 'box',
+											unit_of_measurement: 'ms',
+										},
 									},
-								},
-								500,
-						  )
-						: ''}
-					${this.renderTemplate(
-						this.activeEntry?.hold_action?.action as string,
-						this.getEntryContext(this.activeEntry as IEntry),
-					) == 'repeat'
-						? this.buildSelector(
-								'Repeat Delay',
-								'repeat_delay' as keyof IEntry,
-								{
-									number: {
-										min: 0,
-										step: 0,
-										mode: 'box',
-										unit_of_measurement: 'ms',
-									},
-								},
-								100,
-						  )
+									500,
+								)}${this.renderTemplate(
+									this.activeEntry?.hold_action
+										?.action as string,
+									this.getEntryContext(
+										this.activeEntry as IEntry,
+									),
+								) == 'repeat'
+									? this.buildSelector(
+											'Repeat Delay',
+											'repeat_delay' as keyof IEntry,
+											{
+												number: {
+													min: 0,
+													step: 0,
+													mode: 'box',
+													unit_of_measurement: 'ms',
+												},
+											},
+											100,
+									  )
+									: ''}
+						  </div>`
 						: ''}
 				`;
 				break;
@@ -1004,22 +1008,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				defaultHoldActions,
 			)}
 			${this.renderTemplate(
-				this.activeEntry?.hold_action?.action as string,
+				this.activeEntry?.hold_action?.action ?? 'none',
 				this.getEntryContext(this.activeEntry as IEntry),
-			) == 'repeat'
-				? this.buildSelector(
-						'Repeat Delay',
-						'repeat_delay' as keyof IEntry,
-						{
-							number: {
-								min: 0,
-								step: 0,
-								mode: 'box',
-								unit_of_measurement: 'ms',
+			) != 'none'
+				? html`<div class="form">
+						${this.buildSelector(
+							'Hold Time',
+							'hold_time' as keyof IEntry,
+							{
+								number: {
+									min: 0,
+									step: 0,
+									mode: 'box',
+									unit_of_measurement: 'ms',
+								},
 							},
-						},
-						100,
-				  )
+							500,
+						)}${this.renderTemplate(
+							this.activeEntry?.hold_action?.action as string,
+							this.getEntryContext(this.activeEntry as IEntry),
+						) == 'repeat'
+							? this.buildSelector(
+									'Repeat Delay',
+									'repeat_delay' as keyof IEntry,
+									{
+										number: {
+											min: 0,
+											step: 0,
+											mode: 'box',
+											unit_of_measurement: 'ms',
+										},
+									},
+									100,
+							  )
+							: ''}
+				  </div>`
 				: ''}
 		`;
 		const spinboxTabBar = html`
