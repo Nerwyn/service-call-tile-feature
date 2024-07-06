@@ -1341,11 +1341,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		context.config.attribute = this.renderTemplate(
-			entry.value_attribute as string,
+			entry.value_attribute ?? '',
 			context,
 		) as string;
 		context.config.entity = this.renderTemplate(
-			entry.entity_id as string,
+			entry.entity_id ?? '',
 			context,
 		) as string;
 		const unit = this.renderTemplate(
