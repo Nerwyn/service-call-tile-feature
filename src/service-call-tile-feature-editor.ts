@@ -207,8 +207,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	toggleGuiMode(_e: CustomEvent) {
 		if (this.guiMode) {
 			this.yamlKey = 'entry';
-			this.yamlString = undefined;
+		} else {
+			this.yamlKey = 'style';
 		}
+		this.yamlString = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
