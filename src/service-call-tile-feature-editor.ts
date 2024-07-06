@@ -1340,14 +1340,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				attribute: '',
 			},
 		};
-		if (entry.value_attribute) {
+		if ('value_attribute' in entry) {
 			context.config.attribute =
 				(this.renderTemplate(
 					entry.value_attribute ?? '',
 					context,
 				) as string) ?? '';
 		}
-		if (entry.entity_id) {
+		if ('entity_id' in entry) {
 			context.config.entity =
 				(this.renderTemplate(
 					entry.entity_id ?? '',
