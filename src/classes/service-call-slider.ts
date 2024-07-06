@@ -298,8 +298,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 			value: this.getValueFromHass ? this.value : this.currentValue,
 		};
 
-		const [domain, _service] = (this.entityId ?? '').split('.');
-
 		if (this.entry.range) {
 			this.range = [
 				parseFloat(
@@ -315,36 +313,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					) as string,
 				),
 			];
-		} else if (['number', 'input_number'].includes(domain)) {
-			this.range = [
-				this.hass.states[this.entityId as string].attributes.min,
-				this.hass.states[this.entityId as string].attributes.max,
-			];
-		}
-
-		if (!this.entry.tap_action) {
-			const tap_action = {} as IAction;
-			tap_action.action = 'call-service';
-			switch (domain) {
-				case 'number':
-					tap_action.service = 'number.set_value';
-					break;
-				case 'input_number':
-				default:
-					tap_action.service = 'input_number.set_value';
-					break;
-			}
-
-			const data = tap_action.data ?? {};
-			if (!data.value) {
-				data.value = '{{ value }}';
-				tap_action.data = data;
-			}
-			if (!data.entity_id) {
-				data.entity_id = this.entityId as string;
-				tap_action.data = data;
-			}
-			this.entry.tap_action = tap_action;
 		}
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
@@ -355,9 +323,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					this.entry.step as unknown as string,
 				) as string,
 			);
-		} else if (['number', 'input_number'].includes(domain)) {
-			this.step =
-				this.hass.states[this.entityId as string].attributes.step;
 		} else {
 			this.step = (this.range[1] - this.range[0]) / 100;
 		}

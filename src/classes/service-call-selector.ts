@@ -27,62 +27,20 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	render() {
 		this.setValue();
 
-		const entries = this.entry.options ?? [];
-		let options: string[] = [];
-		if (this.entityId) {
-			options =
-				(this.hass.states[this.entityId].attributes
-					.options as string[]) ?? new Array<string>(entries.length);
-		}
-		if (options.length < entries.length) {
-			options = Object.assign(new Array(entries.length), options);
-		}
-
 		const selector = [this.buildBackground()];
 
-		for (const i in entries) {
-			if (
-				!entries[i].tap_action &&
-				!entries[i].double_tap_action &&
-				!entries[i].hold_action
-			) {
-				const [domain, _service] = (this.entityId ?? '').split('.');
-				const tap_action = {} as IAction;
-				tap_action.action = 'call-service';
-				switch (domain) {
-					case 'select':
-						tap_action.service = 'select.select_option';
-						break;
-					case 'input_select':
-					default:
-						tap_action.service = 'input_select.select_option';
-						break;
-				}
-
-				const data = tap_action.data ?? {};
-				if (!data.option) {
-					data.option = options[i];
-					tap_action.data = data;
-				}
-				if (!data.entity_id) {
-					data.entity_id = this.entityId as string;
-					tap_action.data = data;
-				}
-				entries[i].tap_action = tap_action;
-				entries[i].hold_action = tap_action;
-			}
-
-			const option =
-				this.renderTemplate(entries[i].option as string) ?? options[i];
+		const options = this.entry.options ?? [];
+		for (const i in options) {
+			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
-			if (this.value == option && this.value != undefined) {
+			if (this.value == optionName && this.value != undefined) {
 				optionClass = 'selected-option';
 			}
 			const styleContext = {
 				config: {
 					...this.entry,
 					entity: this.renderTemplate(this.entry.entity_id ?? ''),
-					option: option,
+					option: optionName,
 				},
 			};
 
@@ -90,12 +48,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				html`<service-call-button
 					class=${optionClass}
 					.hass=${this.hass}
-					.entry=${entries[i]}
+					.entry=${options[i]}
 					.shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
 					style=${styleMap(
-						this.buildStyle(entries[i].style ?? {}, styleContext),
+						this.buildStyle(options[i].style ?? {}, styleContext),
 					)}
 				/>`,
 			);

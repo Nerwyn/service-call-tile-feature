@@ -10,8 +10,13 @@ import {
 	IConfig,
 	IEntry,
 	IOption,
+	IAction,
+	IActions,
+	IData,
+	ITarget,
 	TileFeatureTypes,
 	Actions,
+	ActionTypes,
 	ThumbTypes,
 } from './models/interfaces';
 
@@ -355,39 +360,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				>
 					<div class="features">
 						${entries.map((entry, i) => {
-							const context = {
-								VALUE: 0,
-								HOLD_SECS: 0,
-								UNIT: '',
-								value: 0,
-								hold_secs: 0,
-								unit: '',
-								config: {
-									...entry,
-									entity: '',
-									attribute: '',
-								},
-							};
-							context.config.attribute = this.renderTemplate(
-								entry.value_attribute as string,
-								context,
-							) as string;
-							context.config.entity = this.renderTemplate(
-								entry.entity_id as string,
-								context,
-							) as string;
-							const unit = this.renderTemplate(
-								entry.unit_of_measurement as string,
-								context,
-							) as string;
-							(context.UNIT = unit), (context.unit = unit);
-							const value = this.getFeatureValue(
-								context.config.entity,
-								context.config.attribute,
-							);
-							context.VALUE = value;
-							context.value = value;
-
+							const context = this.getEntryContext(entry);
 							const icon = this.renderTemplate(
 								entry.icon as string,
 								context,
@@ -1131,23 +1104,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		const entries: IEntry[] = [];
-		let updateEntries = false;
-		for (const entry of this.config.entries ?? []) {
-			const autofill =
-				this.renderTemplate(
-					entry.autofill_entity_id as unknown as string,
-					this.getEntryContext(entry),
-				) ?? true;
-			if (autofill && !entry.entity_id) {
-				entry.entity_id = this.context.entity_id;
-				updateEntries = true;
-			}
-			entries.push(entry);
-		}
-		if (updateEntries) {
-			this.entriesChanged(entries);
-		}
+		this.autofillDefaultFields();
 
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
@@ -1290,6 +1247,243 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			return value;
 		}
+	}
+
+	populateMissingEntityId(entry: IEntry, parentEntityId: string) {
+		for (const actionType of ActionTypes) {
+			if (actionType in entry) {
+				const action =
+					entry[actionType as unknown as keyof IActions] ??
+					({} as IAction);
+				if (['call-service', 'more-info'].includes(action.action)) {
+					const data = action.data ?? ({} as IData);
+					const target = action.target ?? ({} as ITarget);
+					if (
+						!data.entity_id &&
+						!data.device_id &&
+						!data.area_id &&
+						!target.entity_id &&
+						!target.device_id &&
+						!target.area_id
+					) {
+						target.entity_id = entry.entity_id ?? parentEntityId;
+						action.target = target;
+						entry[actionType as keyof IActions] = action;
+					}
+				}
+			}
+		}
+
+		if (!('entity_id' in entry)) {
+			let entity_id =
+				entry.tap_action?.target?.entity_id ??
+				entry.tap_action?.data?.entity_id ??
+				parentEntityId;
+			if (Array.isArray(entity_id)) {
+				entity_id = entity_id[0];
+			}
+			entry.entity_id = entity_id as string;
+		}
+
+		return entry;
+	}
+
+	autofillDefaultFields() {
+		const entries: IEntry[] = [];
+		for (let entry of this.config.entries ?? []) {
+			const autofill =
+				this.renderTemplate(
+					entry.autofill_entity_id as unknown as string,
+					this.getEntryContext(entry),
+				) ?? true;
+			if (autofill && !entry.entity_id) {
+				// Feature entity ID
+				entry = this.populateMissingEntityId(
+					entry,
+					this.context.entity_id,
+				);
+
+				const entryEntityId = this.renderTemplate(
+					entry.entity_id as string,
+					this.getEntryContext(entry),
+				) as string;
+
+				switch (
+					this.renderTemplate(
+						entry.type as string,
+						this.getEntryContext(entry),
+					)
+				) {
+					case 'selector':
+						// Get option names from attributes if it exists
+						const options = entry.options ?? [];
+						let optionNames: string[] = [];
+						if (entryEntityId) {
+							optionNames =
+								(this.hass.states[entryEntityId]?.attributes
+									?.options as string[]) ??
+								new Array<string>(options.length);
+						}
+						if (optionNames.length < options.length) {
+							optionNames = Object.assign(
+								new Array(options.length),
+								optionNames,
+							);
+						}
+						for (const i in options) {
+							if (
+								this.renderTemplate(
+									options[i]
+										.autofill_entity_id as unknown as string,
+									this.getEntryContext(options[i]),
+								) ??
+								true
+							) {
+								options[i] = this.populateMissingEntityId(
+									options[i],
+									entry.entity_id as string,
+								);
+
+								// Default select action
+								if (
+									!options[i].tap_action &&
+									!options[i].double_tap_action &&
+									!options[i].hold_action
+								) {
+									const [domain, _service] = (
+										entryEntityId ?? ''
+									).split('.');
+									const tap_action = {} as IAction;
+									tap_action.action = 'call-service';
+									switch (domain) {
+										case 'select':
+											tap_action.service =
+												'select.select_option';
+											break;
+										case 'input_select':
+										default:
+											tap_action.service =
+												'input_select.select_option';
+											break;
+									}
+
+									// Set option name using options attribute if it is not set
+									const data = tap_action.data ?? {};
+									if (!data.option) {
+										data.option = optionNames[i];
+										tap_action.data = data;
+									}
+									const target = tap_action.target ?? {};
+									if (!target.entity_id) {
+										target.entity_id =
+											entryEntityId as string;
+										tap_action.target = target;
+									}
+									options[i].tap_action = tap_action;
+									options[i].hold_action = tap_action;
+								}
+							}
+						}
+						break;
+					case 'spinbox':
+						// Increment and decrement fields
+						if (
+							entry.increment &&
+							(this.renderTemplate(
+								entry.increment
+									?.autofill_entity_id as unknown as string,
+								this.getEntryContext(entry.increment),
+							) ??
+								true)
+						) {
+							entry.increment = this.populateMissingEntityId(
+								entry.increment as IEntry,
+								entry.entity_id as string,
+							);
+						}
+						if (
+							entry.decrement &&
+							(this.renderTemplate(
+								entry.decrement
+									?.autofill_entity_id as unknown as string,
+								this.getEntryContext(entry.decrement),
+							) ??
+								true)
+						) {
+							entry.decrement = this.populateMissingEntityId(
+								entry.decrement as IEntry,
+								entry.entity_id as string,
+							);
+						}
+					// falls through
+					case 'slider':
+						const [domain, _service] = entryEntityId.split('.');
+						if (['number', 'input_number'].includes(domain)) {
+							if (!entry.range) {
+								entry.range = [
+									this.hass.states[entryEntityId].attributes
+										.min,
+									this.hass.states[entryEntityId].attributes
+										.max,
+								];
+							}
+
+							if (!entry.tap_action) {
+								const tap_action = {} as IAction;
+								tap_action.action = 'call-service';
+								switch (domain) {
+									case 'number':
+										tap_action.service = 'number.set_value';
+										break;
+									case 'input_number':
+									default:
+										tap_action.service =
+											'input_number.set_value';
+										break;
+								}
+
+								const data = tap_action.data ?? {};
+								if (!data.value) {
+									data.value = '{{ value }}';
+									tap_action.data = data;
+								}
+								const target = tap_action.target ?? {};
+								if (!target.entity_id) {
+									target.entity_id = entryEntityId as string;
+									tap_action.target = data;
+								}
+								entry.tap_action = tap_action;
+							}
+
+							if (!entry.step) {
+								entry.step =
+									this.hass.states[
+										entryEntityId as string
+									].attributes.step;
+							} else {
+								const entryContext =
+									this.getEntryContext(entry);
+								entry.step =
+									((this.renderTemplate(
+										entry.range[1],
+										entryContext,
+									) as unknown as number) -
+										(this.renderTemplate(
+											entry.range[0],
+											entryContext,
+										) as unknown as number)) /
+									100;
+							}
+						}
+						break;
+					case 'button':
+					case 'default':
+						break;
+				}
+			}
+			entries.push(entry);
+		}
+		this.entriesChanged(entries);
 	}
 
 	static get styles() {

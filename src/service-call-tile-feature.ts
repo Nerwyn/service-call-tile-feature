@@ -188,33 +188,6 @@ class ServiceCallTileFeature extends LitElement {
 		return entry;
 	}
 
-	populateMissingEntityId(entry: IEntry, parentEntityId: string) {
-		for (const actionType of ActionTypes) {
-			if (actionType in entry) {
-				const action =
-					entry[actionType as keyof IActions] ?? ({} as IAction);
-				if (['call-service', 'more-info'].includes(action.action)) {
-					const data = action.data ?? ({} as IData);
-					if (!data.entity_id && !data.device_id && !data.area_id) {
-						data.entity_id = entry.entity_id ?? parentEntityId;
-						action.data = data;
-						entry[actionType as keyof IActions] = action;
-					}
-				}
-			}
-		}
-
-		if (!('entity_id' in entry)) {
-			let entity_id = entry.tap_action?.data?.entity_id ?? parentEntityId;
-			if (Array.isArray(entity_id)) {
-				entity_id = entity_id[0];
-			}
-			entry.entity_id = entity_id as string;
-		}
-
-		return entry;
-	}
-
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -270,36 +243,6 @@ class ServiceCallTileFeature extends LitElement {
 
 		const row: TemplateResult[] = [];
 		for (let entry of this.config.entries) {
-			// Set entity ID to tile card entity ID if no other ID is present
-			if (entry.autofill_entity_id ?? true) {
-				entry = this.populateMissingEntityId(
-					entry,
-					this.stateObj.entity_id,
-				);
-
-				for (let option of entry.options ?? []) {
-					if (option.autofill_entity_id ?? true) {
-						option = this.populateMissingEntityId(
-							option,
-							entry.entity_id as string,
-						);
-					}
-				}
-
-				if (entry.increment) {
-					entry.increment = this.populateMissingEntityId(
-						entry.increment as IEntry,
-						entry.entity_id as string,
-					);
-				}
-				if (entry.decrement) {
-					entry.decrement = this.populateMissingEntityId(
-						entry.decrement as IEntry,
-						entry.entity_id as string,
-					);
-				}
-			}
-
 			const context = {
 				config: {
 					...entry,
