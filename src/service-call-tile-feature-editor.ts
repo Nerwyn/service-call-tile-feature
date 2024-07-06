@@ -1421,14 +1421,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					case 'slider': {
 						const [domain, _service] = entryEntityId.split('.');
 						if (['number', 'input_number'].includes(domain)) {
-							if (!entry.range) {
-								entry.range = [
+							let rangeMin = entry.range?.[0];
+							let rangeMax = entry.range?.[1];
+							if (rangeMin == undefined) {
+								rangeMin =
 									this.hass.states[entryEntityId].attributes
-										.min,
-									this.hass.states[entryEntityId].attributes
-										.max,
-								];
+										.min;
 							}
+							if (rangeMax == undefined) {
+								rangeMax =
+									this.hass.states[entryEntityId].attributes
+										.max;
+							}
+							entry.range = [
+								rangeMin as unknown as number,
+								rangeMax as unknown as number,
+							];
 
 							if (!entry.tap_action) {
 								const tap_action = {} as IAction;
