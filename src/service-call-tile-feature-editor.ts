@@ -1340,14 +1340,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				attribute: '',
 			},
 		};
-		context.config.attribute =
-			(this.renderTemplate(
-				entry.value_attribute ?? '',
-				context,
-			) as string) ?? '';
-		context.config.entity =
-			(this.renderTemplate(entry.entity_id ?? '', context) as string) ??
-			'';
+		if (entry.value_attribute) {
+			context.config.attribute =
+				(this.renderTemplate(
+					entry.value_attribute ?? '',
+					context,
+				) as string) ?? '';
+		}
+		if (entry.entity_id) {
+			context.config.entity =
+				(this.renderTemplate(
+					entry.entity_id ?? '',
+					context,
+				) as string) ?? '';
+		}
 		const unit = this.renderTemplate(
 			entry.unit_of_measurement as string,
 			context,
