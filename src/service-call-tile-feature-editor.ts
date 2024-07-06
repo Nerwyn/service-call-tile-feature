@@ -1197,17 +1197,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			if (value != undefined || valueAttribute == 'elapsed') {
 				switch (valueAttribute) {
 					case 'brightness':
-						value = Math.round(
+						return Math.round(
 							(100 * parseInt((value as string) ?? 0)) / 255,
 						);
-						break;
 					case 'elapsed':
 						if (entityId.startsWith('timer.')) {
 							if (
 								this.hass.states[entityId as string].state ==
 								'idle'
 							) {
-								value = 0;
+								return 0;
 							} else {
 								const durationHMS =
 									this.hass.states[
@@ -1221,20 +1220,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									this.hass.states[entityId as string]
 										.attributes.finishes_at,
 								);
-								value = Math.floor(
+								return Math.floor(
 									Math.min(
 										durationSeconds,
 										endSeconds - Date.now(),
 									),
 								);
 							}
-							break;
 						}
-					// falls through
 					default:
 						return value;
 				}
 			}
+			return value;
 		}
 	}
 
@@ -1298,6 +1296,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				align-items: center;
 				justify-content: flex-start;
 				flex-grow: 1;
+				gap: 8px;
 			}
 			span {
 				text-transform: capitalize;
