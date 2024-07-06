@@ -396,6 +396,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.label as string,
 								context,
 							);
+							const entryType = this.renderTemplate(
+								entry.type as string,
+								context,
+							);
 							return html`
 								<div class="feature">
 									<div class="handle">
@@ -411,12 +415,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 											: ''}
 										<div>
 											<span
-												>${entry.type ??
-												backupType}</span
+												>${entryType ??
+												backupType}${label
+													? ` ⸱ ${label}`
+													: ''}</span
 											>
-											${label
+											${context.config.entity
 												? html`<span class="secondary"
-														>${label}</span
+														>${context.config
+															.entity_id}${context
+															.config.attribute
+															? ` ⸱ ${context.config.attribute}`
+															: ''}<
+														/span></span
 												  >`
 												: ''}
 										</div>
@@ -1129,7 +1140,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					entry.autofill_entity_id as unknown as string,
 					this.getEntryContext(entry),
 				) ?? true;
-			if (autofill && entry.entity_id != this.context.entity_id) {
+			if (autofill && !entry.entity_id) {
 				entry.entity_id = this.context.entity_id;
 				updateEntries = true;
 			}
