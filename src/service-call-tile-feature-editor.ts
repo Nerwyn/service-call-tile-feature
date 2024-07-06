@@ -1297,25 +1297,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					this.getEntryContext(entry),
 				)
 			) {
-				console.log('entry autofill enabled');
 				// Feature entity ID
 				entry = this.populateMissingEntityId(
 					entry,
 					this.context.entity_id,
 				);
-
 				const entryEntityId = this.renderTemplate(
 					entry.entity_id as string,
 					this.getEntryContext(entry),
 				) as string;
-				console.log(`Entry entity ID: ${entryEntityId}`);
 
-				console.log(
-					`Entry type: ${this.renderTemplate(
-						entry.type as string,
-						this.getEntryContext(entry),
-					)}`,
-				);
 				switch (
 					this.renderTemplate(
 						entry.type as string,
@@ -1461,7 +1452,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								const target = tap_action.target ?? {};
 								if (!target.entity_id) {
 									target.entity_id = entryEntityId as string;
-									tap_action.target = data;
+									tap_action.target = target;
 								}
 								entry.tap_action = tap_action;
 							}
