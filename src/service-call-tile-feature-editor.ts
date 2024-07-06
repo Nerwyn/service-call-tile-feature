@@ -1388,6 +1388,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								}
 							}
 						}
+						entry.options = options;
 						break;
 					}
 					case 'spinbox':
