@@ -205,7 +205,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
-		this.yamlString = undefined;
+		if (this.guiMode) {
+			this.yamlKey = 'entry';
+			this.yamlString = undefined;
+		}
 		this.guiMode = !this.guiMode;
 	}
 
@@ -1242,8 +1245,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.guiMode) {
 			editor = this.buildEntryGuiEditor();
 		} else {
-			this.yamlString = undefined;
-			this.yamlKey = 'entry';
 			editor = this.buildYamlEditor();
 		}
 
@@ -1355,6 +1356,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			context.config.attribute,
 		);
 		context.VALUE = value;
+		context.value = value;
 		return context;
 	}
 
