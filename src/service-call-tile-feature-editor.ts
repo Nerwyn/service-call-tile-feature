@@ -1,6 +1,7 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StyleInfo } from 'lit/directives/style-map.js';
+import { renderTemplate } from 'ha-nunjucks';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
@@ -352,8 +353,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					@item-moved=${handlers.move}
 				>
 					<div class="features">
-						${entries.map(
-							(entry, i) => html`
+						${entries.map((entry, i) => {
+							const context = {
+								VALUE: 0,
+								value: 0,
+								config: {
+									...entry,
+									entity: '',
+									attribute: '',
+								},
+							};
+							context.config.value_attribute =
+								this.renderTemplate(
+									entry.value_attribute as string,
+									context,
+								) as string;
+							context.config.entity = this.renderTemplate(
+								entry.entity_id as string,
+								context,
+							) as string;
+							const value = this.getFeatureValue(
+								context.config.entity_id as string,
+								context.config.value_attribute,
+							);
+							context.VALUE = value;
+							context.value = value;
+
+							const icon = this.renderTemplate(
+								entry.icon as string,
+								context,
+							);
+							const label = this.renderTemplate(
+								entry.label as string,
+								context,
+							);
+							return html`
 								<div class="feature">
 									<div class="handle">
 										<ha-icon
@@ -361,11 +395,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 										></ha-icon>
 									</div>
 									<div class="feature-content">
+										${icon
+											? html`<ha-icon
+													.icon="${icon}"
+											  ></ha-icon>`
+											: ''}
 										<div>
 											<span
 												>${entry.type ??
 												backupType}</span
 											>
+											${label
+												? html`<span class="secondary"
+														>${label}</span
+												  >`
+												: ''}
 										</div>
 									</div>
 									<ha-icon-button
@@ -387,8 +431,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 										></ha-icon>
 									</ha-icon-button>
 								</div>
-							`,
-						)}
+							`;
+						})}
 					</div>
 				</ha-sortable>
 			</div>
@@ -1085,6 +1129,66 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return editor;
 	}
 
+	renderTemplate(str: string | number | boolean, context: object) {
+		context = {
+			VALUE: 0,
+			HOLD_SECS: 0,
+			UNIT: '',
+			value: 0,
+			hold_secs: 0,
+			unit: '',
+			...context,
+		};
+		context = {
+			render: (str2: string) => this.renderTemplate(str2, context),
+			...context,
+		};
+
+		const res = renderTemplate(this.hass, str as string, context);
+		if (res != str) {
+			return res;
+		}
+
+		// Legacy string interpolation
+		if (typeof str == 'string') {
+			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
+				if (str == key) {
+					return context[key as keyof object] as string;
+				} else if (str.includes(key)) {
+					str = str.replace(
+						new RegExp(key, 'g'),
+						(context[key as keyof object] ?? '') as string,
+					);
+				}
+			}
+		}
+
+		return str;
+	}
+
+	getFeatureValue(entityId: string, valueAttribute: string) {
+		if (!this.hass.states[entityId]) {
+			return '';
+		} else if (valueAttribute == 'state') {
+			return this.hass.states[entityId].state;
+		} else {
+			const indexMatch = valueAttribute.match(/\[\d+\]$/);
+			if (indexMatch) {
+				const index = parseInt(indexMatch[0].replace(/\[|\]/g, ''));
+				valueAttribute = valueAttribute.replace(indexMatch[0], '');
+				const value =
+					this.hass.states[entityId].attributes[valueAttribute];
+				if (value && Array.isArray(value) && value.length) {
+					return value[index];
+				} else {
+					return undefined;
+				}
+			} else {
+				return this.hass.states[entityId].attributes[valueAttribute];
+			}
+		}
+	}
+
 	static get styles() {
 		return css`
 			:host {
@@ -1143,7 +1247,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				font-size: 16px;
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
+				justify-content: flex-start;
 				flex-grow: 1;
 			}
 			span {

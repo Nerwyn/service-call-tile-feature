@@ -315,7 +315,7 @@ export class BaseServiceCallFeature extends LitElement {
 					if (value && Array.isArray(value) && value.length) {
 						value = value[index];
 					} else {
-						value == undefined;
+						value = undefined;
 					}
 				} else {
 					value =
