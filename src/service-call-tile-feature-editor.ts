@@ -1228,6 +1228,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								);
 							}
 						}
+					// falls-through
 					default:
 						return value;
 				}
