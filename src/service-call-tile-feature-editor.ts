@@ -329,6 +329,31 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			this.entryChanged({
 				range: range,
 			});
+		} else if (key == ('hold_time' as keyof IEntry)) {
+			this.entryChanged({
+				hold_action: {
+					...this.activeEntry?.hold_action,
+					action: this.activeEntry?.hold_action?.action ?? 'none',
+					hold_time: value,
+				},
+			});
+		} else if (key == ('repeat_delay' as keyof IEntry)) {
+			this.entryChanged({
+				hold_action: {
+					...this.activeEntry?.hold_action,
+					action: this.activeEntry?.hold_action?.action ?? 'repeat',
+					repeat_delay: value,
+				},
+			});
+		} else if (key == ('double_tap_window' as keyof IEntry)) {
+			this.entryChanged({
+				double_tap_action: {
+					...this.activeEntry?.double_tap_action,
+					action:
+						this.activeEntry?.double_tap_action?.action ?? 'none',
+					double_tap_window: value,
+				},
+			});
 		} else {
 			this.entryChanged({
 				[key]: value,
@@ -725,6 +750,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'double_tap_action',
 						defaultUiActions,
 					)}
+					${this.renderTemplate(
+						this.activeEntry?.double_tap_action?.action ?? 'none',
+						this.getEntryContext(this.activeEntry as IEntry),
+					) != 'none'
+						? this.buildSelector(
+								'Double Tap Window',
+								'double_tap_window' as keyof IEntry,
+								{
+									number: {
+										min: 0,
+										step: 0,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								200,
+						  )
+						: ''}
 					${this.buildSelector(
 						'Hold action (optional)',
 						'hold_action',
@@ -735,6 +778,42 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							},
 						},
 					)}
+					${this.renderTemplate(
+						this.activeEntry?.hold_action?.action ?? 'none',
+						this.getEntryContext(this.activeEntry as IEntry),
+					) != 'none'
+						? this.buildSelector(
+								'Hold Time',
+								'hold_time' as keyof IEntry,
+								{
+									number: {
+										min: 0,
+										step: 0,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								500,
+						  )
+						: ''}
+					${this.renderTemplate(
+						this.activeEntry?.hold_action?.action as string,
+						this.getEntryContext(this.activeEntry as IEntry),
+					) == 'repeat'
+						? this.buildSelector(
+								'Repeat Delay',
+								'repeat_delay' as keyof IEntry,
+								{
+									number: {
+										min: 0,
+										step: 0,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								100,
+						  )
+						: ''}
 				`;
 				break;
 		}
@@ -924,6 +1003,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				'hold_action',
 				defaultHoldActions,
 			)}
+			${this.renderTemplate(
+				this.activeEntry?.hold_action?.action as string,
+				this.getEntryContext(this.activeEntry as IEntry),
+			) == 'repeat'
+				? this.buildSelector(
+						'Repeat Delay',
+						'repeat_delay' as keyof IEntry,
+						{
+							number: {
+								min: 0,
+								step: 0,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						100,
+				  )
+				: ''}
 		`;
 		const spinboxTabBar = html`
 			<paper-tabs
