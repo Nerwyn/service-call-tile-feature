@@ -1409,9 +1409,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 										.attributes.finishes_at,
 								);
 								return Math.floor(
-									Math.min(
-										durationSeconds,
-										endSeconds - Date.now(),
+									Math.max(
+										0,
+										Math.min(
+											durationSeconds,
+											(endSeconds - Date.now()) / 1000,
+										),
 									),
 								);
 							}
