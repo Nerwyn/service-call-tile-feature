@@ -303,18 +303,27 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const key = (e.target as HTMLElement).id;
 		const value = e.detail.value;
 		if (key.startsWith('range.')) {
+			const entityId = this.renderTemplate(
+				this.activeEntry?.entity_id as string,
+				this.getEntryContext(this.activeEntry as IEntry),
+			) as string;
+			const defaultRangeMin =
+				this.hass.states[entityId]?.attributes?.min ?? 0;
+			const defaultRangeMax =
+				this.hass.states[entityId]?.attributes?.max ?? 100;
+
 			const index = parseInt(key.split('.')[1]);
 			const range = (structuredClone(this.activeEntry?.range) as [
 				number,
 				number,
-			]) ?? [0, 100];
+			]) ?? [defaultRangeMin, defaultRangeMax];
 			if (value != undefined) {
 				range[index] = value;
 			} else {
 				if (index == 0) {
-					range[index] = 0; // TODO use domain defaults
+					range[index] = defaultRangeMin;
 				} else {
-					range[index] = 100; // TODO use domain defaults
+					range[index] = defaultRangeMax;
 				}
 			}
 			this.entryChanged({
@@ -649,7 +658,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildActionsPanel(actionSelectors: TemplateResult<1>) {
-		// TODO - set target entity ID to feature entity ID when autofill is set to true.
 		return html`
 			<ha-expansion-panel .header=${'Actions'}>
 				<div
@@ -749,6 +757,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
+		const entityId = this.renderTemplate(
+			this.activeEntry?.entity_id as string,
+			this.getEntryContext(this.activeEntry as IEntry),
+		) as string;
+		const defaultRangeMin =
+			this.hass.states[entityId]?.attributes?.min ?? 0;
+		const defaultRangeMax =
+			this.hass.states[entityId]?.attributes?.max ?? 100;
+		const defaultStep = this.hass.states[entityId]?.attributes?.step;
+
 		return html`
 			${this.buildMainFeatureOptions(
 				undefined,
@@ -758,8 +776,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.0' as keyof IEntry,
 						{
 							number: {
-								max: this.activeEntry?.range?.[1], // TODO use domain defaults
-								step: this.activeEntry?.step ?? 1,
+								max:
+									this.activeEntry?.range?.[1] ??
+									defaultRangeMin,
+								step:
+									this.activeEntry?.step ?? defaultStep ?? 1,
 								mode: 'box',
 								unit_of_measurement:
 									this.activeEntry?.unit_of_measurement,
@@ -772,8 +793,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'range.1' as keyof IEntry,
 						{
 							number: {
-								min: this.activeEntry?.range?.[0], // TODO use domain defaults
-								step: this.activeEntry?.step ?? 1,
+								min:
+									this.activeEntry?.range?.[0] ??
+									defaultRangeMax,
+								step:
+									this.activeEntry?.step ?? defaultStep ?? 1,
 								mode: 'box',
 								unit_of_measurement:
 									this.activeEntry?.unit_of_measurement,
@@ -786,13 +810,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						'step',
 						{
 							number: {
-								min: 0, // TODO use domain defaults
-								step: Math.min(
-									1,
-									((this.activeEntry?.range?.[1] ?? 1) -
-										(this.activeEntry?.range?.[0] ?? 0)) /
-										100,
-								),
+								min: 0,
+								step:
+									defaultStep ??
+									Math.min(
+										1,
+										((this.activeEntry?.range?.[1] ?? 1) -
+											(this.activeEntry?.range?.[0] ??
+												0)) /
+											100,
+									),
 								mode: 'box',
 								unit_of_measurement:
 									this.activeEntry?.unit_of_measurement,
@@ -926,7 +953,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
 			case 1:
-			default:
+			default: {
+				const entityId = this.renderTemplate(
+					this.activeEntry?.entity_id as string,
+					this.getEntryContext(this.activeEntry as IEntry),
+				) as string;
+				const defaultRangeMin =
+					this.hass.states[entityId]?.attributes?.min ?? 0;
+				const defaultRangeMax =
+					this.hass.states[entityId]?.attributes?.max ?? 100;
+				const defaultStep =
+					this.hass.states[entityId]?.attributes?.step;
+
 				spinboxGuiEditor = html`
 					${this.buildMainFeatureOptions(
 						this.buildSelector(
@@ -934,14 +972,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							'step',
 							{
 								number: {
-									min: 0, // TODO use domain defaults
-									step: Math.min(
-										1,
-										((this.activeEntry?.range?.[1] ?? 1) -
-											(this.activeEntry?.range?.[0] ??
-												0)) /
-											100,
-									),
+									min: 0,
+									step:
+										defaultStep ??
+										Math.min(
+											1,
+											((this.activeEntry?.range?.[1] ??
+												1) -
+												(this.activeEntry?.range?.[0] ??
+													0)) /
+												100,
+										),
 									mode: 'box',
 									unit_of_measurement:
 										this.activeEntry?.unit_of_measurement,
@@ -955,8 +996,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								'range.0' as keyof IEntry,
 								{
 									number: {
-										max: this.activeEntry?.range?.[1], // TODO use domain defaults
-										step: this.activeEntry?.step ?? 1,
+										max:
+											this.activeEntry?.range?.[1] ??
+											defaultRangeMin,
+										step:
+											this.activeEntry?.step ??
+											defaultStep ??
+											1,
 										mode: 'box',
 										unit_of_measurement:
 											this.activeEntry
@@ -970,8 +1016,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								'range.1' as keyof IEntry,
 								{
 									number: {
-										min: this.activeEntry?.range?.[0], // TODO use domain defaults
-										step: this.activeEntry?.step ?? 1,
+										min:
+											this.activeEntry?.range?.[0] ??
+											defaultRangeMax,
+										step:
+											this.activeEntry?.step ??
+											defaultStep ??
+											1,
 										mode: 'box',
 										unit_of_measurement:
 											this.activeEntry
@@ -1019,6 +1070,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildActionsPanel(actionSelectors)}
 				`;
 				break;
+			}
 		}
 
 		return html`${spinboxTabBar}${spinboxGuiEditor}`;
