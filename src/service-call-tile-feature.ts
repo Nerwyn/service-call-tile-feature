@@ -242,7 +242,7 @@ class ServiceCallTileFeature extends LitElement {
 		}
 
 		const row: TemplateResult[] = [];
-		for (let entry of this.config.entries) {
+		for (const entry of this.config.entries) {
 			const context = {
 				config: {
 					...entry,

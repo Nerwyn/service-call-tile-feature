@@ -1314,7 +1314,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						this.getEntryContext(entry),
 					)
 				) {
-					case 'selector':
+					case 'selector': {
 						// Get option names from attributes if it exists
 						const options = entry.options ?? [];
 						let optionNames: string[] = [];
@@ -1385,6 +1385,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							}
 						}
 						break;
+					}
 					case 'spinbox':
 						// Increment and decrement fields
 						if (
@@ -1416,7 +1417,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							);
 						}
 					// falls through
-					case 'slider':
+					case 'slider': {
 						const [domain, _service] = entryEntityId.split('.');
 						if (['number', 'input_number'].includes(domain)) {
 							if (!entry.range) {
@@ -1476,6 +1477,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							}
 						}
 						break;
+					}
 					case 'button':
 					case 'default':
 						break;

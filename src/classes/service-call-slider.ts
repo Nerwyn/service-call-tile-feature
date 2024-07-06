@@ -2,7 +2,7 @@ import { html, css, CSSResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
-import { IAction, IEntry } from '../models/interfaces';
+import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-slider')
