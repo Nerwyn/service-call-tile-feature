@@ -1390,32 +1390,40 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						);
 					case 'elapsed':
 						if (entityId.startsWith('timer.')) {
-							if (
-								this.hass.states[entityId as string].state ==
-								'idle'
-							) {
+							const durationHMS =
+								this.hass.states[
+									entityId
+								].attributes.duration.split(':');
+							const durationSeconds =
+								parseInt(durationHMS[0]) * 3600 +
+								parseInt(durationHMS[1]) * 60 +
+								parseInt(durationHMS[2]);
+							if (this.hass.states[entityId].state == 'idle') {
 								return 0;
-							} else {
-								const durationHMS =
-									this.hass.states[
-										entityId as string
-									].attributes.duration.split(':');
-								const durationSeconds =
-									parseInt(durationHMS[0]) * 3600 +
-									parseInt(durationHMS[1]) * 60 +
-									parseInt(durationHMS[2]);
+							} else if (
+								this.hass.states[entityId].state == 'active'
+							) {
 								const endSeconds = Date.parse(
-									this.hass.states[entityId as string]
-										.attributes.finishes_at,
+									this.hass.states[entityId].attributes
+										.finishes_at,
 								);
+								const remainingSeconds =
+									(endSeconds - Date.now()) / 1000;
+								const value = Math.floor(
+									durationSeconds - remainingSeconds,
+								);
+								return Math.min(value, durationSeconds);
+							} else {
+								const remainingHMS =
+									this.hass.states[
+										entityId
+									].attributes.remaining.split(':');
+								const remainingSeconds =
+									parseInt(remainingHMS[0]) * 3600 +
+									parseInt(remainingHMS[1]) * 60 +
+									parseInt(remainingHMS[2]);
 								return Math.floor(
-									Math.max(
-										0,
-										Math.min(
-											durationSeconds,
-											(endSeconds - Date.now()) / 1000,
-										),
-									),
+									durationSeconds - remainingSeconds,
 								);
 							}
 						}
