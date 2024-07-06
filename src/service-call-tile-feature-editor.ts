@@ -1290,7 +1290,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	autofillDefaultFields() {
 		const entries: IEntry[] = [];
-		for (let entry of this.config.entries ?? []) {
+		for (let entry of structuredClone(this.config.entries) ?? []) {
 			const autofill =
 				this.renderTemplate(
 					entry.autofill_entity_id as unknown as string,
@@ -1344,6 +1344,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									entry.entity_id as string,
 								);
 
+								// Default option
+								if (!options[i].option) {
+									options[i].option = optionNames[i];
+								}
+
 								// Default select action
 								if (
 									!options[i].tap_action &&
@@ -1380,7 +1385,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 										tap_action.target = target;
 									}
 									options[i].tap_action = tap_action;
-									options[i].hold_action = tap_action;
 								}
 							}
 						}
