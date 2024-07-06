@@ -1291,11 +1291,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	autofillDefaultFields() {
 		const entries: IEntry[] = [];
 		for (let entry of structuredClone(this.config.entries) ?? []) {
-			const autofill =
-				this.renderTemplate(
-					entry.autofill_entity_id as unknown as string,
-					this.getEntryContext(entry),
-				) ?? true;
+			const autofill = this.renderTemplate(
+				(entry.autofill_entity_id ?? true) as unknown as string,
+				this.getEntryContext(entry),
+			);
 			if (autofill && !entry.entity_id) {
 				// Feature entity ID
 				entry = this.populateMissingEntityId(
@@ -1333,11 +1332,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						for (const i in options) {
 							if (
 								this.renderTemplate(
-									options[i]
-										.autofill_entity_id as unknown as string,
+									(options[i].autofill_entity_id ??
+										true) as unknown as string,
 									this.getEntryContext(options[i]),
-								) ??
-								true
+								)
 							) {
 								options[i] = this.populateMissingEntityId(
 									options[i],
@@ -1395,12 +1393,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						// Increment and decrement fields
 						if (
 							entry.increment &&
-							(this.renderTemplate(
-								entry.increment
-									?.autofill_entity_id as unknown as string,
+							this.renderTemplate(
+								(entry.increment?.autofill_entity_id ??
+									true) as unknown as string,
 								this.getEntryContext(entry.increment),
-							) ??
-								true)
+							)
 						) {
 							entry.increment = this.populateMissingEntityId(
 								entry.increment as IEntry,
@@ -1409,12 +1406,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 						if (
 							entry.decrement &&
-							(this.renderTemplate(
-								entry.decrement
-									?.autofill_entity_id as unknown as string,
+							this.renderTemplate(
+								(entry.decrement?.autofill_entity_id ??
+									true) as unknown as string,
 								this.getEntryContext(entry.decrement),
-							) ??
-								true)
+							)
 						) {
 							entry.decrement = this.populateMissingEntityId(
 								entry.decrement as IEntry,
@@ -1490,7 +1486,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			entries.push(entry);
 		}
-		console.log(entries);
 		this.entriesChanged(entries);
 	}
 
