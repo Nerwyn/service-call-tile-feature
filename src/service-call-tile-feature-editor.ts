@@ -18,6 +18,7 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
+	@property() context!: Object;
 
 	@state() entryEditorIndex: number = -1;
 	@state() actionsTabIndex: number = 0;
@@ -1119,6 +1120,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (!this.hass) {
 			return html``;
 		}
+
+		console.log(this.context);
 
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
