@@ -1291,11 +1291,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	autofillDefaultFields() {
 		const entries: IEntry[] = [];
 		for (let entry of structuredClone(this.config.entries) ?? []) {
-			const autofill = this.renderTemplate(
-				(entry.autofill_entity_id ?? true) as unknown as string,
-				this.getEntryContext(entry),
-			);
-			if (autofill && !entry.entity_id) {
+			if (
+				this.renderTemplate(
+					(entry.autofill_entity_id ?? true) as unknown as string,
+					this.getEntryContext(entry),
+				)
+			) {
+				console.log('entry autofill enabled');
 				// Feature entity ID
 				entry = this.populateMissingEntityId(
 					entry,
@@ -1306,7 +1308,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					entry.entity_id as string,
 					this.getEntryContext(entry),
 				) as string;
+				console.log(`Entry entity ID: ${entryEntityId}`);
 
+				console.log(
+					`Entry type: ${this.renderTemplate(
+						entry.type as string,
+						this.getEntryContext(entry),
+					)}`,
+				);
 				switch (
 					this.renderTemplate(
 						entry.type as string,
