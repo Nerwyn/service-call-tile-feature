@@ -356,7 +356,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						${entries.map((entry, i) => {
 							const context = {
 								VALUE: 0,
+								HOLD_SECS: 0,
+								UNIT: '',
 								value: 0,
+								hold_secs: 0,
+								unit: '',
 								config: {
 									...entry,
 									entity: '',
@@ -371,6 +375,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.entity_id as string,
 								context,
 							) as string;
+							const unit = this.renderTemplate(
+								entry.unit_of_measurement as string,
+								context,
+							) as string;
+							(context.UNIT = unit), (context.unit = unit);
 							const value = this.getFeatureValue(
 								context.config.entity,
 								context.config.attribute,
@@ -1171,19 +1180,60 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		} else if (valueAttribute == 'state' || !valueAttribute) {
 			return this.hass.states[entityId].state;
 		} else {
+			let value;
 			const indexMatch = valueAttribute.match(/\[\d+\]$/);
 			if (indexMatch) {
 				const index = parseInt(indexMatch[0].replace(/\[|\]/g, ''));
 				valueAttribute = valueAttribute.replace(indexMatch[0], '');
-				const value =
-					this.hass.states[entityId].attributes[valueAttribute];
+				value = this.hass.states[entityId].attributes[valueAttribute];
 				if (value && Array.isArray(value) && value.length) {
 					return value[index];
 				} else {
 					return undefined;
 				}
 			} else {
-				return this.hass.states[entityId].attributes[valueAttribute];
+				value = this.hass.states[entityId].attributes[valueAttribute];
+			}
+			if (value != undefined || valueAttribute == 'elapsed') {
+				switch (valueAttribute) {
+					case 'brightness':
+						value = Math.round(
+							(100 * parseInt((value as string) ?? 0)) / 255,
+						);
+						break;
+					case 'elapsed':
+						if (entityId.startsWith('timer.')) {
+							if (
+								this.hass.states[entityId as string].state ==
+								'idle'
+							) {
+								value = 0;
+							} else {
+								const durationHMS =
+									this.hass.states[
+										entityId as string
+									].attributes.duration.split(':');
+								const durationSeconds =
+									parseInt(durationHMS[0]) * 3600 +
+									parseInt(durationHMS[1]) * 60 +
+									parseInt(durationHMS[2]);
+								const endSeconds = Date.parse(
+									this.hass.states[entityId as string]
+										.attributes.finishes_at,
+								);
+								value = Math.floor(
+									Math.min(
+										durationSeconds,
+										endSeconds - Date.now(),
+									),
+								);
+							}
+							break;
+						}
+					// falls through
+					default:
+						return value;
+				}
 			}
 		}
 	}
