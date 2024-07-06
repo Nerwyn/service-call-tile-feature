@@ -18,7 +18,7 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
-	@property() context!: Object;
+	@property() context!: Record<string, string>;
 
 	@state() entryEditorIndex: number = -1;
 	@state() actionsTabIndex: number = 0;
