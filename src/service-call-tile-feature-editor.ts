@@ -18,7 +18,7 @@ import {
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IConfig;
-	@property() context!: Record<string, string>;
+	@property() context!: Record<'entity_id', string>;
 
 	@state() entryEditorIndex: number = -1;
 	@state() actionsTabIndex: number = 0;
@@ -1121,7 +1121,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		console.log(this.context);
+		const entries: IEntry[] = [];
+		let updateEntries = false;
+		for (const entry of this.config.entries ?? []) {
+			const autofill =
+				this.renderTemplate(
+					entry.autofill_entity_id as unknown as string,
+					this.getEntryContext(entry),
+				) ?? true;
+			if (autofill && entry.entity_id != this.context.entity_id) {
+				entry.entity_id = this.context.entity_id;
+				updateEntries = true;
+			}
+			entries.push(entry);
+		}
+		if (updateEntries) {
+			this.entriesChanged(entries);
+		}
 
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
@@ -1141,15 +1157,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	renderTemplate(str: string | number | boolean, context: object) {
-		context = {
-			VALUE: 0,
-			HOLD_SECS: 0,
-			UNIT: '',
-			value: 0,
-			hold_secs: 0,
-			unit: '',
-			...context,
-		};
 		context = {
 			render: (str2: string) => this.renderTemplate(str2, context),
 			...context,
@@ -1175,6 +1182,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		return str;
+	}
+
+	getEntryContext(entry: IEntry) {
+		const context = {
+			VALUE: 0,
+			HOLD_SECS: 0,
+			UNIT: '',
+			value: 0,
+			hold_secs: 0,
+			unit: '',
+			config: {
+				...entry,
+				entity: '',
+				attribute: '',
+			},
+		};
+		context.config.attribute = this.renderTemplate(
+			entry.value_attribute as string,
+			context,
+		) as string;
+		context.config.entity = this.renderTemplate(
+			entry.entity_id as string,
+			context,
+		) as string;
+		const unit = this.renderTemplate(
+			entry.unit_of_measurement as string,
+			context,
+		) as string;
+		(context.UNIT = unit), (context.unit = unit);
+		const value = this.getFeatureValue(
+			context.config.entity,
+			context.config.attribute,
+		);
+		context.VALUE = value;
+		return context;
 	}
 
 	getFeatureValue(entityId: string, valueAttribute: string) {
