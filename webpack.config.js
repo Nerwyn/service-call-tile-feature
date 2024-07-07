@@ -29,6 +29,6 @@ module.exports = {
 	},
 	devtool: env == 'production' ? false : 'eval',
 	externals: {
-		'js-yaml': 'js-yaml',
+		['js-yaml']: 'js-yaml',
 	},
 };
