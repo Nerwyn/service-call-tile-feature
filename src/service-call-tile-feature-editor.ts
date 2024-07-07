@@ -1597,6 +1597,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							);
 						}
 						for (const i in options) {
+							console.log('5');
 							if (
 								this.renderTemplate(
 									(options[i].autofill_entity_id ??
@@ -1657,6 +1658,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						break;
 					}
 					case 'spinbox':
+						console.log('6');
 						// Increment and decrement fields
 						if (
 							entry.increment &&
@@ -1686,6 +1688,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 					// falls through
 					case 'slider': {
+						console.log('7');
 						const [domain, _service] = (entryEntityId ?? '').split(
 							'.',
 						);
@@ -1764,8 +1767,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				}
 			}
 			entries.push(entry);
+			console.log('8');
 		}
 		this.entriesChanged(entries);
+		console.log('9');
 	}
 
 	static get styles() {
