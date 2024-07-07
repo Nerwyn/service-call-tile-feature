@@ -1698,71 +1698,73 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						const [domain, _service] = (entryEntityId ?? '').split(
 							'.',
 						);
-						if (['number', 'input_number'].includes(domain)) {
-							let rangeMin = entry.range?.[0];
-							let rangeMax = entry.range?.[1];
-							if (rangeMin == undefined) {
-								rangeMin =
-									this.hass.states[entryEntityId].attributes
-										.min;
-							}
-							if (rangeMax == undefined) {
-								rangeMax =
-									this.hass.states[entryEntityId].attributes
-										.max;
-							}
-							entry.range = [
-								rangeMin as unknown as number,
-								rangeMax as unknown as number,
-							];
 
-							if (!entry.tap_action) {
-								const tap_action = {} as IAction;
-								tap_action.action = 'call-service';
-								switch (domain) {
-									case 'number':
-										tap_action.service = 'number.set_value';
-										break;
-									case 'input_number':
-									default:
-										tap_action.service =
-											'input_number.set_value';
-										break;
-								}
+						let rangeMin = entry.range?.[0];
+						let rangeMax = entry.range?.[1];
+						if (rangeMin == undefined) {
+							rangeMin =
+								this.hass.states[entryEntityId].attributes.min;
+						}
+						if (rangeMax == undefined) {
+							rangeMax =
+								this.hass.states[entryEntityId].attributes.max;
+						}
+						entry.range = [
+							rangeMin as unknown as number,
+							rangeMax as unknown as number,
+						];
 
-								const data = tap_action.data ?? {};
-								if (!data.value) {
-									data.value = '{{ value }}';
-									tap_action.data = data;
-								}
-								const target = tap_action.target ?? {};
-								if (!target.entity_id) {
-									target.entity_id = entryEntityId as string;
-									tap_action.target = target;
-								}
-								entry.tap_action = tap_action;
+						if (!entry.tap_action) {
+							const tap_action = {} as IAction;
+							const data = tap_action.data ?? {};
+							tap_action.action = 'call-service';
+							switch (domain) {
+								case 'number':
+									tap_action.service = 'number.set_value';
+									if (!data.value) {
+										data.value = '{{ value }}';
+										tap_action.data = data;
+									}
+									break;
+								case 'input_number':
+									tap_action.service =
+										'input_number.set_value';
+									if (!data.value) {
+										data.value = '{{ value }}';
+										tap_action.data = data;
+									}
+									break;
+								default:
+									break;
 							}
 
-							if (!entry.step) {
-								const defaultStep =
-									this.hass.states[entryEntityId as string]
-										?.attributes?.step;
-								if (defaultStep) {
-									entry.step = defaultStep;
-								} else {
-									const entryContext =
-										this.getEntryContext(entry);
-									entry.step =
-										((this.renderTemplate(
-											entry.range[1],
+							const target = tap_action.target ?? {};
+							if (!target.entity_id) {
+								target.entity_id = entryEntityId as string;
+								tap_action.target = target;
+							}
+							entry.tap_action = tap_action;
+						}
+
+						if (!entry.step) {
+							const defaultStep =
+								this.hass.states[entryEntityId as string]
+									?.attributes?.step;
+							if (defaultStep) {
+								entry.step = defaultStep;
+							} else {
+								const entryContext =
+									this.getEntryContext(entry);
+								entry.step =
+									((this.renderTemplate(
+										entry.range[1],
+										entryContext,
+									) as unknown as number) -
+										(this.renderTemplate(
+											entry.range[0],
 											entryContext,
-										) as unknown as number) -
-											(this.renderTemplate(
-												entry.range[0],
-												entryContext,
-											) as unknown as number)) /
-										100;
-								}
+										) as unknown as number)) /
+									100;
 							}
 						}
 
