@@ -42,6 +42,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 
+	autofillCooldown = false;
+
 	static get properties() {
 		return { hass: {}, config: {} };
 	}
@@ -1355,7 +1357,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return html``;
 		}
 
-		this.autofillDefaultFields();
+		if (!this.autofillCooldown) {
+			this.autofillDefaultFields();
+		}
 
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
@@ -1761,9 +1765,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			entries.push(entry);
 		}
-		if (JSON.stringify(this.config.entries) != JSON.stringify(entries)) {
-			this.entriesChanged(entries);
-		}
+		this.entriesChanged(entries);
+		this.autofillCooldown = true;
+		setInterval(() => (this.autofillCooldown = false), 5000);
 	}
 
 	static get styles() {
