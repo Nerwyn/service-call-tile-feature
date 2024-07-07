@@ -307,38 +307,38 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
-		const value = e.detail.value;
-		// const keysWithDefaults: Record<
-		// 	string,
-		// 	Record<string, string | number>
-		// > = {
-		// 	'range.0': {
-		// 		key: 'min',
-		// 		value: 0,
-		// 	},
-		// 	'range.1': {
-		// 		key: 'max',
-		// 		value: 100,
-		// 	},
-		// 	step: {
-		// 		key: 'step',
-		// 		value: 1,
-		// 	},
-		// };
-		// if (Object.keys(keysWithDefaults).includes(key)) {
-		// 	const entityId = this.renderTemplate(
-		// 		this.activeEntry?.entity_id as string,
-		// 		this.getEntryContext(this.activeEntry as IEntry),
-		// 	) as string;
-		// 	if (entityId) {
-		// 		value =
-		// 			value ??
-		// 			this.hass.states[entityId]?.attributes?.[
-		// 				keysWithDefaults[key].key
-		// 			] ??
-		// 			keysWithDefaults[key].value;
-		// 	}
-		// }
+		let value = e.detail.value;
+		const keysWithDefaults: Record<
+			string,
+			Record<string, string | number>
+		> = {
+			'range.0': {
+				key: 'min',
+				value: 0,
+			},
+			'range.1': {
+				key: 'max',
+				value: 100,
+			},
+			step: {
+				key: 'step',
+				value: 1,
+			},
+		};
+		if (Object.keys(keysWithDefaults).includes(key)) {
+			const entityId = this.renderTemplate(
+				this.activeEntry?.entity_id as string,
+				this.getEntryContext(this.activeEntry as IEntry),
+			) as string;
+			if (entityId) {
+				value =
+					value ??
+					this.hass.states[entityId]?.attributes?.[
+						keysWithDefaults[key].key
+					] ??
+					keysWithDefaults[key].value;
+			}
+		}
 		this.entryChanged(
 			deepSet(structuredClone(this.activeEntry) as object, key, value),
 		);
