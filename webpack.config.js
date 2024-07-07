@@ -28,11 +28,4 @@ module.exports = {
 		],
 	},
 	devtool: env == 'production' ? false : 'eval',
-	externalsType: 'module',
-	experiments: {
-		outputModule: true,
-	},
-	externals: {
-		'js-yaml': 'js-yaml',
-	},
 };
