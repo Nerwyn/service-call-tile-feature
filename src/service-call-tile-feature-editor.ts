@@ -704,7 +704,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 1:
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="content">
+					<div class="content action">
 						${this.buildSelector(
 							'Start action (optional)',
 							'momentary_start_action',
@@ -722,7 +722,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content">
+					<div class="content action">
 						${this.buildSelector(
 							'End action (optional)',
 							'momentary_end_action',
@@ -746,7 +746,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			default:
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="content">
+					<div class="content action">
 						${this.buildSelector(
 							'Tap action (optional)',
 							'tap_action',
@@ -763,7 +763,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content">
+					<div class="content action">
 						${this.buildSelector(
 							'Double tap action (optional)',
 							'double_tap_action',
@@ -800,7 +800,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content">
+					<div class="content action">
 						${this.buildSelector(
 							'Hold action (optional)',
 							'hold_action',
@@ -995,7 +995,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				})}
 			`)}
 			${this.buildActionsPanel(html`
-				<div class="content">
+				<div class="content action">
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1060,7 +1060,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		const actionSelectors = html`
-			<div class="content">
+			<div class="content action">
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1077,7 +1077,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					  )
 					: ''}
 			</div>
-			<div class="content">
+			<div class="content action">
 				${this.buildSelector(
 					'Hold action (optional)',
 					'hold_action',
@@ -1770,18 +1770,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			.content {
 				padding: 12px;
+				gap: 24px;
 				display: inline-flex;
 				flex-direction: column;
 				box-sizing: border-box;
 				width: 100%;
 			}
-			ha-selector {
-				padding: 12px 0;
+			.action {
+				padding: 0;
+				gap: 4px;
 			}
 
 			ha-expansion-panel {
 				display: block;
-				padding: 12px 0;
 				border-radius: 6px;
 				border: solid 1px var(--outline-color);
 				--ha-card-border-radius: 6px;
@@ -1920,11 +1921,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 			.style-header {
 				font-weight: 500;
-				margin-left: 4px;
+				padding: 16px 4px 0;
 			}
 			.root-style-header {
 				font-weight: 500;
-				margin-left: 20px;
+				padding: 0 20px;
 			}
 		`;
 	}
