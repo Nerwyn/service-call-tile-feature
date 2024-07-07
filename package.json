@@ -25,13 +25,13 @@
 	},
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
-		"@types/js-yaml": "latest",
 		"custom-card-helpers": "latest",
 		"ha-nunjucks": "latest",
 		"lit": "latest",
 		"js-yaml": "latest"
 	},
 	"devDependencies": {
+		"@types/js-yaml": "latest",
 		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "latest",
 		"eslint": "latest",

@@ -1357,7 +1357,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildValueInfoBox() {
 		return html`<ha-alert
 			.alertType="${'info'}"
-			.title="${'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with {{ value | int/float }}.'}"
+			.title="${'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the value of the custom feature.'}"
 		></ha-alert>`;
 	}
 
