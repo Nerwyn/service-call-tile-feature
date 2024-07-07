@@ -1000,6 +1000,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
+					<ha-alert
+						.alertType="${'info'}"
+						.title="${'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with "{{ value | int/float }}", or use the YAML editor.'}"
+					></ha-alert>
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1065,6 +1069,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			<div class="action-options">
+				<ha-alert
+					.alertType="${'info'}"
+					.title="${'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with "{{ value | int/float }}", or use the YAML editor.'}"
+				></ha-alert>
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
