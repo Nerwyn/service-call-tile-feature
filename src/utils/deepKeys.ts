@@ -1,4 +1,4 @@
-export function deepGet(obj: object, key: string) {
+export function deepGet(obj: object, key: string): object {
 	const keys = key.split('.');
 	if (keys.length == 1) {
 		return obj[keys[0] as keyof object];
@@ -10,7 +10,7 @@ export function deepSet(
 	obj: object,
 	key: string,
 	value: string | number | boolean,
-) {
+): object {
 	const keys = key.split('.');
 	if (keys.length == 1) {
 		obj[keys[0] as keyof object] = value as never;
