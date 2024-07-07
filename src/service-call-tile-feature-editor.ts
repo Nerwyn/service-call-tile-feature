@@ -1871,7 +1871,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.yaml-editor {
 				display: inline-flex;
 				flex-direction: column;
-				gap: 24px;
 				padding: 8px 0px;
 				width: 100%;
 			}
