@@ -1703,16 +1703,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						let rangeMax = entry.range?.[1];
 						if (rangeMin == undefined) {
 							rangeMin =
-								this.hass.states[entryEntityId].attributes.min;
+								this.hass.states[entryEntityId]?.attributes
+									?.min ?? 0;
 						}
 						if (rangeMax == undefined) {
 							rangeMax =
-								this.hass.states[entryEntityId].attributes.max;
+								this.hass.states[entryEntityId].attributes
+									?.max ?? 100;
 						}
-						entry.range = [
-							rangeMin as unknown as number,
-							rangeMax as unknown as number,
-						];
+						entry.range = [rangeMin as number, rangeMax as number];
 
 						if (!entry.tap_action) {
 							const tap_action = {} as IAction;
