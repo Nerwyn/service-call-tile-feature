@@ -699,6 +699,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const defaultUiActions = {
 			ui_action: {
 				actions: actionsNoRepeat,
+				default_action: 'none',
 			},
 		};
 		switch (this.actionsTabIndex) {
@@ -808,6 +809,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							{
 								ui_action: {
 									actions: Actions,
+									default_action: 'none',
 								},
 							},
 						)}
@@ -999,6 +1001,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
+							default_action: 'call-service',
 						},
 					})}
 					${this.renderTemplate(
@@ -1049,11 +1052,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const defaultTapActions = {
 			ui_action: {
 				actions: actionsNoRepeat,
+				default_action: 'call-service',
 			},
 		};
 		const defaultHoldActions = {
 			ui_action: {
 				actions: ['repeat', 'none'],
+				default_action: 'none',
 			},
 		};
 		const actionSelectors = html`
