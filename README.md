@@ -168,17 +168,17 @@ The custom service call feature is actually a row of entries, each of which have
 
 ## General Options
 
-| Name                | Type      | Description                                                                                                                                              |
-| ------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type                | string    | Type of tile feature. Currently supported options are `button`, `slider`, `selector`, and `spinbox`.                                                     |
-| value_attribute     | string    | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                         |
-| entity_id           | string    | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.                 |
-| autofill_entity_id  | boolean   | Whether to autofill the `entity_id` of the tile feature and the service call data/target if no entity, device, or area ID is provided. Defaults to true. |
-| icon                | string    | The name of the icon to use.                                                                                                                             |
-| label               | string    | A string to place either underneath the icon or by itself.                                                                                               |
-| unit_of_measurement | string    | A string to append to the end of the label, if it exists.                                                                                                |
-| style               | StyleInfo | CSS style properties to set to the feature.                                                                                                              |
-| haptics             | boolean   | Enable haptics on the feature, defaults to `false`.                                                                                                      |
+| Name                | Type      | Description                                                                                                                                         |
+| ------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type                | string    | Type of tile feature. Currently supported options are `button`, `slider`, `selector`, and `spinbox`.                                                |
+| value_attribute     | string    | The attribute to use to determine the value of the feature. Defaults to `state`.                                                                    |
+| entity_id           | string    | The entity ID of the tile feature. Defaults to the entity ID provided in the service call data/target or the entity ID of the tile card.            |
+| autofill_entity_id  | boolean   | Whether to autofill the `entity_id` of the tile feature and the service call target if no entity, device, or area ID is provided. Defaults to true. |
+| icon                | string    | The name of the icon to use.                                                                                                                        |
+| label               | string    | A string to place either underneath the icon or by itself.                                                                                          |
+| unit_of_measurement | string    | A string to append to the end of the label, if it exists.                                                                                           |
+| style               | StyleInfo | CSS style properties to set to the feature.                                                                                                         |
+| haptics             | boolean   | Enable haptics on the feature, defaults to `false`.                                                                                                 |
 
 ```yaml
 type: custom:service-call
@@ -352,9 +352,9 @@ Each action has a set of possible options associated with them. If `action` is n
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | service | The service to call. Use the format `domain.service`, e.g. `"light.turn_on"`.                                                                                    |
 | data    | Additional data to pass to the service call. See the Home Assistant documentation or go to Developer Tools > Services to see available options for each service. |
-| target  | The entity IDs, device IDs, or area IDs to call the service on.                                                                                                  |
+| target  | The entity IDs, device IDs, area IDs, or label IDs to call the service on.                                                                                       |
 
-`data` and `target` get internally merged into one object and can be used interchangeably or together. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
+`data` and `target` are functionally the same and can be used interchangeably or together. You can safely put all information into one object with any of these names. This was done so that you can easily design service calls using Home Assistant's service developer tool and copy the YAML to custom button configurations in this card.
 
 If you include `'{{ value }}'` in any of the data fields, then it will get replaced with the feature's value. This is especially useful for using the slider and spinbox.
 

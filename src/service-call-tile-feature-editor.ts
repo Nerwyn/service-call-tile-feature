@@ -19,6 +19,7 @@ import {
 	ActionTypes,
 	ThumbTypes,
 } from './models/interfaces';
+import { deepGet, deepSet } from './utils';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
@@ -305,65 +306,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleSelectorChange(e: CustomEvent) {
-		const key = (e.target as HTMLElement).id;
-		const value = e.detail.value;
-		if (key.startsWith('range.')) {
-			const entityId = this.renderTemplate(
-				this.activeEntry?.entity_id as string,
-				this.getEntryContext(this.activeEntry as IEntry),
-			) as string;
-			const defaultRangeMin =
-				this.hass.states[entityId]?.attributes?.min ?? 0;
-			const defaultRangeMax =
-				this.hass.states[entityId]?.attributes?.max ?? 100;
-
-			const index = parseInt(key.split('.')[1]);
-			const range = (structuredClone(this.activeEntry?.range) as [
-				number,
-				number,
-			]) ?? [defaultRangeMin, defaultRangeMax];
-			if (value != undefined) {
-				range[index] = value;
-			} else {
-				if (index == 0) {
-					range[index] = defaultRangeMin;
-				} else {
-					range[index] = defaultRangeMax;
-				}
-			}
-			this.entryChanged({
-				range: range,
-			});
-		} else if (key == ('hold_time' as keyof IEntry)) {
-			this.entryChanged({
-				hold_action: {
-					...this.activeEntry?.hold_action,
-					action: this.activeEntry?.hold_action?.action ?? 'none',
-					hold_time: value,
-				},
-			});
-		} else if (key == ('repeat_delay' as keyof IEntry)) {
-			this.entryChanged({
-				hold_action: {
-					...this.activeEntry?.hold_action,
-					action: this.activeEntry?.hold_action?.action ?? 'repeat',
-					repeat_delay: value,
-				},
-			});
-		} else if (key == ('double_tap_window' as keyof IEntry)) {
-			this.entryChanged({
-				double_tap_action: {
-					...this.activeEntry?.double_tap_action,
-					action:
-						this.activeEntry?.double_tap_action?.action ?? 'none',
-					double_tap_window: value,
-				},
-			});
-		} else {
-			this.entryChanged({
-				[key]: value,
-			});
-		}
+		this.entryChanged(
+			deepSet(
+				structuredClone(this.activeEntry) as object,
+				(e.target as HTMLElement).id,
+				e.detail.value,
+			),
+		);
 	}
 
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
@@ -597,18 +546,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 
-		let value;
-		if (key.startsWith('range.')) {
-			const index = parseInt(key.split('.')[1]);
-			value = this.activeEntry?.range?.[index];
-		} else {
-			value = this.activeEntry?.[key];
-		}
-
 		return html`<ha-selector
 			.hass=${hass}
 			.selector=${selector}
-			.value=${value ?? backupValue}
+			.value=${deepGet(this.activeEntry as object, key) ?? backupValue}
 			.label="${label}"
 			.name="${label}"
 			.required=${false}
@@ -729,68 +670,79 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 1:
 				actionSelectors = html`
 					${actionsTabBar}
-					${this.buildSelector(
-						'Start action (optional)',
-						'momentary_start_action',
-						defaultUiActions,
-					)}
-					${this.buildSelector(
-						'End action (optional)',
-						'momentary_end_action',
-						defaultUiActions,
-					)}
+					<div class="action-options">
+						${this.buildSelector(
+							'Start action (optional)',
+							'momentary_start_action',
+							defaultUiActions,
+						)}
+						${this.renderTemplate(
+							this.activeEntry?.momentary_start_action?.action ??
+								'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) == 'more-info'
+							? this.buildSelector(
+									'Entity',
+									'momentary_start_action.target.entity_id' as keyof IEntry,
+									{ entity: {} },
+							  )
+							: ''}
+					</div>
+					<div class="action-options">
+						${this.buildSelector(
+							'End action (optional)',
+							'momentary_end_action',
+							defaultUiActions,
+						)}
+						${this.renderTemplate(
+							this.activeEntry?.momentary_end_action?.action ??
+								'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) == 'more-info'
+							? this.buildSelector(
+									'Entity',
+									'momentary_end_action.target.entity_id' as keyof IEntry,
+									{ entity: {} },
+							  )
+							: ''}
+					</div>
 				`;
 				break;
 			case 0:
 			default:
 				actionSelectors = html`
 					${actionsTabBar}
-					${this.buildSelector(
-						'Tap action (optional)',
-						'tap_action',
-						defaultUiActions,
-					)}
-					${this.buildSelector(
-						'Double tap action (optional)',
-						'double_tap_action',
-						defaultUiActions,
-					)}
-					${this.renderTemplate(
-						this.activeEntry?.double_tap_action?.action ?? 'none',
-						this.getEntryContext(this.activeEntry as IEntry),
-					) != 'none'
-						? this.buildSelector(
-								'Double Tap Window',
-								'double_tap_window' as keyof IEntry,
-								{
-									number: {
-										min: 0,
-										step: 0,
-										mode: 'box',
-										unit_of_measurement: 'ms',
-									},
-								},
-								200,
-						  )
-						: ''}
-					${this.buildSelector(
-						'Hold action (optional)',
-						'hold_action',
-						{
-							ui_action: {
-								actions: Actions,
-								default_action: 'none',
-							},
-						},
-					)}
-					${this.renderTemplate(
-						this.activeEntry?.hold_action?.action ?? 'none',
-						this.getEntryContext(this.activeEntry as IEntry),
-					) != 'none'
-						? html`<div class="form">
-								${this.buildSelector(
-									'Hold Time',
-									'hold_time' as keyof IEntry,
+					<div class="action-options">
+						${this.buildSelector(
+							'Tap action (optional)',
+							'tap_action',
+							defaultUiActions,
+						)}
+						${this.renderTemplate(
+							this.activeEntry?.tap_action?.action ?? 'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) == 'more-info'
+							? this.buildSelector(
+									'Entity',
+									'tap_action.target.entity_id' as keyof IEntry,
+									{ entity: {} },
+							  )
+							: ''}
+					</div>
+					<div class="action-options">
+						${this.buildSelector(
+							'Double tap action (optional)',
+							'double_tap_action',
+							defaultUiActions,
+						)}
+						${this.renderTemplate(
+							this.activeEntry?.double_tap_action?.action ??
+								'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) != 'none'
+							? this.buildSelector(
+									'Double Tap Window',
+									'double_tap_action.double_tap_window' as keyof IEntry,
 									{
 										number: {
 											min: 0,
@@ -799,30 +751,74 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 											unit_of_measurement: 'ms',
 										},
 									},
-									500,
-								)}${this.renderTemplate(
-									this.activeEntry?.hold_action
-										?.action as string,
-									this.getEntryContext(
-										this.activeEntry as IEntry,
-									),
-								) == 'repeat'
-									? this.buildSelector(
-											'Repeat Delay',
-											'repeat_delay' as keyof IEntry,
-											{
-												number: {
-													min: 0,
-													step: 0,
-													mode: 'box',
-													unit_of_measurement: 'ms',
-												},
+									200,
+							  )
+							: ''}
+						${this.renderTemplate(
+							this.activeEntry?.double_tap_action?.action ??
+								'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) == 'more-info'
+							? this.buildSelector(
+									'Entity',
+									'double_tap_action.target.entity_id' as keyof IEntry,
+									{ entity: {} },
+							  )
+							: ''}
+					</div>
+					<div class="action-options">
+						${this.buildSelector(
+							'Hold action (optional)',
+							'hold_action',
+							{
+								ui_action: {
+									actions: Actions,
+									default_action: 'none',
+								},
+							},
+						)}
+						${this.renderTemplate(
+							this.activeEntry?.hold_action?.action ?? 'none',
+							this.getEntryContext(this.activeEntry as IEntry),
+						) != 'none'
+							? html`<div class="form">
+									${this.buildSelector(
+										'Hold Time',
+										'hold_action.hold_time' as keyof IEntry,
+										{
+											number: {
+												min: 0,
+												step: 0,
+												mode: 'box',
+												unit_of_measurement: 'ms',
 											},
-											100,
-									  )
-									: ''}
-						  </div>`
-						: ''}
+										},
+										500,
+									)}${this.renderTemplate(
+										this.activeEntry?.hold_action
+											?.action as string,
+										this.getEntryContext(
+											this.activeEntry as IEntry,
+										),
+									) == 'repeat'
+										? this.buildSelector(
+												'Repeat Delay',
+												'hold_action.repeat_delay' as keyof IEntry,
+												{
+													number: {
+														min: 0,
+														step: 0,
+														mode: 'box',
+														unit_of_measurement:
+															'ms',
+													},
+												},
+												100,
+										  )
+										: ''}
+							  </div>`
+							: ''}
+					</div>
 				`;
 				break;
 		}
@@ -952,14 +948,26 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					tooltip_style: 'Tooltip',
 				})}
 			`)}
-			${this.buildActionsPanel(
-				this.buildSelector('Action', 'tap_action', {
-					ui_action: {
-						actions: actionsNoRepeat,
-						default_action: 'call-service',
-					},
-				}),
-			)}
+			${this.buildActionsPanel(html`
+				<div class="action-options">
+					${this.buildSelector('Action', 'tap_action', {
+						ui_action: {
+							actions: actionsNoRepeat,
+							default_action: 'call-service',
+						},
+					})}
+					${this.renderTemplate(
+						this.activeEntry?.tap_action?.action ?? 'none',
+						this.getEntryContext(this.activeEntry as IEntry),
+					) == 'more-info'
+						? this.buildSelector(
+								'Entity',
+								'tap_action.target.entity_id' as keyof IEntry,
+								{ entity: {} },
+						  )
+						: ''}
+				</div>
+			`)}
 		`;
 	}
 
@@ -1006,49 +1014,69 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		const actionSelectors = html`
-			${this.buildSelector('Tap action', 'tap_action', defaultTapActions)}
-			${this.buildSelector(
-				'Hold action (optional)',
-				'hold_action',
-				defaultHoldActions,
-			)}
-			${this.renderTemplate(
-				this.activeEntry?.hold_action?.action ?? 'none',
-				this.getEntryContext(this.activeEntry as IEntry),
-			) != 'none'
-				? html`<div class="form">
-						${this.buildSelector(
-							'Hold Time',
-							'hold_time' as keyof IEntry,
-							{
-								number: {
-									min: 0,
-									step: 0,
-									mode: 'box',
-									unit_of_measurement: 'ms',
-								},
-							},
-							500,
-						)}${this.renderTemplate(
-							this.activeEntry?.hold_action?.action as string,
-							this.getEntryContext(this.activeEntry as IEntry),
-						) == 'repeat'
-							? this.buildSelector(
-									'Repeat Delay',
-									'repeat_delay' as keyof IEntry,
-									{
-										number: {
-											min: 0,
-											step: 0,
-											mode: 'box',
-											unit_of_measurement: 'ms',
-										},
+			<div class="action-options">
+				${this.buildSelector(
+					'Tap action',
+					'tap_action',
+					defaultTapActions,
+				)}
+				${this.renderTemplate(
+					this.activeEntry?.tap_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				) == 'more-info'
+					? this.buildSelector(
+							'Entity',
+							'tap_action.target.entity_id' as keyof IEntry,
+							{ entity: {} },
+					  )
+					: ''}
+			</div>
+			<div class="action-options">
+				${this.buildSelector(
+					'Hold action (optional)',
+					'hold_action',
+					defaultHoldActions,
+				)}
+				${this.renderTemplate(
+					this.activeEntry?.hold_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				) != 'none'
+					? html`<div class="form">
+							${this.buildSelector(
+								'Hold Time',
+								'hold_action.hold_time' as keyof IEntry,
+								{
+									number: {
+										min: 0,
+										step: 0,
+										mode: 'box',
+										unit_of_measurement: 'ms',
 									},
-									100,
-							  )
-							: ''}
-				  </div>`
-				: ''}
+								},
+								500,
+							)}${this.renderTemplate(
+								this.activeEntry?.hold_action?.action as string,
+								this.getEntryContext(
+									this.activeEntry as IEntry,
+								),
+							) == 'repeat'
+								? this.buildSelector(
+										'Repeat Delay',
+										'hold_action.repeat_delay' as keyof IEntry,
+										{
+											number: {
+												min: 0,
+												step: 0,
+												mode: 'box',
+												unit_of_measurement: 'ms',
+											},
+										},
+										100,
+								  )
+								: ''}
+					  </div>`
+					: ''}
+			</div>
 		`;
 		const spinboxTabBar = html`
 			<paper-tabs
@@ -1699,6 +1727,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: inline-flex;
 				flex-direction: column;
 				gap: 24px;
+				box-sizing: border-box;
+				width: 100%;
+			}
+			.action-options {
+				padding: 0px;
+				display: inline-flex;
+				flex-direction: column;
+				gap: 8px;
 				box-sizing: border-box;
 				width: 100%;
 			}

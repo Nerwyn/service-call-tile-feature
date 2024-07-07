@@ -10,7 +10,13 @@ import {
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
-import { IEntry, IAction, IActions, ActionType } from '../models/interfaces';
+import {
+	IEntry,
+	ITarget,
+	IAction,
+	IActions,
+	ActionType,
+} from '../models/interfaces';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -133,7 +139,22 @@ export class BaseServiceCallFeature extends LitElement {
 				data[key] = this.renderTemplate(data[key] as string);
 			}
 		}
-		this.hass.callService(domain, service, data);
+		const target = structuredClone(action.target);
+		for (const key in target) {
+			if (Array.isArray(target[key as keyof ITarget])) {
+				for (const i in target[key as keyof ITarget] as string[]) {
+					(target[key as keyof ITarget] as string[])[i] =
+						this.renderTemplate(
+							(target[key as keyof ITarget] as string[])[i],
+						) as string;
+				}
+			} else {
+				target[key as keyof ITarget] = this.renderTemplate(
+					target[key as keyof ITarget] as string,
+				) as string;
+			}
+		}
+		this.hass.callService(domain, service, data, target);
 	}
 
 	navigate(action: IAction) {
@@ -202,7 +223,9 @@ export class BaseServiceCallFeature extends LitElement {
 
 	moreInfo(action: IAction) {
 		const entityId = this.renderTemplate(
-			action.data?.entity_id as string,
+			(action.target?.entity_id ??
+				action.data?.entity_id ??
+				'') as string,
 		) as string;
 
 		const event = new Event('hass-more-info', {
