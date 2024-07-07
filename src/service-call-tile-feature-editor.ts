@@ -347,6 +347,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
 		let entries: IEntry[] | IOption[];
 		let handlers: Record<string, (e: CustomEvent) => void>;
+		let listHeader: string;
 		let backupType: string;
 		switch (field) {
 			case 'option':
@@ -356,6 +357,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editOption,
 					remove: this.removeOption,
 				};
+				listHeader = 'Custom Features';
 				backupType = 'Option';
 				break;
 			case 'entry':
@@ -366,11 +368,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editEntry,
 					remove: this.removeEntry,
 				};
+				listHeader = 'Selector Options';
 				backupType = 'Button';
 				break;
 		}
 		return html`
 			<div class="content">
+				<div class="entry-list-header">${listHeader}</div>
 				<ha-sortable
 					handle-selector=".handle"
 					@item-moved=${handlers.move}
@@ -1777,7 +1781,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				width: 100%;
 			}
 			.action-options {
-				padding: 12px;
 				display: inline-flex;
 				flex-direction: column;
 				gap: 8px;
@@ -1925,12 +1928,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 
 			.style-header {
+				font-size: 16px;
 				font-weight: 500;
-				margin-left: 4px;
+				padding: 0 4px;
 			}
 			.root-style-header {
+				font-size: 16px;
 				font-weight: 500;
-				margin-left: 20px;
+				padding: 4px 12px;
+			}
+			.entry-list-header {
+				font-size: 20px;
+				font-weight: 500;
 			}
 		`;
 	}
