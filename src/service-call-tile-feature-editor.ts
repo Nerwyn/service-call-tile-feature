@@ -1552,6 +1552,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	autofillDefaultFields() {
+		console.log('1');
 		const entries: IEntry[] = [];
 		for (let entry of structuredClone(this.config.entries) ?? []) {
 			if (
@@ -1560,15 +1561,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					this.getEntryContext(entry),
 				)
 			) {
+				console.log('2');
 				// Feature entity ID
 				entry = this.populateMissingEntityId(
 					entry,
 					this.context.entity_id,
 				);
+				console.log('3');
 				const entryEntityId = this.renderTemplate(
 					entry.entity_id as string,
 					this.getEntryContext(entry),
 				) as string;
+				console.log('4');
 
 				switch (
 					this.renderTemplate(
