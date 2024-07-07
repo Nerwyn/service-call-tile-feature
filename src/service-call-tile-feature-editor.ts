@@ -596,20 +596,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		additionalOptions: TemplateResult<1> = html``,
 		additionalFormOptions: TemplateResult<1> = html``,
 	) {
-		return html`
-			${this.buildSelector('Entity', 'entity_id', {
-				entity: {},
-			})}
-			${
-				this.activeEntry?.entity_id
+		return html`<div class="content">
+				${this.buildSelector('Entity', 'entity_id', {
+					entity: {},
+				})}
+				${this.activeEntry?.entity_id
 					? this.buildSelector('Attribute', 'value_attribute', {
 							attribute: {
 								entity_id: this.activeEntry.entity_id,
 							},
 					  })
-					: ''
-			}
-			${additionalOptions}
+					: ''}
+				${additionalOptions}
+			</div>
 			<div class="form">
 				${additionalFormOptions}
 				${this.buildSelector(
@@ -628,8 +627,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					},
 					false,
 				)}
-			</div>
-		</div> `;
+			</div>`;
 	}
 
 	buildAppearancePanel(appearanceOptions: TemplateResult<1> = html``) {
