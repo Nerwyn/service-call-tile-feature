@@ -596,19 +596,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		additionalOptions: TemplateResult<1> = html``,
 		additionalFormOptions: TemplateResult<1> = html``,
 	) {
-		return html`<div class="content">
-				${this.buildSelector('Entity', 'entity_id', {
-					entity: {},
-				})}
-				${this.activeEntry?.entity_id
+		return html`
+			${this.buildSelector('Entity', 'entity_id', {
+				entity: {},
+			})}
+			${
+				this.activeEntry?.entity_id
 					? this.buildSelector('Attribute', 'value_attribute', {
 							attribute: {
 								entity_id: this.activeEntry.entity_id,
 							},
 					  })
-					: ''}
-				${additionalOptions}
-			</div>
+					: ''
+			}
+			${additionalOptions}
 			<div class="form">
 				${additionalFormOptions}
 				${this.buildSelector(
@@ -627,7 +628,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					},
 					false,
 				)}
-			</div>`;
+			</div>
+		</div> `;
 	}
 
 	buildAppearancePanel(appearanceOptions: TemplateResult<1> = html``) {
@@ -702,7 +704,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 1:
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="content action">
+					<div class="action-options">
 						${this.buildSelector(
 							'Start action (optional)',
 							'momentary_start_action',
@@ -720,7 +722,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content action">
+					<div class="action-options">
 						${this.buildSelector(
 							'End action (optional)',
 							'momentary_end_action',
@@ -744,7 +746,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			default:
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="content action">
+					<div class="action-options">
 						${this.buildSelector(
 							'Tap action (optional)',
 							'tap_action',
@@ -761,7 +763,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content action">
+					<div class="action-options">
 						${this.buildSelector(
 							'Double tap action (optional)',
 							'double_tap_action',
@@ -798,7 +800,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							  )
 							: ''}
 					</div>
-					<div class="content action">
+					<div class="action-options">
 						${this.buildSelector(
 							'Hold action (optional)',
 							'hold_action',
@@ -993,7 +995,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				})}
 			`)}
 			${this.buildActionsPanel(html`
-				<div class="content action">
+				<div class="action-options">
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1058,7 +1060,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		const actionSelectors = html`
-			<div class="content action">
+			<div class="action-options">
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1075,7 +1077,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					  )
 					: ''}
 			</div>
-			<div class="content action">
+			<div class="action-options">
 				${this.buildSelector(
 					'Hold action (optional)',
 					'hold_action',
@@ -1768,15 +1770,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 			.content {
 				padding: 12px;
-				gap: 24px;
 				display: inline-flex;
 				flex-direction: column;
+				gap: 24px;
 				box-sizing: border-box;
 				width: 100%;
 			}
-			.action {
-				padding: 0;
-				gap: 4px;
+			.action-options {
+				padding: 12px;
+				display: inline-flex;
+				flex-direction: column;
+				gap: 8px;
+				box-sizing: border-box;
+				width: 100%;
 			}
 
 			ha-expansion-panel {
@@ -1870,6 +1876,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.yaml-editor {
 				display: inline-flex;
 				flex-direction: column;
+				gap: 24px;
 				padding: 8px 0px;
 				width: 100%;
 			}
@@ -1919,11 +1926,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 			.style-header {
 				font-weight: 500;
-				padding: 16px 4px 0;
+				margin-left: 4px;
 			}
 			.root-style-header {
 				font-weight: 500;
-				padding: 0 20px;
+				margin-left: 20px;
 			}
 		`;
 	}
