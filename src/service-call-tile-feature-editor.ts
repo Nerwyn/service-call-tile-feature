@@ -905,7 +905,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							number: {
 								max:
 									this.activeEntry?.range?.[1] ??
-									defaultRangeMin,
+									defaultRangeMax,
 								step: this.activeEntry?.step ?? defaultStep,
 								mode: 'box',
 								unit_of_measurement:
@@ -921,7 +921,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							number: {
 								min:
 									this.activeEntry?.range?.[0] ??
-									defaultRangeMax,
+									defaultRangeMin,
 								step: this.activeEntry?.step ?? defaultStep,
 								mode: 'box',
 								unit_of_measurement:
@@ -1192,7 +1192,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									number: {
 										max:
 											this.activeEntry?.range?.[1] ??
-											defaultRangeMin,
+											defaultRangeMax,
 										step:
 											this.activeEntry?.step ??
 											defaultStep ??
@@ -1212,7 +1212,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									number: {
 										min:
 											this.activeEntry?.range?.[0] ??
-											defaultRangeMax,
+											defaultRangeMin,
 										step:
 											this.activeEntry?.step ??
 											defaultStep ??
