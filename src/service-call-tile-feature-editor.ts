@@ -325,19 +325,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				value: 1,
 			},
 		};
-		if (Object.keys(keysWithDefaults).includes(key)) {
-			const entityId = this.renderTemplate(
+		if (keysWithDefaults[key]) {
+			const entityId = (this.renderTemplate(
 				this.activeEntry?.entity_id as string,
 				this.getEntryContext(this.activeEntry as IEntry),
-			) as string;
-			if (entityId) {
-				value =
-					value ??
-					this.hass.states[entityId]?.attributes?.[
-						keysWithDefaults[key].key
-					] ??
-					keysWithDefaults[key].value;
-			}
+			) ?? '') as string;
+			value =
+				value ??
+				this.hass.states[entityId]?.attributes?.[
+					keysWithDefaults[key].key
+				] ??
+				keysWithDefaults[key].value;
 		}
 		this.entryChanged(
 			deepSet(structuredClone(this.activeEntry) as object, key, value),
@@ -357,7 +355,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editOption,
 					remove: this.removeOption,
 				};
-				listHeader = 'Custom Features';
+				listHeader = 'Selector Options';
 				backupType = 'Option';
 				break;
 			case 'entry':
@@ -368,7 +366,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					edit: this.editEntry,
 					remove: this.removeEntry,
 				};
-				listHeader = 'Selector Options';
+				listHeader = 'Custom Features';
 				backupType = 'Button';
 				break;
 		}
@@ -701,7 +699,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const defaultUiActions = {
 			ui_action: {
 				actions: actionsNoRepeat,
-				default_action: 'none',
 			},
 		};
 		switch (this.actionsTabIndex) {
@@ -811,7 +808,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							{
 								ui_action: {
 									actions: Actions,
-									default_action: 'none',
 								},
 							},
 						)}
@@ -1003,7 +999,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
-							default_action: 'call-service',
 						},
 					})}
 					${this.renderTemplate(
@@ -1054,13 +1049,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const defaultTapActions = {
 			ui_action: {
 				actions: actionsNoRepeat,
-				default_action: 'call-service',
 			},
 		};
 		const defaultHoldActions = {
 			ui_action: {
 				actions: ['repeat', 'none'],
-				default_action: 'none',
 			},
 		};
 		const actionSelectors = html`
