@@ -1,5 +1,8 @@
 export function deepGet(obj: object, key: string): object {
 	const keys = key.split('.');
+	if (obj == undefined) {
+		return undefined as unknown as object;
+	}
 	if (keys.length == 1) {
 		return obj[keys[0] as keyof object];
 	}

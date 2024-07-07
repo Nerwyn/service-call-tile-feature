@@ -1756,6 +1756,45 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								}
 							}
 						}
+
+						// Shortcut for inserting {{ value | int/float }} into number only UI fields
+						if (entry.tap_action && entry.tap_action.data) {
+							const data = entry.tap_action.data;
+							for (const key in data) {
+								if (Array.isArray(data[key])) {
+									for (const i in data[key] as number[]) {
+										if (
+											typeof (data[key] as number[])[i] ==
+												'number' &&
+											((data[key] as number[])[
+												i
+											] as number) > 0 &&
+											((data[key] as number[])[
+												i
+											] as number) < 0.0001
+										) {
+											(data[key] as string[])[i] =
+												`{{ value | ${
+													entry.step ?? 1 % 1 == 0
+														? 'int'
+														: 'float'
+												} }}`;
+										}
+									}
+								} else if (
+									typeof data[key] == 'number' &&
+									data[key] > 0 &&
+									data[key] < 0.0001
+								) {
+									data[key] = `{{ value | ${
+										entry.step ?? 1 % 1 == 0
+											? 'int'
+											: 'float'
+									} }}`;
+								}
+							}
+							entry.tap_action.data = data;
+						}
 						break;
 					}
 					case 'button':
