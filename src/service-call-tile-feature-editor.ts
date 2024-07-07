@@ -306,12 +306,41 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleSelectorChange(e: CustomEvent) {
+		const key = (e.target as HTMLElement).id;
+		let value = e.detail.value;
+		const keysWithDefaults: Record<
+			string,
+			Record<string, string | number>
+		> = {
+			'range.0': {
+				key: 'min',
+				value: 0,
+			},
+			'range.1': {
+				key: 'max',
+				value: 100,
+			},
+			step: {
+				key: 'step',
+				value: 1,
+			},
+		};
+		if (Object.keys(keysWithDefaults).includes(key)) {
+			const entityId = this.renderTemplate(
+				this.activeEntry?.entity_id as string,
+				this.getEntryContext(this.activeEntry as IEntry),
+			) as string;
+			if (entityId) {
+				value =
+					value ??
+					this.hass.states[entityId]?.attributes?.[
+						keysWithDefaults[key].key
+					] ??
+					keysWithDefaults[key].value;
+			}
+		}
 		this.entryChanged(
-			deepSet(
-				structuredClone(this.activeEntry) as object,
-				(e.target as HTMLElement).id,
-				e.detail.value,
-			),
+			deepSet(structuredClone(this.activeEntry) as object, key, value),
 		);
 	}
 
@@ -815,7 +844,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 												},
 												100,
 										  )
-										: ''}
+										: this.renderTemplate(
+													this.activeEntry
+														?.hold_action?.action ??
+														'none',
+													this.getEntryContext(
+														this
+															.activeEntry as IEntry,
+													),
+										    ) == 'more-info'
+										  ? this.buildSelector(
+													'Entity',
+													'hold_action.target.entity_id' as keyof IEntry,
+													{ entity: {} },
+										    )
+										  : ''}
 							  </div>`
 							: ''}
 					</div>
@@ -849,7 +892,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			this.hass.states[entityId]?.attributes?.min ?? 0;
 		const defaultRangeMax =
 			this.hass.states[entityId]?.attributes?.max ?? 100;
-		const defaultStep = this.hass.states[entityId]?.attributes?.step;
+		const defaultStep = this.hass.states[entityId]?.attributes?.step ?? 1;
 
 		return html`
 			${this.buildMainFeatureOptions(
@@ -863,8 +906,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								max:
 									this.activeEntry?.range?.[1] ??
 									defaultRangeMin,
-								step:
-									this.activeEntry?.step ?? defaultStep ?? 1,
+								step: this.activeEntry?.step ?? defaultStep,
 								mode: 'box',
 								unit_of_measurement:
 									this.activeEntry?.unit_of_measurement,
@@ -880,8 +922,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								min:
 									this.activeEntry?.range?.[0] ??
 									defaultRangeMax,
-								step:
-									this.activeEntry?.step ?? defaultStep ?? 1,
+								step: this.activeEntry?.step ?? defaultStep,
 								mode: 'box',
 								unit_of_measurement:
 									this.activeEntry?.unit_of_measurement,
