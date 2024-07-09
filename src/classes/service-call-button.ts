@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
-import styles from '../styles/button.css';
+import styles from '../styles/button.css' assert { type: 'css' };
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {

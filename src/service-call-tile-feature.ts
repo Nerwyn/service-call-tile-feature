@@ -22,7 +22,7 @@ import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
 import './classes/service-call-spinbox';
-import styles from './styles/main.css';
+import styles from './styles/main.css' assert { type: 'css' };
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,

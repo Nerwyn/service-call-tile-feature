@@ -4,7 +4,7 @@ import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
-import styles from '../styles/slider.css';
+import styles from '../styles/slider.css' assert { type: 'css' };
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
