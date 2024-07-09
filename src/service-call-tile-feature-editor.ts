@@ -1820,5 +1820,5 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		setInterval(() => (this.autofillCooldown = false), 5000);
 	}
 
-	static styles = style;
+	static styles = [style];
 }

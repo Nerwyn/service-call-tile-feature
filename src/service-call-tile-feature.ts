@@ -318,7 +318,7 @@ class ServiceCallTileFeature extends LitElement {
 		return html`<div class="row">${row}</div>`;
 	}
 
-	static styles = style;
+	static styles = [style];
 }
 
 customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
