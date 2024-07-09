@@ -4,7 +4,7 @@ import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
-import styles from '../styles/slider.css' assert { type: 'css' };
+import style from '../styles/slider.css' assert { type: 'css' };
 
 @customElement('service-call-slider')
 export class ServiceCallSlider extends BaseServiceCallFeature {
@@ -395,5 +395,5 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.resizeObserver.disconnect();
 	}
 
-	static styles = [super.styles, styles];
+	static styles = [super.styles, style];
 }

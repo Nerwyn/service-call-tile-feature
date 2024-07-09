@@ -20,7 +20,7 @@ import {
 	ThumbTypes,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
-import styles from './styles/editor.css' assert { type: 'css' };
+import style from './styles/editor.css' assert { type: 'css' };
 
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
@@ -1820,5 +1820,5 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		setInterval(() => (this.autofillCooldown = false), 5000);
 	}
 
-	static styles = styles;
+	static styles = style;
 }

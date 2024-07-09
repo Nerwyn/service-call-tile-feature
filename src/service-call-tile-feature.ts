@@ -22,7 +22,7 @@ import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
 import './classes/service-call-spinbox';
-import styles from './styles/main.css' assert { type: 'css' };
+import style from './styles/main.css' assert { type: 'css' };
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -318,7 +318,7 @@ class ServiceCallTileFeature extends LitElement {
 		return html`<div class="row">${row}</div>`;
 	}
 
-	static styles = styles;
+	static styles = style;
 }
 
 customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
