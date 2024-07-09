@@ -1,10 +1,11 @@
-import { html, css, CSSResult } from 'lit';
+import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
+import styles from '../styles/spinbox.css';
 
 @customElement('service-call-spinbox')
 export class ServiceCallSpinbox extends BaseServiceCallFeature {
@@ -266,70 +267,5 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		`;
 	}
 
-	static get styles(): CSSResult | CSSResult[] {
-		return [
-			super.styles as CSSResult,
-			css`
-				:host {
-					place-content: center;
-				}
-
-				.icon-label-container {
-					display: flex;
-					flex-flow: column;
-					align-items: center;
-				}
-
-				.icon {
-					opacity: 0.77;
-				}
-
-				.label {
-					width: fit-content;
-					font-size: 14px;
-					font-weight: 500;
-					opacity: 0.77;
-				}
-
-				.button {
-					position: absolute;
-					background: none;
-					cursor: pointer;
-					display: flex;
-					flex-flow: column;
-					place-content: center space-evenly;
-					align-items: center;
-					height: inherit;
-					width: initial;
-					border: none;
-					padding: 10px;
-					color: inherit;
-					z-index: 2;
-
-					--mdc-icon-size: 16px;
-				}
-
-				.button::before {
-					display: none !important;
-				}
-
-				#decrement {
-					left: 0px;
-				}
-
-				#increment {
-					right: 0px;
-				}
-
-				service-call-button {
-					position: absolute;
-					width: initial;
-					padding: 10px;
-
-					--opacity: 0;
-					--mdc-icon-size: 16px;
-				}
-			`,
-		];
-	}
+	static styles = [super.styles, styles];
 }

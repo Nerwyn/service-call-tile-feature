@@ -1,6 +1,6 @@
 import { version } from '../package.json';
 
-import { LitElement, TemplateResult, html, css } from 'lit';
+import { LitElement, TemplateResult, html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
@@ -22,6 +22,7 @@ import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
 import './classes/service-call-spinbox';
+import styles from './styles/main.css';
 
 console.info(
 	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
@@ -317,19 +318,7 @@ class ServiceCallTileFeature extends LitElement {
 		return html`<div class="row">${row}</div>`;
 	}
 
-	static get styles() {
-		return css`
-			.row {
-				display: flex;
-				flex-flow: row;
-				justify-content: center;
-				align-items: center;
-				padding: 0 12px 12px;
-				gap: 12px;
-				width: auto;
-			}
-		`;
-	}
+	static styles = styles;
 }
 
 customElements.define('service-call-editor', ServiceCallTileFeatureEditor);

@@ -9,6 +9,9 @@ env = 'production';
 
 module.exports = {
 	mode: env,
+	stats: {
+		warnings: false,
+	},
 	entry: {
 		'service-call-tile-feature': './src/service-call-tile-feature.ts',
 	},
@@ -21,6 +24,13 @@ module.exports = {
 	},
 	module: {
 		rules: [
+			{
+				test: /\.css?$/,
+				loader: 'lit-css-loader',
+				options: {
+					cssnano: true,
+				},
+			},
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',

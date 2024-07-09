@@ -1,8 +1,9 @@
-import { html, css, CSSResult } from 'lit';
+import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
+import styles from '../styles/button.css';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
@@ -229,63 +230,5 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		return html`${button}${this.buildIcon()}${this.buildLabel()}`;
 	}
 
-	static get styles(): CSSResult | CSSResult[] {
-		return [
-			super.styles as CSSResult,
-			css`
-				:host {
-					--opacity: 0.2;
-					--md-ripple-hover-opacity: var(
-						--ha-ripple-hover-opacity,
-						0.08
-					);
-					--md-ripple-pressed-opacity: var(
-						--ha-ripple-pressed-opacity,
-						0.12
-					);
-					--ha-ripple-color: var(--secondary-text-color);
-					--mdc-ripple-hover-color: var(
-						--ha-ripple-hover-color,
-						var(--ha-ripple-color, var(--secondary-text-color))
-					);
-					--md-ripple-pressed-color: var(
-						--ha-ripple-pressed-color,
-						var(--ha-ripple-color, var(--secondary-text-color))
-					);
-				}
-
-				button {
-					background: 0px 0px;
-					position: absolute;
-					cursor: pointer;
-					height: 100%;
-					width: 100%;
-					border: none;
-					z-index: 2;
-					overflow: hidden;
-				}
-				button::before {
-					content: '';
-					position: absolute;
-					top: 0px;
-					left: 0px;
-					height: 100%;
-					width: 100%;
-					background: var(--color, var(--disabled-color));
-					opacity: var(--opacity);
-				}
-
-				@media (hover: hover) {
-					.option:hover {
-						opacity: var(--hover-opacity) !important;
-						background-color: var(--color, var(--disabled-color));
-					}
-				}
-				.option:active {
-					opacity: var(--hover-opacity) !important;
-					background-color: var(--color, var(--disabled-color));
-				}
-			`,
-		];
-	}
+	static styles = [super.styles, styles];
 }

@@ -38,6 +38,7 @@
 		"eslint-config-prettier": "latest",
 		"eslint-plugin-prettier": "latest",
 		"lint-staged": "latest",
+		"lit-css-loader": "^3.0.0",
 		"prettier": "latest",
 		"ts-loader": "latest",
 		"typescript": "latest",
