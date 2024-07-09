@@ -17,7 +17,7 @@ import {
 	IActions,
 	ActionType,
 } from '../models/interfaces';
-import style from '../styles/base.css' assert { type: 'css' };
+import style from '../styles/base.css';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -654,5 +654,7 @@ export class BaseServiceCallFeature extends LitElement {
 		}
 	}
 
-	static styles: CSSResult | CSSResult[] = [style];
+	static get styles(): CSSResult | CSSResult[] {
+		return style;
+	}
 }

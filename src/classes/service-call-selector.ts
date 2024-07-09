@@ -4,7 +4,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
-import style from '../styles/selector.css' assert { type: 'css' };
+import style from '../styles/selector.css';
 
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {
@@ -62,5 +62,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 		return html`${selector}`;
 	}
 
-	static styles = [super.styles, style];
+	static get styles() {
+		return [super.styles, style];
+	}
 }

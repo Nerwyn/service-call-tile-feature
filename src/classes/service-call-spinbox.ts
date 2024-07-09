@@ -5,7 +5,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
-import style from '../styles/spinbox.css' assert { type: 'css' };
+import style from '../styles/spinbox.css';
 
 @customElement('service-call-spinbox')
 export class ServiceCallSpinbox extends BaseServiceCallFeature {
@@ -267,5 +267,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		`;
 	}
 
-	static styles = [super.styles, style];
+	static get styles() {
+		return [super.styles, style];
+	}
 }
