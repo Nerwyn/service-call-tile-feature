@@ -399,19 +399,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								context,
 							);
 							return html`
-								<div class="feature">
+								<div class="feature-list-item">
 									<div class="handle">
 										<ha-icon
 											.icon="${'mdi:drag'}"
 										></ha-icon>
 									</div>
-									<div class="feature-content">
+									<div class="feature-list-item-content">
 										${icon
 											? html`<ha-icon
 													.icon="${icon}"
 											  ></ha-icon>`
 											: ''}
-										<div>
+										<div class="feature-list-item-label">
 											<span class="primary"
 												>${option ??
 												entryType ??
@@ -1863,7 +1863,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				text-transform: capitalize;
 			}
 
-			.feature {
+			.feature-list-item {
 				display: flex;
 				align-items: center;
 				pointer-events: none;
@@ -1879,7 +1879,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				}
 			}
 
-			.feature-content {
+			.feature-list-item-content {
 				height: 60px;
 				font-size: 16px;
 				display: flex;
@@ -1891,7 +1891,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.primary:first-letter {
 				text-transform: capitalize;
 			}
-			.feature-content div {
+			.feature-list-item-label {
 				display: flex;
 				flex-direction: column;
 			}
