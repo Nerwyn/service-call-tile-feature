@@ -530,6 +530,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							)}
 					  >
 							<ha-icon
+								class="header-icon"
 								.icon="${this.guiMode
 									? 'mdi:code-braces'
 									: 'mdi:list-box-outline'}"
@@ -1913,13 +1914,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: inline-flex;
 				justify-content: space-between;
 				align-items: center;
-
-				ha-icon {
-					color: var(
-						--mdc-dialog-content-ink-color,
-						rgba(0, 0, 0, 0.6)
-					);
-				}
+			}
+			.header-icon {
+				color: var(--mdc-dialog-content-ink-color, rgba(0, 0, 0, 0.6));
 			}
 			.back-title {
 				display: flex;
