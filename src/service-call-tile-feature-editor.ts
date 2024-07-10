@@ -143,8 +143,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+
+		this.actionsTabIndex =
+			i > -1 &&
+			(this.renderTemplate(
+				this.config.entries[i].momentary_start_action?.action ?? 'none',
+				this.getEntryContext(this.config.entries[i]),
+			) != 'none' ||
+				this.renderTemplate(
+					this.config.entries[i].momentary_end_action?.action ??
+						'none',
+					this.getEntryContext(this.config.entries[i]),
+				) != 'none')
+				? 1
+				: 0;
 		this.styleTabIndex = 0;
-		this.actionsTabIndex = 0;
 		this.optionEditorIndex = -1;
 		this.spinboxTabIndex = 1;
 		this.entryEditorIndex = i;
@@ -155,8 +168,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+
+		this.actionsTabIndex =
+			i > -1 &&
+			(this.renderTemplate(
+				this.config.entries[i].momentary_start_action?.action ?? 'none',
+				this.getEntryContext(this.config.entries[i]),
+			) != 'none' ||
+				this.renderTemplate(
+					this.config.entries[i].momentary_end_action?.action ??
+						'none',
+					this.getEntryContext(this.config.entries[i]),
+				) != 'none')
+				? 1
+				: 0;
 		this.styleTabIndex = 0;
-		this.actionsTabIndex = 0;
 		this.optionEditorIndex = i;
 	}
 
