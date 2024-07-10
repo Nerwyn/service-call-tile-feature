@@ -174,12 +174,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			(this.renderTemplate(
 				this.config.entries[this.entryEditorIndex].options?.[i]
 					?.momentary_start_action?.action ?? 'none',
-				this.getEntryContext(this.config.entries[i]),
+				this.getEntryContext(
+					this.config.entries[this.entryEditorIndex].options?.[
+						i
+					] as IEntry,
+				),
 			) != 'none' ||
 				this.renderTemplate(
 					this.config.entries[this.entryEditorIndex].options?.[i]
 						?.momentary_end_action?.action ?? 'none',
-					this.getEntryContext(this.config.entries[i]),
+					this.getEntryContext(
+						this.config.entries[this.entryEditorIndex].options?.[
+							i
+						] as IEntry,
+					),
 				) != 'none')
 				? 1
 				: 0;
