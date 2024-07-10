@@ -1,10 +1,9 @@
-import { html } from 'lit';
+import { CSSResult, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
-import style from '../styles/selector.css';
 
 @customElement('service-call-selector')
 export class ServiceCallSelector extends BaseServiceCallFeature {
@@ -63,6 +62,26 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 	}
 
 	static get styles() {
-		return [super.styles, style];
+		return [
+			super.styles as CSSResult,
+			css`
+				:host {
+					flex-flow: row;
+
+					--color: var(--tile-color);
+					--background: var(--disabled-color);
+					--hover-opacity: 0.2;
+				}
+
+				.option {
+					--opacity: 0;
+				}
+
+				.selected-option {
+					--opacity: 1;
+					--hover-opacity: 1;
+				}
+			`,
+		];
 	}
 }

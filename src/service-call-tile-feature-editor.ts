@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult, html } from 'lit';
+import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StyleInfo } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
@@ -20,7 +20,6 @@ import {
 	ThumbTypes,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
-import style from './styles/editor.css';
 
 export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() hass!: HomeAssistant;
@@ -1821,6 +1820,182 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	static get styles() {
-		return style;
+		return css`
+			:host {
+				display: flex !important;
+				flex-direction: column;
+			}
+			.content {
+				padding: 12px;
+				display: inline-flex;
+				flex-direction: column;
+				gap: 24px;
+				box-sizing: border-box;
+				width: 100%;
+			}
+			.action-options {
+				display: inline-flex;
+				flex-direction: column;
+				gap: 8px;
+				box-sizing: border-box;
+				width: 100%;
+			}
+
+			ha-expansion-panel {
+				display: block;
+				border-radius: 6px;
+				border: solid 1px var(--outline-color);
+				--ha-card-border-radius: 6px;
+				--expansion-panel-content-padding: 0;
+			}
+			ha-icon {
+				display: flex;
+				color: var(--secondary-text-color);
+			}
+			ha-button-menu {
+				margin: 0 18px 12px;
+			}
+			ha-button {
+				width: fit-content;
+				--mdc-icon-size: 100%;
+			}
+			ha-list-item {
+				text-transform: capitalize;
+			}
+
+			.feature {
+				display: flex;
+				align-items: center;
+				pointer-events: none;
+
+				.handle {
+					cursor: move;
+					cursor: grab;
+					padding-right: 8px;
+					padding-inline-end: 8px;
+					padding-inline-start: initial;
+					direction: var(--direction);
+					pointer-events: all;
+				}
+			}
+
+			.feature-content {
+				height: 60px;
+				font-size: 16px;
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				flex-grow: 1;
+				gap: 8px;
+			}
+			.primary:first-letter {
+				text-transform: capitalize;
+			}
+			.feature-content div {
+				display: flex;
+				flex-direction: column;
+			}
+			.secondary {
+				font-size: 12px;
+				color: var(--secondary-text-color);
+			}
+
+			.edit-icon,
+			.remove-icon {
+				color: var(--secondary-text-color);
+				pointer-events: all;
+				--mdc-icon-button-size: 36px;
+			}
+
+			.header {
+				display: inline-flex;
+				justify-content: space-between;
+				align-items: center;
+
+				ha-icon {
+					color: var(
+						--mdc-dialog-content-ink-color,
+						rgba(0, 0, 0, 0.6)
+					);
+				}
+			}
+			.back-title {
+				display: flex;
+				align-items: center;
+				font-size: 18px;
+			}
+
+			.wrapper {
+				width: 100%;
+			}
+			.gui-editor,
+			.yaml-editor {
+				display: inline-flex;
+				flex-direction: column;
+				gap: 24px;
+				padding: 8px 0px;
+				width: 100%;
+			}
+			ha-code-editor {
+				--code-mirror-max-height: calc(100vh - 245px);
+			}
+			.error,
+			.info {
+				word-break: break-word;
+				margin-top: 8px;
+			}
+			.error {
+				color: var(--error-color);
+			}
+			.error ul {
+				margin: 4px 0;
+			}
+			.warning li,
+			.error li {
+				white-space: pre-wrap;
+			}
+
+			.panel-header {
+				display: inline-flex;
+				gap: 4px;
+			}
+
+			paper-tabs {
+				color: var(--primary-text-color);
+				text-transform: uppercase;
+				border-bottom: 1px solid var(--divider-color);
+				--paper-tabs-selection-bar-color: var(--primary-color);
+			}
+			paper-tab.iron-selected {
+				box-shadow: inset 0 -2px 0 0 var(--primary-color);
+				transition: box-shadow 1s;
+			}
+
+			.form {
+				display: grid;
+				grid-template-columns: repeat(
+					var(--form-grid-column-count, auto-fit),
+					minmax(var(--form-grid-min-width, 200px), 1fr)
+				);
+				gap: 24px 8px;
+			}
+
+			.style-header {
+				font-size: 16px;
+				font-weight: 500;
+				padding: 0 4px;
+			}
+			.root-style-header {
+				font-size: 16px;
+				font-weight: 500;
+				padding: 4px 12px;
+			}
+			.entry-list-header {
+				font-size: 20px;
+				font-weight: 500;
+			}
+		`;
 	}
 }
+
+customElements.define('service-call-editor', ServiceCallTileFeatureEditor);

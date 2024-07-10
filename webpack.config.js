@@ -9,11 +9,10 @@ env = 'production';
 
 module.exports = {
 	mode: env,
-	stats: {
-		warnings: false,
-	},
 	entry: {
 		'service-call-tile-feature': './src/service-call-tile-feature.ts',
+		'service-call-tile-feature-editor':
+			'./src/service-call-tile-feature-editor.ts',
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
@@ -24,13 +23,6 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			{
-				test: /\.css?$/,
-				loader: 'lit-css-loader',
-				options: {
-					cssnano: true,
-				},
-			},
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',

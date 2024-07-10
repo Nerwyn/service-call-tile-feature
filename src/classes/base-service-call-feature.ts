@@ -1,6 +1,6 @@
 import { HomeAssistant, HapticType, forwardHaptic } from 'custom-card-helpers';
 
-import { LitElement, CSSResult, html } from 'lit';
+import { LitElement, CSSResult, html, css } from 'lit';
 import {
 	customElement,
 	eventOptions,
@@ -17,7 +17,6 @@ import {
 	IActions,
 	ActionType,
 } from '../models/interfaces';
-import style from '../styles/base.css';
 
 @customElement('base-service-call-feature')
 export class BaseServiceCallFeature extends LitElement {
@@ -655,6 +654,79 @@ export class BaseServiceCallFeature extends LitElement {
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
-		return style;
+		return css`
+			:host {
+				display: flex;
+				flex-flow: column;
+				place-content: center space-evenly;
+				align-items: center;
+				position: relative;
+				height: 40px;
+				width: 100%;
+				border: none;
+				border-radius: 10px;
+				padding: 0px;
+				box-sizing: border-box;
+				outline: 0px;
+				overflow: hidden;
+				font-size: inherit;
+				color: inherit;
+				flex-basis: 100%;
+
+				--color: unset;
+				--icon-color: inherit;
+				--icon-filter: none;
+				--mdc-icon-size: 20px;
+				--label-color: inherit;
+				--label-filter: none;
+				--background: var(--color, var(--state-inactive-color));
+				--background-height: 100%;
+				--background-opacity: 0.2;
+			}
+
+			.container {
+				all: inherit;
+				overflow: hidden;
+				height: 100%;
+			}
+
+			.background {
+				position: absolute;
+				width: inherit;
+				height: var(--background-height);
+				background: var(--background, var(--disabled-color));
+				opacity: var(--background-opacity);
+				z-index: 1;
+			}
+
+			ha-icon {
+				position: relative;
+				pointer-events: none;
+				display: inline-flex;
+				flex-flow: column;
+				place-content: center;
+				z-index: 2;
+				color: var(--icon-color);
+				filter: var(--icon-filter);
+			}
+
+			.label {
+				position: relative;
+				pointer-events: none;
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+				height: 15px;
+				line-height: 15px;
+				width: inherit;
+				margin: 0;
+				font-family: inherit;
+				font-size: 12px;
+				font-weight: bold;
+				z-index: 2;
+				color: var(--label-color);
+				filter: var(--label-filter);
+			}
+		`;
 	}
 }

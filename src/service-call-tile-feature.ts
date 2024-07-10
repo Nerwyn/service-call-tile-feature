@@ -1,6 +1,6 @@
-import { version } from '../package.json';
+import packageInfo from '../package.json';
 
-import { LitElement, TemplateResult, html } from 'lit';
+import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
@@ -17,15 +17,13 @@ import {
 	ActionTypes,
 	IData,
 } from './models/interfaces';
-import { ServiceCallTileFeatureEditor } from './service-call-tile-feature-editor';
 import './classes/service-call-button';
 import './classes/service-call-slider';
 import './classes/service-call-selector';
 import './classes/service-call-spinbox';
-import style from './styles/main.css';
 
 console.info(
-	`%c SERVICE-CALL-TILE-FEATURE v${version}`,
+	`%c SERVICE-CALL-TILE-FEATURE v${packageInfo.version}`,
 	'color: white; font-weight: bold; background: cornflowerblue',
 );
 
@@ -319,11 +317,20 @@ class ServiceCallTileFeature extends LitElement {
 	}
 
 	static get styles() {
-		return style;
+		return css`
+			.row {
+				display: flex;
+				flex-flow: row;
+				justify-content: center;
+				align-items: center;
+				padding: 0 12px 12px;
+				gap: 12px;
+				width: auto;
+			}
+		`;
 	}
 }
 
-customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
 customElements.define('service-call', ServiceCallTileFeature);
 
 window.customTileFeatures = window.customTileFeatures || [];
