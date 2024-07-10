@@ -1867,16 +1867,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				display: flex;
 				align-items: center;
 				pointer-events: none;
+			}
 
-				.handle {
-					cursor: move;
-					cursor: grab;
-					padding-right: 8px;
-					padding-inline-end: 8px;
-					padding-inline-start: initial;
-					direction: var(--direction);
-					pointer-events: all;
-				}
+			.handle {
+				display: flex;
+				align-items: center;
+				cursor: move;
+				cursor: grab;
+				padding-right: 8px;
+				padding-inline-end: 8px;
+				padding-inline-start: initial;
+				direction: var(--direction);
+				pointer-events: all;
 			}
 
 			.feature-list-item-content {
