@@ -39,6 +39,7 @@
 		"eslint-plugin-prettier": "latest",
 		"lint-staged": "latest",
 		"lit-css-loader": "latest",
+		"minify-html-literals-loader": "latest",
 		"prettier": "latest",
 		"ts-loader": "latest",
 		"typescript": "latest",
