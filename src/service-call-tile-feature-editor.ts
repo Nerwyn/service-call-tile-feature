@@ -139,36 +139,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	editEntry(e: CustomEvent) {
-		this.yamlString = undefined;
-		const i = (
-			e.currentTarget as unknown as CustomEvent & Record<'index', number>
-		).index;
-
-		this.actionsTabIndex =
-			i > -1 &&
-			(this.renderTemplate(
-				this.config.entries[i].momentary_start_action?.action ?? 'none',
-				this.getEntryContext(this.config.entries[i]),
-			) != 'none' ||
-				this.renderTemplate(
-					this.config.entries[i].momentary_end_action?.action ??
-						'none',
-					this.getEntryContext(this.config.entries[i]),
-				) != 'none')
-				? 1
-				: 0;
-		this.styleTabIndex = 0;
+		const i = (e.currentTarget as unknown as Record<'index', number>).index;
+		this.editEntryOption(i);
 		this.optionEditorIndex = -1;
 		this.spinboxTabIndex = 1;
 		this.entryEditorIndex = i;
 	}
 
 	editOption(e: CustomEvent) {
-		this.yamlString = undefined;
-		const i = (
-			e.currentTarget as unknown as CustomEvent & Record<'index', number>
-		).index;
+		const i = (e.currentTarget as unknown as Record<'index', number>).index;
+		this.editEntryOption(i);
+		this.optionEditorIndex = i;
+	}
 
+	editEntryOption(i: number) {
+		this.yamlString = undefined;
 		this.actionsTabIndex =
 			i > -1 &&
 			(this.renderTemplate(
@@ -183,7 +168,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				? 1
 				: 0;
 		this.styleTabIndex = 0;
-		this.optionEditorIndex = i;
 	}
 
 	removeEntry(e: CustomEvent) {
