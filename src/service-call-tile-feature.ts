@@ -8,6 +8,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { renderTemplate } from 'ha-nunjucks';
 
+import { ServiceCallTileFeatureEditor } from './service-call-tile-feature-editor';
 import {
 	IConfig,
 	IEntry,
@@ -332,6 +333,7 @@ class ServiceCallTileFeature extends LitElement {
 }
 
 customElements.define('service-call', ServiceCallTileFeature);
+customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
 
 window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({

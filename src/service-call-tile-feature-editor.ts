@@ -1997,5 +1997,3 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 }
-
-customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
