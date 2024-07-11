@@ -273,22 +273,26 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
 		return this.renderTemplate(
 			`
-			--tooltip-label: "${
-				entry.tooltip_style?.['--tooltip-label'] ??
-				entry.style?.['--tooltip-label'] ??
-				'{{ value }}{{ unit }}'
-			}";
-			--tooltip-transform: ${
-				entry.tooltip_style?.['--tooltip-transform'] ??
-				entry.style?.['--tooltip-transform'] ??
-				'translate(var(--thumb-offset), -35px)'
-			};
-			--tooltip-display: ${
-				entry.tooltip_style?.['--tooltip-display'] ??
-				entry.style?.['--tooltip-display'] ??
-				'initial'
-			};
-		`,
+			<style>
+				:host {
+					--tooltip-label: "${
+						entry.tooltip_style?.['--tooltip-label'] ??
+						entry.style?.['--tooltip-label'] ??
+						'{{ value }}{{ unit }}'
+					}";
+					--tooltip-transform: ${
+						entry.tooltip_style?.['--tooltip-transform'] ??
+						entry.style?.['--tooltip-transform'] ??
+						'translate(var(--thumb-offset), -35px)'
+					};
+					--tooltip-display: ${
+						entry.tooltip_style?.['--tooltip-display'] ??
+						entry.style?.['--tooltip-display'] ??
+						'initial'
+					};
+				}
+			</style>
+			`,
 			context,
 		);
 	}
@@ -391,11 +395,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
-			<style>
-				:host {
-					${this.buildTooltipStyle(undefined, context)}
-				}
-			</style>
+			${this.buildTooltipStyle(undefined, context)}
 			${this.buildStyles(undefined, context)}
 		`;
 	}
@@ -620,7 +620,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					transition: opacity 540ms ease-in-out 0s;
 				}
 				.tooltip::after {
-					content: var(--tooltip-label);
+					content: var(--tooltip-label, 0);
 				}
 			`,
 		];
