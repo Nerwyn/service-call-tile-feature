@@ -217,25 +217,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltip(entry: IEntry = this.entry, context: object) {
-		const style: StyleInfo = this.buildStyle(
-			{
-				...entry.tooltip_style,
-				'--tooltip-label': `"${
-					entry.tooltip_style?.['--tooltip-label'] ??
-					entry.style?.['--tooltip-label'] ??
-					`{{ value }}{{ unit }}`
-				}"`,
-				'--tooltip-transform':
-					entry.tooltip_style?.['--tooltip-transform'] ??
-					entry.style?.['--tooltip-transform'] ??
-					'translate(var(--thumb-offset), -35px)',
-				'--tooltip-display':
-					entry.tooltip_style?.['--tooltip-display'] ??
-					entry.style?.['--tooltip-display'] ??
-					'initial',
-			},
-			context,
-		);
+		const style: StyleInfo = this.buildStyle(entry.tooltip_style, context);
 
 		// Deprecated tooltip hide/show field
 		if ('tooltip' in entry) {
@@ -286,6 +268,29 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				@contextmenu=${this.onContextMenu}
 			/>
 		`;
+	}
+
+	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
+		return this.renderTemplate(
+			`
+			--tooltip-label: "${
+				entry.tooltip_style?.['--tooltip-label'] ??
+				entry.style?.['--tooltip-label'] ??
+				'{{ value }}{{ unit }}'
+			}";
+			--tooltip-transform: ${
+				entry.tooltip_style?.['--tooltip-transform'] ??
+				entry.style?.['--tooltip-transform'] ??
+				'translate(var(--thumb-offset), -35px)'
+			};
+			--tooltip-display: ${
+				entry.tooltip_style?.['--tooltip-display'] ??
+				entry.style?.['--tooltip-display'] ??
+				'initial'
+			};
+		`,
+			context,
+		);
 	}
 
 	render() {
@@ -386,6 +391,11 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
+			<style>
+				:host {
+					${this.buildTooltipStyle(undefined, context)}
+				}
+			</style>
 			${this.buildStyles(undefined, context)}
 		`;
 	}
@@ -402,9 +412,6 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				:host {
 					overflow: visible;
 					pointer-events: none;
-
-					--color: var(--tile-color);
-					--opacity: 1;
 				}
 
 				.slider {
@@ -440,15 +447,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
-					border-color: var(--color);
+					border-color: var(--color, var(--tile-color));
 					background: #ffffff;
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
-							var(--color),
-						-4px 0 0 6px var(--color)
+							var(--color, var(--tile-color)),
+						-4px 0 0 6px var(--color, var(--tile-color))
 					);
 				}
 
@@ -460,15 +467,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
-					border-color: var(--color);
+					border-color: var(--color, var(--tile-color));
 					background: #ffffff;
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
-							var(--color),
-						-4px 0 0 6px var(--color)
+							var(--color, var(--tile-color)),
+						-4px 0 0 6px var(--color, var(--tile-color))
 					);
 				}
 
@@ -477,14 +484,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					height: 40px;
 					width: var(--thumb-width, 16px);
-					background: var(--color);
+					background: var(--color, var(--tile-color));
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
-							var(--color)
+							var(--color, var(--tile-color))
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -494,15 +501,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-moz-appearance: none;
 					height: 40px;
 					width: var(--thumb-width, 16px);
-					border-color: var(--color);
-					background: var(--color);
+					border-color: var(--color, var(--tile-color));
+					background: var(--color, var(--tile-color));
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
-							var(--color)
+							var(--color, var(--tile-color))
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -518,7 +525,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 12px);
 					background: #8a8c99;
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						0 7px 0 0 #ffffff,
@@ -537,7 +544,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					border-radius: var(--thumb-border-radius, 12px);
 					background: #8a8c99;
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						0 7px 0 0 #ffffff,
@@ -550,14 +557,14 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-webkit-appearance: none;
 					height: 40px;
 					width: var(--thumb-width, 40px);
-					background: var(--color);
+					background: var(--color, var(--tile-color));
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
-							var(--color)
+							var(--color, var(--tile-color))
 					);
 					border-radius: var(--thumb-border-radius, 40px);
 				}
@@ -567,15 +574,15 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					-moz-appearance: none;
 					height: 40px;
 					width: var(--thumb-width, 40px);
-					border-color: var(--color);
-					background: var(--color);
+					border-color: var(--color, var(--tile-color));
+					background: var(--color, var(--tile-color));
 					cursor: pointer;
-					opacity: var(--opacity);
+					opacity: var(--opacity, 1);
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
-							var(--color)
+							var(--color, var(--tile-color))
 					);
 					border-radius: var(--thumb-border-radius, 40px);
 				}

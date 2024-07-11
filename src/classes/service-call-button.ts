@@ -234,7 +234,6 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
-					--opacity: 0.2;
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
 						0.08
@@ -271,19 +270,28 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					left: 0px;
 					height: 100%;
 					width: 100%;
-					background: var(--color, var(--disabled-color));
-					opacity: var(--opacity);
+					background: var(
+						--color,
+						var(--state-inactive-color, var(--disabled-color))
+					);
+					opacity: var(--opacity, 0.2);
 				}
 
 				@media (hover: hover) {
 					.option:hover {
 						opacity: var(--hover-opacity) !important;
-						background-color: var(--color, var(--disabled-color));
+						background-color: var(
+							--color,
+							var(--state-inactive-color, var(--disabled-color))
+						);
 					}
 				}
 				.option:active {
 					opacity: var(--hover-opacity) !important;
-					background-color: var(--color, var(--disabled-color));
+					background-color: var(
+						--color,
+						var(--state-inactive-color, var(--disabled-color))
+					);
 				}
 			`,
 		];

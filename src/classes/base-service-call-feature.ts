@@ -591,6 +591,7 @@ export class BaseServiceCallFeature extends LitElement {
 		let icon = html``;
 		if (entry.icon) {
 			icon = html`<ha-icon
+				class="icon"
 				.icon=${this.renderTemplate(entry.icon as string, context)}
 				style=${styleMap(
 					this.buildStyle(entry.icon_style ?? {}, context),
@@ -685,15 +686,7 @@ export class BaseServiceCallFeature extends LitElement {
 				color: inherit;
 				flex-basis: 100%;
 
-				--color: unset;
-				--icon-color: inherit;
-				--icon-filter: none;
 				--mdc-icon-size: 20px;
-				--label-color: inherit;
-				--label-filter: none;
-				--background: var(--color, var(--state-inactive-color));
-				--background-height: 100%;
-				--background-opacity: 0.2;
 			}
 
 			.container {
@@ -705,21 +698,24 @@ export class BaseServiceCallFeature extends LitElement {
 			.background {
 				position: absolute;
 				width: inherit;
-				height: var(--background-height);
-				background: var(--background, var(--disabled-color));
-				opacity: var(--background-opacity);
+				height: var(--background-height, 100%);
+				background: var(
+					--color,
+					var(--state-inactive-color, var(--disabled-color))
+				);
+				opacity: var(--background-opacity, 0.2);
 				z-index: 1;
 			}
 
-			ha-icon {
+			.icon {
 				position: relative;
 				pointer-events: none;
 				display: inline-flex;
 				flex-flow: column;
 				place-content: center;
 				z-index: 2;
-				color: var(--icon-color);
-				filter: var(--icon-filter);
+				color: var(--icon-color, inherit);
+				filter: var(--icon-filter, inherit);
 			}
 
 			.label {
@@ -736,8 +732,8 @@ export class BaseServiceCallFeature extends LitElement {
 				font-size: 12px;
 				font-weight: bold;
 				z-index: 2;
-				color: var(--label-color);
-				filter: var(--label-filter);
+				color: var(--label-color, inherit);
+				filter: var(--label-filter, none);
 			}
 		`;
 	}
