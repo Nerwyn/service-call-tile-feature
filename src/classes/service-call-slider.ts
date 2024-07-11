@@ -271,26 +271,30 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
+		const tooltipLabel = this.renderTemplate(
+			entry.tooltip_style?.['--tooltip-label'] ??
+				entry.style?.['--tooltip-label'] ??
+				'{{ value }}{{ unit }}',
+			context,
+		);
+		const tooltipTransform = this.renderTemplate(
+			entry.tooltip_style?.['--tooltip-transform'] ??
+				entry.style?.['--tooltip-transform'] ??
+				'translate(var(--thumb-offset), -35px)',
+			context,
+		);
+		const tooltipDisplay = this.renderTemplate(
+			entry.tooltip_style?.['--tooltip-display'] ??
+				entry.style?.['--tooltip-display'] ??
+				'initial',
+			context,
+		);
+
 		return html`<style>
 			:host {
-				--tooltip-label: '${this.renderTemplate(
-					entry.tooltip_style?.['--tooltip-label'] ??
-						entry.style?.['--tooltip-label'] ??
-						'{{ value }}{{ unit }}',
-					context,
-				)}';
-				--tooltip-transform: ${this.renderTemplate(
-					entry.tooltip_style?.['--tooltip-transform'] ??
-						entry.style?.['--tooltip-transform'] ??
-						'translate(var(--thumb-offset), -35px)',
-					context,
-				)};
-				--tooltip-display: ${this.renderTemplate(
-					entry.tooltip_style?.['--tooltip-display'] ??
-						entry.style?.['--tooltip-display'] ??
-						'initial',
-					context,
-				)};
+				--tooltip-label: '${tooltipLabel}';
+				--tooltip-transform: ${tooltipTransform};
+				--tooltip-display: ${tooltipDisplay};
 			}
 		</style>`;
 	}
