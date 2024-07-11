@@ -68,7 +68,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						this.currentValue = end;
 						this.setThumbOffset();
 					}
-				}, 10);
+				}, 1);
 			} else if (start < end) {
 				this.sliderOn = true;
 				this.intervalId = setInterval(() => {
@@ -82,7 +82,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						this.currentValue = end;
 						this.setThumbOffset();
 					}
-				}, 10);
+				}, 1);
 			} else {
 				this.currentValue = end;
 			}
