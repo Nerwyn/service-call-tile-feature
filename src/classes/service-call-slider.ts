@@ -618,7 +618,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					transition: opacity 540ms ease-in-out 0s;
 				}
 				.tooltip::after {
-					content: var(--tooltip-label, 0);
+					content: var(--tooltip-label, '0');
 				}
 			`,
 		];
