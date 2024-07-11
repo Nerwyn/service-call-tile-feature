@@ -270,31 +270,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		`;
 	}
 
-	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
-		const tooltipLabel = this.renderTemplate(
-			entry.tooltip_style?.['--tooltip-label'] ??
-				entry.style?.['--tooltip-label'] ??
-				'{{ value }}{{ unit }}',
-			context,
-		);
-		const tooltipTransform = this.renderTemplate(
-			entry.tooltip_style?.['--tooltip-transform'] ??
-				entry.style?.['--tooltip-transform'] ??
-				'translate(var(--thumb-offset), -35px)',
-			context,
-		);
-		const tooltipDisplay = this.renderTemplate(
-			entry.tooltip_style?.['--tooltip-display'] ??
-				entry.style?.['--tooltip-display'] ??
-				'initial',
-			context,
-		);
-
+	buildTooltipStyle(context: object) {
 		return html`<style>
 			:host {
-				--tooltip-label: '${tooltipLabel}';
-				--tooltip-transform: ${tooltipTransform};
-				--tooltip-display: ${tooltipDisplay};
+				--tooltip-label: '${this.renderTemplate(
+					'{{ value }}{{ unit }}',
+					context,
+				)}';
 			}
 		</style>`;
 	}
@@ -397,7 +379,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
-			${this.buildTooltipStyle(undefined, context)}
+			${this.buildTooltipStyle(context)}
 			${this.buildStyles(undefined, context)}
 		`;
 	}
@@ -607,7 +589,10 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					height: 20px;
 					width: fit-content;
 					line-height: 20px;
-					transform: var(--tooltip-transform);
+					transform: var(
+						--tooltip-transform,
+						translate(var(--thumb-offset), -35px)
+					);
 					display: var(--tooltip-display);
 				}
 				.faded-out {
