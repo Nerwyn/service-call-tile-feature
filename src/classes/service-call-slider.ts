@@ -445,7 +445,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - (var(--thumb-width, 8px) / 2)) 0 0 100vw
+						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
 							var(--color),
 						-4px 0 0 6px var(--color)
 					);
@@ -465,7 +465,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					opacity: var(--opacity);
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - (var(--thumb-width, 4px) / 2)) 0 0 100vw
+						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
 							var(--color),
 						-4px 0 0 6px var(--color)
 					);
