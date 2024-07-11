@@ -271,9 +271,8 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
-		return this.renderTemplate(
-			`
-			<style>
+		return html`${this.renderTemplate(
+			`<style>
 				:host {
 					--tooltip-label: "${
 						entry.tooltip_style?.['--tooltip-label'] ??
@@ -291,10 +290,9 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 						'initial'
 					};
 				}
-			</style>
-			`,
+			</style>`,
 			context,
-		);
+		)}`;
 	}
 
 	render() {
