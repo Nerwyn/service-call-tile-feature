@@ -271,28 +271,28 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 	}
 
 	buildTooltipStyle(entry: IEntry = this.entry, context: object) {
-		return html`${this.renderTemplate(
-			`<style>
-				:host {
-					--tooltip-label: "${
-						entry.tooltip_style?.['--tooltip-label'] ??
+		return html`<style>
+			:host {
+				--tooltip-label: '${this.renderTemplate(
+					entry.tooltip_style?.['--tooltip-label'] ??
 						entry.style?.['--tooltip-label'] ??
-						'{{ value }}{{ unit }}'
-					}";
-					--tooltip-transform: ${
-						entry.tooltip_style?.['--tooltip-transform'] ??
+						'{{ value }}{{ unit }}',
+					context,
+				)}';
+				--tooltip-transform: ${this.renderTemplate(
+					entry.tooltip_style?.['--tooltip-transform'] ??
 						entry.style?.['--tooltip-transform'] ??
-						'translate(var(--thumb-offset), -35px)'
-					};
-					--tooltip-display: ${
-						entry.tooltip_style?.['--tooltip-display'] ??
+						'translate(var(--thumb-offset), -35px)',
+					context,
+				)};
+				--tooltip-display: ${this.renderTemplate(
+					entry.tooltip_style?.['--tooltip-display'] ??
 						entry.style?.['--tooltip-display'] ??
-						'initial'
-					};
-				}
-			</style>`,
-			context,
-		)}`;
+						'initial',
+					context,
+				)};
+			}
+		</style>`;
 	}
 
 	render() {
