@@ -5,6 +5,7 @@ import { IActions } from './IActions';
 export interface IConfig {
 	type: string;
 	style?: StyleInfo;
+	styles?: string;
 	entries: IEntry[];
 }
 

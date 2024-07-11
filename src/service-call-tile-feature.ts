@@ -314,7 +314,21 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		return html`<div class="row">${row}</div>`;
+		let styles = this.config.styles
+			? html`
+					<style>
+						:host {
+							${renderTemplate(
+							this.hass,
+							this.config.styles,
+							context,
+						)}
+						}
+					</style>
+			  `
+			: '';
+
+		return html`<div class="row">${row}${styles}</div>`;
 	}
 
 	static get styles() {
