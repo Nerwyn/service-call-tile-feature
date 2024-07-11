@@ -314,7 +314,7 @@ class ServiceCallTileFeature extends LitElement {
 			}
 		}
 
-		let styles = this.config.styles
+		const styles = this.config.styles
 			? html`
 					<style>
 						:host {
