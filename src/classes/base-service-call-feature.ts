@@ -564,6 +564,18 @@ export class BaseServiceCallFeature extends LitElement {
 		return style;
 	}
 
+	buildStyles(entry: IEntry = this.entry, context?: object) {
+		return entry.styles
+			? html`
+					<style>
+						:host {
+							${this.renderTemplate(entry.styles, context)}
+						}
+					</style>
+			  `
+			: '';
+	}
+
 	buildBackground(entry: IEntry = this.entry, context?: object) {
 		return html`
 			<div

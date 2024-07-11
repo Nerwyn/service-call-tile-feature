@@ -262,7 +262,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		return html`
 			${this.buildBackground()}${this.buildButton('decrement')}
 			${this.buildIcon()}${this.buildLabel()}
-			${this.buildButton('increment')}
+			${this.buildButton('increment')}${this.buildStyles()}
 		`;
 	}
 

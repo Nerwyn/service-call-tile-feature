@@ -226,7 +226,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			${ripple}
 		</button>`;
 
-		return html`${button}${this.buildIcon()}${this.buildLabel()}`;
+		return html`${button}${this.buildIcon()}${this.buildLabel()}${this.buildStyles()}`;
 	}
 
 	static get styles() {

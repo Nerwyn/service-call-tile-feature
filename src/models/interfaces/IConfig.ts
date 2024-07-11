@@ -27,6 +27,7 @@ export interface IEntry
 
 	haptics?: boolean;
 
+	styles?: string;
 	style?: StyleInfo;
 	background_style?: StyleInfo;
 	icon_style?: StyleInfo;

@@ -58,7 +58,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			);
 		}
 
-		return html`${selector}`;
+		return html`${selector}${this.buildStyles()}`;
 	}
 
 	static get styles() {

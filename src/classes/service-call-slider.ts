@@ -386,6 +386,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
+			${this.buildStyles(undefined, context)}
 		`;
 	}
 
