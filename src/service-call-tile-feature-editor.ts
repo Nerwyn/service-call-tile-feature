@@ -1316,16 +1316,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (!this.hass) {
 			return html``;
 		}
-		console.log('Rendering!');
 
 		if (!this.autofillCooldown) {
-			console.log('Autofilling!');
 			let config = this.updateDeprecatedFields(this.config);
 			config = this.autofillDefaultFields(config);
 			this.configChanged(config);
 			this.autofillCooldown = true;
 			setTimeout(() => (this.autofillCooldown = false), 2000);
-			console.log('Autofill complete!');
 		}
 
 		let editor: TemplateResult<1>;
@@ -1940,7 +1937,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		for (const field in deprecatedStyles) {
 			if (entry[field as keyof IEntry]) {
-				let styles = '';
+				let styles = '\n';
 				const style = entry[field as keyof IEntry] as Record<
 					string,
 					string
