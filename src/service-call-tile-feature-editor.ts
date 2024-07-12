@@ -1818,7 +1818,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 		if (updatedConfig['show' as keyof IConfig]) {
 			const styles = `\n{% if not ${(
-				updatedConfig['hide' as keyof IConfig] as string
+				updatedConfig['show' as keyof IConfig] as string
 			)
 				.replace('{{', '{%')
 				.replace('}}', '%}')} %}
