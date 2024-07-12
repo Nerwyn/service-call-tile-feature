@@ -1912,7 +1912,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			if (entry[field as keyof IEntry]) {
 				styles += `\n${deprecatedStyleKeys[field]}: ${
 					entry[field as keyof IEntry]
-				} !important !important;`;
+				} !important;`;
 				delete entry[field as keyof IEntry];
 			}
 		}
