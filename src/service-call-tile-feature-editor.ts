@@ -1254,7 +1254,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildEntryGuiEditor() {
 		let entryGuiEditor: TemplateResult<1>;
-		switch (this.activeEntry?.type) {
+		switch (this.config.entries[this.entryIndex].type) {
 			case 'slider':
 				entryGuiEditor = this.buildSliderGuiEditor();
 				break;
