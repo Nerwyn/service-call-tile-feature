@@ -64,10 +64,12 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 				.option {
 					--opacity: 0;
+					--background-opacity: 0;
 				}
 
 				.selected-option {
 					--opacity: 1;
+					--background-opacity: 1;
 					--hover-opacity: 1;
 				}
 			`,

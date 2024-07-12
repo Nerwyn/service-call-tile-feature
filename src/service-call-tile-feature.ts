@@ -117,7 +117,7 @@ class ServiceCallTileFeature extends LitElement {
 			) as string;
 			context.config.attribute = renderTemplate(
 				this.hass,
-				entry.value_attribute ?? '',
+				entry.value_attribute ?? 'state',
 				context,
 			) as string;
 
