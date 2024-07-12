@@ -288,6 +288,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
+
+		if (this.entryEditorIndex == -1 && key == 'styles') {
+			this.configChanged({ styles: value } as IConfig);
+			return;
+		}
+
 		const keysWithDefaults: Record<
 			string,
 			Record<string, string | number>
@@ -1320,7 +1326,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildSelector('CSS Styles', 'styles', {
 						text: { multiline: true },
 					})}
-					${this.buildYamlEditor()}${this.buildErrorPanel()}
+					${this.buildErrorPanel()}
 				`;
 				break;
 			default:
