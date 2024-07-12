@@ -1803,7 +1803,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				'style' as keyof IConfig
 			] as unknown as Record<string, string>;
 			for (const field in style) {
-				styles += `\n${field}: ${style[field]}; !important`;
+				styles += `\n${field}: ${style[field]} !important;`;
 			}
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['style' as keyof IConfig];
@@ -1811,13 +1811,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (updatedConfig['hide' as keyof IConfig]) {
 			const styles = `display: {{ 'none' if ${
 				updatedConfig['hide' as keyof IConfig]
-			} else 'initial' }}; !important`;
+			} else 'initial' }} !important;`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 		}
 		if (updatedConfig['show' as keyof IConfig]) {
 			const styles = `display: {{ 'initial' if ${
 				updatedConfig['hide' as keyof IConfig]
-			} else 'none' }}; !important`;
+			} else 'none' }} !important;`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 		}
 		return updatedConfig;
@@ -1912,7 +1912,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			if (entry[field as keyof IEntry]) {
 				styles += `\n${deprecatedStyleKeys[field]}: ${
 					entry[field as keyof IEntry]
-				} !important; !important`;
+				} !important !important;`;
 				delete entry[field as keyof IEntry];
 			}
 		}
@@ -1925,7 +1925,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				string
 			>;
 			for (const field in style) {
-				styles += `\n${field}: ${style[field]}; !important`;
+				styles += `\n${field}: ${style[field]} !important;`;
 			}
 			entry.styles = styles + (entry.styles ?? '');
 			delete entry['style' as keyof IEntry];
@@ -1947,7 +1947,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				>;
 				styles = `${deprecatedStyles[field]}: {`;
 				for (const key in style) {
-					styles += `  \n${key}: ${style[key]}; !important`;
+					styles += `  \n${key}: ${style[key]} !important;`;
 				}
 				if (
 					field == 'tooltip_style' &&
@@ -1955,7 +1955,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				) {
 					styles += `  display: ${
 						entry['tooltip' as keyof IEntry] ? 'initial' : 'none'
-					}; !important`;
+					} !important;`;
 					delete entry['tooltip' as keyof IEntry];
 				}
 				styles += '\n}';
