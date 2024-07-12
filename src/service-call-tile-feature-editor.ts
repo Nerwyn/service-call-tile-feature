@@ -138,6 +138,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
+		this.activeEntry = this.config.entries[this.entryEditorIndex] ?? {};
 
 		this.actionsTabIndex =
 			i > -1 &&
@@ -265,6 +266,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const yaml = e.detail.value;
 		if (yaml != this.yaml) {
 			this.yaml = yaml;
+		}
+	}
+
+	handleStyleChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const css = e.detail.value;
+		if (this.entryEditorIndex > -1) {
+			if (css != this.activeEntry?.styles) {
+				this.entryChanged({ styles: css });
+			}
+		} else {
+			if (css != this.config.styles) {
+				this.configChanged({
+					...this.config,
+					styles: css,
+				});
+			}
 		}
 	}
 
@@ -608,10 +626,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					${appearanceOptions}
-					${this.buildSelector('CSS Styles', 'styles', {
-						text: { multiline: true },
-					})}
+					${appearanceOptions} ${this.buildCodeEditor('css')}
 				</div>
 			</ha-expansion-panel>
 		`;
@@ -980,9 +995,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
 				${this.buildEntryList('option')}${this.buildAddOptionButton()}
-				${this.buildSelector('CSS Styles', 'styles', {
-					text: { multiline: true },
-				})}`;
+				${this.buildCodeEditor('css')}`;
 				break;
 			default:
 				this.activeEntry =
@@ -1231,10 +1244,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildEntryGuiEditor() {
-		this.activeEntry = this.config.entries[this.entryEditorIndex] ?? {};
 		this.activeEntryType = 'entry';
 		let entryGuiEditor: TemplateResult<1>;
-		switch (this.activeEntry.type) {
+		switch (this.activeEntry?.type) {
 			case 'slider':
 				entryGuiEditor = this.buildSliderGuiEditor();
 				break;
@@ -1252,18 +1264,34 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
 	}
 
-	buildYamlEditor() {
+	buildCodeEditor(mode: string) {
+		let value: string;
+		let handler: (e: CustomEvent) => void;
+		switch (mode) {
+			case 'css':
+				value =
+					(this.entryEditorIndex > -1
+						? this.activeEntry?.styles
+						: this.config.styles) ?? '';
+				handler = this.handleStyleChanged;
+				break;
+			case 'yaml':
+			default:
+				value = this.yaml;
+				handler = this.handleYamlChanged;
+				break;
+		}
 		return html`
 			<div class="yaml-editor">
 				<ha-code-editor
-					mode="yaml"
+					mode="${mode}"
 					autofocus
 					autocomplete-entities
 					autocomplete-icons
 					.hass=${this.hass}
-					.value=${this.yaml}
+					.value=${value}
 					.error=${Boolean(this.errors)}
-					@value-changed=${this.handleYamlChanged}
+					@value-changed=${handler}
 					@keydown=${(e: CustomEvent) => e.stopPropagation()}
 					dir="ltr"
 				></ha-code-editor>
@@ -1276,7 +1304,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.guiMode) {
 			editor = this.buildEntryGuiEditor();
 		} else {
-			editor = this.buildYamlEditor();
+			editor = this.buildCodeEditor('yaml');
 		}
 
 		return html`
@@ -1328,10 +1356,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case -1:
 				editor = html`
 					${this.buildEntryList()}${this.buildAddEntryButton()}
-					${this.buildSelector('CSS Styles', 'styles', {
-						text: { multiline: true },
-					})}
-					${this.buildErrorPanel()}
+					${this.buildCodeEditor('css')}${this.buildErrorPanel()}
 				`;
 				break;
 			default:
