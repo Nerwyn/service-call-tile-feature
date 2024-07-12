@@ -1,6 +1,5 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { StyleInfo } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
 import { HomeAssistant } from 'custom-card-helpers';
@@ -28,7 +27,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	@state() entryEditorIndex: number = -1;
 	@state() actionsTabIndex: number = 0;
-	@state() styleTabIndex: number = 0;
 	@state() optionEditorIndex: number = -1;
 	@state() spinboxTabIndex: number = 1;
 
@@ -36,8 +34,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() errors?: string[];
 
 	yamlString?: string;
-	yamlKey?: string;
-	styleFields: string[] = [];
 
 	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
@@ -157,7 +153,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				) != 'none')
 				? 1
 				: 0;
-		this.styleTabIndex = 0;
 		this.optionEditorIndex = -1;
 		this.spinboxTabIndex = 1;
 		this.entryEditorIndex = i;
@@ -191,7 +186,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				) != 'none')
 				? 1
 				: 0;
-		this.styleTabIndex = 0;
 		this.optionEditorIndex = i;
 	}
 
@@ -243,32 +237,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
-		if (this.guiMode) {
-			this.yamlKey = 'entry';
-		} else {
-			this.yamlKey = 'style';
-		}
 		this.yamlString = undefined;
 		this.guiMode = !this.guiMode;
 	}
 
 	get yaml(): string {
-		if (this.yamlString == undefined) {
-			let yamlObj;
-			switch (this.yamlKey) {
-				case 'root':
-					yamlObj = this.config.style ?? {};
-					break;
-				case 'entry':
-					yamlObj = this.config.entries[this.entryEditorIndex];
-					break;
-				default:
-					yamlObj = this.activeEntry?.[
-						this.yamlKey as keyof IEntry
-					] as StyleInfo;
-					break;
-			}
-			const yaml = dump(yamlObj);
+		if (this.yamlString == undefined && this.entryEditorIndex > -1) {
+			const yaml = dump(this.config.entries[this.entryEditorIndex]);
 			this.yamlString = yaml.trim() == '{}' ? '' : yaml;
 		}
 		return this.yamlString || '';
@@ -277,30 +252,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	set yaml(yaml: string | undefined) {
 		this.yamlString = yaml;
 		try {
-			let updatedField: IConfig | IEntry[] | IEntry;
-			switch (this.yamlKey) {
-				case 'root':
-					updatedField = {
-						style: load(this.yaml),
-					} as IConfig;
-					this.configChanged(updatedField);
-					break;
-				case 'entry':
-					updatedField = structuredClone(this.config.entries);
-					updatedField[this.entryEditorIndex] = load(
-						this.yaml,
-					) as IEntry;
-					this.entriesChanged(updatedField);
-					break;
-				default:
-					updatedField = {
-						[this.yamlKey as keyof IEntry]: load(
-							this.yaml,
-						) as StyleInfo,
-					};
-					this.entryChanged(updatedField);
-					break;
-			}
+			const updatedField = structuredClone(this.config.entries);
+			updatedField[this.entryEditorIndex] = load(this.yaml) as IEntry;
+			this.entriesChanged(updatedField);
 			this.errors = undefined;
 		} catch (e) {
 			this.errors = [(e as Error).message];
@@ -316,7 +270,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleSpinboxTabSelected(e: CustomEvent) {
-		this.yamlString = undefined;
 		const i = e.detail.value;
 		if (this.spinboxTabIndex == i) {
 			return;
@@ -330,16 +283,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			return;
 		}
 		this.actionsTabIndex = i;
-	}
-
-	handleStyleTabSelected(e: CustomEvent) {
-		this.yamlString = undefined;
-		const i = e.detail.value;
-		if (this.styleTabIndex == i) {
-			return;
-		}
-		this.yamlKey = this.styleFields[i];
-		this.styleTabIndex = i;
 	}
 
 	handleSelectorChange(e: CustomEvent) {
@@ -576,31 +519,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildStyleEditor(fields: Record<string, string>) {
-		this.yamlKey = ['style'].concat(Object.keys(fields))[
-			this.styleTabIndex
-		] as keyof IEntry;
-		this.styleFields = ['style'].concat(Object.keys(fields));
-		return html`
-			<div>
-				<div class="style-header">CSS Styles</div>
-				<paper-tabs
-					scrollable
-					hide-scroll-buttons
-					.selected=${this.styleTabIndex}
-					@selected-changed=${this.handleStyleTabSelected}
-				>
-					<paper-tab>Outer</paper-tab>
-					${Object.keys(fields).map(
-						(field) =>
-							html`<paper-tab>${fields[field]}</paper-tab>`,
-					)}
-				</paper-tabs>
-				${this.buildYamlEditor()}
-			</div>
-		`;
-	}
-
 	buildSelector(
 		label: string,
 		key: keyof IEntry,
@@ -685,6 +603,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">${appearanceOptions}</div>
+				${this.buildSelector('CSS Styles', 'styles', {
+					text: { multiline: true },
+				})}
 			</ha-expansion-panel>
 		`;
 	}
@@ -915,11 +836,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${this.buildMainFeatureOptions()}
 			${this.buildAppearancePanel(html`
 				${this.buildCommonAppearanceOptions()}
-				${this.buildStyleEditor({
-					background_style: 'Background',
-					icon_style: 'Icon',
-					label_style: 'Label',
-				})}
 			`)}
 			${this.buildActionsPanel(actionSelectors)}
 		`;
@@ -1026,13 +942,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					},
 					'default',
 				)}
-				${this.buildStyleEditor({
-					background_style: 'Background',
-					icon_style: 'Icon',
-					label_style: 'Label',
-					slider_style: 'Slider',
-					tooltip_style: 'Tooltip',
-				})}
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
@@ -1064,7 +973,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
 				${this.buildEntryList('option')}${this.buildAddOptionButton()}
-				${this.buildStyleEditor({ background_style: 'Background' })}`;
+				${this.buildSelector('CSS Styles', 'styles', {
+					text: { multiline: true },
+				})}`;
 				break;
 			default:
 				this.activeEntry =
@@ -1301,12 +1212,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						`,
 					)}
 					${this.buildAppearancePanel(
-						html`${this.buildCommonAppearanceOptions()}
-						${this.buildStyleEditor({
-							background_style: 'Background',
-							icon_style: 'Icon',
-							label_style: 'Label',
-						})}`,
+						this.buildCommonAppearanceOptions(),
 					)}
 					${this.buildActionsPanel(actionSelectors)}
 				`;
@@ -1409,10 +1315,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let editor: TemplateResult<1>;
 		switch (this.entryEditorIndex) {
 			case -1:
-				this.yamlKey = 'root';
 				editor = html`
 					${this.buildEntryList()}${this.buildAddEntryButton()}
-					<div class="root-style-header">CSS Styles</div>
+					${this.buildSelector('CSS Styles', 'styles', {
+						text: { multiline: true },
+					})}
 					${this.buildYamlEditor()}${this.buildErrorPanel()}
 				`;
 				break;
@@ -2014,16 +1921,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				gap: 24px 8px;
 			}
 
-			.style-header {
-				font-size: 16px;
-				font-weight: 500;
-				padding: 0 4px;
-			}
-			.root-style-header {
-				font-size: 16px;
-				font-weight: 500;
-				padding: 4px 12px;
-			}
 			.entry-list-header {
 				font-size: 20px;
 				font-weight: 500;
