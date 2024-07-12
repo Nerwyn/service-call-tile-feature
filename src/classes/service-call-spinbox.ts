@@ -1,6 +1,5 @@
 import { CSSResult, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
 import { BaseServiceCallFeature } from './base-service-call-feature';
@@ -156,27 +155,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				actions?.momentary_end_action?.action ?? 'none',
 			) != 'none'
 		) {
-			const label_style = {
-				'font-size': '14px',
-				'font-weight': '500',
-				opacity: '0.77',
-			};
-			actions.label_style = {
-				...label_style,
-				...actions.label_style,
-			};
-
-			const context = {
-				config: {
-					...actions,
-					entity: this.renderTemplate(actions.entity_id ?? ''),
-					attribute: this.renderTemplate(
-						actions.value_attribute ?? '',
-					),
-					operator: operator,
-				},
-			};
-
 			return html`
 				<service-call-button
 					id=${operator}
@@ -184,15 +162,12 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					.entry=${actions}
 					.shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
-					style=${styleMap(
-						this.buildStyle(actions.style ?? {}, context),
-					)}
 				/>
 			`;
 		} else {
 			return html`
 				<button
-					class="button"
+					class="button operator"
 					id="${operator}"
 					@mousedown=${this.onMouseDown}
 					@mouseup=${this.onMouseUp}
@@ -201,11 +176,6 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					@touchend=${this.onTouchEnd}
 					@touchmove=${this.onTouchMove}
 					@contextmenu=${this.onContextMenu}
-					style=${styleMap(
-						this.buildStyle(
-							actions.background_style ?? actions.style ?? {},
-						),
-					)}
 				>
 					${this.buildIcon(actions)}${super.buildLabel(actions)}
 				</button>
@@ -311,6 +281,12 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 
 				.button::before {
 					display: none !important;
+				}
+
+				operator {
+					font-size: 14px;
+					font-weight: 500;
+					opacity: 0.77;
 				}
 
 				#decrement {

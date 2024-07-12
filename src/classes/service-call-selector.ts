@@ -1,6 +1,5 @@
 import { CSSResult, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 import './service-call-button';
@@ -35,13 +34,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			if (this.value == optionName && this.value != undefined) {
 				optionClass = 'selected-option';
 			}
-			const styleContext = {
-				config: {
-					...this.entry,
-					entity: this.renderTemplate(this.entry.entity_id ?? ''),
-					option: optionName,
-				},
-			};
 
 			selector.push(
 				html`<service-call-button
@@ -51,9 +43,6 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 					.shouldRenderRipple=${false}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
-					style=${styleMap(
-						this.buildStyle(options[i].style ?? {}, styleContext),
-					)}
 				/>`,
 			);
 		}

@@ -13,6 +13,7 @@ import {
 	IActions,
 	IData,
 	ITarget,
+	TileFeatureType,
 	TileFeatureTypes,
 	Actions,
 	ActionTypes,
@@ -1315,7 +1316,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (!this.autofillCooldown) {
+			this.updateDeprecatedFields();
 			this.autofillDefaultFields();
+			this.autofillCooldown = true;
+			setInterval(() => (this.autofillCooldown = false), 5000);
 		}
 
 		let editor: TemplateResult<1>;
@@ -1764,8 +1768,196 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			entries.push(entry);
 		}
 		this.entriesChanged(entries);
-		this.autofillCooldown = true;
-		setInterval(() => (this.autofillCooldown = false), 5000);
+	}
+
+	updateDeprecatedFields() {
+		const config = structuredClone(this.config);
+		for (let entry of config.entries) {
+			entry = this.updateDeprecatedEntryFields(entry);
+			for (let option of entry.options ?? []) {
+				option = this.updateDeprecatedEntryFields(option);
+			}
+			if (entry.increment) {
+				entry.increment = this.updateDeprecatedEntryFields(
+					entry.increment,
+				);
+			}
+			if (entry.decrement) {
+				entry.decrement = this.updateDeprecatedEntryFields(
+					entry.decrement,
+				);
+			}
+		}
+
+		if (config['style' as keyof IConfig]) {
+			let styles = '';
+			const style = config['style' as keyof IConfig] as unknown as Record<
+				string,
+				string
+			>;
+			for (const field in style) {
+				styles += `\n${field}: ${style[field]};`;
+			}
+			config.styles = styles + config.styles ?? '';
+			delete config['style' as keyof IConfig];
+		}
+
+		this.configChanged(config);
+	}
+
+	updateDeprecatedEntryFields(entry: IEntry) {
+		// Copy action fields to tap_action
+		const actionKeys = [
+			'service',
+			'service_data',
+			'data',
+			'target',
+			'navigation_path',
+			'navigation_replace',
+			'url_path',
+			'confirmation',
+			'pipeline_id',
+			'start_listening',
+		];
+		const tapAction = entry.tap_action ?? ({} as IAction);
+		let updateTapAction = false;
+		for (const actionKey of actionKeys) {
+			if (actionKey in entry) {
+				updateTapAction = true;
+				(tapAction as unknown as Record<string, string>)[actionKey] =
+					entry[actionKey as keyof IEntry] as string;
+				delete (tapAction as unknown as Record<string, string>)[
+					actionKey
+				];
+			}
+		}
+		if (updateTapAction) {
+			entry.tap_action = tapAction as IAction;
+		}
+
+		// For each type of action
+		for (const actionType of ActionTypes) {
+			if (actionType in entry) {
+				const action = entry[actionType as keyof IActions] as IAction;
+				if (action) {
+					// Populate action field
+					if (!action.action) {
+						if (action.service) {
+							action.action = 'call-service';
+						} else if (action.navigation_path) {
+							action.action = 'navigate';
+						} else if (action.url_path) {
+							action.action = 'url';
+						} else if (action.browser_mod) {
+							action.action = 'fire-dom-event';
+						} else if (
+							action.pipeline_id ||
+							action.start_listening
+						) {
+							action.action = 'assist';
+						} else {
+							action.action = 'none';
+						}
+					}
+
+					// Merge service_data, target, and data fields
+					if (
+						['data', 'target', 'service_data'].some(
+							(key) => key in action,
+						)
+					) {
+						action.data = {
+							...action.data,
+							...(
+								action as unknown as Record<
+									string,
+									IData | undefined
+								>
+							).service_data,
+							...action.target,
+						};
+					}
+					if (action['service_data' as keyof IAction]) {
+						delete action['service_data' as keyof IAction];
+					}
+				}
+			}
+		}
+
+		// Set entry type to button if not present
+		entry.type = (entry.type ?? 'button').toLowerCase() as TileFeatureType;
+
+		// Set value attribute to state as default
+		entry.value_attribute = entry.value_attribute ?? 'state';
+
+		// Move style keys to style object
+		const deprecatedStyleKeys: Record<string, string> = {
+			color: '--color',
+			opacity: '--opacity',
+			icon_color: '--icon-color',
+			label_color: '--label-color',
+			background_color: '--background',
+			background_opacity: '--background-opacity',
+			flex_basis: 'flex-basis',
+		};
+		let styles = '';
+		for (const field in deprecatedStyleKeys) {
+			if (entry[field as keyof IEntry]) {
+				styles += `\n${deprecatedStyleKeys[field]}: ${
+					entry[field as keyof IEntry]
+				};`;
+				delete entry[field as keyof IEntry];
+			}
+		}
+		entry.styles = styles + entry.styles ?? '';
+
+		if (entry['style' as keyof IEntry]) {
+			let styles = '';
+			const style = entry['style' as keyof IEntry] as Record<
+				string,
+				string
+			>;
+			for (const field in style) {
+				styles += `\n${field}: ${style[field]};`;
+			}
+			entry.styles = styles + entry.styles ?? '';
+			delete entry['style' as keyof IEntry];
+		}
+
+		const deprecatedStyles: Record<string, string> = {
+			background_style: '.background',
+			icon_style: '.icon',
+			label_style: '.label',
+			slider_style: '.slider',
+			tooltip_style: '.tooltip',
+		};
+		for (const field in deprecatedStyles) {
+			if (entry[field as keyof IEntry]) {
+				let styles = '';
+				const style = entry[field as keyof IEntry] as Record<
+					string,
+					string
+				>;
+				styles = `${deprecatedStyles[field]}: {`;
+				for (const key in style) {
+					styles += `  \n${key}: ${style[key]};`;
+				}
+				if (
+					field == 'tooltip_style' &&
+					entry['tooltip' as keyof IEntry]
+				) {
+					styles += `  display: ${
+						entry['tooltip' as keyof IEntry] ? 'initial' : 'none'
+					};`;
+					delete entry['tooltip' as keyof IEntry];
+				}
+				styles += '\n}';
+				entry.styles = entry.styles ?? '' + styles;
+				delete entry[field as keyof IEntry];
+			}
+		}
+
+		return entry;
 	}
 
 	static get styles() {

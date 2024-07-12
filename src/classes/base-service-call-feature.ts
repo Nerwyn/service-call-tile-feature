@@ -7,7 +7,6 @@ import {
 	property,
 	state,
 } from 'lit/decorators.js';
-import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 import { renderTemplate } from 'ha-nunjucks';
 
 import {
@@ -553,17 +552,6 @@ export class BaseServiceCallFeature extends LitElement {
 		);
 	}
 
-	buildStyle(_style: StyleInfo = {}, context?: object) {
-		const style = structuredClone(_style);
-		for (const key in style) {
-			style[key] = this.renderTemplate(
-				style[key] as string,
-				context,
-			) as string;
-		}
-		return style;
-	}
-
 	buildStyles(entry: IEntry = this.entry, context?: object) {
 		return entry.styles
 			? html`
@@ -576,15 +564,8 @@ export class BaseServiceCallFeature extends LitElement {
 			: '';
 	}
 
-	buildBackground(entry: IEntry = this.entry, context?: object) {
-		return html`
-			<div
-				class="background"
-				style=${styleMap(
-					this.buildStyle(entry.background_style ?? {}, context),
-				)}
-			></div>
-		`;
+	buildBackground() {
+		return html` <div class="background"></div>`;
 	}
 
 	buildIcon(entry: IEntry = this.entry, context?: object) {
@@ -593,9 +574,6 @@ export class BaseServiceCallFeature extends LitElement {
 			icon = html`<ha-icon
 				class="icon"
 				.icon=${this.renderTemplate(entry.icon as string, context)}
-				style=${styleMap(
-					this.buildStyle(entry.icon_style ?? {}, context),
-				)}
 			></ha-icon>`;
 		}
 		return icon;
@@ -612,7 +590,6 @@ export class BaseServiceCallFeature extends LitElement {
 				// prettier-ignore
 				label = html`<pre
 					class="label"
-					style=${styleMap(this.buildStyle(entry.label_style ?? {}, context))}
 				>${text}</pre>`;
 			}
 		}

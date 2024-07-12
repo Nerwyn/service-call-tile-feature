@@ -1,6 +1,5 @@
 import { CSSResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
@@ -210,10 +209,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			: html``;
 
 		const button = html`<button
-			class=${this.className ?? ''}
-			style=${styleMap(
-				this.buildStyle(this.entry.background_style ?? {}),
-			)}
+			class=${`${this.className} background` ?? 'background'}
 			@mousedown=${this.onMouseDown}
 			@mouseup=${this.onMouseUp}
 			@mousemove=${this.onMouseMove}

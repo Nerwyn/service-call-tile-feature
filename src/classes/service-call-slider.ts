@@ -216,29 +216,16 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		return this.sliderOn ? super.buildLabel(entry, context) : html``;
 	}
 
-	buildTooltip(entry: IEntry = this.entry, context: object) {
-		const style: StyleInfo = this.buildStyle(entry.tooltip_style, context);
-
-		// Deprecated tooltip hide/show field
-		if ('tooltip' in entry) {
-			style['--tooltip-display'] = this.renderTemplate(
-				entry.tooltip as unknown as string,
-			)
-				? 'initial'
-				: 'none';
-		}
-
-		// prettier-ignore
+	buildTooltip() {
 		return html`
 			<div
 				class="tooltip ${this.showTooltip ? 'faded-in' : 'faded-out'}"
-				style=${styleMap(style)}
 			></div>
 		`;
 	}
 
 	buildSlider(entry: IEntry = this.entry, context: object) {
-		const style = this.buildStyle(entry.slider_style ?? {}, context);
+		const style: StyleInfo = {};
 		if (
 			this.renderTemplate(entry.tap_action?.action as string, context) ==
 			'none'
@@ -351,30 +338,22 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
 		);
-		const customThumbWidth = parseInt(
-			(
-				(this.renderTemplate(
-					this.entry.slider_style?.['--thumb-width'] as string,
-					context,
-				) as string) ??
-				(this.renderTemplate(
-					this.entry.style?.['--thumb-width'] as string,
-					context,
-				) as string) ??
-				(this.style.getPropertyValue('--thumb-width') as string) ??
-				'50'
-			).replace('px', ''),
-		);
-		if (customThumbWidth) {
-			this.thumbWidth = customThumbWidth;
+
+		const thumbWidthMatch =
+			this.entry.styles?.match(/--thumb-width:(.*?);/g);
+		if (thumbWidthMatch) {
+			this.thumbWidth = parseInt(
+				thumbWidthMatch[0].replace(/--thumb-width:|px|;| /g, ''),
+			);
 		}
+
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
 
 		return html`
-			${this.buildTooltip(undefined, context)}
+			${this.buildTooltip()}
 			<div class="container">
-				${this.buildBackground(undefined, context)}
+				${this.buildBackground()}
 				${this.buildSlider(undefined, context)}
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}

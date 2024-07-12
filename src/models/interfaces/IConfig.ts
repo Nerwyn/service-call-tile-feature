@@ -4,7 +4,6 @@ import { IActions } from './IActions';
 
 export interface IConfig {
 	type: string;
-	style?: StyleInfo;
 	styles?: string;
 	entries: IEntry[];
 }
@@ -24,14 +23,9 @@ export interface IEntry
 	icon?: string;
 	label?: string;
 	unit_of_measurement?: string;
+	styles?: string;
 
 	haptics?: boolean;
-
-	styles?: string;
-	style?: StyleInfo;
-	background_style?: StyleInfo;
-	icon_style?: StyleInfo;
-	label_style?: StyleInfo;
 }
 
 export const TileFeatureTypes = [
