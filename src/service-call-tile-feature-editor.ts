@@ -241,7 +241,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (this.entryIndex < 0) {
 			return undefined;
 		}
-		console.log(this.activeEntryType);
 		const entry = this.config.entries[this.entryIndex];
 		switch (this.activeEntryType) {
 			case 'decrement':
