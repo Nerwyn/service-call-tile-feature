@@ -1809,8 +1809,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			let styles = `\n{% if ${(
 				updatedConfig['hide' as keyof IConfig] as string
 			)
-				.replace('{{', '{%')
-				.replace('}}', '%}')} %}`;
+				.replace('{{', '')
+				.replace('}}', '')} %}`;
 			styles += '\ndisplay: none !important;';
 			styles += '\n{% endif %};';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
@@ -1820,8 +1820,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			let styles = `\n{% if not ${(
 				updatedConfig['show' as keyof IConfig] as string
 			)
-				.replace('{{', '{%')
-				.replace('}}', '%}')} %}`;
+				.replace('{{', '')
+				.replace('}}', '')} %}`;
 			styles += '\ndisplay: none !important;';
 			styles += '\n{% endif %}';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
