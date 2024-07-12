@@ -26,9 +26,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@property() config!: IConfig;
 	@property() context!: Record<'entity_id', string>;
 
-	@state() entryEditorIndex: number = -1;
+	@state() entryIndex: number = -1;
 	@state() actionsTabIndex: number = 0;
-	@state() optionEditorIndex: number = -1;
+	@state() optionIndex: number = -1;
 	@state() spinboxTabIndex: number = 1;
 
 	@state() guiMode: boolean = true;
@@ -67,13 +67,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	entryChanged(entry: IEntry) {
 		const entries = structuredClone(this.config.entries);
-		const oldEntry = entries[this.entryEditorIndex];
+		const oldEntry = entries[this.entryIndex];
 		let updatedEntry: IEntry | IOption;
 		switch (this.activeEntryType) {
 			case 'option': {
 				const options = oldEntry.options ?? [];
-				const oldOption = options[this.optionEditorIndex];
-				options[this.optionEditorIndex] = {
+				const oldOption = options[this.optionIndex];
+				options[this.optionIndex] = {
 					...oldOption,
 					...entry,
 				};
@@ -108,7 +108,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					...entry,
 				};
 		}
-		entries[this.entryEditorIndex] = updatedEntry;
+		entries[this.entryIndex] = updatedEntry;
 		this.entriesChanged(entries);
 	}
 
@@ -149,9 +149,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				) != 'none')
 				? 1
 				: 0;
-		this.optionEditorIndex = -1;
+		this.optionIndex = -1;
 		this.spinboxTabIndex = 1;
-		this.entryEditorIndex = i;
+		this.entryIndex = i;
 	}
 
 	editOption(e: CustomEvent) {
@@ -163,26 +163,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.actionsTabIndex =
 			i > -1 &&
 			(this.renderTemplate(
-				this.config.entries[this.entryEditorIndex].options?.[i]
+				this.config.entries[this.entryIndex].options?.[i]
 					?.momentary_start_action?.action ?? 'none',
 				this.getEntryContext(
-					this.config.entries[this.entryEditorIndex].options?.[
-						i
-					] as IEntry,
+					this.config.entries[this.entryIndex].options?.[i] as IEntry,
 				),
 			) != 'none' ||
 				this.renderTemplate(
-					this.config.entries[this.entryEditorIndex].options?.[i]
+					this.config.entries[this.entryIndex].options?.[i]
 						?.momentary_end_action?.action ?? 'none',
 					this.getEntryContext(
-						this.config.entries[this.entryEditorIndex].options?.[
+						this.config.entries[this.entryIndex].options?.[
 							i
 						] as IEntry,
 					),
 				) != 'none')
 				? 1
 				: 0;
-		this.optionEditorIndex = i;
+		this.optionIndex = i;
 	}
 
 	removeEntry(e: CustomEvent) {
@@ -225,13 +223,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	exitEditEntry(_e: CustomEvent) {
 		this.activeEntryType = 'entry';
 		this.yamlString = undefined;
-		this.entryEditorIndex = -1;
+		this.entryIndex = -1;
 	}
 
 	exitEditOption(_e: CustomEvent) {
 		this.activeEntryType = 'entry';
 		this.yamlString = undefined;
-		this.optionEditorIndex = -1;
+		this.optionIndex = -1;
 	}
 
 	toggleGuiMode(_e: CustomEvent) {
@@ -240,33 +238,27 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	get activeEntry() {
-		if (this.entryEditorIndex < 0) {
+		if (this.entryIndex < 0) {
 			return undefined;
 		}
+		console.log(this.activeEntryType);
+		const entry = this.config.entries[this.entryIndex];
 		switch (this.activeEntryType) {
 			case 'decrement':
-				return (
-					this.config.entries[this.entryEditorIndex].decrement ?? {}
-				);
+				return entry.decrement ?? {};
 			case 'increment':
-				return (
-					this.config.entries[this.entryEditorIndex].increment ?? {}
-				);
+				return entry.increment ?? {};
 			case 'option':
-				return (
-					this.config.entries[this.entryEditorIndex].options?.[
-						this.optionEditorIndex
-					] ?? {}
-				);
+				return entry.options?.[this.optionIndex] ?? {};
 			case 'entry':
 			default:
-				return this.config.entries[this.entryEditorIndex];
+				return this.config.entries[this.entryIndex] ?? {};
 		}
 	}
 
 	get yaml(): string {
-		if (this.yamlString == undefined && this.entryEditorIndex > -1) {
-			const yaml = dump(this.config.entries[this.entryEditorIndex]);
+		if (this.yamlString == undefined && this.entryIndex > -1) {
+			const yaml = dump(this.config.entries[this.entryIndex]);
 			this.yamlString = yaml.trim() == '{}' ? '' : yaml;
 		}
 		return this.yamlString || '';
@@ -276,7 +268,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.yamlString = yaml;
 		try {
 			const updatedField = structuredClone(this.config.entries);
-			updatedField[this.entryEditorIndex] = load(this.yaml) as IEntry;
+			updatedField[this.entryIndex] = load(this.yaml) as IEntry;
 			this.entriesChanged(updatedField);
 			this.errors = undefined;
 		} catch (e) {
@@ -295,7 +287,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleStyleChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const css = e.detail.value;
-		if (this.entryEditorIndex > -1) {
+		if (this.entryIndex > -1) {
 			if (css != this.activeEntry?.styles) {
 				this.entryChanged({ styles: css });
 			}
@@ -536,8 +528,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 			case 'entry':
 			default:
-				title =
-					this.config.entries[this.entryEditorIndex].type ?? 'Button';
+				title = this.config.entries[this.entryIndex].type ?? 'Button';
 				exitHandler = this.exitEditEntry;
 				break;
 		}
@@ -656,7 +647,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					${appearanceOptions} ${this.buildCodeEditor('jinja2')}
+					${appearanceOptions}${this.buildCodeEditor('jinja2')}
 				</div>
 			</ha-expansion-panel>
 		`;
@@ -1021,7 +1012,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildSelectorGuiEditor() {
 		let selectorGuiEditor: TemplateResult<1>;
-		switch (this.optionEditorIndex) {
+		switch (this.optionIndex) {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
 				${this.buildEntryList('option')}${this.buildAddOptionButton()}
@@ -1288,7 +1279,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		switch (mode) {
 			case 'jinja2':
 				value =
-					(this.entryEditorIndex > -1
+					(this.entryIndex > -1
 						? this.activeEntry?.styles
 						: this.config.styles) ?? '';
 				handler = this.handleStyleChanged;
@@ -1370,7 +1361,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		let editor: TemplateResult<1>;
-		switch (this.entryEditorIndex) {
+		switch (this.entryIndex) {
 			case -1:
 				editor = html`
 					${this.buildEntryList()}${this.buildAddEntryButton()}
