@@ -283,7 +283,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					display: none !important;
 				}
 
-				operator {
+				.operator {
 					font-size: 14px;
 					font-weight: 500;
 					opacity: 0.77;
