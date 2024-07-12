@@ -1774,7 +1774,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	updateDeprecatedFields(config: IConfig = this.config): IConfig {
-		let updatedConfig = structuredClone(config);
+		const updatedConfig = structuredClone(config);
 		for (let entry of updatedConfig.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);
 			for (let option of entry.options ?? []) {
