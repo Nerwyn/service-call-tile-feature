@@ -55,10 +55,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			composed: true,
 		});
 		event.detail = {
-			config: {
-				...this.config,
-				...config,
-			},
+			config: config,
 		};
 		this.dispatchEvent(event);
 		this.requestUpdate();
@@ -66,6 +63,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	entriesChanged(entries: IEntry[]) {
 		this.configChanged({
+			...this.config,
 			entries: entries,
 		} as IConfig);
 	}
@@ -291,7 +289,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let value = e.detail.value;
 
 		if (this.entryEditorIndex == -1 && key == 'styles') {
-			this.configChanged({ styles: value } as IConfig);
+			this.configChanged({ ...this.config, styles: value } as IConfig);
 			return;
 		}
 
