@@ -167,7 +167,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 		} else {
 			return html`
 				<button
-					class="button operator"
+					class="button operator background"
 					id="${operator}"
 					@mousedown=${this.onMouseDown}
 					@mouseup=${this.onMouseUp}
@@ -178,6 +178,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					@contextmenu=${this.onContextMenu}
 				>
 					${this.buildIcon(actions)}${super.buildLabel(actions)}
+					${this.buildStyles(actions)}
 				</button>
 			`;
 		}

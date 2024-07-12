@@ -1320,7 +1320,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			config = this.autofillDefaultFields(config);
 			this.configChanged(config);
 			this.autofillCooldown = true;
-			setInterval(() => (this.autofillCooldown = false), 5000);
+			setTimeout(() => (this.autofillCooldown = false), 2000);
 		}
 
 		let editor: TemplateResult<1>;
