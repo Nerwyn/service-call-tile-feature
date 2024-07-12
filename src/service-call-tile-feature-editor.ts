@@ -1937,12 +1937,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		for (const field in deprecatedStyles) {
 			if (entry[field as keyof IEntry]) {
-				let styles = '\n';
 				const style = entry[field as keyof IEntry] as Record<
 					string,
 					string
 				>;
-				styles = `${deprecatedStyles[field]}: {`;
+				let styles = `\n${deprecatedStyles[field]}: {`;
 				for (const key in style) {
 					styles += `  \n${key}: ${style[key]} !important;`;
 				}

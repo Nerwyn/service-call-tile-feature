@@ -166,9 +166,11 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 			`;
 		} else {
 			return html`
-				<button
-					class="button operator background"
+				<service-call-spinbox-operator-button
+					class="operator"
 					id="${operator}"
+					.hass=${this.hass}
+					.entry=${actions}
 					@mousedown=${this.onMouseDown}
 					@mouseup=${this.onMouseUp}
 					@mousemove=${this.onMouseMove}
@@ -176,10 +178,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					@touchend=${this.onTouchEnd}
 					@touchmove=${this.onTouchMove}
 					@contextmenu=${this.onContextMenu}
-				>
-					${this.buildIcon(actions)}${super.buildLabel(actions)}
-					${this.buildStyles(actions)}
-				</button>
+				/>
 			`;
 		}
 	}
@@ -288,6 +287,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					font-size: 14px;
 					font-weight: 500;
 					opacity: 0.77;
+					--background-opacity: 0;
 				}
 
 				#decrement {
@@ -308,5 +308,15 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				}
 			`,
 		];
+	}
+}
+
+@customElement('service-call-spinbox-operator-button')
+export class OperatorButton extends BaseServiceCallFeature {
+	render() {
+		return html`
+			${this.buildBackground()}${this.buildIcon()}${super.buildLabel()}
+			${this.buildStyles()}
+		`;
 	}
 }
