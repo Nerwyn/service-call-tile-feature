@@ -73,34 +73,6 @@ class ServiceCallTileFeature extends LitElement {
 			},
 		};
 
-		// Deprecated hide and show checks
-		if ('hide' in this.config) {
-			if (
-				renderTemplate(
-					this.hass,
-					this.config.hide as unknown as string,
-					context,
-				)
-			) {
-				this.style.setProperty('display', 'none');
-			} else {
-				this.style.removeProperty('display');
-			}
-		}
-		if ('show' in this.config) {
-			if (
-				renderTemplate(
-					this.hass,
-					this.config.show as unknown as string,
-					context,
-				)
-			) {
-				this.style.removeProperty('display');
-			} else {
-				this.style.setProperty('display', 'none');
-			}
-		}
-
 		const row: TemplateResult[] = [];
 		for (const entry of this.config.entries) {
 			const context = {

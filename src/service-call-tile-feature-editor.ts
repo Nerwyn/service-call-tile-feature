@@ -1316,9 +1316,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (!this.autofillCooldown) {
-			this.updateDeprecatedFields();
-			this.autofillDefaultFields();
+			let config = this.updateDeprecatedFields(this.config);
+			config = this.autofillDefaultFields(config);
 			this.autofillCooldown = true;
+			this.configChanged(config);
 			setInterval(() => (this.autofillCooldown = false), 5000);
 		}
 
@@ -1517,9 +1518,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return entry;
 	}
 
-	autofillDefaultFields() {
-		const entries: IEntry[] = [];
-		for (let entry of structuredClone(this.config.entries) ?? []) {
+	autofillDefaultFields(config: IConfig) {
+		const updatedConfig = structuredClone(config);
+		const updatedEntries: IEntry[] = [];
+		for (let entry of updatedConfig.entries ?? []) {
 			if (
 				this.renderTemplate(
 					(entry.autofill_entity_id ?? true) as unknown as string,
@@ -1765,14 +1767,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						break;
 				}
 			}
-			entries.push(entry);
+			updatedEntries.push(entry);
 		}
-		this.entriesChanged(entries);
+		updatedConfig.entries = updatedEntries;
+		return updatedConfig;
 	}
 
-	updateDeprecatedFields() {
-		const config = structuredClone(this.config);
-		for (let entry of config.entries) {
+	updateDeprecatedFields(config: IConfig = this.config): IConfig {
+		let updatedConfig = structuredClone(config);
+		for (let entry of updatedConfig.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);
 			for (let option of entry.options ?? []) {
 				option = this.updateDeprecatedEntryFields(option);
@@ -1789,20 +1792,30 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 		}
 
-		if (config['style' as keyof IConfig]) {
+		if (updatedConfig['style' as keyof IConfig]) {
 			let styles = '';
-			const style = config['style' as keyof IConfig] as unknown as Record<
-				string,
-				string
-			>;
+			const style = updatedConfig[
+				'style' as keyof IConfig
+			] as unknown as Record<string, string>;
 			for (const field in style) {
 				styles += `\n${field}: ${style[field]};`;
 			}
-			config.styles = styles + config.styles ?? '';
-			delete config['style' as keyof IConfig];
+			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+			delete updatedConfig['style' as keyof IConfig];
 		}
-
-		this.configChanged(config);
+		if (updatedConfig['hide' as keyof IConfig]) {
+			const styles = `display: {{ 'none' if ${
+				updatedConfig['hide' as keyof IConfig]
+			} else 'initial' }};`;
+			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+		}
+		if (updatedConfig['show' as keyof IConfig]) {
+			const styles = `display: {{ 'initial' if ${
+				updatedConfig['hide' as keyof IConfig]
+			} else 'none' }};`;
+			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+		}
+		return updatedConfig;
 	}
 
 	updateDeprecatedEntryFields(entry: IEntry) {
@@ -1956,7 +1969,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				delete entry[field as keyof IEntry];
 			}
 		}
-
 		return entry;
 	}
 
