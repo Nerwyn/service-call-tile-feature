@@ -626,7 +626,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
-					${appearanceOptions} ${this.buildCodeEditor('css')}
+					${appearanceOptions} ${this.buildCodeEditor('jinja2')}
 				</div>
 			</ha-expansion-panel>
 		`;
@@ -995,7 +995,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
 				${this.buildEntryList('option')}${this.buildAddOptionButton()}
-				${this.buildCodeEditor('css')}`;
+				${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
 				this.activeEntry =
@@ -1268,7 +1268,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let value: string;
 		let handler: (e: CustomEvent) => void;
 		switch (mode) {
-			case 'css':
+			case 'jinja2':
 				value =
 					(this.entryEditorIndex > -1
 						? this.activeEntry?.styles
@@ -1356,7 +1356,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case -1:
 				editor = html`
 					${this.buildEntryList()}${this.buildAddEntryButton()}
-					${this.buildCodeEditor('css')}${this.buildErrorPanel()}
+					${this.buildCodeEditor('jinja2')}${this.buildErrorPanel()}
 				`;
 				break;
 			default:
