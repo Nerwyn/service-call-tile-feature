@@ -257,7 +257,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	get yaml(): string {
 		if (this.yamlString == undefined && this.entryIndex > -1) {
-			const yaml = dump(this.config.entries[this.entryIndex]);
+			const yaml = dump(this.activeEntry);
 			this.yamlString = yaml.trim() == '{}' ? '' : yaml;
 		}
 		return this.yamlString || '';
@@ -266,9 +266,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	set yaml(yaml: string | undefined) {
 		this.yamlString = yaml;
 		try {
-			const updatedField = structuredClone(this.config.entries);
-			updatedField[this.entryIndex] = load(this.yaml) as IEntry;
-			this.entriesChanged(updatedField);
+			this.entryChanged(load(this.yaml) as IEntry);
 			this.errors = undefined;
 		} catch (e) {
 			this.errors = [(e as Error).message];
@@ -301,6 +299,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleSpinboxTabSelected(e: CustomEvent) {
+		this.yamlString = undefined;
 		const i = e.detail.value;
 		switch (i) {
 			case 0:
@@ -517,13 +516,21 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildEntryHeader(field: 'entry' | 'option' = 'entry') {
+	buildEntryHeader() {
 		let title: string;
 		let exitHandler: (e: CustomEvent) => void;
-		switch (field) {
+		switch (this.activeEntryType) {
 			case 'option':
 				title = 'Selector Option';
 				exitHandler = this.exitEditOption;
+				break;
+			case 'decrement':
+				title = 'Spinbox (Decrement)';
+				exitHandler = this.exitEditEntry;
+				break;
+			case 'increment':
+				title = 'Spinbox (Increment)';
+				exitHandler = this.exitEditEntry;
 				break;
 			case 'entry':
 			default:
@@ -540,24 +547,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					></ha-icon-button-prev>
 					<span class="primary" slot="title">${title}</span>
 				</div>
-				${field == 'entry'
-					? html`<ha-icon-button
-							class="gui-mode-button"
-							@click=${this.toggleGuiMode}
-							.label=${this.hass.localize(
-								this.guiMode
-									? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
-									: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
-							)}
-					  >
-							<ha-icon
-								class="header-icon"
-								.icon="${this.guiMode
-									? 'mdi:code-braces'
-									: 'mdi:list-box-outline'}"
-							></ha-icon>
-					  </ha-icon-button>`
-					: ''}
+				<ha-icon-button
+					class="gui-mode-button"
+					@click=${this.toggleGuiMode}
+					.label=${this.hass.localize(
+						this.guiMode
+							? 'ui.panel.lovelace.editor.edit_card.show_code_editor'
+							: 'ui.panel.lovelace.editor.edit_card.show_visual_editor',
+					)}
+				>
+					<ha-icon
+						class="header-icon"
+						.icon="${this.guiMode
+							? 'mdi:code-braces'
+							: 'mdi:list-box-outline'}"
+					></ha-icon>
+				</ha-icon-button>
 			</div>
 		`;
 	}
@@ -1019,7 +1024,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 			default:
 				selectorGuiEditor = html`
-					${this.buildEntryHeader('option')}
 					${this.buildSelector('Option', 'option' as keyof IEntry, {
 						text: {},
 					})}
