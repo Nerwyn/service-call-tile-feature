@@ -1800,20 +1800,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			for (const field in style) {
 				styles += `\n${field}: ${style[field]};`;
 			}
-			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['style' as keyof IConfig];
 		}
 		if (updatedConfig['hide' as keyof IConfig]) {
 			const styles = `display: {{ 'none' if ${
 				updatedConfig['hide' as keyof IConfig]
 			} else 'initial' }};`;
-			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 		}
 		if (updatedConfig['show' as keyof IConfig]) {
 			const styles = `display: {{ 'initial' if ${
 				updatedConfig['hide' as keyof IConfig]
 			} else 'none' }};`;
-			updatedConfig.styles = styles + updatedConfig.styles ?? '';
+			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 		}
 		return updatedConfig;
 	}
@@ -1922,7 +1922,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				delete entry[field as keyof IEntry];
 			}
 		}
-		entry.styles = styles + entry.styles ?? '';
+		entry.styles = styles + (entry.styles ?? '');
 
 		if (entry['style' as keyof IEntry]) {
 			let styles = '';
@@ -1933,7 +1933,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			for (const field in style) {
 				styles += `\n${field}: ${style[field]};`;
 			}
-			entry.styles = styles + entry.styles ?? '';
+			entry.styles = styles + (entry.styles ?? '');
 			delete entry['style' as keyof IEntry];
 		}
 
@@ -1965,7 +1965,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					delete entry['tooltip' as keyof IEntry];
 				}
 				styles += '\n}';
-				entry.styles = entry.styles ?? '' + styles;
+				entry.styles = (entry.styles ?? '') + styles;
 				delete entry[field as keyof IEntry];
 			}
 		}
