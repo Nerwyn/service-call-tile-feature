@@ -1316,10 +1316,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (!this.autofillCooldown) {
-			let config = this.updateDeprecatedFields(this.config);
-			config = this.autofillDefaultFields(config);
+			this.configChanged(this.autofillDefaultFields(this.config));
 			this.autofillCooldown = true;
-			this.configChanged(config);
 			setInterval(() => (this.autofillCooldown = false), 5000);
 		}
 
@@ -1339,6 +1337,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 		}
 		return editor;
+	}
+
+	firstUpdated() {
+		this.configChanged(this.updateDeprecatedFields(this.config));
 	}
 
 	renderTemplate(str: string | number | boolean, context: object) {
