@@ -35,10 +35,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	@state() errors?: string[];
 
 	yamlString?: string;
-
-	activeEntry?: IEntry | IOption;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
-
 	autofillCooldown = false;
 
 	static get properties() {
@@ -138,8 +135,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-		this.activeEntry = this.config.entries[this.entryEditorIndex] ?? {};
-
+		this.activeEntryType = 'entry';
 		this.actionsTabIndex =
 			i > -1 &&
 			(this.renderTemplate(
@@ -163,7 +159,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
 		).index;
-
+		this.activeEntryType = 'option';
 		this.actionsTabIndex =
 			i > -1 &&
 			(this.renderTemplate(
@@ -227,11 +223,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	exitEditEntry(_e: CustomEvent) {
+		this.activeEntryType = 'entry';
 		this.yamlString = undefined;
 		this.entryEditorIndex = -1;
 	}
 
 	exitEditOption(_e: CustomEvent) {
+		this.activeEntryType = 'entry';
 		this.yamlString = undefined;
 		this.optionEditorIndex = -1;
 	}
@@ -239,6 +237,31 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	toggleGuiMode(_e: CustomEvent) {
 		this.yamlString = undefined;
 		this.guiMode = !this.guiMode;
+	}
+
+	get activeEntry() {
+		if (this.entryEditorIndex < 0) {
+			return undefined;
+		}
+		switch (this.activeEntryType) {
+			case 'decrement':
+				return (
+					this.config.entries[this.entryEditorIndex].decrement ?? {}
+				);
+			case 'increment':
+				return (
+					this.config.entries[this.entryEditorIndex].increment ?? {}
+				);
+			case 'option':
+				return (
+					this.config.entries[this.entryEditorIndex].options?.[
+						this.optionEditorIndex
+					] ?? {}
+				);
+			case 'entry':
+			default:
+				return this.config.entries[this.entryEditorIndex];
+		}
 	}
 
 	get yaml(): string {
@@ -288,7 +311,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleSpinboxTabSelected(e: CustomEvent) {
 		const i = e.detail.value;
-		if (this.spinboxTabIndex == i) {
+		switch (i) {
+			case 0:
+				this.activeEntryType = 'decrement';
+				break;
+			case 2:
+				this.activeEntryType = 'increment';
+				break;
+			case 1:
+			default:
+				this.activeEntryType = 'entry';
+				break;
+		}
+		if (i == this.spinboxTabIndex) {
 			return;
 		}
 		this.spinboxTabIndex = i;
@@ -305,11 +340,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
-
-		if (this.entryEditorIndex == -1 && key == 'styles') {
-			this.configChanged({ ...this.config, styles: value } as IConfig);
-			return;
-		}
 
 		const keysWithDefaults: Record<
 			string,
@@ -998,11 +1028,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
-				this.activeEntry =
-					this.config.entries[this.entryEditorIndex].options?.[
-						this.optionEditorIndex
-					] ?? {};
-				this.activeEntryType = 'option';
 				selectorGuiEditor = html`
 					${this.buildEntryHeader('option')}
 					${this.buildSelector('Option', 'option' as keyof IEntry, {
@@ -1113,15 +1138,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		let spinboxGuiEditor: TemplateResult<1>;
 		switch (this.spinboxTabIndex) {
 			case 0:
-				this.activeEntry =
-					this.config.entries[this.entryEditorIndex].decrement ?? {};
-				this.activeEntryType = 'decrement';
-				spinboxGuiEditor = this.buildButtonGuiEditor();
-				break;
+			// falls through
 			case 2:
-				this.activeEntry =
-					this.config.entries[this.entryEditorIndex].increment ?? {};
-				this.activeEntryType = 'increment';
 				spinboxGuiEditor = this.buildButtonGuiEditor();
 				break;
 			case 1:
