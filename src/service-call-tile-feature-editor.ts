@@ -1849,9 +1849,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				updateTapAction = true;
 				(tapAction as unknown as Record<string, string>)[actionKey] =
 					entry[actionKey as keyof IEntry] as string;
-				delete (tapAction as unknown as Record<string, string>)[
-					actionKey
-				];
+				delete (entry as unknown as Record<string, string>)[actionKey];
 			}
 		}
 		if (updateTapAction) {
@@ -1921,7 +1919,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				delete entry[field as keyof IEntry];
 			}
 		}
-		entry.styles = styles + (entry.styles ?? '');
+		if (styles) {
+			entry.styles = styles + (entry.styles ?? '');
+		}
 
 		if (entry['style' as keyof IEntry]) {
 			let styles = '';
