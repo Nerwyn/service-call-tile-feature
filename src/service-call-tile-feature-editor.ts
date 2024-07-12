@@ -1943,7 +1943,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				>;
 				let styles = `\n${deprecatedStyles[field]}: {`;
 				for (const key in style) {
-					styles += `  \n${key}: ${style[key]} !important;`;
+					styles += `\n  ${key}: ${style[key]} !important;`;
 				}
 				if (
 					field == 'tooltip_style' &&
