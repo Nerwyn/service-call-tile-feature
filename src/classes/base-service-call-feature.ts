@@ -678,10 +678,7 @@ export class BaseServiceCallFeature extends LitElement {
 				height: var(--background-height, 100%);
 				background: var(
 					--background,
-					var(
-						--color,
-						var(--state-inactive-color, var(--disabled-color))
-					)
+					var(--color, var(--disabled-color))
 				);
 				opacity: var(--background-opacity, 0.2);
 				z-index: 1;

@@ -249,6 +249,11 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					);
 				}
 
+				.background {
+					background: none;
+					opacity: 1;
+				}
+
 				button {
 					background: 0px 0px;
 					position: absolute;
