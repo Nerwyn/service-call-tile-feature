@@ -663,7 +663,7 @@ export class BaseServiceCallFeature extends LitElement {
 				color: inherit;
 				flex-basis: 100%;
 
-				--mdc-icon-size: 20px;
+				--mdc-icon-size: var(--mdc-icon-size, 20px);
 			}
 
 			.container {

@@ -57,20 +57,20 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 				:host {
 					flex-flow: row;
 
-					--color: var(--tile-color);
-					--background: var(--disabled-color);
-					--hover-opacity: 0.2;
+					--color: var(--color, var(--tile-color));
+					--background: var(--background, var(--disabled-color));
+					--hover-opacity: var(--hover-opacity, 0.2);
 				}
 
 				.option {
-					--opacity: 0;
-					--background-opacity: 0;
+					--opacity: var(--opacity, 0);
+					--background-opacity: var(--background-opacity, 0);
 				}
 
 				.selected-option {
-					--opacity: 1;
-					--background-opacity: 1;
-					--hover-opacity: 1;
+					--opacity: var(--opacity, 1);
+					--background-opacity: var(--background-opacity, 1);
+					--hover-opacity: var(--hover-opacity, 1);
 				}
 			`,
 		];

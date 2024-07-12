@@ -277,7 +277,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					color: inherit;
 					z-index: 2;
 
-					--mdc-icon-size: 16px;
+					--mdc-icon-size: var(--mdc-icon-size, 16px);
 				}
 
 				.button::before {
@@ -303,8 +303,8 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					width: initial;
 					padding: 10px;
 
-					--opacity: 0;
-					--mdc-icon-size: 16px;
+					--opacity: var(--opacity, 0);
+					--mdc-icon-size: var(--mdc-icon-size, 16px);
 				}
 			`,
 		];

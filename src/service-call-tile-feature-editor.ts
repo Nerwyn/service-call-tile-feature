@@ -609,10 +609,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					<ha-icon .icon=${'mdi:palette'}></ha-icon>
 					Appearance
 				</div>
-				<div class="content">${appearanceOptions}</div>
-				${this.buildSelector('CSS Styles', 'styles', {
-					text: { multiline: true },
-				})}
+				<div class="content">
+					${appearanceOptions}
+					${this.buildSelector('CSS Styles', 'styles', {
+						text: { multiline: true },
+					})}
+				</div>
 			</ha-expansion-panel>
 		`;
 	}
@@ -1314,13 +1316,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		if (!this.hass) {
 			return html``;
 		}
+		console.log('Rendering!');
 
 		if (!this.autofillCooldown) {
+			console.log('Autofilling!');
 			let config = this.updateDeprecatedFields(this.config);
 			config = this.autofillDefaultFields(config);
 			this.configChanged(config);
 			this.autofillCooldown = true;
 			setTimeout(() => (this.autofillCooldown = false), 2000);
+			console.log('Autofill complete!');
 		}
 
 		let editor: TemplateResult<1>;
@@ -1873,24 +1878,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 					}
 
-					// Merge service_data, target, and data fields
-					if (
-						['data', 'target', 'service_data'].some(
-							(key) => key in action,
-						)
-					) {
-						action.data = {
-							...action.data,
-							...(
-								action as unknown as Record<
-									string,
-									IData | undefined
-								>
-							).service_data,
-							...action.target,
-						};
-					}
 					if (action['service_data' as keyof IAction]) {
+						action.data = {
+							...(action[
+								'service_data' as keyof IAction
+							] as IData),
+							...action.data,
+						};
 						delete action['service_data' as keyof IAction];
 					}
 				}
