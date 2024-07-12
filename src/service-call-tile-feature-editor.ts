@@ -1806,17 +1806,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			delete updatedConfig['style' as keyof IConfig];
 		}
 		if (updatedConfig['hide' as keyof IConfig]) {
-			const styles = `
-			{% if ${updatedConfig['hide' as keyof IConfig]} %}
+			const styles = `\n{% if ${(
+				updatedConfig['hide' as keyof IConfig] as string
+			)
+				.replace('{{', '{%')
+				.replace('}}', '%}')} %}
 			display: 'none' !important;
 			{% endif %}`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['hide' as keyof IConfig];
 		}
 		if (updatedConfig['show' as keyof IConfig]) {
-			const styles = `display: {{ 'initial' if ${
-				updatedConfig['hide' as keyof IConfig]
-			} else 'none' }} !important;`;
+			const styles = `\n{% if not ${(
+				updatedConfig['hide' as keyof IConfig] as string
+			)
+				.replace('{{', '{%')
+				.replace('}}', '%}')} %}
+			display: 'none' !important;
+			{% endif %}`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['show' as keyof IConfig];
 		}
