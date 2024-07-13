@@ -1767,14 +1767,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 
 						// Shortcut for inserting {{ value | int/float }} into number only UI fields
-						if (
-							entry.tap_action &&
-							this.renderTemplate(
-								entry.tap_action.action ?? 'none',
-								this.getEntryContext(entry),
-							) != 'none' &&
-							entry.tap_action.data
-						) {
+						if (entry.tap_action && entry.tap_action.data) {
 							const data = entry.tap_action.data;
 							for (const key in data) {
 								if (Array.isArray(data[key])) {
@@ -1815,10 +1808,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						// Shortcut for inserting {{ hold_secs | float }} into number only UI fields
 						if (
 							entry.momentary_end_action &&
-							this.renderTemplate(
-								entry.momentary_end_action.action ?? 'none',
-								this.getEntryContext(entry),
-							) != 'none' &&
 							entry.momentary_end_action.data
 						) {
 							const data = entry.momentary_end_action.data;
