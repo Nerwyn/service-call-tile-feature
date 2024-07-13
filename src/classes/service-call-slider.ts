@@ -379,6 +379,7 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 
 				.background {
 					background: var(
+						--backgrond,
 						--color,
 						var(--tile-color, var(--state-inactive-color))
 					);
