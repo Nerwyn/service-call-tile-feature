@@ -731,6 +731,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: ''}
 					</div>
 					<div class="action-options">
+						${this.buildValueInfoBox(
+							'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the number of seconds this feature was held down.',
+						)}
 						${this.buildSelector(
 							'End action (optional)',
 							'momentary_end_action',
@@ -1345,10 +1348,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildValueInfoBox() {
+	buildValueInfoBox(
+		title = 'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the value of the custom feature.',
+	) {
 		return html`<ha-alert
 			.alertType="${'info'}"
-			.title="${'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the value of the custom feature.'}"
+			.title="${title}"
 		></ha-alert>`;
 	}
 
@@ -1762,7 +1767,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 
 						// Shortcut for inserting {{ value | int/float }} into number only UI fields
-						if (entry.tap_action && entry.tap_action.data) {
+						if (
+							entry.tap_action &&
+							this.renderTemplate(
+								entry.tap_action.action ?? 'none',
+								this.getEntryContext(entry),
+							) != 'none' &&
+							entry.tap_action.data
+						) {
 							const data = entry.tap_action.data;
 							for (const key in data) {
 								if (Array.isArray(data[key])) {
@@ -1795,6 +1807,44 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 											? 'int'
 											: 'float'
 									} }}`;
+								}
+							}
+							entry.tap_action.data = data;
+						}
+
+						// Shortcut for inserting {{ hold_secs | float }} into number only UI fields
+						if (
+							entry.momentary_end_action &&
+							this.renderTemplate(
+								entry.momentary_end_action.action ?? 'none',
+								this.getEntryContext(entry),
+							) != 'none' &&
+							entry.momentary_end_action.data
+						) {
+							const data = entry.momentary_end_action.data;
+							for (const key in data) {
+								if (Array.isArray(data[key])) {
+									for (const i in data[key] as number[]) {
+										if (
+											typeof (data[key] as number[])[i] ==
+												'number' &&
+											((data[key] as number[])[
+												i
+											] as number) > 0 &&
+											((data[key] as number[])[
+												i
+											] as number) < 0.0001
+										) {
+											(data[key] as string[])[i] =
+												'{{ hold_secs | float }}';
+										}
+									}
+								} else if (
+									typeof data[key] == 'number' &&
+									data[key] > 0 &&
+									data[key] < 0.0001
+								) {
+									data[key] = '{{ hold_secs | float }}';
 								}
 							}
 							entry.tap_action.data = data;
