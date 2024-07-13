@@ -377,6 +377,13 @@ export class ServiceCallSlider extends BaseServiceCallFeature {
 					pointer-events: none;
 				}
 
+				.background {
+					background: var(
+						--color,
+						var(--tile-color, var(--state-inactive-color))
+					);
+				}
+
 				.slider {
 					position: absolute;
 					appearance: none;
