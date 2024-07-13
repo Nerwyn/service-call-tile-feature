@@ -1294,6 +1294,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 		return html`
 			<div class="yaml-editor">
+				${mode == 'jinja2'
+					? html`<div class="style-header">CSS Styles</div>`
+					: ''}
 				<ha-code-editor
 					mode="${mode}"
 					autofocus
@@ -2113,11 +2116,16 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			.wrapper {
 				width: 100%;
 			}
-			.gui-editor,
-			.yaml-editor {
+			.gui-editor {
 				display: inline-flex;
 				flex-direction: column;
 				gap: 24px;
+				padding: 8px 0px;
+				width: 100%;
+			}
+			.yaml-editor {
+				display: inline-flex;
+				flex-direction: column;
 				padding: 8px 0px;
 				width: 100%;
 			}
@@ -2140,9 +2148,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				white-space: pre-wrap;
 			}
 
+			.entry-list-header {
+				font-size: 20px;
+				font-weight: 500;
+			}
 			.panel-header {
 				display: inline-flex;
 				gap: 4px;
+			}
+			.style-header {
+				font-size: var(--mdc-typography-body1-font-size, 1rem);
+				font-weight: 500;
+				padding: 8px;
 			}
 
 			paper-tabs {
@@ -2163,11 +2180,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					minmax(var(--form-grid-min-width, 200px), 1fr)
 				);
 				gap: 24px 8px;
-			}
-
-			.entry-list-header {
-				font-size: 20px;
-				font-weight: 500;
 			}
 		`;
 	}
