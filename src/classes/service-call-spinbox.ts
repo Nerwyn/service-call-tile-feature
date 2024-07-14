@@ -311,6 +311,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 					padding: 10px;
 
 					--opacity: 0;
+					--color: rgb(0, 0, 0, 0);
 					--mdc-icon-size: 16px;
 				}
 			`,
