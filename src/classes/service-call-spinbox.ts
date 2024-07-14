@@ -308,7 +308,7 @@ export class ServiceCallSpinbox extends BaseServiceCallFeature {
 				service-call-button {
 					position: absolute;
 					width: initial;
-					padding: 10px;
+					width: 36px;
 
 					--opacity: 0;
 					--color: rgb(0, 0, 0, 0);
