@@ -1771,29 +1771,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							const data = entry.tap_action.data;
 							for (const key in data) {
 								if (Array.isArray(data[key])) {
-									for (const i in data[key] as number[]) {
+									for (const i in data[key]) {
 										if (
-											typeof (data[key] as number[])[i] ==
-												'number' &&
-											((data[key] as number[])[
-												i
-											] as number) > 0 &&
-											((data[key] as number[])[
-												i
-											] as number) < 0.0001
+											parseFloat(data[key][i] as string) >
+												0 &&
+											parseFloat(data[key][i] as string) <
+												0.0001
 										) {
-											(data[key] as string[])[i] =
-												`{{ value | ${
-													entry.step ?? 1 % 1 == 0
-														? 'int'
-														: 'float'
-												} }}`;
+											data[key][i] = `{{ value | ${
+												entry.step ?? 1 % 1 == 0
+													? 'int'
+													: 'float'
+											} }}`;
 										}
 									}
 								} else if (
-									typeof data[key] == 'number' &&
-									data[key] > 0 &&
-									data[key] < 0.0001
+									parseFloat(data[key] as string) > 0 &&
+									parseFloat(data[key] as string) < 0.0001
 								) {
 									data[key] = `{{ value | ${
 										entry.step ?? 1 % 1 == 0
@@ -1821,25 +1815,20 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				if (action && action.data) {
 					for (const key in action.data) {
 						if (Array.isArray(action.data[key])) {
-							for (const i in action.data[key] as number[]) {
+							for (const i in action.data[key]) {
 								if (
-									typeof (action.data[key] as number[])[i] ==
-										'number' &&
-									((action.data[key] as number[])[
-										i
-									] as number) > 0 &&
-									((action.data[key] as number[])[
-										i
-									] as number) < 0.0001
+									parseFloat(action.data[key][i] as string) >
+										0 &&
+									parseFloat(action.data[key][i] as string) <
+										0.0001
 								) {
-									(action.data[key] as string[])[i] =
+									action.data[key][i] =
 										'{{ hold_secs | float }}';
 								}
 							}
 						} else if (
-							typeof action.data[key] == 'number' &&
-							action.data[key] > 0 &&
-							action.data[key] < 0.0001
+							parseFloat(action.data[key] as string) > 0 &&
+							parseFloat(action.data[key] as string) < 0.0001
 						) {
 							action.data[key] = '{{ hold_secs | float }}';
 						}
