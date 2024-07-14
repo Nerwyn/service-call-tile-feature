@@ -35,11 +35,7 @@ class ServiceCallTileFeature extends LitElement {
 	static getStubConfig() {
 		return {
 			type: 'custom:service-call',
-			entries: [
-				{
-					type: 'button',
-				},
-			],
+			entries: [],
 		};
 	}
 
