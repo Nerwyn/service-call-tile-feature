@@ -15,7 +15,7 @@ import './classes/service-call-selector';
 import './classes/service-call-spinbox';
 
 console.info(
-	`%c SERVICE-CALL-TILE-FEATURE v${packageInfo.version}`,
+	`%c CUSTOM-FEATURES-FOR-TILES-AND-MORE v${packageInfo.version}`,
 	'color: white; font-weight: bold; background: cornflowerblue',
 );
 
@@ -172,7 +172,7 @@ customElements.define('service-call-editor', ServiceCallTileFeatureEditor);
 window.customTileFeatures = window.customTileFeatures || [];
 window.customTileFeatures.push({
 	type: 'service-call',
-	name: 'Service Call',
+	name: 'Custom Features Row',
 	configurable: true,
 });
 
