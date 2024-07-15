@@ -732,7 +732,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					</div>
 					<div class="action-options">
 						${this.buildValueInfoBox(
-							'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the number of seconds this feature was held down.',
+							'Set an action data field to 12345 and it will automatically be replaced with the number of seconds this feature was held down, or use the code editor for further templating.',
 						)}
 						${this.buildSelector(
 							'End action (optional)',
@@ -1349,7 +1349,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildValueInfoBox(
-		title = 'Set a numerical field to a positive number less than 0.0001 and it will automatically be replaced with the value of the custom feature.',
+		title = 'Set an action data field to 12345 and it will automatically be replaced with the current value of the feature, or use the code editor for further templating.',
 	) {
 		return html`<ha-alert
 			.alertType="${'info'}"
@@ -1773,10 +1773,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								if (Array.isArray(data[key])) {
 									for (const i in data[key]) {
 										if (
-											parseFloat(data[key][i] as string) >
-												0 &&
-											parseFloat(data[key][i] as string) <
-												0.0001
+											parseInt(data[key][i] as string) ==
+											12345
 										) {
 											data[key][i] = `{{ value | ${
 												entry.step ?? 1 % 1 == 0
@@ -1786,8 +1784,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 										}
 									}
 								} else if (
-									parseFloat(data[key] as string) > 0 &&
-									parseFloat(data[key] as string) < 0.0001
+									parseInt(data[key] as string) == 12345
 								) {
 									data[key] = `{{ value | ${
 										entry.step ?? 1 % 1 == 0
@@ -1817,18 +1814,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						if (Array.isArray(action.data[key])) {
 							for (const i in action.data[key]) {
 								if (
-									parseFloat(action.data[key][i] as string) >
-										0 &&
-									parseFloat(action.data[key][i] as string) <
-										0.0001
+									parseInt(action.data[key][i] as string) ==
+									12345
 								) {
 									action.data[key][i] =
 										'{{ hold_secs | float }}';
 								}
 							}
 						} else if (
-							parseFloat(action.data[key] as string) > 0 &&
-							parseFloat(action.data[key] as string) < 0.0001
+							parseInt(action.data[key] as string) == 12345
 						) {
 							action.data[key] = '{{ hold_secs | float }}';
 						}
