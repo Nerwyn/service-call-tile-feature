@@ -216,12 +216,7 @@ export class BaseServiceCallFeature extends LitElement {
 				},
 			});
 		} else {
-			// window.open(`${window.location.href}?conversation=1`, '_self');
-			window.history.replaceState(
-				window.history.state?.root ? { root: true } : null,
-				'',
-				'?conversation=1',
-			);
+			window.open(`${window.location.href}?conversation=1`, '_self');
 			// TODO figure out how to make this work on desktop browsers
 			// const event = new Event('show-dialog', {
 			// 	bubbles: true,
