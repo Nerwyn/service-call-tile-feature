@@ -212,11 +212,25 @@ export class BaseServiceCallFeature extends LitElement {
 				type: 'assist/show',
 				payload: {
 					pipeline_id: pipelineId ?? 'last_used',
-					start_listening: startListening ?? false,
+					start_listening: startListening ?? true,
 				},
 			});
 		} else {
-			window.open(`${window.location.href}?conversation=1`, '_self');
+			// window.open(`${window.location.href}?conversation=1`, '_self');
+			const event = new Event('show-dialog', {
+				bubbles: true,
+				cancelable: true,
+				composed: true,
+			});
+			event.detail = {
+				dialogTag: 'ha-voice-command-dialog',
+				dialogImport: document.createElement('ha-voice-command-dialog'),
+				dialogParams: {
+					pipeline_id: pipelineId,
+					start_listening: startListening ?? false,
+				},
+			};
+			this.dispatchEvent(event);
 		}
 	}
 
