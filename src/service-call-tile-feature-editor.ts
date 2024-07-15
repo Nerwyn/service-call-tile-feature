@@ -304,7 +304,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionType =
 			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
 		if (this.activeEntry) {
-			let action = this.activeEntry[actionType];
+			let action = structuredClone(this.activeEntry[actionType]);
 			if (!action) {
 				action = { action: 'call-service', data: {} };
 			}
@@ -1317,6 +1317,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: 'tap_action'
 					]?.data ?? {},
 				);
+				value = value.trim() == '{}' ? '' : value;
 				break;
 			case 'yaml':
 			default:
