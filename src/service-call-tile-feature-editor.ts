@@ -301,9 +301,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleActionDataChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const data = e.detail.value;
-		if (data.includes('null')) {
-			return;
-		}
+		console.log(data);
 		const actionType =
 			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
 		if (this.activeEntry) {
@@ -315,7 +313,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				action.data = {};
 			}
 			action.data = load(data) as IData;
-			this.entryChanged({ [actionType]: action });
+			try {
+				action.data = load(data) as IData;
+				this.entryChanged({ [actionType]: action });
+				this.errors = undefined;
+			} catch (e) {
+				this.errors = [(e as Error).message];
+			}
 		}
 	}
 
