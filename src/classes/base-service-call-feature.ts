@@ -216,24 +216,25 @@ export class BaseServiceCallFeature extends LitElement {
 				},
 			});
 		} else {
-			// window.open(`${window.location.href}?conversation=1`, '_self');
-			const event = new Event('show-dialog', {
-				bubbles: true,
-				cancelable: true,
-				composed: true,
-			});
-			event.detail = {
-				dialogTag: 'ha-voice-command-dialog',
-				dialogImport: async () =>
-					Object.getPrototypeOf(
-						document.createElement('ha-voice-command-dialog'),
-					),
-				dialogParams: {
-					pipeline_id: pipelineId ?? 'last_used',
-					start_listening: startListening ?? false,
-				},
-			};
-			this.dispatchEvent(event);
+			window.open(`${window.location.href}?conversation=1`, '_self');
+			// TODO figure out how to make this work on desktop browsers
+			// const event = new Event('show-dialog', {
+			// 	bubbles: true,
+			// 	cancelable: true,
+			// 	composed: true,
+			// });
+			// event.detail = {
+			// 	dialogTag: 'ha-voice-command-dialog',
+			// 	dialogImport: () =>
+			// 		Object.getPrototypeOf(
+			// 			document.createElement('ha-voice-command-dialog'),
+			// 		),
+			// 	dialogParams: {
+			// 		pipeline_id: pipelineId ?? 'last_used',
+			// 		start_listening: startListening ?? false,
+			// 	},
+			// };
+			// this.dispatchEvent(event);
 		}
 	}
 
