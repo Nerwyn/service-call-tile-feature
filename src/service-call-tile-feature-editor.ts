@@ -312,9 +312,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			if (!action.data) {
 				action.data = {};
 			}
-			action.data = load(data) as IData;
 			try {
 				action.data = load(data) as IData;
+				if (JSON.stringify(action.data).includes('null')) {
+					return;
+				}
 				this.entryChanged({ [actionType]: action });
 				this.errors = undefined;
 			} catch (e) {
