@@ -301,6 +301,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleActionDataChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const data = e.detail.value;
+		if (data.includes('null')) {
+			return;
+		}
 		const actionType =
 			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
 		if (this.activeEntry) {
@@ -749,6 +752,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: ''}
 					</div>
 					<div class="action-options">
+						${this.buildValueInfoBox(
+							"Set the action below, and then use the code editor to set a data field to a held time template like '{{ hold_secs | float }}'.",
+						)}
 						${this.buildCodeEditor('data')}
 						${this.buildSelector(
 							'End action (optional)',
@@ -1011,7 +1017,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
-					${this.buildCodeEditor('data')}
+					${this.buildValueInfoBox()}${this.buildCodeEditor('data')}
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1071,7 +1077,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			<div class="action-options">
-				${this.buildCodeEditor('data')}
+				${this.buildValueInfoBox()}${this.buildCodeEditor('data')}
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1376,14 +1382,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	// buildValueInfoBox(
-	// 	title = 'Set an action data field to 12345 and it will automatically be replaced with the current value of the feature, or use the code editor for further templating.',
-	// ) {
-	// 	return html`<ha-alert
-	// 		.alertType="${'info'}"
-	// 		.title="${title}"
-	// 	></ha-alert>`;
-	// }
+	buildValueInfoBox(
+		title = "Set the action below, and then use the code editor to set a data field to a value template like '{{ value | float }}'.",
+	) {
+		return html`<ha-alert
+			.alertType="${'info'}"
+			.title="${title}"
+		></ha-alert>`;
+	}
 
 	render() {
 		if (!this.hass) {
