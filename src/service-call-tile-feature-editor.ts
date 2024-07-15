@@ -298,6 +298,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
+	handleActionDataChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const data = e.detail.value;
+		const actionType =
+			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
+		if (this.activeEntry) {
+			let action = this.activeEntry[actionType];
+			if (!action) {
+				action = { action: 'call-service', data: {} };
+			}
+			if (!action.data) {
+				action.data = {};
+			}
+			action.data = load(data) as IData;
+			this.entryChanged({ [actionType]: action });
+		}
+	}
+
 	handleSpinboxTabSelected(e: CustomEvent) {
 		this.yamlString = undefined;
 		const i = e.detail.value;
@@ -731,9 +749,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: ''}
 					</div>
 					<div class="action-options">
-						${this.buildValueInfoBox(
-							'Set an action data field to 12345 and it will automatically be replaced with the number of seconds this feature was held down, or use the code editor for further templating.',
-						)}
+						${this.buildCodeEditor('data')}
 						${this.buildSelector(
 							'End action (optional)',
 							'momentary_end_action',
@@ -995,7 +1011,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
-					${this.buildValueInfoBox()}
+					${this.buildCodeEditor('data')}
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1055,7 +1071,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			<div class="action-options">
-				${this.buildValueInfoBox()}
+				${this.buildCodeEditor('data')}
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1279,6 +1295,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	buildCodeEditor(mode: string) {
+		let title: string | undefined;
 		let value: string;
 		let handler: (e: CustomEvent) => void;
 		switch (mode) {
@@ -1288,6 +1305,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						? this.activeEntry?.styles
 						: this.config.styles) ?? '';
 				handler = this.handleStyleChanged;
+				title = 'CSS Styles';
+				break;
+			case 'data':
+				mode = 'yaml';
+				handler = this.handleActionDataChanged;
+				value = dump(
+					this.activeEntry?.[
+						this.actionsTabIndex == 1
+							? 'momentary_end_action'
+							: 'tap_action'
+					]?.data ?? {},
+				);
 				break;
 			case 'yaml':
 			default:
@@ -1297,9 +1326,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 		return html`
 			<div class="yaml-editor">
-				${mode == 'jinja2'
-					? html`<div class="style-header">CSS Styles</div>`
-					: ''}
+				${title ? html`<div class="style-header">${title}</div>` : ''}
 				<ha-code-editor
 					mode="${mode}"
 					autofocus
@@ -1348,14 +1375,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildValueInfoBox(
-		title = 'Set an action data field to 12345 and it will automatically be replaced with the current value of the feature, or use the code editor for further templating.',
-	) {
-		return html`<ha-alert
-			.alertType="${'info'}"
-			.title="${title}"
-		></ha-alert>`;
-	}
+	// buildValueInfoBox(
+	// 	title = 'Set an action data field to 12345 and it will automatically be replaced with the current value of the feature, or use the code editor for further templating.',
+	// ) {
+	// 	return html`<ha-alert
+	// 		.alertType="${'info'}"
+	// 		.title="${title}"
+	// 	></ha-alert>`;
+	// }
 
 	render() {
 		if (!this.hass) {
