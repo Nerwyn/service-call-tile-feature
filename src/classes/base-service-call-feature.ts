@@ -224,9 +224,10 @@ export class BaseServiceCallFeature extends LitElement {
 			});
 			event.detail = {
 				dialogTag: 'ha-voice-command-dialog',
-				dialogImport: document.createElement('ha-voice-command-dialog'),
+				dialogImport: () =>
+					document.createElement('ha-voice-command-dialog'),
 				dialogParams: {
-					pipeline_id: pipelineId,
+					pipeline_id: pipelineId ?? 'last_used',
 					start_listening: startListening ?? false,
 				},
 			};
