@@ -301,7 +301,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleActionDataChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const data = e.detail.value;
-		console.log(data);
 		const actionType =
 			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
 		if (this.activeEntry) {
@@ -678,6 +677,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					Appearance
 				</div>
 				<div class="content">
+					${this.buildAlertBox(
+						"Change the feature appearance based on its value using a template like '{{ value | float }}'.",
+					)}
 					${appearanceOptions}${this.buildCodeEditor('jinja2')}
 				</div>
 			</ha-expansion-panel>
@@ -758,8 +760,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							: ''}
 					</div>
 					<div class="action-options">
-						${this.buildValueInfoBox(
-							"Set the action below, and then use the code editor to set a data field to a held time template like '{{ hold_secs | float }}'.",
+						${this.buildAlertBox(
+							"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
 						)}
 						${this.buildCodeEditor('data')}
 						${this.buildSelector(
@@ -1023,7 +1025,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
-					${this.buildValueInfoBox()}${this.buildCodeEditor('data')}
+					${this.buildAlertBox()}${this.buildCodeEditor('data')}
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1083,7 +1085,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			<div class="action-options">
-				${this.buildValueInfoBox()}${this.buildCodeEditor('data')}
+				${this.buildAlertBox()}${this.buildCodeEditor('data')}
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1388,12 +1390,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildValueInfoBox(
-		title = "Set the action below, and then use the code editor to set a data field to a value template like '{{ value | float }}'.",
+	buildAlertBox(
+		title = "Set the action below, and then use the code editor to set a data field to the feature's new value using a template like '{{ value | float }}'.",
+		type: 'info' | 'warning' | 'error' | 'success' = 'info',
 	) {
 		return html`<ha-alert
-			.alertType="${'info'}"
 			.title="${title}"
+			.alertType="${type}"
 		></ha-alert>`;
 	}
 
@@ -1805,36 +1808,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									100;
 							}
 						}
-
-						// Shortcut for inserting {{ value | int/float }} into number only UI fields
-						if (entry.tap_action && entry.tap_action.data) {
-							const data = entry.tap_action.data;
-							for (const key in data) {
-								if (Array.isArray(data[key])) {
-									for (const i in data[key]) {
-										if (
-											parseInt(data[key][i] as string) ==
-											12345
-										) {
-											data[key][i] = `{{ value | ${
-												entry.step ?? 1 % 1 == 0
-													? 'int'
-													: 'float'
-											} }}`;
-										}
-									}
-								} else if (
-									parseInt(data[key] as string) == 12345
-								) {
-									data[key] = `{{ value | ${
-										entry.step ?? 1 % 1 == 0
-											? 'int'
-											: 'float'
-									} }}`;
-								}
-							}
-							entry.tap_action.data = data;
-						}
 						break;
 					}
 					case 'button':
@@ -1842,34 +1815,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						break;
 				}
 			}
-
-			// Shortcut for inserting {{ hold_secs | float }} into number only UI fields
-			for (const action of [
-				entry.momentary_end_action,
-				entry.increment?.momentary_end_action,
-				entry.decrement?.momentary_end_action,
-			]) {
-				if (action && action.data) {
-					for (const key in action.data) {
-						if (Array.isArray(action.data[key])) {
-							for (const i in action.data[key]) {
-								if (
-									parseInt(action.data[key][i] as string) ==
-									12345
-								) {
-									action.data[key][i] =
-										'{{ hold_secs | float }}';
-								}
-							}
-						} else if (
-							parseInt(action.data[key] as string) == 12345
-						) {
-							action.data[key] = '{{ hold_secs | float }}';
-						}
-					}
-				}
-			}
-
 			updatedEntries.push(entry);
 		}
 		updatedConfig.entries = updatedEntries;
