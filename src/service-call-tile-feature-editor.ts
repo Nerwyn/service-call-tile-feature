@@ -1846,7 +1846,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				'style' as keyof IConfig
 			] as unknown as Record<string, string>;
 			for (const field in style) {
-				styles += `\n${field}: ${style[field]} !important;`;
+				styles += `\n  ${field}: ${style[field]} !important;`;
 			}
 			styles += `\n}`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
@@ -1976,14 +1976,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (entry['style' as keyof IEntry]) {
-			let styles = '';
+			let styles = ':host {';
 			const style = entry['style' as keyof IEntry] as Record<
 				string,
 				string
 			>;
 			for (const field in style) {
-				styles += `\n${field}: ${style[field]} !important;`;
+				styles += `\n  ${field}: ${style[field]} !important;`;
 			}
+			styles += '\n}';
 			entry.styles = styles + (entry.styles ?? '');
 			delete entry['style' as keyof IEntry];
 		}
