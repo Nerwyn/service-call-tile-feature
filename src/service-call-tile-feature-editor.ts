@@ -38,7 +38,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlString?: string;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
-	codeEditorCooldown?: ReturnType<typeof setTimeout>;
+	codeEditorDelay?: ReturnType<typeof setTimeout>;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -277,9 +277,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleYamlCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		clearTimeout(this.codeEditorCooldown);
-		this.codeEditorCooldown = undefined;
-		this.codeEditorCooldown = setTimeout(() => {
+		clearTimeout(this.codeEditorDelay);
+		this.codeEditorDelay = undefined;
+		this.codeEditorDelay = setTimeout(() => {
 			const yaml = e.detail.value;
 			if (yaml != this.yaml) {
 				this.yaml = yaml;
@@ -308,9 +308,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionType = (e.target as HTMLElement).id as ActionType;
 		const actionYaml = e.detail.value;
 		e.stopPropagation();
-		clearTimeout(this.codeEditorCooldown);
-		this.codeEditorCooldown = undefined;
-		this.codeEditorCooldown = setTimeout(() => {
+		clearTimeout(this.codeEditorDelay);
+		this.codeEditorDelay = undefined;
+		this.codeEditorDelay = setTimeout(() => {
 			console.log(actionType);
 			if (this.activeEntry) {
 				try {
