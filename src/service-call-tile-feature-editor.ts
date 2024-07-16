@@ -16,6 +16,7 @@ import {
 	TileFeatureType,
 	TileFeatureTypes,
 	Actions,
+	ActionType,
 	ActionTypes,
 	ThumbTypes,
 } from './models/interfaces';
@@ -273,7 +274,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleYamlChanged(e: CustomEvent) {
+	handleYamlCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const yaml = e.detail.value;
 		if (yaml != this.yaml) {
@@ -281,7 +282,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleStyleChanged(e: CustomEvent) {
+	handleStyleCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
 		const css = e.detail.value;
 		if (this.entryIndex > -1) {
@@ -298,25 +299,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 	}
 
-	handleActionDataChanged(e: CustomEvent) {
+	handleActionCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const data = e.detail.value;
-		const actionType =
-			this.actionsTabIndex == 1 ? 'momentary_end_action' : 'tap_action';
+		const actionYaml = e.detail.value;
+		const actionType = (e.target as HTMLElement).id as ActionType;
 		if (this.activeEntry) {
-			let action = structuredClone(this.activeEntry[actionType]);
-			if (!action) {
-				action = { action: 'call-service', data: {} };
-			}
-			if (!action.data) {
-				action.data = {};
-			}
 			try {
-				action.data = load(data) as IData;
-				if (JSON.stringify(action.data).includes('null')) {
+				const actionObj = load(actionYaml) as IData;
+				if (JSON.stringify(actionObj ?? {}).includes('null')) {
 					return;
 				}
-				this.entryChanged({ [actionType]: action });
+				this.entryChanged({ [actionType]: actionObj });
 				this.errors = undefined;
 			} catch (e) {
 				this.errors = [(e as Error).message];
@@ -738,7 +731,11 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		switch (this.actionsTabIndex) {
-			case 1:
+			case 1: {
+				const momentaryStartAction = this.renderTemplate(
+					this.activeEntry?.momentary_start_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				);
 				actionSelectors = html`
 					${actionsTabBar}
 					<div class="action-options">
@@ -747,23 +744,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							'momentary_start_action',
 							defaultUiActions,
 						)}
-						${this.renderTemplate(
-							this.activeEntry?.momentary_start_action?.action ??
-								'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) == 'more-info'
+						${momentaryStartAction == 'more-info'
 							? this.buildSelector(
 									'Entity',
 									'momentary_start_action.target.entity_id' as keyof IEntry,
 									{ entity: {} },
 							  )
-							: ''}
+							: momentaryStartAction == 'fire-dom-event'
+							  ? this.buildCodeEditor(
+										'action',
+										'momentary_start_action',
+							    )
+							  : ''}
 					</div>
 					<div class="action-options">
 						${this.buildAlertBox(
 							"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
 						)}
-						${this.buildCodeEditor('data')}
 						${this.buildSelector(
 							'End action (optional)',
 							'momentary_end_action',
@@ -780,11 +777,28 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									{ entity: {} },
 							  )
 							: ''}
+						${this.buildCodeEditor(
+							'action',
+							'momentary_end_action',
+						)}
 					</div>
 				`;
 				break;
+			}
 			case 0:
-			default:
+			default: {
+				const tapAction = this.renderTemplate(
+					this.activeEntry?.tap_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				);
+				const doubleTapAction = this.renderTemplate(
+					this.activeEntry?.double_tap_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				);
+				const holdAction = this.renderTemplate(
+					this.activeEntry?.hold_action?.action ?? 'none',
+					this.getEntryContext(this.activeEntry as IEntry),
+				);
 				actionSelectors = html`
 					${actionsTabBar}
 					<div class="action-options">
@@ -793,16 +807,15 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							'tap_action',
 							defaultUiActions,
 						)}
-						${this.renderTemplate(
-							this.activeEntry?.tap_action?.action ?? 'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) == 'more-info'
+						${tapAction == 'more-info'
 							? this.buildSelector(
 									'Entity',
 									'tap_action.target.entity_id' as keyof IEntry,
 									{ entity: {} },
 							  )
-							: ''}
+							: tapAction == 'fire-dom-event'
+							  ? this.buildCodeEditor('action', 'tap_action')
+							  : ''}
 					</div>
 					<div class="action-options">
 						${this.buildSelector(
@@ -829,17 +842,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									200,
 							  )
 							: ''}
-						${this.renderTemplate(
-							this.activeEntry?.double_tap_action?.action ??
-								'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) == 'more-info'
+						${doubleTapAction == 'more-info'
 							? this.buildSelector(
 									'Entity',
 									'double_tap_action.target.entity_id' as keyof IEntry,
 									{ entity: {} },
 							  )
-							: ''}
+							: doubleTapAction == 'fire-dom-event'
+							  ? this.buildCodeEditor(
+										'action',
+										'double_tap_action',
+							    )
+							  : ''}
 					</div>
 					<div class="action-options">
 						${this.buildSelector(
@@ -890,26 +904,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 												},
 												100,
 										  )
-										: this.renderTemplate(
-													this.activeEntry
-														?.hold_action?.action ??
-														'none',
-													this.getEntryContext(
-														this
-															.activeEntry as IEntry,
-													),
-										    ) == 'more-info'
+										: holdAction == 'more-info'
 										  ? this.buildSelector(
 													'Entity',
 													'hold_action.target.entity_id' as keyof IEntry,
 													{ entity: {} },
 										    )
-										  : ''}
+										  : holdAction == 'fire-dom-event'
+										    ? this.buildCodeEditor(
+														'action',
+														'hold_action',
+										      )
+										    : ''}
 							  </div>`
 							: ''}
 					</div>
 				`;
 				break;
+			}
 		}
 
 		return html`
@@ -1025,7 +1037,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				<div class="action-options">
-					${this.buildAlertBox()}${this.buildCodeEditor('data')}
+					${this.buildAlertBox()}
 					${this.buildSelector('Action', 'tap_action', {
 						ui_action: {
 							actions: actionsNoRepeat,
@@ -1042,6 +1054,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								{ entity: {} },
 						  )
 						: ''}
+					${this.buildCodeEditor('action', 'tap_action')}
 				</div>
 			`)}
 		`;
@@ -1085,7 +1098,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			<div class="action-options">
-				${this.buildAlertBox()}${this.buildCodeEditor('data')}
+				${this.buildAlertBox()}
 				${this.buildSelector(
 					'Tap action',
 					'tap_action',
@@ -1101,6 +1114,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							{ entity: {} },
 					  )
 					: ''}
+				${this.buildCodeEditor('action', 'tap_action')}
 			</div>
 			<div class="action-options">
 				${this.buildSelector(
@@ -1308,7 +1322,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
 	}
 
-	buildCodeEditor(mode: string) {
+	buildCodeEditor(mode: string, id?: string) {
 		let title: string | undefined;
 		let value: string;
 		let handler: (e: CustomEvent) => void;
@@ -1318,25 +1332,23 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					(this.entryIndex > -1
 						? this.activeEntry?.styles
 						: this.config.styles) ?? '';
-				handler = this.handleStyleChanged;
+				handler = this.handleStyleCodeChanged;
 				title = 'CSS Styles';
 				break;
-			case 'data':
+			case 'action':
 				mode = 'yaml';
-				handler = this.handleActionDataChanged;
+				handler = this.handleActionCodeChanged;
 				value = dump(
-					this.activeEntry?.[
-						this.actionsTabIndex == 1
-							? 'momentary_end_action'
-							: 'tap_action'
-					]?.data ?? {},
+					(this.activeEntry?.[
+						(id ?? 'tap_action') as keyof IEntry
+					] as IAction) ?? {},
 				);
 				value = value.trim() == '{}' ? '' : value;
 				break;
 			case 'yaml':
 			default:
 				value = this.yaml;
-				handler = this.handleYamlChanged;
+				handler = this.handleYamlCodeChanged;
 				break;
 		}
 		return html`
@@ -1344,6 +1356,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				${title ? html`<div class="style-header">${title}</div>` : ''}
 				<ha-code-editor
 					mode="${mode}"
+					id="${id}"
 					autofocus
 					autocomplete-entities
 					autocomplete-icons
