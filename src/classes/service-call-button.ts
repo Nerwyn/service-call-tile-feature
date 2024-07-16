@@ -5,7 +5,8 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
-	@property({ attribute: false }) shouldRenderRipple = true;
+	@property() shouldRenderRipple = true;
+	renderRipple = true;
 
 	clickTimer?: ReturnType<typeof setTimeout>;
 	clickCount: number = 0;
@@ -157,6 +158,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				// Hold action is not triggered, fire tap action
 				this.onClick(e);
 			}
+			this.toggleRipple();
 		}
 	}
 
@@ -179,12 +181,18 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
 			this.endAction();
 			this.swiping = true;
+			this.toggleRipple();
 		}
 	}
 
 	onMouseLeave(_e: MouseEvent) {
 		this.endAction();
 		this.swiping = true;
+		this.toggleRipple();
+	}
+
+	onTouchCancel(_e: TouchEvent) {
+		this.toggleRipple();
 	}
 
 	endAction() {
@@ -201,12 +209,18 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 		super.endAction();
 	}
 
+	toggleRipple() {
+		setTimeout(() => (this.renderRipple = false), 500);
+		setTimeout(() => (this.renderRipple = true), 1000);
+	}
+
 	render() {
 		this.setValue();
 
-		const ripple = this.shouldRenderRipple
-			? html`<md-ripple></md-ripple>`
-			: html``;
+		const ripple =
+			this.shouldRenderRipple && this.renderRipple
+				? html`<md-ripple></md-ripple>`
+				: html``;
 
 		const button = html`<button
 			class=${`${this.className} background` ?? 'background'}
@@ -217,6 +231,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 			@touchstart=${this.onTouchStart}
 			@touchend=${this.onTouchEnd}
 			@touchmove=${this.onTouchMove}
+			@touchcanecel=${this.onTouchCancel}
 			@contextmenu=${this.onContextMenu}
 		>
 			${ripple}
