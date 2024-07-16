@@ -302,10 +302,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				@media (hover: hover) {
 					.option:hover {
 						opacity: var(--hover-opacity) !important;
-						background-color: var(
+						background: var(
 							--color,
 							var(--state-inactive-color, var(--disabled-color))
-						);
+						) !important;
 					}
 				}
 				.option:active {
