@@ -133,13 +133,11 @@ class ServiceCallTileFeature extends LitElement {
 		const styles = this.config.styles
 			? html`
 					<style>
-						:host {
-							${renderTemplate(
+						${renderTemplate(
 							this.hass,
 							this.config.styles,
 							context,
 						)}
-						}
 					</style>
 			  `
 			: '';

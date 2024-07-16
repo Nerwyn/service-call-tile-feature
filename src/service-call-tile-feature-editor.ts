@@ -1841,13 +1841,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		}
 
 		if (updatedConfig['style' as keyof IConfig]) {
-			let styles = '';
+			let styles = ':host {';
 			const style = updatedConfig[
 				'style' as keyof IConfig
 			] as unknown as Record<string, string>;
 			for (const field in style) {
 				styles += `\n${field}: ${style[field]} !important;`;
 			}
+			styles += `\n}`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['style' as keyof IConfig];
 		}
@@ -1857,7 +1858,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			)
 				.replace('{{', '')
 				.replace('}}', '')} %}`;
-			styles += '\ndisplay: none !important;';
+			styles += '\n:host {\n  display: none !important;\n}';
 			styles += '\n{% endif %};';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['hide' as keyof IConfig];
@@ -1868,7 +1869,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			)
 				.replace('{{', '')
 				.replace('}}', '')} %}`;
-			styles += '\ndisplay: none !important;';
+			styles += '\n:host {\n  display: none !important;\n}';
 			styles += '\n{% endif %}';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['show' as keyof IConfig];
@@ -1949,6 +1950,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		entry.value_attribute = entry.value_attribute ?? 'state';
 
 		// Move style keys to style object
+		let deprecatedStyleKeyPresent = false;
 		const deprecatedStyleKeys: Record<string, string> = {
 			color: '--color',
 			opacity: '--opacity',
@@ -1958,16 +1960,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			background_opacity: '--background-opacity',
 			flex_basis: 'flex-basis',
 		};
-		let styles = '';
+		let styles = ':host {';
 		for (const field in deprecatedStyleKeys) {
 			if (entry[field as keyof IEntry]) {
+				deprecatedStyleKeyPresent = true;
 				styles += `\n${deprecatedStyleKeys[field]}: ${
 					entry[field as keyof IEntry]
 				} !important;`;
 				delete entry[field as keyof IEntry];
 			}
 		}
-		if (styles) {
+		styles += '\n';
+		if (deprecatedStyleKeyPresent) {
 			entry.styles = styles + (entry.styles ?? '');
 		}
 
