@@ -267,10 +267,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					left: 0px;
 					height: 100%;
 					width: 100%;
-					background: var(
-						--background,
-						var(--color, var(--disabled-color))
-					);
+					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity, 0.2);
 				}
 
