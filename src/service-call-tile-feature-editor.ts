@@ -309,12 +309,12 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	}
 
 	handleActionCodeChanged(e: CustomEvent) {
+		const actionType = (e.target as HTMLElement).id as ActionType;
+		const actionYaml = e.detail.value;
 		e.stopPropagation();
 		clearTimeout(this.codeEditorCooldown);
 		this.codeEditorCooldown = undefined;
 		this.codeEditorCooldown = setTimeout(() => {
-			const actionYaml = e.detail.value;
-			const actionType = (e.target as HTMLElement).id as ActionType;
 			console.log(actionType);
 			if (this.activeEntry) {
 				try {
