@@ -289,23 +289,19 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleStyleCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		clearTimeout(this.codeEditorCooldown);
-		this.codeEditorCooldown = undefined;
-		this.codeEditorCooldown = setTimeout(() => {
-			const css = e.detail.value;
-			if (this.entryIndex > -1) {
-				if (css != this.activeEntry?.styles) {
-					this.entryChanged({ styles: css });
-				}
-			} else {
-				if (css != this.config.styles) {
-					this.configChanged({
-						...this.config,
-						styles: css,
-					});
-				}
+		const css = e.detail.value;
+		if (this.entryIndex > -1) {
+			if (css != this.activeEntry?.styles) {
+				this.entryChanged({ styles: css });
 			}
-		}, 1000);
+		} else {
+			if (css != this.config.styles) {
+				this.configChanged({
+					...this.config,
+					styles: css,
+				});
+			}
+		}
 	}
 
 	handleActionCodeChanged(e: CustomEvent) {
