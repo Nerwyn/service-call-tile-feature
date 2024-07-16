@@ -38,6 +38,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	yamlString?: string;
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
+	codeEditorCooldown?: ReturnType<typeof setTimeout>;
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -276,45 +277,57 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	handleYamlCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const yaml = e.detail.value;
-		if (yaml != this.yaml) {
-			this.yaml = yaml;
-		}
+		clearTimeout(this.codeEditorCooldown);
+		this.codeEditorCooldown = undefined;
+		this.codeEditorCooldown = setTimeout(() => {
+			const yaml = e.detail.value;
+			if (yaml != this.yaml) {
+				this.yaml = yaml;
+			}
+		}, 1000);
 	}
 
 	handleStyleCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const css = e.detail.value;
-		if (this.entryIndex > -1) {
-			if (css != this.activeEntry?.styles) {
-				this.entryChanged({ styles: css });
+		clearTimeout(this.codeEditorCooldown);
+		this.codeEditorCooldown = undefined;
+		this.codeEditorCooldown = setTimeout(() => {
+			const css = e.detail.value;
+			if (this.entryIndex > -1) {
+				if (css != this.activeEntry?.styles) {
+					this.entryChanged({ styles: css });
+				}
+			} else {
+				if (css != this.config.styles) {
+					this.configChanged({
+						...this.config,
+						styles: css,
+					});
+				}
 			}
-		} else {
-			if (css != this.config.styles) {
-				this.configChanged({
-					...this.config,
-					styles: css,
-				});
-			}
-		}
+		}, 1000);
 	}
 
 	handleActionCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		const actionYaml = e.detail.value;
-		const actionType = (e.target as HTMLElement).id as ActionType;
-		if (this.activeEntry) {
-			try {
-				const actionObj = load(actionYaml) as IData;
-				if (JSON.stringify(actionObj ?? {}).includes('null')) {
-					return;
+		clearTimeout(this.codeEditorCooldown);
+		this.codeEditorCooldown = undefined;
+		this.codeEditorCooldown = setTimeout(() => {
+			const actionYaml = e.detail.value;
+			const actionType = (e.target as HTMLElement).id as ActionType;
+			if (this.activeEntry) {
+				try {
+					const actionObj = load(actionYaml) as IData;
+					if (JSON.stringify(actionObj ?? {}).includes('null')) {
+						return;
+					}
+					this.entryChanged({ [actionType]: actionObj });
+					this.errors = undefined;
+				} catch (e) {
+					this.errors = [(e as Error).message];
 				}
-				this.entryChanged({ [actionType]: actionObj });
-				this.errors = undefined;
-			} catch (e) {
-				this.errors = [(e as Error).message];
 			}
-		}
+		}, 1000);
 	}
 
 	handleSpinboxTabSelected(e: CustomEvent) {
@@ -871,52 +884,53 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							this.getEntryContext(this.activeEntry as IEntry),
 						) != 'none'
 							? html`<div class="form">
-									${this.buildSelector(
-										'Hold Time',
-										'hold_action.hold_time' as keyof IEntry,
-										{
-											number: {
-												min: 0,
-												step: 0,
-												mode: 'box',
-												unit_of_measurement: 'ms',
-											},
-										},
-										500,
-									)}${this.renderTemplate(
-										this.activeEntry?.hold_action
-											?.action as string,
-										this.getEntryContext(
-											this.activeEntry as IEntry,
-										),
-									) == 'repeat'
-										? this.buildSelector(
-												'Repeat Delay',
-												'hold_action.repeat_delay' as keyof IEntry,
-												{
-													number: {
-														min: 0,
-														step: 0,
-														mode: 'box',
-														unit_of_measurement:
-															'ms',
-													},
+										${this.buildSelector(
+											'Hold Time',
+											'hold_action.hold_time' as keyof IEntry,
+											{
+												number: {
+													min: 0,
+													step: 0,
+													mode: 'box',
+													unit_of_measurement: 'ms',
 												},
-												100,
+											},
+											500,
+										)}${this.renderTemplate(
+											this.activeEntry?.hold_action
+												?.action as string,
+											this.getEntryContext(
+												this.activeEntry as IEntry,
+											),
+										) == 'repeat'
+											? this.buildSelector(
+													'Repeat Delay',
+													'hold_action.repeat_delay' as keyof IEntry,
+													{
+														number: {
+															min: 0,
+															step: 0,
+															mode: 'box',
+															unit_of_measurement:
+																'ms',
+														},
+													},
+													100,
+											  )
+											: holdAction == 'more-info'
+											  ? this.buildSelector(
+														'Entity',
+														'hold_action.target.entity_id' as keyof IEntry,
+														{ entity: {} },
+											    )
+											  : ''}
+									</div>
+									${holdAction == 'fire-dom-event'
+										? this.buildCodeEditor(
+												'action',
+												'hold_action',
 										  )
-										: holdAction == 'more-info'
-										  ? this.buildSelector(
-													'Entity',
-													'hold_action.target.entity_id' as keyof IEntry,
-													{ entity: {} },
-										    )
-										  : holdAction == 'fire-dom-event'
-										    ? this.buildCodeEditor(
-														'action',
-														'hold_action',
-										      )
-										    : ''}
-							  </div>`
+										: ''}`
 							: ''}
 					</div>
 				`;
