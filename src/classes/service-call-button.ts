@@ -220,7 +220,9 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 
 		const ripple = this.shouldRenderRipple
 			? html`<md-ripple
-					style="${this.rippleVisible ? 'visible' : 'hidden'}"
+					style="visibility: ${this.rippleVisible
+						? 'visible'
+						: 'hidden'}"
 			  ></md-ripple>`
 			: html``;
 
