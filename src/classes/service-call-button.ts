@@ -6,7 +6,7 @@ import { BaseServiceCallFeature } from './base-service-call-feature';
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
 	@property() shouldRenderRipple = true;
-	@state() renderRipple = true;
+	@state() rippleVisible = true;
 
 	clickTimer?: ReturnType<typeof setTimeout>;
 	clickCount: number = 0;
@@ -57,7 +57,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	onStart(e: TouchEvent | MouseEvent) {
-		this.renderRipple = true;
+		this.rippleVisible = true;
 		this.swiping = false;
 		if ('targetTouches' in e) {
 			this.initialX = e.targetTouches[0].clientX;
@@ -211,17 +211,18 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	toggleRipple() {
-		setTimeout(() => (this.renderRipple = false), 500);
-		setTimeout(() => (this.renderRipple = true), 1000);
+		setTimeout(() => (this.rippleVisible = false), 2000);
+		setTimeout(() => (this.rippleVisible = true), 2500);
 	}
 
 	render() {
 		this.setValue();
 
-		const ripple =
-			this.shouldRenderRipple && this.renderRipple
-				? html`<md-ripple></md-ripple>`
-				: html``;
+		const ripple = this.shouldRenderRipple
+			? html`<md-ripple
+					style="${this.rippleVisible ? 'visible' : 'hidden'}"
+			  ></md-ripple>`
+			: html``;
 
 		const button = html`<button
 			class=${`${this.className} background` ?? 'background'}
