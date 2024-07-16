@@ -250,7 +250,8 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 				}
 
 				button {
-					background: 0px 0px;
+					background: 0px 0px !important;
+					opacity: 1 !important;
 					position: absolute;
 					cursor: pointer;
 					height: 100%;
@@ -266,7 +267,10 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 					left: 0px;
 					height: 100%;
 					width: 100%;
-					background: var(--color, var(--disabled-color));
+					background: var(
+						--background,
+						var(--color, var(--disabled-color))
+					);
 					opacity: var(--opacity, 0.2);
 				}
 
