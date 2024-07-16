@@ -598,7 +598,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	buildSelector(
 		label: string,
-		key: keyof IEntry,
+		key: string,
 		selector: object,
 		backupValue: string | number | boolean | object = '',
 	) {
@@ -719,6 +719,83 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
+	buildActionsOptions(
+		label: string,
+		actionType: ActionType,
+		selector: object,
+		buildCodeEditor: boolean = false,
+	) {
+		const context = this.getEntryContext(this.activeEntry as IEntry);
+		const action = this.renderTemplate(
+			this.activeEntry?.[actionType]?.action ?? 'none',
+			context,
+		);
+		return html`<div class="action-options">
+			${this.buildSelector(label, actionType, selector)}
+			${actionType == 'double_tap_action'
+				? this.buildSelector(
+						'Double Tap Window',
+						'double_tap_action.double_tap_window',
+						{
+							number: {
+								min: 0,
+								step: 0,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						200,
+				  )
+				: actionType == 'hold_action'
+				  ? html`<div class="form">
+							${this.buildSelector(
+								'Hold Time',
+								'hold_action.hold_time',
+								{
+									number: {
+										min: 0,
+										step: 0,
+										mode: 'box',
+										unit_of_measurement: 'ms',
+									},
+								},
+								500,
+							)}
+							${this.renderTemplate(
+								this.activeEntry?.hold_action?.action as string,
+								context,
+							) == 'repeat'
+								? this.buildSelector(
+										'Repeat Delay',
+										'hold_action.repeat_delay',
+										{
+											number: {
+												min: 0,
+												step: 0,
+												mode: 'box',
+												unit_of_measurement: 'ms',
+											},
+										},
+										100,
+								  )
+								: ''}
+				    </div>`
+				  : ''}
+			${action == 'more-info'
+				? this.buildSelector(
+						'Entity',
+						`${actionType}.target.entity_id`,
+						{
+							entity: {},
+						},
+				  )
+				: ''}
+			${buildCodeEditor || action == 'fire-dom-event'
+				? this.buildCodeEditor('action', actionType)
+				: ''}
+		</div>`;
+	}
+
 	buildButtonGuiEditor() {
 		const actionsTabBar = html`
 			<paper-tabs
@@ -742,194 +819,49 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		switch (this.actionsTabIndex) {
 			case 1: {
-				const momentaryStartAction = this.renderTemplate(
-					this.activeEntry?.momentary_start_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				);
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="action-options">
-						${this.buildSelector(
-							'Start action (optional)',
-							'momentary_start_action',
-							defaultUiActions,
-						)}
-						${momentaryStartAction == 'more-info'
-							? this.buildSelector(
-									'Entity',
-									'momentary_start_action.target.entity_id' as keyof IEntry,
-									{ entity: {} },
-							  )
-							: momentaryStartAction == 'fire-dom-event'
-							  ? this.buildCodeEditor(
-										'action',
-										'momentary_start_action',
-							    )
-							  : ''}
-					</div>
-					<div class="action-options">
-						${this.buildAlertBox(
-							"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
-						)}
-						${this.buildSelector(
-							'End action (optional)',
-							'momentary_end_action',
-							defaultUiActions,
-						)}
-						${this.renderTemplate(
-							this.activeEntry?.momentary_end_action?.action ??
-								'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) == 'more-info'
-							? this.buildSelector(
-									'Entity',
-									'momentary_end_action.target.entity_id' as keyof IEntry,
-									{ entity: {} },
-							  )
-							: ''}
-						${this.buildCodeEditor(
-							'action',
-							'momentary_end_action',
-						)}
-					</div>
+					${this.buildActionsOptions(
+						'Start Action (optional)',
+						'momentary_start_action',
+						defaultUiActions,
+					)}
+					${this.buildAlertBox(
+						"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
+					)}
+					${this.buildActionsOptions(
+						'End Action (optional)',
+						'momentary_end_action',
+						defaultUiActions,
+						true,
+					)}
 				`;
 				break;
 			}
 			case 0:
 			default: {
-				const tapAction = this.renderTemplate(
-					this.activeEntry?.tap_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				);
-				const doubleTapAction = this.renderTemplate(
-					this.activeEntry?.double_tap_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				);
-				const holdAction = this.renderTemplate(
-					this.activeEntry?.hold_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				);
 				actionSelectors = html`
 					${actionsTabBar}
-					<div class="action-options">
-						${this.buildSelector(
-							'Tap action (optional)',
-							'tap_action',
-							defaultUiActions,
-						)}
-						${tapAction == 'more-info'
-							? this.buildSelector(
-									'Entity',
-									'tap_action.target.entity_id' as keyof IEntry,
-									{ entity: {} },
-							  )
-							: tapAction == 'fire-dom-event'
-							  ? this.buildCodeEditor('action', 'tap_action')
-							  : ''}
-					</div>
-					<div class="action-options">
-						${this.buildSelector(
-							'Double tap action (optional)',
-							'double_tap_action',
-							defaultUiActions,
-						)}
-						${this.renderTemplate(
-							this.activeEntry?.double_tap_action?.action ??
-								'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) != 'none'
-							? this.buildSelector(
-									'Double Tap Window',
-									'double_tap_action.double_tap_window' as keyof IEntry,
-									{
-										number: {
-											min: 0,
-											step: 0,
-											mode: 'box',
-											unit_of_measurement: 'ms',
-										},
-									},
-									200,
-							  )
-							: ''}
-						${doubleTapAction == 'more-info'
-							? this.buildSelector(
-									'Entity',
-									'double_tap_action.target.entity_id' as keyof IEntry,
-									{ entity: {} },
-							  )
-							: doubleTapAction == 'fire-dom-event'
-							  ? this.buildCodeEditor(
-										'action',
-										'double_tap_action',
-							    )
-							  : ''}
-					</div>
-					<div class="action-options">
-						${this.buildSelector(
-							'Hold action (optional)',
-							'hold_action',
-							{
-								ui_action: {
-									actions: Actions,
-									default_action: 'none',
-								},
+					${this.buildActionsOptions(
+						'Tap action (optional)',
+						'tap_action',
+						defaultUiActions,
+					)}
+					${this.buildActionsOptions(
+						'Double tap action (optional)',
+						'double_tap_action',
+						defaultUiActions,
+					)}
+					${this.buildActionsOptions(
+						'Hold action (optional)',
+						'hold_action',
+						{
+							ui_action: {
+								actions: Actions,
+								default_action: 'none',
 							},
-						)}
-						${this.renderTemplate(
-							this.activeEntry?.hold_action?.action ?? 'none',
-							this.getEntryContext(this.activeEntry as IEntry),
-						) != 'none'
-							? html`<div class="form">
-										${this.buildSelector(
-											'Hold Time',
-											'hold_action.hold_time' as keyof IEntry,
-											{
-												number: {
-													min: 0,
-													step: 0,
-													mode: 'box',
-													unit_of_measurement: 'ms',
-												},
-											},
-											500,
-										)}${this.renderTemplate(
-											this.activeEntry?.hold_action
-												?.action as string,
-											this.getEntryContext(
-												this.activeEntry as IEntry,
-											),
-										) == 'repeat'
-											? this.buildSelector(
-													'Repeat Delay',
-													'hold_action.repeat_delay' as keyof IEntry,
-													{
-														number: {
-															min: 0,
-															step: 0,
-															mode: 'box',
-															unit_of_measurement:
-																'ms',
-														},
-													},
-													100,
-											  )
-											: holdAction == 'more-info'
-											  ? this.buildSelector(
-														'Entity',
-														'hold_action.target.entity_id' as keyof IEntry,
-														{ entity: {} },
-											    )
-											  : ''}
-									</div>
-									${holdAction == 'fire-dom-event'
-										? this.buildCodeEditor(
-												'action',
-												'hold_action',
-										  )
-										: ''}`
-							: ''}
-					</div>
+						},
+					)}
 				`;
 				break;
 			}
@@ -964,7 +896,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				html`
 					${this.buildSelector(
 						'Min',
-						'range.0' as keyof IEntry,
+						'range.0',
 						{
 							number: {
 								max:
@@ -980,7 +912,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					)}
 					${this.buildSelector(
 						'Max',
-						'range.1' as keyof IEntry,
+						'range.1',
 						{
 							number: {
 								min:
@@ -1047,26 +979,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				)}
 			`)}
 			${this.buildActionsPanel(html`
-				<div class="action-options">
-					${this.buildAlertBox()}
-					${this.buildSelector('Action', 'tap_action', {
+				${this.buildAlertBox()}
+				${this.buildActionsOptions(
+					'Action',
+					'tap_action',
+					{
 						ui_action: {
 							actions: actionsNoRepeat,
 							default_action: 'call-service',
 						},
-					})}
-					${this.renderTemplate(
-						this.activeEntry?.tap_action?.action ?? 'none',
-						this.getEntryContext(this.activeEntry as IEntry),
-					) == 'more-info'
-						? this.buildSelector(
-								'Entity',
-								'tap_action.target.entity_id' as keyof IEntry,
-								{ entity: {} },
-						  )
-						: ''}
-					${this.buildCodeEditor('action', 'tap_action')}
-				</div>
+					},
+					true,
+				)}
 			`)}
 		`;
 	}
@@ -1081,7 +1005,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 			default:
 				selectorGuiEditor = html`
-					${this.buildSelector('Option', 'option' as keyof IEntry, {
+					${this.buildSelector('Option', 'option', {
 						text: {},
 					})}
 					${this.buildButtonGuiEditor()}
@@ -1108,71 +1032,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 		const actionSelectors = html`
-			<div class="action-options">
-				${this.buildAlertBox()}
-				${this.buildSelector(
-					'Tap action',
-					'tap_action',
-					defaultTapActions,
-				)}
-				${this.renderTemplate(
-					this.activeEntry?.tap_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				) == 'more-info'
-					? this.buildSelector(
-							'Entity',
-							'tap_action.target.entity_id' as keyof IEntry,
-							{ entity: {} },
-					  )
-					: ''}
-				${this.buildCodeEditor('action', 'tap_action')}
-			</div>
-			<div class="action-options">
-				${this.buildSelector(
-					'Hold action (optional)',
-					'hold_action',
-					defaultHoldActions,
-				)}
-				${this.renderTemplate(
-					this.activeEntry?.hold_action?.action ?? 'none',
-					this.getEntryContext(this.activeEntry as IEntry),
-				) != 'none'
-					? html`<div class="form">
-							${this.buildSelector(
-								'Hold Time',
-								'hold_action.hold_time' as keyof IEntry,
-								{
-									number: {
-										min: 0,
-										step: 0,
-										mode: 'box',
-										unit_of_measurement: 'ms',
-									},
-								},
-								500,
-							)}${this.renderTemplate(
-								this.activeEntry?.hold_action?.action as string,
-								this.getEntryContext(
-									this.activeEntry as IEntry,
-								),
-							) == 'repeat'
-								? this.buildSelector(
-										'Repeat Delay',
-										'hold_action.repeat_delay' as keyof IEntry,
-										{
-											number: {
-												min: 0,
-												step: 0,
-												mode: 'box',
-												unit_of_measurement: 'ms',
-											},
-										},
-										100,
-								  )
-								: ''}
-					  </div>`
-					: ''}
-			</div>
+			${this.buildAlertBox()}
+			${this.buildActionsOptions(
+				'Tap action',
+				'tap_action',
+				defaultTapActions,
+				true,
+			)}
+			${this.buildActionsOptions(
+				'Hold action (optional)',
+				'hold_action',
+				defaultHoldActions,
+			)}
 		`;
 		const spinboxTabBar = html`
 			<paper-tabs
@@ -1235,7 +1106,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						html`
 							${this.buildSelector(
 								'Min',
-								'range.0' as keyof IEntry,
+								'range.0',
 								{
 									number: {
 										max:
@@ -1255,7 +1126,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 							)}
 							${this.buildSelector(
 								'Max',
-								'range.1' as keyof IEntry,
+								'range.1',
 								{
 									number: {
 										min:
