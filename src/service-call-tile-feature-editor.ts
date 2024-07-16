@@ -315,6 +315,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		this.codeEditorCooldown = setTimeout(() => {
 			const actionYaml = e.detail.value;
 			const actionType = (e.target as HTMLElement).id as ActionType;
+			console.log(actionType);
 			if (this.activeEntry) {
 				try {
 					const actionObj = load(actionYaml) as IData;
