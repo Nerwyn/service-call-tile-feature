@@ -1,12 +1,12 @@
 import { CSSResult, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 import { BaseServiceCallFeature } from './base-service-call-feature';
 
 @customElement('service-call-button')
 export class ServiceCallButton extends BaseServiceCallFeature {
 	@property() shouldRenderRipple = true;
-	renderRipple = true;
+	@state() renderRipple = true;
 
 	clickTimer?: ReturnType<typeof setTimeout>;
 	clickCount: number = 0;
@@ -57,6 +57,7 @@ export class ServiceCallButton extends BaseServiceCallFeature {
 	}
 
 	onStart(e: TouchEvent | MouseEvent) {
+		this.renderRipple = true;
 		this.swiping = false;
 		if ('targetTouches' in e) {
 			this.initialX = e.targetTouches[0].clientX;
