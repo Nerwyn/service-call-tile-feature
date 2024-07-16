@@ -311,7 +311,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		clearTimeout(this.codeEditorDelay);
 		this.codeEditorDelay = undefined;
 		this.codeEditorDelay = setTimeout(() => {
-			console.log(actionType);
 			if (this.activeEntry) {
 				try {
 					const actionObj = load(actionYaml) as IData;
@@ -732,7 +731,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		);
 		return html`<div class="action-options">
 			${this.buildSelector(label, actionType, selector)}
-			${actionType == 'double_tap_action'
+			${action != 'none' && actionType == 'double_tap_action'
 				? this.buildSelector(
 						'Double Tap Window',
 						'double_tap_action.double_tap_window',
@@ -746,7 +745,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						},
 						200,
 				  )
-				: actionType == 'hold_action'
+				: action != 'none' && actionType == 'hold_action'
 				  ? html`<div class="form">
 							${this.buildSelector(
 								'Hold Time',
