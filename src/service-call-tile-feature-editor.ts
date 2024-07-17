@@ -360,19 +360,18 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
 
+		const updatedEntry: IEntry = {};
+		const entityId = this.renderTemplate(
+			this.activeEntry?.entity_id ?? '',
+			this.getEntryContext(this.activeEntry as IEntry),
+		) as string;
 		if (key.endsWith('.confirmation.exemptions')) {
 			value = ((value as string[]) ?? []).map((v) => {
 				return {
 					user: v,
 				};
 			});
-		}
-
-		const entityId = this.renderTemplate(
-			this.activeEntry?.entity_id ?? '',
-			this.getEntryContext(this.activeEntry as IEntry),
-		) as string;
-		if (key.startsWith('range.')) {
+		} else if (key.startsWith('range.')) {
 			let attribute: string = '';
 			let backupValue: number = 0;
 			if (key == 'range.0') {
@@ -389,14 +388,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			}
 		} else if (key == 'step') {
 			value = value ?? this.hass.states[entityId]?.attributes?.step ?? 1;
-		} else if (key == 'attribute') {
+		} else if (key == 'value_attribute') {
 			const [domain, _service] = entityId.split('.');
 			value = value ?? this.populateMissingAttribute(domain);
+		} else if (key == 'entity_id') {
+			updatedEntry.value_attribute = '';
 		}
 
-		this.entryChanged(
-			deepSet(structuredClone(this.activeEntry) as object, key, value),
-		);
+		this.entryChanged(deepSet(updatedEntry as object, key, value));
 	}
 
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
