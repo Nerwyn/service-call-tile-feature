@@ -389,8 +389,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		} else if (key == 'step') {
 			value = value ?? this.hass.states[entityId]?.attributes?.step ?? 1;
 		} else if (key == 'value_attribute') {
-			const [domain, _service] = entityId.split('.');
-			value = value ?? this.populateMissingAttribute(domain);
+			value = value ?? this.populateMissingAttribute(entityId);
 		} else if (key == 'entity_id') {
 			updatedEntry.value_attribute = '';
 		}
@@ -1562,27 +1561,118 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 	populateMissingEntryAttribute(entry: IEntry) {
 		if (!entry.value_attribute) {
-			const [domain, _service] = (
-				this.renderTemplate(
-					entry.entity_id ?? '',
-					this.getEntryContext(entry),
-				) as string
-			).split('.');
-			entry.value_attribute = this.populateMissingAttribute(domain);
+			const entityId = this.renderTemplate(
+				entry.entity_id ?? '',
+				this.getEntryContext(entry),
+			) as string;
+			entry.value_attribute = this.populateMissingAttribute(entityId);
 		}
 		return entry;
 	}
 
-	populateMissingAttribute(domain: string) {
+	populateMissingAttribute(entityId: string) {
+		const [domain, _service] = entityId.split('.');
 		switch (domain) {
 			case 'timer':
 				return 'elapsed';
 			case 'media_player':
-				return 'position';
+				if (this.hass.states?.[entityId]?.attributes?.position) {
+					return 'position';
+				} else {
+					return 'volume_level';
+				}
 			case 'light':
-				return 'brightness';
+				if (this.hass.states?.[entityId]?.attributes?.brightness) {
+					return 'brightness';
+				} else if (
+					this.hass.states?.[entityId]?.attributes?.color_temp
+				) {
+					return 'color_temp';
+				} else if (
+					this.hass.states?.[entityId]?.attributes?.color_temp_kelvin
+				) {
+					return 'color_temp_kelvin';
+				} else if (this.hass.states?.[entityId]?.attributes?.hs_color) {
+					return 'hs_color[0]';
+				} else {
+					return 'state';
+				}
 			case 'climate':
-				return 'temperature';
+				if (this.hass.states?.[entityId]?.attributes?.temperature) {
+					return 'temperature';
+				} else if (
+					this.hass.states?.[entityId]?.attributes
+						?.current_temperature
+				) {
+					return 'current_temperature';
+				} else if (
+					this.hass.states?.[entityId]?.attributes?.target_humidity
+				) {
+					return 'target_humidity';
+				} else {
+					return 'state';
+				}
+			case 'fan':
+				if (this.hass.states?.[entityId]?.attributes?.percentage) {
+					return 'percentage';
+				} else {
+					return 'state';
+				}
+			case 'cover':
+				if (
+					this.hass.states?.[entityId]?.attributes?.current_position
+				) {
+					return 'current_position';
+				} else if (
+					this.hass.states?.[entityId]?.attributes
+						?.current_tilt_position
+				) {
+					return 'current_tilt_position';
+				} else {
+					return 'state';
+				}
+			case 'humidifier':
+				if (
+					this.hass.states?.[entityId]?.attributes?.current_humidity
+				) {
+					return 'current_humidity';
+				} else {
+					return 'state';
+				}
+			case 'valve':
+				if (
+					this.hass.states?.[entityId]?.attributes
+						?.current_valve_position
+				) {
+					return 'current_valve_position';
+				} else {
+					return 'state';
+				}
+			case 'water_heater':
+				if (this.hass.states?.[entityId]?.attributes?.temperature) {
+					return 'temperature';
+				} else if (
+					this.hass.states?.[entityId]?.attributes
+						?.current_temperature
+				) {
+					return 'current_temperature';
+				} else {
+					return 'state';
+				}
+			case 'weather':
+				if (this.hass.states?.[entityId]?.attributes?.temperature) {
+					return 'temperature';
+				} else if (this.hass.states?.[entityId]?.attributes?.humidity) {
+					return 'humidity';
+				} else if (
+					this.hass.states?.[entityId]?.attributes?.wind_speed
+				) {
+					return 'wind_speed';
+				} else if (this.hass.states?.[entityId]?.attributes?.pressure) {
+					return 'pressure';
+				} else {
+					return 'state';
+				}
 			default:
 				return 'state';
 		}
