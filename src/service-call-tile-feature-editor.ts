@@ -1331,9 +1331,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const peopleEntities = Object.keys(this.hass.states).filter((entity) =>
 			entity.startsWith('person.'),
 		);
-		console.log(peopleEntities);
-		for (const person in peopleEntities) {
-			console.log(person);
+		for (const person of peopleEntities) {
 			this.people.push({
 				value: this.hass.states[person].attributes.user_id,
 				label:
