@@ -368,35 +368,32 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			});
 		}
 
-		const keysWithDefaults: Record<
-			string,
-			Record<string, string | number>
-		> = {
-			'range.0': {
-				key: 'min',
-				value: 0,
-			},
-			'range.1': {
-				key: 'max',
-				value: 100,
-			},
-			step: {
-				key: 'step',
-				value: 1,
-			},
-		};
-		if (keysWithDefaults[key]) {
-			const entityId = (this.renderTemplate(
-				this.activeEntry?.entity_id as string,
-				this.getEntryContext(this.activeEntry as IEntry),
-			) ?? '') as string;
-			value =
-				value ??
-				this.hass.states[entityId]?.attributes?.[
-					keysWithDefaults[key].key
-				] ??
-				keysWithDefaults[key].value;
+		const entityId = this.renderTemplate(
+			this.activeEntry?.entity_id ?? '',
+			this.getEntryContext(this.activeEntry as IEntry),
+		) as string;
+		if (key.startsWith('range.')) {
+			let attribute: string = '';
+			let backupValue: number = 0;
+			if (key == 'range.0') {
+				attribute = 'min';
+			} else if (key == 'range.1') {
+				attribute = 'max';
+				backupValue = 1;
+			}
+			if (attribute) {
+				value =
+					value ??
+					this.hass.states[entityId]?.attributes?.[attribute] ??
+					backupValue;
+			}
+		} else if (key == 'step') {
+			value = value ?? this.hass.states[entityId]?.attributes?.step ?? 1;
+		} else if (key == 'attribute') {
+			const [domain, _service] = entityId.split('.');
+			value = value ?? this.populateMissingAttribute(domain);
 		}
+
 		this.entryChanged(
 			deepSet(structuredClone(this.activeEntry) as object, key, value),
 		);
@@ -1564,6 +1561,34 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return entry;
 	}
 
+	populateMissingEntryAttribute(entry: IEntry) {
+		if (!entry.value_attribute) {
+			const [domain, _service] = (
+				this.renderTemplate(
+					entry.entity_id ?? '',
+					this.getEntryContext(entry),
+				) as string
+			).split('.');
+			entry.value_attribute = this.populateMissingAttribute(domain);
+		}
+		return entry;
+	}
+
+	populateMissingAttribute(domain: string) {
+		switch (domain) {
+			case 'timer':
+				return 'elapsed';
+			case 'media_player':
+				return 'position';
+			case 'light':
+				return 'brightness';
+			case 'climate':
+				return 'temperature';
+			default:
+				return 'state';
+		}
+	}
+
 	autofillDefaultFields(config: IConfig) {
 		const updatedConfig = structuredClone(config);
 		const updatedEntries: IEntry[] = [];
@@ -1579,6 +1604,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					entry,
 					this.context.entity_id,
 				);
+				entry = this.populateMissingEntryAttribute(entry);
 				const entryEntityId = this.renderTemplate(
 					entry.entity_id as string,
 					this.getEntryContext(entry),
@@ -1617,6 +1643,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								options[i] = this.populateMissingEntityId(
 									options[i],
 									entry.entity_id as string,
+								);
+								options[i] = this.populateMissingEntryAttribute(
+									options[i],
 								);
 
 								// Default option
@@ -1680,6 +1709,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.increment as IEntry,
 								entry.entity_id as string,
 							);
+							entry.increment =
+								this.populateMissingEntryAttribute(
+									entry.increment,
+								);
 						}
 						if (
 							entry.decrement &&
@@ -1693,6 +1726,10 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.decrement as IEntry,
 								entry.entity_id as string,
 							);
+							entry.decrement =
+								this.populateMissingEntryAttribute(
+									entry.decrement,
+								);
 						}
 					// falls through
 					case 'slider': {
@@ -1709,7 +1746,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 						}
 						if (rangeMax == undefined) {
 							rangeMax =
-								this.hass.states[entryEntityId].attributes
+								this.hass.states[entryEntityId]?.attributes
 									?.max ?? 100;
 						}
 						entry.range = [rangeMin as number, rangeMax as number];
@@ -1904,9 +1941,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 		// Set entry type to button if not present
 		entry.type = (entry.type ?? 'button').toLowerCase() as TileFeatureType;
-
-		// Set value attribute to state as default
-		entry.value_attribute = entry.value_attribute ?? 'state';
 
 		// Move style keys to style object
 		let deprecatedStyleKeyPresent = false;
