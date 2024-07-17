@@ -12,13 +12,16 @@ export function deepGet(obj: object, key: string): object {
 export function deepSet(
 	obj: object,
 	key: string,
-	value: string | number | boolean,
+	value: string | number | boolean | string[],
 ): object {
 	const keys = key.split('.');
 	if (keys.length == 1) {
 		obj[keys[0] as keyof object] = value as never;
 	} else {
-		if (!(keys[0] in obj)) {
+		if (
+			!(keys[0] in obj) ||
+			!(typeof obj[keys[0] as keyof object] == 'object')
+		) {
 			if (/^-?\d+$/.test(keys[1])) {
 				obj[keys[0] as keyof object] = new Array(
 					parseInt(keys[1]),
