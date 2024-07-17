@@ -281,7 +281,7 @@ export class BaseServiceCallFeature extends LitElement {
 					) as string;
 				} else {
 					text = `Are you sure you want to run action '${
-						this.renderTemplate(action.service as string) as string
+						this.renderTemplate(action.action as string) as string
 					}'?`;
 				}
 				if (confirmation == true) {
