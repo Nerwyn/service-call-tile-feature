@@ -718,7 +718,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		`;
 	}
 
-	buildActionsOptions(
+	buildActionOption(
 		label: string,
 		actionType: ActionType,
 		selector: object,
@@ -729,6 +729,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			this.activeEntry?.[actionType]?.action ?? 'none',
 			context,
 		);
+		console.log(this.hass);
 		return html`<div class="action-options">
 			${this.buildSelector(label, actionType, selector)}
 			${action != 'none' && actionType == 'double_tap_action'
@@ -792,6 +793,26 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
 				: ''}
+			${this.buildSelector('Confirmation', 'confirmation', {
+				boolean: {},
+			})}
+			${this.activeEntry?.[actionType]?.confirmation
+				? html`${this.buildSelector('Text', 'confirmation.text', {
+						text: {},
+				  })}
+				  ${this.buildSelector(
+						'Exemptions',
+						'confirmation.exemptions',
+						{
+							select: {
+								multiple: true,
+								mode: 'list',
+								options: [this.hass.user.id], // TODO get all users
+								reorder: false,
+							},
+						},
+				  )}`
+				: ''}
 		</div>`;
 	}
 
@@ -820,7 +841,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			case 1: {
 				actionSelectors = html`
 					${actionsTabBar}
-					${this.buildActionsOptions(
+					${this.buildActionOption(
 						'Start Action (optional)',
 						'momentary_start_action',
 						defaultUiActions,
@@ -828,7 +849,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					${this.buildAlertBox(
 						"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
 					)}
-					${this.buildActionsOptions(
+					${this.buildActionOption(
 						'End Action (optional)',
 						'momentary_end_action',
 						defaultUiActions,
@@ -841,17 +862,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			default: {
 				actionSelectors = html`
 					${actionsTabBar}
-					${this.buildActionsOptions(
+					${this.buildActionOption(
 						'Tap action (optional)',
 						'tap_action',
 						defaultUiActions,
 					)}
-					${this.buildActionsOptions(
+					${this.buildActionOption(
 						'Double tap action (optional)',
 						'double_tap_action',
 						defaultUiActions,
 					)}
-					${this.buildActionsOptions(
+					${this.buildActionOption(
 						'Hold action (optional)',
 						'hold_action',
 						{
@@ -979,7 +1000,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			`)}
 			${this.buildActionsPanel(html`
 				${this.buildAlertBox()}
-				${this.buildActionsOptions(
+				${this.buildActionOption(
 					'Action',
 					'tap_action',
 					{
@@ -1032,13 +1053,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		};
 		const actionSelectors = html`
 			${this.buildAlertBox()}
-			${this.buildActionsOptions(
+			${this.buildActionOption(
 				'Tap action',
 				'tap_action',
 				defaultTapActions,
 				true,
 			)}
-			${this.buildActionsOptions(
+			${this.buildActionOption(
 				'Hold action (optional)',
 				'hold_action',
 				defaultHoldActions,
@@ -1200,7 +1221,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				entryGuiEditor = this.buildButtonGuiEditor();
 				break;
 		}
-		return html`<div class="gui-editor">${entryGuiEditor}</div> `;
+		return html`<div class="gui-editor">${entryGuiEditor}</div>`;
 	}
 
 	buildCodeEditor(mode: string, id?: string) {
