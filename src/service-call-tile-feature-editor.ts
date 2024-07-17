@@ -39,6 +39,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
 	codeEditorDelay?: ReturnType<typeof setTimeout>;
+	people: Record<string, string>[] = [];
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -729,7 +730,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			this.activeEntry?.[actionType]?.action ?? 'none',
 			context,
 		);
-		console.log(this.hass);
 		return html`<div class="action-options">
 			${this.buildSelector(label, actionType, selector)}
 			${action != 'none' && actionType == 'double_tap_action'
@@ -793,25 +793,36 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
 				: ''}
-			${this.buildSelector('Confirmation', 'confirmation', {
-				boolean: {},
-			})}
-			${this.activeEntry?.[actionType]?.confirmation
-				? html`${this.buildSelector('Text', 'confirmation.text', {
-						text: {},
-				  })}
-				  ${this.buildSelector(
-						'Exemptions',
-						'confirmation.exemptions',
+			${action != 'none'
+				? html`${this.buildSelector(
+						'Confirmation',
+						`${actionType}.confirmation`,
 						{
-							select: {
-								multiple: true,
-								mode: 'list',
-								options: [this.hass.user.id], // TODO get all users
-								reorder: false,
-							},
+							boolean: {},
 						},
-				  )}`
+						false,
+				  )}
+				  ${this.activeEntry?.[actionType]?.confirmation
+						? html`${this.buildSelector(
+								'Text',
+								`${actionType}.confirmation.text`,
+								{
+									text: {},
+								},
+						  )}
+						  ${this.buildSelector(
+								'Exemptions (User IDs)',
+								`${actionType}.confirmation.exemptions`,
+								{
+									select: {
+										multiple: true,
+										mode: 'list',
+										options: this.people,
+										reorder: false,
+									},
+								},
+						  )}`
+						: ''}`
 				: ''}
 		</div>`;
 	}
@@ -1315,6 +1326,22 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		></ha-alert>`;
 	}
 
+	buildPeopleList() {
+		this.people = [];
+		const peopleEntities = Object.keys(this.hass.states).filter((entity) =>
+			entity.startsWith('person.'),
+		);
+		for (const person in peopleEntities) {
+			this.people.push({
+				value: this.hass.states[person].attributes.user_id,
+				label:
+					this.hass.states[person].attributes.friendly_name ??
+					this.hass.states[person].attributes.id ??
+					person,
+			});
+		}
+	}
+
 	render() {
 		if (!this.hass) {
 			return html``;
@@ -1327,6 +1354,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			this.configChanged(config);
 			setTimeout(() => (this.autofillCooldown = false), 2000);
 		}
+
+		this.buildPeopleList();
 
 		let editor: TemplateResult<1>;
 		switch (this.entryIndex) {
