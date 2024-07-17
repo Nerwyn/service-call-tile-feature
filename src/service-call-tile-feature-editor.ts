@@ -363,7 +363,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		console.log(`value: ${value}`);
 
 		if (key.endsWith('.confirmation.exemptions')) {
-			value = (value as string[]).map((v) => {
+			value = ((value as string[]) ?? []).map((v) => {
 				return {
 					user: v,
 				};
@@ -627,7 +627,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 
 		let value = deepGet(this.activeEntry as object, key);
 		if (key.endsWith('.confirmation.exemptions')) {
-			value = (value as Record<string, { user: string }>[]).map(
+			value = ((value as Record<string, { user: string }>[]) ?? []).map(
 				(v) => v.user,
 			);
 		}
