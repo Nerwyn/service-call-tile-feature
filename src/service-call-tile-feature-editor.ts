@@ -362,6 +362,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		console.log(`key: ${key}`);
 		console.log(`value: ${value}`);
 
+		if (key.endsWith('.confirmation.exemptions')) {
+			value = (value as string[]).map((v) => {
+				return {
+					user: v,
+				};
+			});
+		}
+
 		const keysWithDefaults: Record<
 			string,
 			Record<string, string | number>
@@ -617,10 +625,17 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 			},
 		};
 
+		let value = deepGet(this.activeEntry as object, key);
+		if (key.endsWith('.confirmation.exemptions')) {
+			value = (value as Record<string, { user: string }>[]).map(
+				(v) => v.user,
+			);
+		}
+
 		return html`<ha-selector
 			.hass=${hass}
 			.selector=${selector}
-			.value=${deepGet(this.activeEntry as object, key) ?? backupValue}
+			.value=${value ?? backupValue}
 			.label="${label}"
 			.name="${label}"
 			.required=${false}
