@@ -359,6 +359,8 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
+		console.log(`key: ${key}`);
+		console.log(`value: ${value}`);
 
 		const keysWithDefaults: Record<
 			string,
