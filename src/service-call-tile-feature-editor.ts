@@ -39,7 +39,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
 	codeEditorDelay?: ReturnType<typeof setTimeout>;
-	people: Record<string, string>[] = [];
+	people: Record<string, { user: string } | string>[] = [];
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -811,13 +811,13 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								},
 						  )}
 						  ${this.buildSelector(
-								'Exemptions (User IDs)',
+								'Exemptions',
 								`${actionType}.confirmation.exemptions`,
 								{
 									select: {
 										multiple: true,
 										mode: 'list',
-										options: this.people,
+										options: [],
 										reorder: false,
 									},
 								},
@@ -1333,7 +1333,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		);
 		for (const person of peopleEntities) {
 			this.people.push({
-				value: this.hass.states[person].attributes.user_id,
+				value: { user: this.hass.states[person].attributes.user_id },
 				label:
 					this.hass.states[person].attributes.friendly_name ??
 					this.hass.states[person].attributes.id ??
