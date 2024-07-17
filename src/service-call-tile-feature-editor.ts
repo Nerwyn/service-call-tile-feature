@@ -39,7 +39,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
 	codeEditorDelay?: ReturnType<typeof setTimeout>;
-	people: Record<string, { user: string } | string>[] = [];
+	people: Record<string, string>[] = [];
 
 	static get properties() {
 		return { hass: {}, config: {} };
@@ -1335,7 +1335,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		);
 		for (const person of peopleEntities) {
 			this.people.push({
-				value: { user: this.hass.states[person].attributes.user_id },
+				value: this.hass.states[person].attributes.user_id,
 				label:
 					this.hass.states[person].attributes.friendly_name ??
 					this.hass.states[person].attributes.id ??
