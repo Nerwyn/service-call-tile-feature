@@ -817,7 +817,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									select: {
 										multiple: true,
 										mode: 'list',
-										options: [],
+										options: this.people,
 										reorder: false,
 									},
 								},
