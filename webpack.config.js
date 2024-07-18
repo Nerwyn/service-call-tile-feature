@@ -10,7 +10,7 @@ env = 'production';
 module.exports = {
 	mode: env,
 	entry: {
-		'service-call-tile-feature': './src/service-call-tile-feature.ts',
+		'custom-features-row': './src/custom-features-row.ts',
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),

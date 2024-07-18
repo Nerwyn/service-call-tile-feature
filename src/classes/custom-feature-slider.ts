@@ -3,10 +3,10 @@ import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
 import { IEntry } from '../models/interfaces';
-import { BaseServiceCallFeature } from './base-service-call-feature';
+import { BaseCustomFeature } from './base-custom-feature';
 
-@customElement('service-call-slider')
-export class ServiceCallSlider extends BaseServiceCallFeature {
+@customElement('custom-feature-slider')
+export class CustomFeatureSlider extends BaseCustomFeature {
 	@state() showTooltip: boolean = false;
 	@state() thumbOffset: number = 0;
 	@state() sliderOn: boolean = true;

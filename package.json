@@ -1,8 +1,8 @@
 {
 	"name": "service-call-tile-feature",
 	"version": "4.0.0",
-	"description": "Service Call Tile Feature for Home Assistant Tile Card",
-	"main": "./dist/service-call-tile-feature.min.js",
+	"description": "Custom Features for Home Assistant Tile Card And More!",
+	"main": "./dist/custom-features-row.min.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "npx webpack",

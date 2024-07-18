@@ -1,10 +1,10 @@
 import { CSSResult, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-import { BaseServiceCallFeature } from './base-service-call-feature';
+import { BaseCustomFeature } from './base-custom-feature';
 
-@customElement('service-call-button')
-export class ServiceCallButton extends BaseServiceCallFeature {
+@customElement('custom-feature-button')
+export class CustomFeatureButton extends BaseCustomFeature {
 	@property() shouldRenderRipple = true;
 	@state() renderRipple = true;
 	renderRippleOff?: ReturnType<typeof setTimeout>;

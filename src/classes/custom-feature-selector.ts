@@ -1,11 +1,11 @@
 import { CSSResult, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import { BaseServiceCallFeature } from './base-service-call-feature';
-import './service-call-button';
+import { BaseCustomFeature } from './base-custom-feature';
+import './custom-feature-button';
 
-@customElement('service-call-selector')
-export class ServiceCallSelector extends BaseServiceCallFeature {
+@customElement('custom-feature-selector')
+export class CustomFeatureSelector extends BaseCustomFeature {
 	onClick(e: MouseEvent) {
 		// Get all selection options
 		const options =
@@ -13,7 +13,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 
 		// Set class of all selection options to default
 		for (const option of options) {
-			if (option.tagName.toLowerCase() == 'service-call-button') {
+			if (option.tagName.toLowerCase() == 'custom-feature-button') {
 				option.className = 'option';
 			}
 		}
@@ -36,7 +36,7 @@ export class ServiceCallSelector extends BaseServiceCallFeature {
 			}
 
 			selector.push(
-				html`<service-call-button
+				html`<custom-feature-button
 					class=${optionClass}
 					.hass=${this.hass}
 					.entry=${options[i]}

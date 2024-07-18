@@ -8,8 +8,8 @@ declare global {
 	interface CustomTileFeature {
 		type: string;
 		name: string;
-		supported?: boolean;
 		configurable?: boolean;
+		supported?: () => boolean;
 	}
 
 	interface Event {

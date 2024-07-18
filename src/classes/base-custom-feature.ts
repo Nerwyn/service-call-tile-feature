@@ -17,8 +17,8 @@ import {
 	ActionType,
 } from '../models/interfaces';
 
-@customElement('base-service-call-feature')
-export class BaseServiceCallFeature extends LitElement {
+@customElement('base-custom-feature')
+export class BaseCustomFeature extends LitElement {
 	@property({ attribute: false }) hass!: HomeAssistant;
 	@property({ attribute: false }) entry!: IEntry;
 
