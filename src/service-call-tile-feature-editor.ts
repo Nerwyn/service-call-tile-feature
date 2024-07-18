@@ -366,7 +366,9 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				};
 			});
 		}
-		this.entryChanged(deepSet({}, key, value));
+		this.entryChanged(
+			deepSet(structuredClone(this.activeEntry) as object, key, value),
+		);
 	}
 
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
