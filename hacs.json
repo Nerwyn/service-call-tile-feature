@@ -1,7 +1,7 @@
 {
-	"name": "Service Call Tile Feature for Home Assistant Tile Card",
+	"name": "Custom Features for Home Assistant Tile Card And More!",
 	"content_in_root": false,
-	"homeassistant": "2023.9.3",
+	"homeassistant": "2024.7.2",
 	"filename": "custom-features-row.min.js",
 	"render_readme": true,
 	"hide_default_branch": true
