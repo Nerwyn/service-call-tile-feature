@@ -61,6 +61,17 @@ class CustomFeaturesRow extends LitElement {
 			return null;
 		}
 
+		// Add old name to custom features registries if used in config
+		if (this.config.type == 'service-call') {
+			customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
+			window.customTileFeatures = window.customTileFeatures || [];
+			window.customTileFeatures.push({
+				type: 'service-call',
+				name: 'Custom Features Row',
+				configurable: true,
+			});
+		}
+
 		// Render template context
 		const context = {
 			config: {
@@ -159,21 +170,9 @@ class CustomFeaturesRow extends LitElement {
 		`;
 	}
 }
-
-customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
+customElements.define('custom-features-row', CustomFeaturesRow);
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
-
 window.customTileFeatures = window.customTileFeatures || [];
-window.customTileFeatures.push({
-	// Original name to not break old configs
-	type: 'service-call',
-	name: 'Custom Features Row',
-	configurable: true,
-	supported: () => {
-		console.log(document);
-		return true;
-	},
-});
 window.customTileFeatures.push({
 	// Original name to not break old configs
 	type: 'custom-features-row',
