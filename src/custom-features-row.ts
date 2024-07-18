@@ -167,29 +167,10 @@ if (!window.structuredClone) {
 }
 
 window.customTileFeatures = window.customTileFeatures || [];
-customElements.define('custom-features', CustomFeaturesRow); // Original name to not break old configs
+customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
 window.customTileFeatures.push({
-	type: 'custom-features-row',
+	type: 'service-call',
 	name: 'Custom Features Row',
 	configurable: true,
 });
-
-// Only define old name in custom element registries if it's being used on this page
-if (
-	Array.from(
-		(
-			window.customElements?.[
-				'i' as keyof CustomElementRegistry
-			] as unknown as Map<string, object>
-		)?.keys(),
-	).includes('service-call')
-) {
-	customElements.define('service-call', CustomFeaturesRow);
-	window.customTileFeatures.push({
-		// Original name to not break old configs
-		type: 'service-call',
-		name: 'Custom Features Row',
-		configurable: true,
-	});
-}
