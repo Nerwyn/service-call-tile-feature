@@ -359,42 +359,14 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 	handleSelectorChange(e: CustomEvent) {
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
-
-		const updatedEntry: IEntry = {};
-		const entityId = this.renderTemplate(
-			this.activeEntry?.entity_id ?? '',
-			this.getEntryContext(this.activeEntry as IEntry),
-		) as string;
 		if (key.endsWith('.confirmation.exemptions')) {
 			value = ((value as string[]) ?? []).map((v) => {
 				return {
 					user: v,
 				};
 			});
-		} else if (key.startsWith('range.')) {
-			let attribute: string = '';
-			let backupValue: number = 0;
-			if (key == 'range.0') {
-				attribute = 'min';
-			} else if (key == 'range.1') {
-				attribute = 'max';
-				backupValue = 1;
-			}
-			if (attribute) {
-				value =
-					value ??
-					this.hass.states[entityId]?.attributes?.[attribute] ??
-					backupValue;
-			}
-		} else if (key == 'step') {
-			value = value ?? this.hass.states[entityId]?.attributes?.step ?? 1;
-		} else if (key == 'value_attribute') {
-			value = value ?? this.populateMissingAttribute(entityId);
-		} else if (key == 'entity_id') {
-			updatedEntry.value_attribute = '';
 		}
-
-		this.entryChanged(deepSet(updatedEntry as object, key, value));
+		this.entryChanged(deepSet({}, key, value));
 	}
 
 	buildEntryList(field: 'entry' | 'option' = 'entry') {
@@ -921,74 +893,57 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
-		const entityId = this.renderTemplate(
-			this.activeEntry?.entity_id as string,
-			this.getEntryContext(this.activeEntry as IEntry),
-		) as string;
-		const defaultRangeMin =
-			this.hass.states[entityId]?.attributes?.min ?? 0;
-		const defaultRangeMax =
-			this.hass.states[entityId]?.attributes?.max ?? 100;
-		const defaultStep = this.hass.states[entityId]?.attributes?.step ?? 1;
+		const context = this.getEntryContext(this.activeEntry as IEntry);
+		const rangeMin = this.renderTemplate(
+			this.activeEntry?.range?.[0] as number,
+			context,
+		);
+		const rangeMax = this.renderTemplate(
+			this.activeEntry?.range?.[0] as number,
+			context,
+		);
+		const step =
+			this.renderTemplate(this.activeEntry?.step as number, context) ?? 1;
+		const unit = this.renderTemplate(
+			this.activeEntry?.unit_of_measurement as string,
+			context,
+		);
 
 		return html`
 			${this.buildMainFeatureOptions(
 				undefined,
 				html`
-					${this.buildSelector(
-						'Min',
-						'range.0',
-						{
-							number: {
-								max:
-									this.activeEntry?.range?.[1] ??
-									defaultRangeMax,
-								step: this.activeEntry?.step ?? defaultStep,
-								mode: 'box',
-								unit_of_measurement:
-									this.activeEntry?.unit_of_measurement,
-							},
+					${this.buildSelector('Min', 'range.0', {
+						number: {
+							max: rangeMax ?? undefined,
+							step: step,
+							mode: 'box',
+							unit_of_measurement: unit,
 						},
-						defaultRangeMin,
-					)}
-					${this.buildSelector(
-						'Max',
-						'range.1',
-						{
-							number: {
-								min:
-									this.activeEntry?.range?.[0] ??
-									defaultRangeMin,
-								step: this.activeEntry?.step ?? defaultStep,
-								mode: 'box',
-								unit_of_measurement:
-									this.activeEntry?.unit_of_measurement,
-							},
+					})}
+					${this.buildSelector('Max', 'range.1', {
+						number: {
+							min: rangeMin ?? undefined,
+							step: step,
+							mode: 'box',
+							unit_of_measurement: unit,
 						},
-						defaultRangeMax,
-					)}
-					${this.buildSelector(
-						'Step',
-						'step',
-						{
-							number: {
-								min: 0,
-								step:
-									defaultStep ??
-									Math.min(
-										1,
-										((this.activeEntry?.range?.[1] ?? 1) -
-											(this.activeEntry?.range?.[0] ??
-												0)) /
-											100,
-									),
-								mode: 'box',
-								unit_of_measurement:
-									this.activeEntry?.unit_of_measurement,
-							},
+					})}
+					${this.buildSelector('Step', 'step', {
+						number: {
+							min: 0,
+							step:
+								step ??
+								Math.min(
+									1,
+									((this.activeEntry?.range?.[1] ?? 1) -
+										(this.activeEntry?.range?.[0] ?? 0)) /
+										100,
+								),
+							mode: 'box',
+							unit_of_measurement: unit,
 						},
-						defaultStep,
-					)}
+					})}
 					${this.buildSelector(
 						'Update After Action Delay',
 						'value_from_hass_delay',
@@ -1108,83 +1063,54 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				break;
 			case 1:
 			default: {
-				const entityId = this.renderTemplate(
-					this.activeEntry?.entity_id as string,
-					this.getEntryContext(this.activeEntry as IEntry),
-				) as string;
-				const defaultRangeMin =
-					this.hass.states[entityId]?.attributes?.min ?? 0;
-				const defaultRangeMax =
-					this.hass.states[entityId]?.attributes?.max ?? 100;
-				const defaultStep =
-					this.hass.states[entityId]?.attributes?.step;
+				const context = this.getEntryContext(
+					this.activeEntry as IEntry,
+				);
+				const rangeMin = this.renderTemplate(
+					this.activeEntry?.range?.[0] as number,
+					context,
+				);
+				const rangeMax = this.renderTemplate(
+					this.activeEntry?.range?.[0] as number,
+					context,
+				);
+				const step =
+					this.renderTemplate(
+						this.activeEntry?.step as number,
+						context,
+					) ?? 1;
+				const unit = this.renderTemplate(
+					this.activeEntry?.unit_of_measurement as string,
+					context,
+				);
 
 				spinboxGuiEditor = html`
 					${this.buildMainFeatureOptions(
-						this.buildSelector(
-							'Step',
-							'step',
-							{
-								number: {
-									min: 0,
-									step:
-										defaultStep ??
-										Math.min(
-											1,
-											((this.activeEntry?.range?.[1] ??
-												1) -
-												(this.activeEntry?.range?.[0] ??
-													0)) /
-												100,
-										),
-									mode: 'box',
-									unit_of_measurement:
-										this.activeEntry?.unit_of_measurement,
-								},
+						this.buildSelector('Step', 'step', {
+							number: {
+								min: 0,
+								step: step,
+								mode: 'box',
+								unit_of_measurement: unit,
 							},
-							defaultStep,
-						),
+						}),
 						html`
-							${this.buildSelector(
-								'Min',
-								'range.0',
-								{
-									number: {
-										max:
-											this.activeEntry?.range?.[1] ??
-											defaultRangeMax,
-										step:
-											this.activeEntry?.step ??
-											defaultStep ??
-											1,
-										mode: 'box',
-										unit_of_measurement:
-											this.activeEntry
-												?.unit_of_measurement,
-									},
+							${this.buildSelector('Min', 'range.0', {
+								number: {
+									max: rangeMax,
+									step: step,
+									mode: 'box',
+									unit_of_measurement: unit,
 								},
-								defaultRangeMin,
-							)}
-							${this.buildSelector(
-								'Max',
-								'range.1',
-								{
-									number: {
-										min:
-											this.activeEntry?.range?.[0] ??
-											defaultRangeMin,
-										step:
-											this.activeEntry?.step ??
-											defaultStep ??
-											1,
-										mode: 'box',
-										unit_of_measurement:
-											this.activeEntry
-												?.unit_of_measurement,
-									},
+							})}
+							${this.buildSelector('Max', 'range.1', {
+								number: {
+									min: rangeMin,
+									step: step,
+									mode: 'box',
+									unit_of_measurement: unit,
 								},
-								defaultRangeMax,
-							)}
+							})}
 							${this.buildSelector(
 								'Update After Action Delay',
 								'value_from_hass_delay',
@@ -1529,13 +1455,24 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 				if (['call-service', 'more-info'].includes(action.action)) {
 					const data = action.data ?? ({} as IData);
 					const target = action.target ?? ({} as ITarget);
+					for (const targetId of [
+						'entity_id',
+						'device_id',
+						'area_id',
+						'label_id',
+					]) {
+						if (data[targetId]) {
+							target[targetId as keyof ITarget] = data[
+								targetId
+							] as string | string[];
+							delete data[targetId];
+						}
+					}
 					if (
-						!data.entity_id &&
-						!data.device_id &&
-						!data.area_id &&
 						!target.entity_id &&
 						!target.device_id &&
-						!target.area_id
+						!target.area_id &&
+						!target.label_id
 					) {
 						target.entity_id = entry.entity_id ?? parentEntityId;
 						action.target = target;
@@ -1559,125 +1496,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 		return entry;
 	}
 
-	populateMissingEntryAttribute(entry: IEntry) {
-		if (!entry.value_attribute) {
-			const entityId = this.renderTemplate(
-				entry.entity_id ?? '',
-				this.getEntryContext(entry),
-			) as string;
-			entry.value_attribute = this.populateMissingAttribute(entityId);
-		}
-		return entry;
-	}
-
-	populateMissingAttribute(entityId: string) {
-		const [domain, _service] = entityId.split('.');
-		switch (domain) {
-			case 'timer':
-				return 'elapsed';
-			case 'media_player':
-				if (this.hass.states?.[entityId]?.attributes?.position) {
-					return 'position';
-				} else {
-					return 'volume_level';
-				}
-			case 'light':
-				if (this.hass.states?.[entityId]?.attributes?.brightness) {
-					return 'brightness';
-				} else if (
-					this.hass.states?.[entityId]?.attributes?.color_temp
-				) {
-					return 'color_temp';
-				} else if (
-					this.hass.states?.[entityId]?.attributes?.color_temp_kelvin
-				) {
-					return 'color_temp_kelvin';
-				} else if (this.hass.states?.[entityId]?.attributes?.hs_color) {
-					return 'hs_color[0]';
-				} else {
-					return 'state';
-				}
-			case 'climate':
-				if (this.hass.states?.[entityId]?.attributes?.temperature) {
-					return 'temperature';
-				} else if (
-					this.hass.states?.[entityId]?.attributes
-						?.current_temperature
-				) {
-					return 'current_temperature';
-				} else if (
-					this.hass.states?.[entityId]?.attributes?.target_humidity
-				) {
-					return 'target_humidity';
-				} else {
-					return 'state';
-				}
-			case 'fan':
-				if (this.hass.states?.[entityId]?.attributes?.percentage) {
-					return 'percentage';
-				} else {
-					return 'state';
-				}
-			case 'cover':
-				if (
-					this.hass.states?.[entityId]?.attributes?.current_position
-				) {
-					return 'current_position';
-				} else if (
-					this.hass.states?.[entityId]?.attributes
-						?.current_tilt_position
-				) {
-					return 'current_tilt_position';
-				} else {
-					return 'state';
-				}
-			case 'humidifier':
-				if (
-					this.hass.states?.[entityId]?.attributes?.current_humidity
-				) {
-					return 'current_humidity';
-				} else {
-					return 'state';
-				}
-			case 'valve':
-				if (
-					this.hass.states?.[entityId]?.attributes
-						?.current_valve_position
-				) {
-					return 'current_valve_position';
-				} else {
-					return 'state';
-				}
-			case 'water_heater':
-				if (this.hass.states?.[entityId]?.attributes?.temperature) {
-					return 'temperature';
-				} else if (
-					this.hass.states?.[entityId]?.attributes
-						?.current_temperature
-				) {
-					return 'current_temperature';
-				} else {
-					return 'state';
-				}
-			case 'weather':
-				if (this.hass.states?.[entityId]?.attributes?.temperature) {
-					return 'temperature';
-				} else if (this.hass.states?.[entityId]?.attributes?.humidity) {
-					return 'humidity';
-				} else if (
-					this.hass.states?.[entityId]?.attributes?.wind_speed
-				) {
-					return 'wind_speed';
-				} else if (this.hass.states?.[entityId]?.attributes?.pressure) {
-					return 'pressure';
-				} else {
-					return 'state';
-				}
-			default:
-				return 'state';
-		}
-	}
-
 	autofillDefaultFields(config: IConfig) {
 		const updatedConfig = structuredClone(config);
 		const updatedEntries: IEntry[] = [];
@@ -1693,7 +1511,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 					entry,
 					this.context.entity_id,
 				);
-				entry = this.populateMissingEntryAttribute(entry);
 				const entryEntityId = this.renderTemplate(
 					entry.entity_id as string,
 					this.getEntryContext(entry),
@@ -1732,9 +1549,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								options[i] = this.populateMissingEntityId(
 									options[i],
 									entry.entity_id as string,
-								);
-								options[i] = this.populateMissingEntryAttribute(
-									options[i],
 								);
 
 								// Default option
@@ -1798,10 +1612,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.increment as IEntry,
 								entry.entity_id as string,
 							);
-							entry.increment =
-								this.populateMissingEntryAttribute(
-									entry.increment,
-								);
 						}
 						if (
 							entry.decrement &&
@@ -1815,10 +1625,6 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								entry.decrement as IEntry,
 								entry.entity_id as string,
 							);
-							entry.decrement =
-								this.populateMissingEntryAttribute(
-									entry.decrement,
-								);
 						}
 					// falls through
 					case 'slider': {
@@ -1848,7 +1654,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 								case 'number':
 									tap_action.service = 'number.set_value';
 									if (!data.value) {
-										data.value = '{{ value }}';
+										data.value = '{{ value | float }}';
 										tap_action.data = data;
 									}
 									break;
@@ -1856,7 +1662,7 @@ export class ServiceCallTileFeatureEditor extends LitElement {
 									tap_action.service =
 										'input_number.set_value';
 									if (!data.value) {
-										data.value = '{{ value }}';
+										data.value = '{{ value | float }}';
 										tap_action.data = data;
 									}
 									break;
