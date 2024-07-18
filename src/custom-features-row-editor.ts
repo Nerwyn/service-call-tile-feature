@@ -375,7 +375,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 		let entries: IEntry[] | IOption[];
 		let handlers: Record<string, (e: CustomEvent) => void>;
 		let listHeader: string;
-		let backupType: string;
 		switch (field) {
 			case 'option':
 				entries = this.activeEntry?.options ?? [];
@@ -385,7 +384,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 					remove: this.removeOption,
 				};
 				listHeader = 'Selector Options';
-				backupType = 'Option';
 				break;
 			case 'entry':
 			default:
@@ -396,7 +394,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 					remove: this.removeEntry,
 				};
 				listHeader = 'Custom Features';
-				backupType = 'Button';
 				break;
 		}
 		return html`
@@ -440,9 +437,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 											: ''}
 										<div class="feature-list-item-label">
 											<span class="primary"
-												>${option ??
-												entryType ??
-												backupType}${label
+												>${option ?? field == 'option'
+													? 'Option'
+													: entryType}${label
 													? ` ⸱ ${label}`
 													: ''}</span
 											>
