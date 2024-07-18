@@ -420,7 +420,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 								(entry as IOption).option as string,
 								context,
 							);
-							console.log(option);
 							const entryType = this.renderTemplate(
 								entry.type as string,
 								context,
