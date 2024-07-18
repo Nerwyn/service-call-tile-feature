@@ -147,6 +147,9 @@ class CustomFeaturesRow extends LitElement {
 
 	static get styles() {
 		return css`
+			:host {
+				--mdc-icon-size: 20px;
+			}
 			.row {
 				display: flex;
 				flex-flow: row;

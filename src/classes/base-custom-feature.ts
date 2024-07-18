@@ -678,8 +678,6 @@ export class BaseCustomFeature extends LitElement {
 				font-size: inherit;
 				color: inherit;
 				flex-basis: 100%;
-
-				--mdc-icon-size: 20px;
 			}
 
 			.container {
