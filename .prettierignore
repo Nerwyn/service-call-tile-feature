@@ -2,3 +2,4 @@
 *.sh
 **/githooks
 **/dist
+*.png

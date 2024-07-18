@@ -1,4 +1,4 @@
-# Service Call Tile Feature
+# Custom Features for Tile Cards and More
 
 [![GitHub Release][releases-shield]][releases]
 [![License][license-shield]](LICENSE.md)
@@ -11,7 +11,7 @@
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
-Call any service and most [actions](https://www.home-assistant.io/dashboards/actions/) via tile features. This custom tile feature will let you create super customizable tile buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom tile features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic service call tile button already in Home Assistant? I don't know but here it is.
+Call any service and most [actions](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -731,7 +731,9 @@ entries:
       '--label-color': var(--on-color)
 ```
 
-# Examples
+# YAML Examples
+
+While all configuration can now be done through the user interface, these YAML examples can provide some insight on how to do some advanced styling and templating.
 
 ## Example 1
 
@@ -749,25 +751,44 @@ features:
             tap_action:
               action: call-service
               service: lock.lock
-            style:
-              '--color': var(--green-color)
+              target:
+                entity_id: lock.front_door_ble
+              data: {}
+            entity_id: lock.front_door_ble
+            type: button
+            value_attribute: state
+            styles: |
+              --color: var(--green-color) !important;
           - icon: mdi:lock-open-outline
             option: unlocked
             tap_action:
               action: call-service
               service: lock.unlock
-            style:
-              '--color': var(--red-color)
+              target:
+                entity_id: lock.front_door_ble
+              data: {}
+            autofill_entity_id: true
+            haptics: false
+            entity_id: lock.front_door_ble
+            type: button
+            value_attribute: state
+            styles: |
+              --color: var(--red-color) !important;
+        value_attribute: state
+        styles: ''
 type: tile
 entity: lock.front_door_ble
 show_entity_picture: false
-vertical: true
+vertical: false
+layout_options:
+  grid_columns: 4
+  grid_rows: ''
 card_mod:
   style:
     ha-tile-info$: |
       .secondary:after {
         visibility: visible;
-        content: " - {{ states('sensor.front_door_battery_level') }}%";
+        content: " ⸱ {{ states('sensor.front_door_battery_level') }}%";
       }
 ```
 
@@ -781,142 +802,223 @@ A light tile with a button for each bulb, a color selector, brightness and tempe
 features:
   - type: custom:service-call
     entries:
-      - tap_action:
+      - type: button
+        tap_action:
           action: call-service
           service: light.toggle
           confirmation:
             text: >-
               Are you sure you want to turn the light {{ 'on' if
               is_state('light.chandelier', 'off') else 'off' }}?
+            exemptions: []
+          target:
+            entity_id: light.chandelier
         icon: >-
           {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
           "mdi:ceiling-light-outline") }}
-        label: >-
-          {{ (100*state_attr("light.chandelier", "brightness")/255) | round or
-          undefined }}
+        label: '{{ value if value > 0 else "" }}{{ unit if value > 0 else "" }}'
+        value_attribute: brightness
         unit_of_measurement: '%'
-        style:
-          flex-basis: 200%
-          '--icon-color': red
-          '--color': |
+        autofill_entity_id: true
+        entity_id: light.chandelier
+        styles: |-
+          :host {
+            flex-basis: 200% !important;
+            --icon-color: red !important;
             {% if is_state("light.chandelier", "on") %}
-              rgb({{ state_attr("light.chandelier", "rgb_color") }})
-            {% else %}
-              initial
+            --color: rgb({{ state_attr("light.chandelier", "rgb_color") }});
             {% endif %}
+             !important;
+          }
       - tap_action:
           action: call-service
           service: light.toggle
           target:
             entity_id: light.chandelier_bulb_1
         icon: mdi:lightbulb
-        icon_color: orange
         label: Bulb 1
+        entity_id: light.chandelier
+        type: button
+        value_attribute: state
+        styles: |-
+          :host {
+            --icon-color: orange !important;
+          }
       - tap_action:
           action: call-service
           service: light.toggle
           target:
             entity_id: light.chandelier_bulb_2
         icon: mdi:lightbulb
-        icon_color: yellow
         label: Bulb 2
+        entity_id: light.chandelier
+        type: button
+        value_attribute: state
+        styles: |-
+          :host {
+            --icon-color: yellow !important;
+          }
       - tap_action:
           action: call-service
           service: light.toggle
           target:
             entity_id: light.chandelier_bulb_3
         icon: mdi:lightbulb
-        icon_color: green
         label: Bulb 3
+        entity_id: light.chandelier
+        type: button
+        value_attribute: state
+        styles: |-
+          :host {
+            --icon-color: green !important;
+          }
       - tap_action:
           action: call-service
           service: light.toggle
           target:
             entity_id: light.chandelier_bulb_4
         icon: mdi:lightbulb
-        icon_color: blue
         label: Bulb 4
+        entity_id: light.chandelier
+        type: button
+        value_attribute: state
+        styles: |-
+          :host {
+            --icon-color: blue !important;
+          }
       - tap_action:
           action: call-service
           service: light.toggle
           target:
             entity_id: light.chandelier_bulb_5
         icon: mdi:lightbulb
-        icon_color: purple
         label: Bulb 5
+        entity_id: light.chandelier
+        type: button
+        value_attribute: state
+        styles: |-
+          :host {
+            --icon-color: purple !important;
+          }
+    styles: ''
   - type: custom:service-call
     entries:
       - type: selector
         entity_id: light.chandelier
         value_attribute: rgb_color
-        style:
-          '--background': |
-            {% if is_state("light.chandelier", "on") %}
-              rgb({{ state_attr("light.chandelier", "rgb_color") }})
-            {% else %}
-              initial
-            {% endif %}
         options:
           - tap_action:
               action: call-service
               service: light.turn_on
               data:
                 color_name: red
+              target:
+                entity_id: light.chandelier
             option: 255,0,0
             label: Red
             icon: mdi:alpha-r
-            style:
-              '--label-color': red
-              '--color': red
-              '--label-filter': >-
-                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
-                or []).join(',') == '255,0,0' }}
+            entity_id: light.chandelier
+            type: button
+            value_attribute: state
+            styles: |
+              :host {
+                --label-color: red !important;
+                --color: red !important;
+                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '255,0,0' %}
+                --label-filter: invert(1);
+                {% endif %}
+              }
           - tap_action:
               action: call-service
               service: light.turn_on
               data:
                 color_name: green
+              target:
+                entity_id: light.chandelier
             option: 0,128,0
             label: Green
             icon: mdi:alpha-g
-            style:
-              '--label-color': green
-              '--color': green
-              '--label-filter': >-
-                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
-                or []).join(',') == '0,128,0' }}
+            entity_id: light.chandelier
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --label-color: green !important;
+                --color: green !important;
+                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '0,128,0' %}
+                --label-filter: invert(1);
+                {% endif %}
+              }
           - tap_action:
               action: call-service
               service: light.turn_on
               data:
                 color_name: blue
+              target:
+                entity_id: light.chandelier
             option: 0,0,255
             label: Blue
             icon: mdi:alpha-b
-            style:
-              '--label-color': blue
-              '--color': blue
-              '--label-filter': >-
-                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
-                or []).join(',') == '0,0,255' }}
+            entity_id: light.chandelier
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --label-color: blue !important;
+                --color: blue !important;
+                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '0,0,255' %}
+                --label-filter: invert(1);
+                {% endif %}
+              }
           - tap_action:
               action: call-service
               service: light.turn_on
               data:
                 color_temp: 500
-            option: 255,166,86
+              target:
+                entity_id: light.chandelier
+            option: 255,166,87
             label: White
             icon: mdi:alpha-w
-            style:
-              '--label-color': white
-              '--color': white
-              flex-basis: 300%
-              '--icon-filter': >-
-                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
-                or []).join(',') == '255,166,86' }}
-              '--label-filter': >-
-                {{ "invert(1)" if (state_attr("light.chandelier", "rgb_color")
-                or []).join(',') == '255,166,86' }}
+            entity_id: light.chandelier
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --label-color: white !important;
+                --color: white !important;
+                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '255,166,87' %}
+                --label-filter: invert(1);
+                --icon-filter: invert(1);
+                {% endif %}
+              }
+          - tap_action:
+              action: call-service
+              service: light.turn_on
+              target:
+                entity_id: light.chandelier
+              data:
+                color_name: purple
+            option: 128,0,128
+            label: Purple
+            icon: mdi:alpha-p
+            entity_id: light.chandelier
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --label-color: purple !important;
+                --color: purple !important;
+                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '128,0,128' %}
+                --label-filter: invert(1);
+                {% endif %}
+              }
+        styles: |-
+          .background {
+            {% if is_state("light.chandelier", "on") %}
+            --background: rgb({{ state_attr("light.chandelier", "rgb_color") }});
+            {% endif %}
+          }
   - type: custom:service-call
     entries:
       - type: slider
@@ -929,14 +1031,25 @@ features:
           service: light.turn_on
           data:
             brightness_pct: '{{ value }}'
-        style:
-          flex-basis: 200%
+          target:
+            entity_id: light.chandelier
+        entity_id: light.chandelier
+        styles: |
+          :host {
+            flex-basis: 200% !important;
+          }
+        range:
+          - 0
+          - 100
+        step: 1
       - type: slider
         thumb: line
         value_attribute: color_temp
         tap_action:
           action: call-service
           service: light.turn_on
+          target:
+            entity_id: light.chandelier
           data:
             color_temp: '{{ value }}'
         label: '{{ value }}{{ unit }}'
@@ -946,17 +1059,21 @@ features:
           - '{{ state_attr("light.chandelier", "min_mireds") }}'
           - '{{ state_attr("light.chandelier", "max_mireds") }}'
         step: 1
-        style:
-          '--label-color': var(--disabled-color)
-          '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-          '--background-opacity': 1
+        entity_id: light.chandelier
+        styles: |-
+          :host {
+            --label-color: var(--disabled-color) !important;
+            --background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251)) !important;
+            --background-opacity: 1 !important;
+          }
+    styles: ''
   - type: custom:service-call
     entries:
       - type: spinbox
         haptics: true
         icon: mdi:brightness-4
-        label: '{{ value }}{{ unit }}'
         unit_of_measurement: '%'
+        label: '{{ value }}{{ unit }}'
         step: 5
         debounceTime: 1000
         range:
@@ -967,35 +1084,55 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: '{{ value }}'
+            brightness_pct: '{{ value | float }}'
+          target:
+            entity_id: light.chandelier
         decrement:
           icon: mdi:brightness-3
           label: down
           hold_action:
             action: repeat
-          style:
-            flex-flow: row
-          icon_style:
-            padding-right: 4px
+          entity_id: light.chandelier
+          type: button
+          value_attribute: state
+          styles: |-
+            :host {
+              flex-flow: row !important;
+            }
+            .icon {
+              padding-right: 4px !important;
+            }
         increment:
           icon: mdi:brightness-2
           label: up
           hold_action:
             action: repeat
-          style:
-            flex-flow: row-reverse
-          icon_style:
-            padding-left: 4px
-        style:
-          '--light-color': rgb({{ state_attr("light.chandelier", "rgb_color") }})
-          '--on-color': >-
-            {{ "var(--light-color)" if is_state("light.chandelier", "on") else
-            "initial" }}
-          '--background': var(--on-color)
-          '--icon-color': var(--on-color)
-          '--label-color': var(--on-color)
+          entity_id: light.chandelier
+          type: button
+          value_attribute: state
+          styles: |-
+            :host {
+              flex-flow: row-reverse !important;
+            }
+            .icon {
+              padding-left: 4px !important;
+            }
+        hold_action:
+          action: repeat
+        entity_id: light.chandelier
+        styles: |-
+          :host {
+            --light-color: rgb({{ state_attr("light.chandelier", "rgb_color") }}) !important;
+            --on-color: {{ "var(--light-color)" if is_state("light.chandelier", "on") else "initial" }} !important;
+            --background: var(--on-color) !important;
+            --icon-color: var(--on-color) !important;
+            --label-color: var(--on-color) !important;
+          }
 type: tile
 entity: light.chandelier
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
@@ -1009,6 +1146,7 @@ features:
   - type: custom:service-call
     entries:
       - type: button
+        haptics: true
         tap_action:
           action: call-service
           service: light.turn_on
@@ -1018,25 +1156,29 @@ features:
         double_tap_action:
           action: call-service
           service: light.turn_on
+          xdouble_tap_window: 1000
           data:
             entity_id: light.sunroom_ceiling
             color_name: green
         hold_action:
           action: call-service
           service: light.turn_on
+          xhold_time: 2000
           data:
             entity_id: light.sunroom_ceiling
             color_name: blue
         icon: mdi:power
         label: '{{ states("light.sunroom_ceiling") }}'
-        style:
-          '--color': |-
-            {% if is_state("light.sunroom_ceiling", ["on"]) %}
-              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-            {% else %}
-              initial
-            {% endif %}
+        entity_id: light.sunroom_ceiling
+        value_attribute: state
+        styles: |-
+          :host {
+            {% if is_state("light.sunroom_ceiling", "on") %}
+            --color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }});
+            {% endif %} !important;
+          }
       - type: slider
+        haptics: true
         label: '{{ value }}{{ unit }}'
         unit_of_measurement: '%'
         value_attribute: brightness
@@ -1045,23 +1187,27 @@ features:
           action: call-service
           service: light.turn_on
           data:
-            brightness_pct: '{{ value }}'
+            brightness_pct: '{{ value | int }}'
+          target:
             entity_id: light.sunroom_ceiling
-        style:
-          flex-basis: 200%
-          '--color': |
+        entity_id: light.sunroom_ceiling
+        range:
+          - 0
+          - 100
+        step: 1
+        thumb: default
+        styles: |
+          :host {
+            flex-basis: 200% !important;
             {% if is_state("light.sunroom_ceiling", "on") %}
-              rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
-            {% else %}
-              var(--state-inactive-color)
+            --color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
             {% endif %}
-        tooltip_style:
-          display: |
-            {% if is_state("light.sunroom_ceiling", "on") %}
-            initial
-            {% else %}
-            none
+          }
+          .tooltip {
+            {% if is_state("light.sunroom_ceiling", "off") %}
+            display: none !important;
             {% endif %}
+          }
   - type: custom:service-call
     entries:
       - type: slider
@@ -1070,19 +1216,27 @@ features:
           - 0
           - 360
         step: 0.1
-        service: light.turn_on
-        value_attribute: hs_color[0]
+        value_attribute: Hs color[0]
         icon: mdi:palette
-        data:
-          hs_color:
-            - '{{ value }}'
-            - 100
-          entity_id: light.sunroom_ceiling
-        style:
-          flex-basis: 200%
-          '--background': >-
-            linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%)
-          '--background-opacity': 1
+        tap_action:
+          action: call-service
+          target:
+            entity_id: light.sunroom_ceiling
+          data:
+            hs_color:
+              - '{{ value }}'
+              - 100
+          service: light.turn_on
+        entity_id: light.sunroom_ceiling
+        styles: |-
+          :host {
+            flex-basis: 200% !important;
+            --background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%) !important;
+            --background-opacity: 1 !important;
+          }
+          .tooltip {
+            background: hsl({{ value }}, 100%, 50%) !important;
+          }
       - type: slider
         thumb: line
         value_attribute: color_temp
@@ -1099,10 +1253,12 @@ features:
           - '{{ state_attr("light.sunroom_ceiling", "min_mireds") }}'
           - '{{ state_attr("light.sunroom_ceiling", "max_mireds") }}'
         step: 1
-        style:
-          '--background': linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251))
-          '--background-opacity': 1
-          '--label-color': var(--disabled-color)
+        styles: |-
+          :host {
+            --background: linear-gradient(-90deg, rgb(255, 167, 87), rgb(255, 255, 251)) !important; --background-opacity: 1 !important; --label-color: var(--disabled-color) !important;
+          }
+        autofill_entity_id: true
+        entity_id: light.sunroom_ceiling
   - type: custom:service-call
     entries:
       - type: slider
@@ -1114,18 +1270,27 @@ features:
             entity_id: cover.sunroom_curtains
         value_attribute: current_position
         icon: mdi:curtains
-        style:
-          '--color': var(--tile-color)
-          '--icon-color': var(--disabled-color)
+        entity_id: cover.sunroom_curtains
+        styles: |-
+          :host {
+            --color: var(--tile-color) !important;
+            --icon-color: var(--disabled-color) !important;
+          }
+        range:
+          - 0
+          - 100
+        step: 1
   - type: custom:service-call
     entries:
       - type: slider
-        entity_id: media_player.spotify
+        entity_id: media_player.spotify_nerwyn_singh
         tap_action:
           action: call-service
           service: media_player.volume_set
           data:
             volume_level: '{{ value }}'
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
         value_attribute: volume_level
         icon: mdi:spotify
         label: |
@@ -1135,70 +1300,93 @@ features:
           - 0
           - 1
         thumb: round
-        style:
-          '--color': rgb(31, 223, 100)
-          flex-direction: row
-          border-radius: 40px
-          '--tooltip-label': '{{ (value * 100) | int }}%'
-          flex-basis: 500%
-        icon_style:
-          color: rgb(37, 79, 55)
-          padding: 8px
-          flex: auto
-          position: absolute
-          transform: translateX(var(--thumb-offset))
-        label_style:
-          left: '-16px'
+        styles: |-
+          :host {
+            --color: rgb(31, 223, 100) !important;
+            flex-direction: row !important;
+            border-radius: 40px !important;
+            --tooltip-label: '{{ (value * 100) | int }}%' !important;
+            flex-basis: 500% !important;
+          }
+          .icon {
+            color: rgb(37, 79, 55) !important;
+            padding: 8px !important;
+            flex: auto !important;
+            position: absolute !important;
+            transform: translateX(var(--thumb-offset)) !important;
+          }
+          .label {
+            left: -16px !important;
+          }
+        step: 0.01
       - type: button
-        entity_id: media_player.spotify
+        entity_id: media_player.spotify_nerwyn_singh
         icon: mdi:play-pause
         tap_action:
           action: call-service
           service: media_player.media_play_pause
+          data: {}
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
+        double_tap_action:
+          action: call-service
+          service: script.spotify_refresh_every_5_seconds_for_30_seconds
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
+        value_attribute: state
+        styles: ''
   - type: custom:service-call
     entries:
       - type: button
-        entity_id: media_player.spotify
+        entity_id: media_player.spotify_nerwyn_singh
         value_attribute: media_position
         tap_action:
           action: call-service
           service: media_player.media_previous_track
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
         label: >-
           {% set minutes = (value / 60) | int %} {% set seconds = (value - 60 *
           minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
           seconds | int }}
-        style:
-          overflow: visible
-          height: 12px
-          border-radius: 0px
-          '--color': none
+        styles: |-
+          :host {
+            overflow: visible !important;
+            height: 12px !important;
+            border-radius: 0px !important;
+            --color: none !important;
+          }
       - type: slider
         tap_action:
           action: call-service
           service: media_player.media_seek
           data:
             seek_position: '{{ value }}'
-            entity_id: media_player.spotify
-        entity_id: media_player.spotify
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
+        entity_id: media_player.spotify_nerwyn_singh
         value_attribute: media_position
         value_from_hass_delay: 5000
         range:
           - 0
           - '{{ state_attr(config.entity, "media_duration") }}'
         thumb: flat
-        style:
-          '--color': rgb(31, 223, 100)
-          '--tooltip-label': >-
-            {{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) <
-            10 else "" }}{{ (value - 60*((value / 60) | int)) | int }}
-          flex-basis: 1200%
-          height: 10px
+        styles: |-
+          :host {
+            --color: rgb(31, 223, 100) !important;
+            --tooltip-label: '{{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10 else "" }}{{ (value - 60*((value / 60) | int)) | int }}' !important;
+            flex-basis: 1200% !important;
+            height: 10px !important;
+          }
+        step: 3.9896
       - type: button
-        entity_id: media_player.spotify
+        entity_id: media_player.spotify_nerwyn_singh
         value_attribute: media_position
         tap_action:
           action: call-service
           service: media_player.media_next_track
+          target:
+            entity_id: media_player.spotify_nerwyn_singh
         label: >-
           {{ (state_attr(config.entity, "media_duration") / 60) | int }}:{{ 0 if
           (state_attr(config.entity, "media_duration") -
@@ -1206,14 +1394,20 @@ features:
           else "" }}{{ (state_attr(config.entity, "media_duration") -
           60*((state_attr(config.entity, "media_duration") / 60) | int)) | int
           }}
-        style:
-          overflow: visible
-          height: 12px
-          border-radius: 0px
-          '--color': none
+        styles: |-
+          :host {
+            overflow: visible !important;
+            height: 12px !important;
+            border-radius: 0px !important;
+            --color: none !important;
+          }
 type: tile
 entity: binary_sensor.sun_room
 color: accent
+icon: ''
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
@@ -1230,33 +1424,188 @@ features:
         entity_id: input_select.lounge_tv_theater_mode
         options:
           - icon: mdi:movie
+            entity_id: input_select.lounge_tv_theater_mode
+            option: Theater
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Theater
+              target:
+                entity_id: input_select.lounge_tv_theater_mode
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:movie-off
+            entity_id: input_select.lounge_tv_theater_mode
+            option: Light
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Light
+              target:
+                entity_id: input_select.lounge_tv_theater_mode
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:movie-outline
+            entity_id: input_select.lounge_tv_theater_mode
+            option: Dark
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Dark
+              target:
+                entity_id: input_select.lounge_tv_theater_mode
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:movie-off-outline
-        style:
-          '--color': var(--blue-color)
-          flex-basis: 140%
+            entity_id: input_select.lounge_tv_theater_mode
+            option: 'Off'
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: 'Off'
+              target:
+                entity_id: input_select.lounge_tv_theater_mode
+            type: button
+            value_attribute: state
+            styles: ''
+        value_attribute: state
+        styles: |-
+          :host {
+            --color: var(--blue-color) !important;
+            flex-basis: 140% !important;
+          }
       - type: selector
         entity_id: input_select.lounge_tv_listening_mode
         options:
           - icon: mdi:dolby
+            entity_id: input_select.lounge_tv_listening_mode
+            option: Movie
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Movie
+              target:
+                entity_id: input_select.lounge_tv_listening_mode
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:music
+            entity_id: input_select.lounge_tv_listening_mode
+            option: Music
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Music
+              target:
+                entity_id: input_select.lounge_tv_listening_mode
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:microsoft-xbox-controller
+            entity_id: input_select.lounge_tv_listening_mode
+            option: Game
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Game
+              target:
+                entity_id: input_select.lounge_tv_listening_mode
+            type: button
+            value_attribute: state
+            styles: ''
+        value_attribute: state
+        styles: ''
   - type: custom:service-call
     entries:
       - type: selector
         entity_id: input_select.lounge_tv_source
         options:
           - icon: mdi:television-box
+            entity_id: input_select.lounge_tv_source
+            option: Google TV
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Google TV
+              target:
+                entity_id: input_select.lounge_tv_source
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:microsoft-windows
+            entity_id: input_select.lounge_tv_source
+            option: HTPC
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: HTPC
+              target:
+                entity_id: input_select.lounge_tv_source
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:vhs
+            entity_id: input_select.lounge_tv_source
+            option: DVD/VHS
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: DVD/VHS
+              target:
+                entity_id: input_select.lounge_tv_source
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:record-player
+            entity_id: input_select.lounge_tv_source
+            option: Vinyl
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Vinyl
+              target:
+                entity_id: input_select.lounge_tv_source
+            type: button
+            value_attribute: state
+            styles: ''
           - icon: mdi:video-input-hdmi
-        style:
-          '--color': var(--red-color)
+            entity_id: input_select.lounge_tv_source
+            option: External
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: External
+              target:
+                entity_id: input_select.lounge_tv_source
+            type: button
+            value_attribute: state
+            styles: ''
+        value_attribute: state
+        styles: |-
+          :host {
+            --color: var(--red-color) !important;
+          }
 type: tile
 entity: input_select.lounge_tv_listening_mode
 color: green
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
@@ -1272,28 +1621,172 @@ features:
       - type: selector
         options:
           - option: A
-            icon: mdi:alpha-a
-            style:
-              '--icon-color': >-
-                {{ "var(--disabled-color)" if
-                is_state(config.entity, config.option) }}
-              '--color': var(--red-color)
+            icon: mdi:alpha-{{ config.option | lower }}
+            styles: |-
+              :host {
+                --icon-color: {{ "var(--disabled-color)" if is_state(config.entity, config.option) }};
+                --color: var(--red-color);
+              }
+            entity_id: input_select.select_test
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: A
+              target:
+                entity_id: input_select.select_test
+            type: button
+            value_attribute: state
           - option: B
-            icon: mdi:alpha-b
-            style:
-              '--icon-color': >-
-                {{ "var(--disabled-color)" if
-                is_state(config.entity, config.option) }}
-              '--color': var(--green-color)
+            icon: mdi:alpha-{{ config.option | lower }}
+            entity_id: input_select.select_test
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: B
+              target:
+                entity_id: input_select.select_test
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --icon-color: {{ "var(--disabled-color)" if is_state(config.entity, config.option) }} !important;
+                --color: var(--green-color) !important;
+              }
           - option: C
-            icon: mdi:alpha-c
-            style:
-              '--icon-color': >-
-                {{ "var(--disabled-color)" if
-                is_state(config.entity, config.option) }}
-              '--color': var(--blue-color)
+            icon: mdi:alpha-{{ config.option | lower }}
+            entity_id: input_select.select_test
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: C
+              target:
+                entity_id: input_select.select_test
+            type: button
+            value_attribute: state
+            styles: |-
+              :host {
+                --icon-color: {{ "var(--disabled-color)" if is_state(config.entity, config.option) }} !important;
+                --color: var(--blue-color) !important;
+              }
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: ''
   - type: custom:service-call
-    show: '{{ is_state(config.entity, "A") }}'
+    entries:
+      - type: button
+        icon: mdi:arrow-down-bold
+        tap_action:
+          action: call-service
+          service: input_number.decrement
+          data:
+            entity_id: input_number.slider_test
+        hold_action:
+          action: repeat
+          repeat_delay: 10
+        entity_id: input_number.slider_test
+        value_attribute: state
+        styles: ''
+      - type: slider
+        thumb: round
+        entity_id: input_number.slider_test
+        label: |
+          Input Number
+          {{ value }}{{ unit }}
+        unit_of_measurement: '#'
+        icon: mdi:numeric
+        styles: |-
+          :host {
+            flex-basis: 600% !important;
+            --tooltip-label: "The number is {{ value }}";
+            border-radius: 40px !important;
+            --label-color: var(--disabled-color);
+          }
+          .icon {
+            color: var(--accent-color) !important;
+            padding: 8px !important;
+            flex: auto !important;
+            position: absolute !important;
+            transform: translateX(var(--thumb-offset)) !important;
+            --mdc-icon-size: 24px !important;
+          }
+        range:
+          - -128
+          - 128
+        tap_action:
+          action: call-service
+          target:
+            entity_id:
+              - input_number.slider_test
+          service: input_number.set_value
+          data:
+            value: '{{ value | int }}'
+        autofill_entity_id: true
+        step: 0.5
+        value_attribute: state
+      - type: button
+        icon: mdi:arrow-up-bold
+        action: call-service
+        haptics: true
+        hold_action:
+          action: repeat
+          repeat_delay: 10
+        entity_id: input_number.slider_test
+        tap_action:
+          action: call-service
+          service: input_number.increment
+          target:
+            entity_id:
+              - input_number.slider_test
+        value_attribute: state
+        styles: ''
+    styles: |-
+      {% if not is_state(config.entity, "A")  %}
+      :host {
+        display: none !important;
+      }
+      {% endif %}
+  - type: custom:service-call
+    entries:
+      - type: spinbox
+        tap_action:
+          action: call-service
+          service: input_number.set_value
+          data:
+            value: '{{ value }}'
+          target:
+            entity_id: input_number.slider_test
+        range:
+          - -128
+          - 128
+        step: 0.5
+        label: '{{ value }}'
+        hold_action:
+          action: repeat
+          repeat_delay: 50
+        autofill_entity_id: true
+        decrement:
+          entity_id: input_number.slider_test
+          type: button
+          value_attribute: state
+          styles: ''
+        entity_id: input_number.slider_test
+        increment:
+          entity_id: input_number.slider_test
+          type: button
+          value_attribute: state
+          styles: ''
+        value_attribute: state
+        styles: ''
+    styles: |
+      {% if not is_state(config.entity, "A")  %}
+      :host {
+        display: none !important;
+      }
+      {% endif %}
+  - type: custom:service-call
     entries:
       - type: button
         icon: mdi:youtube
@@ -1303,6 +1796,9 @@ features:
         double_tap_action:
           action: url
           url_path: play.spotify.com
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: ''
       - type: button
         icon: mdi:view-dashboard
         tap_action:
@@ -1311,27 +1807,67 @@ features:
         double_tap_action:
           action: navigate
           navigation_path: /lovelace-extra/0
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: ''
+      - type: button
+        icon: mdi:view-compact
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-extra/subview
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: ''
+    styles: |-
+      {% if not is_state(config.entity, "B")  %}
+      :host {
+        display: none !important;
+      }
+      {% endif %}
   - type: custom:service-call
-    show: '{{ is_state(config.entity, "B") }}'
     entries:
       - type: button
         icon: mdi:assistant
         tap_action:
           action: assist
-  - type: custom:service-call
-    show: '{{ is_state(config.entity, "C") }}'
-    entries:
-      - type: slider
-        thumb: flat
-        entity_id: input_number.slider_test
-        label: '{{ value }}'
-        style:
-          '--label-color': var(--disabled-color)
+          pipeline_id: last_used
+        label: ''
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: ''
+        double_tap_action:
+          action: navigate
+          navigation_path: '?conversation=1'
+      - type: button
+        tap_action:
+          action: more-info
+          target:
+            entity_id: sensor.fordpass_elveh
+        entity_id: sensor.fordpass_elveh
+        value_attribute: state
+        styles: |-
+          :host {
+            background-image: url('http://homeassistant.local:8123/local/ford_mme.png') !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            opacity: 1 !important;
+          }
+    styles: |-
+
+      {% if not is_state(config.entity, "C")  %}
+      :host {
+        display: none !important;
+      }
+      {% endif %}
 type: tile
-entity: input_select.test_select
+entity: input_select.select_test
 show_entity_picture: false
 vertical: false
-color: accent
+color: primary
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="1200"/>
@@ -1349,32 +1885,68 @@ features:
         label: '{{ value }}{{ unit }}'
         step: 1
         debounceTime: 1000
-        value_from_hass_delay: 5000
         range:
           - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
           - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
         value_attribute: temperature
-        unit_of_measurement: ' °F'
-        tap_action:
-          service: climate.set_temperature
-          data:
-            entity_id: climate.downstairs_thermostat
-            temperature: '{{ value }}'
+        unit_of_measurement: °F
         hold_action:
           action: repeat
-        style:
-          '--background': var(--tile-color)
-          '--icon-color': var(--tile-color)
-          flex-flow: row
+        entity_id: climate.downstairs_thermostat
+        styles: |-
+          :host {
+            --background: var(--tile-color) !important;
+            --icon-color: var(--tile-color) !important;
+            flex-flow: row !important;
+          }
+        tap_action:
+          action: call-service
+          target:
+            entity_id: climate.downstairs_thermostat
   - type: custom:service-call
     entries:
       - type: button
         label: XKCD
+        value_from_hass_delay: 5000
         momentary_end_action:
           action: url
-          url_path: https://xkcd.com/{{ 1000* hold_secs }}
+          url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
+        entity_id: climate.downstairs_thermostat
+        value_attribute: state
+  - type: custom:service-call
+    entries:
+      - type: button
+        entity_id: sensor.cold_flu_index_today
+        label: |-
+          State Float
+          {{ value }}
+        value_attribute: state
+        styles: ''
+      - type: button
+        entity_id: sensor.cold_flu_index_today
+        label: |-
+          State Float
+          {{ value }}
+        value_attribute: strep_index
+        icon: ''
+        styles: |-
+          .background {
+            --color: {{ "blue" if state_attr(config.entity, config.attribute) < 3 else "green" }} !important;
+          }
+        tap_action:
+          action: more-info
+          target:
+            entity_id: sensor.cold_flu_index_today
+          confirmation:
+            exemptions:
+              - user: 7e9bf9d73edc48df8ece5cec7e9a4f00
+              - user: af773a442cd7493f8178f7c23b7882d7
+            text: Display Cold & Flue Index?
 type: tile
 entity: climate.downstairs_thermostat
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
@@ -1393,34 +1965,42 @@ features:
           {% set minutes = (value / 60) | int %} {% set seconds = (value - 60 *
           minutes) | int %} {{ minutes }}:{{ 0 if seconds < 10 else "" }}{{
           seconds | int }}
-        style:
-          overflow: visible
-          height: 12px
-          border-radius: 0px
-          '--color': none
+        styles: |-
+          :host {
+            overflow: visible !important;
+            height: 12px !important;
+            border-radius: 0px !important;
+            --color: none !important;
+          }
+        entity_id: timer.timer_test
       - type: slider
         tap_action:
           action: none
         value_attribute: elapsed
         thumb: flat
-        style:
-          flex-basis: 1200%
-          height: 10px
         step: 1
         range:
           - 0
           - >-
             {% set hms = state_attr(config.entity, "duration").split(":") %} {{
-            (hms[0] |int ) * 3600 + (hms[1] | int) * 60 + (hms[2] | int)
-            }}
+            (hms[0] |int ) * 3600 + (hms[1] | int) * 60 + (hms[2] | int) }}
+        styles: |-
+          :host {
+            flex-basis: 1200% !important;
+            height: 10px !important;
+          }
+        entity_id: timer.timer_test
       - type: button
         value_attribute: duration
         label: '{% set hms = value.split(":") %} {{ hms[1] | int }}:{{ hms[2] }}'
-        style:
-          overflow: visible
-          height: 12px
-          border-radius: 0px
-          '--color': none
+        styles: |-
+          :host {
+            overflow: visible !important;
+            height: 12px !important;
+            border-radius: 0px !important;
+            --color: none !important;
+          }
+        entity_id: timer.timer_test
   - type: custom:service-call
     entries:
       - type: button
@@ -1430,6 +2010,8 @@ features:
           service: timer.start
           target:
             entity_id: timer.timer_test
+        entity_id: timer.timer_test
+        value_attribute: elapsed
       - type: button
         icon: mdi:timer-pause
         tap_action:
@@ -1437,6 +2019,8 @@ features:
           service: timer.pause
           target:
             entity_id: timer.timer_test
+        entity_id: timer.timer_test
+        value_attribute: elapsed
       - type: button
         icon: mdi:timer-cancel
         tap_action:
@@ -1444,8 +2028,17 @@ features:
           service: timer.cancel
           target:
             entity_id: timer.timer_test
+        entity_id: timer.timer_test
+        value_attribute: elapsed
+    styles: |-
+      :host {
+        --mdc-icon-size: 32px !important;
+      }
 type: tile
 entity: timer.timer_test
+layout_options:
+  grid_columns: 4
+  grid_rows: auto
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/timer_tile.png" alt="timer_tile" width="600"/>
