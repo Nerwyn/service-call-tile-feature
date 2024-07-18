@@ -418,6 +418,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								(entry as IOption).option as string,
 								context,
 							);
+							console.log(option);
 							const entryType = this.renderTemplate(
 								entry.type as string,
 								context,
@@ -437,9 +438,10 @@ export class CustomFeaturesRowEditor extends LitElement {
 											: ''}
 										<div class="feature-list-item-label">
 											<span class="primary"
-												>${option ?? field == 'option'
+												>${option ??
+												(field == 'option'
 													? 'Option'
-													: entryType}${label
+													: entryType)}${label
 													? ` ⸱ ${label}`
 													: ''}</span
 											>
