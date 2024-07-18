@@ -212,6 +212,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
+		this.autofillCooldown = false;
 		this.entriesChanged(entries);
 	}
 
@@ -220,6 +221,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const options = entry.options ?? [];
 		options.push({});
 		entry.options = options;
+		this.autofillCooldown = false;
 		this.entryChanged(entry);
 	}
 
@@ -1289,7 +1291,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			let config = this.updateDeprecatedFields(this.config);
 			config = this.autofillDefaultFields(config);
 			this.configChanged(config);
-			setTimeout(() => (this.autofillCooldown = false), 2000);
+			setTimeout(() => (this.autofillCooldown = false), 1000);
 		}
 
 		this.buildPeopleList();
