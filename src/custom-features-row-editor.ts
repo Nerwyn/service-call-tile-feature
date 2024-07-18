@@ -1715,8 +1715,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	updateDeprecatedFields(config: IConfig = this.config): IConfig {
-		config.type = 'custom-features-row';
-
 		const updatedConfig = structuredClone(config);
 		for (let entry of updatedConfig.entries) {
 			entry = this.updateDeprecatedEntryFields(entry);

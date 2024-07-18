@@ -161,7 +161,6 @@ class CustomFeaturesRow extends LitElement {
 }
 
 customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
-customElements.define('custom-features-row', CustomFeaturesRow);
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
 
 window.customTileFeatures = window.customTileFeatures || [];
@@ -170,9 +169,13 @@ window.customTileFeatures.push({
 	type: 'service-call',
 	name: 'Custom Features Row',
 	configurable: true,
-	supported: () => false,
+	supported: () => {
+		console.log(document);
+		return true;
+	},
 });
 window.customTileFeatures.push({
+	// Original name to not break old configs
 	type: 'custom-features-row',
 	name: 'Custom Features Row',
 	configurable: true,
