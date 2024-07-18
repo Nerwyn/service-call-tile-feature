@@ -160,6 +160,7 @@ class CustomFeaturesRow extends LitElement {
 	}
 }
 
+customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 customElements.define('custom-features-row', CustomFeaturesRow);
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
 
