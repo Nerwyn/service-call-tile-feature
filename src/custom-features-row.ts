@@ -34,7 +34,7 @@ class CustomFeaturesRow extends LitElement {
 
 	static getStubConfig() {
 		return {
-			type: 'custom:custom-features-row',
+			type: 'custom:service-call', // Use old type to not break old configs
 			entries: [],
 		};
 	}
