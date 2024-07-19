@@ -667,7 +667,7 @@ export class BaseCustomFeature extends LitElement {
 				place-content: center space-evenly;
 				align-items: center;
 				position: relative;
-				height: 40px;
+				height: var(--feature-height, 40px);
 				width: 100%;
 				border: none;
 				border-radius: 10px;
@@ -729,3 +729,4 @@ export class BaseCustomFeature extends LitElement {
 		`;
 	}
 }
+

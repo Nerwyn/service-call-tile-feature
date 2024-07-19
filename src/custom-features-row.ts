@@ -2,6 +2,7 @@ import packageInfo from '../package.json';
 
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -9,6 +10,7 @@ import { renderTemplate } from 'ha-nunjucks';
 
 import { IConfig, IEntry } from './models/interfaces';
 import { CustomFeaturesRowEditor } from './custom-features-row-editor';
+import { atLeastHaVersion } from './utils/atLeastHaVersion';
 import './classes/custom-feature-button';
 import './classes/custom-feature-slider';
 import './classes/custom-feature-selector';
@@ -142,7 +144,15 @@ class CustomFeaturesRow extends LitElement {
 			  `
 			: '';
 
-		return html`<div class="row">${row}${styles}</div>`;
+		const version = this.hass.config.version;
+		return html`<div
+			class="row"
+			class="row ${classMap({
+				'no-padding': atLeastHaVersion(version, 2024, 8),
+			})}"
+		>
+			${row}${styles}
+		</div>`;
 	}
 
 	static get styles() {
@@ -156,8 +166,11 @@ class CustomFeaturesRow extends LitElement {
 				justify-content: center;
 				align-items: center;
 				padding: 0 12px 12px;
-				gap: 12px;
+				gap: var(--feature-button-spacing, 12px);
 				width: auto;
+			}
+			.row.no-padding {
+				padding: 0;
 			}
 		`;
 	}
@@ -169,11 +182,12 @@ if (!window.structuredClone) {
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 }
 
-window.customTileFeatures = window.customTileFeatures || [];
+window.customCardFeatures = window.customCardFeatures || [];
 customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
-window.customTileFeatures.push({
+window.customCardFeatures.push({
 	type: 'service-call',
 	name: 'Custom Features Row',
 	configurable: true,
 });
+

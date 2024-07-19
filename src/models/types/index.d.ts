@@ -2,10 +2,10 @@ export {};
 
 declare global {
 	interface Window {
-		customTileFeatures: CustomTileFeature[];
+		customCardFeatures: CustomCardFeature[];
 	}
 
-	interface CustomTileFeature {
+	interface CustomCardFeature {
 		type: string;
 		name: string;
 		configurable?: boolean;
