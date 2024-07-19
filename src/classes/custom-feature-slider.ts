@@ -346,7 +346,16 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 								'::-moz-range-thumb',
 							);
 						}
-						console.log(`computed height: ${style.height}`);
+						console.log(
+							`computed width: ${style.getPropertyValue(
+								'width',
+							)}`,
+						);
+						console.log(
+							`thumb width: ${style.getPropertyValue(
+								'--thumb-width',
+							)}`,
+						);
 					}
 				}
 				break;
