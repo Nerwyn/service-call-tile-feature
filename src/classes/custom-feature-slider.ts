@@ -455,7 +455,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				.flat-thumb::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					height: 40px;
+					height: var(--feature-height, 40px);
 					width: var(--thumb-width, 16px);
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
@@ -472,7 +472,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				.flat-thumb::-moz-range-thumb {
 					appearance: none;
 					-moz-appearance: none;
-					height: 40px;
+					height: var(--feature-height, 40px);
 					width: var(--thumb-width, 16px);
 					border-color: var(--color, var(--tile-color));
 					background: var(--color, var(--tile-color));
@@ -526,27 +526,29 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				}
 
 				.round-thumb::-webkit-slider-thumb {
+					--height: var(--feature-height, 40px);
 					appearance: none;
 					-webkit-appearance: none;
-					height: 40px;
-					width: var(--thumb-width, 40px);
+					height: var(--height);
+					width: var(--thumb-width, var(--height));
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color))
+						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
+							0 100vw var(--color, var(--tile-color))
 					);
-					border-radius: var(--thumb-border-radius, 40px);
+					border-radius: var(--thumb-border-radius, var(--height));
 				}
 
 				.round-thumb::-moz-range-thumb {
+					--height: var(--feature-height, 40px);
 					appearance: none;
 					-moz-appearance: none;
-					height: 40px;
-					width: var(--thumb-width, 40px);
+					height: var(--height);
+					width: var(--thumb-width, var(--height));
 					border-color: var(--color, var(--tile-color));
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
@@ -554,10 +556,10 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
-						calc(-100vw - (var(--thumb-width, 40px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color))
+						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
+							0 100vw var(--color, var(--tile-color))
 					);
-					border-radius: var(--thumb-border-radius, 40px);
+					border-radius: var(--thumb-border-radius, var(--height));
 				}
 
 				.off::-webkit-slider-thumb {
@@ -602,3 +604,4 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		];
 	}
 }
+
