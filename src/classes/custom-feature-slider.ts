@@ -326,10 +326,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			case 'round': {
 				this.sliderClass += 'round-thumb';
 				this.thumbWidth = 40; // TODO
-				const sliderElement = document.querySelector('input');
-				if (sliderElement) {
-					const style = getComputedStyle(sliderElement);
-					console.log(style);
+				if (this.shadowRoot) {
+					const sliderElement = (
+						this.shadowRoot as ShadowRoot
+					).querySelector('input');
+					if (sliderElement) {
+						const style = getComputedStyle(sliderElement);
+						console.log(style);
+					}
 				}
 				break;
 			}
