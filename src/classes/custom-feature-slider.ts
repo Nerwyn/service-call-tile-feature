@@ -323,10 +323,16 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				this.sliderClass += 'flat-thumb';
 				this.thumbWidth = 16;
 				break;
-			case 'round':
+			case 'round': {
 				this.sliderClass += 'round-thumb';
-				this.thumbWidth = 40;
+				this.thumbWidth = 40; // TODO
+				const sliderElement = document.querySelector('input');
+				if (sliderElement) {
+					const style = getComputedStyle(sliderElement);
+					console.log(style);
+				}
 				break;
+			}
 			default:
 				this.sliderClass += 'default-thumb';
 				this.thumbWidth = 12;
@@ -604,4 +610,3 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		];
 	}
 }
-

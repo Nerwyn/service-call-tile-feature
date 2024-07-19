@@ -10,7 +10,7 @@ import { renderTemplate } from 'ha-nunjucks';
 
 import { IConfig, IEntry } from './models/interfaces';
 import { CustomFeaturesRowEditor } from './custom-features-row-editor';
-import { atLeastHaVersion } from './utils/atLeastHaVersion';
+import { atLeastHaVersion } from './utils';
 import './classes/custom-feature-button';
 import './classes/custom-feature-slider';
 import './classes/custom-feature-selector';
@@ -146,7 +146,6 @@ class CustomFeaturesRow extends LitElement {
 
 		const version = this.hass.config.version;
 		return html`<div
-			class="row"
 			class="row ${classMap({
 				'no-padding': atLeastHaVersion(version, 2024, 8),
 			})}"
@@ -190,4 +189,3 @@ window.customCardFeatures.push({
 	name: 'Custom Features Row',
 	configurable: true,
 });
-
