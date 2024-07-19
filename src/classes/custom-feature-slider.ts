@@ -331,8 +331,22 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						this.shadowRoot as ShadowRoot
 					).querySelector('input');
 					if (sliderElement) {
-						const style = getComputedStyle(sliderElement);
-						console.log(style);
+						console.log(
+							`--thumb-width: ${sliderElement.style.getPropertyValue(
+								'--thumb-width',
+							)}`,
+						);
+						let style = getComputedStyle(
+							sliderElement,
+							'::-webkit-slider-thumb',
+						);
+						if (!style) {
+							style = getComputedStyle(
+								sliderElement,
+								'::-moz-range-thumb',
+							);
+						}
+						console.log(`computed height: ${style.height}`);
 					}
 				}
 				break;
