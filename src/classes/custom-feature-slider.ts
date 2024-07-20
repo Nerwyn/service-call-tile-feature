@@ -330,16 +330,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						this.shadowRoot as ShadowRoot
 					).querySelector('input');
 					if (sliderElement) {
-						let style = getComputedStyle(
-							sliderElement,
-							'::-webkit-slider-thumb',
-						);
-						if (!style) {
-							style = getComputedStyle(
-								sliderElement,
-								'::-moz-range-thumb',
-							);
-						}
+						const style = getComputedStyle(sliderElement);
 						const thumbWidth =
 							style.getPropertyValue('--thumb-width');
 						if (thumbWidth) {
