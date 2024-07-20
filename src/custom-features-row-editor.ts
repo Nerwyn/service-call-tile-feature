@@ -1740,7 +1740,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				'style' as keyof IConfig
 			] as unknown as Record<string, string>;
 			for (const field in style) {
-				styles += `\n  ${field}: ${style[field]} !important;`;
+				styles += `\n  ${field}: ${style[field]};`;
 			}
 			styles += `\n}`;
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
@@ -1752,7 +1752,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			)
 				.replace('{{', '')
 				.replace('}}', '')} %}`;
-			styles += '\n:host {\n  display: none !important;\n}';
+			styles += '\n:host {\n  display: none;\n}';
 			styles += '\n{% endif %};';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['hide' as keyof IConfig];
@@ -1763,7 +1763,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			)
 				.replace('{{', '')
 				.replace('}}', '')} %}`;
-			styles += '\n:host {\n  display: none !important;\n}';
+			styles += '\n:host {\n  display: none;\n}';
 			styles += '\n{% endif %}';
 			updatedConfig.styles = styles + (updatedConfig.styles ?? '');
 			delete updatedConfig['show' as keyof IConfig];
@@ -1857,7 +1857,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				deprecatedStyleKeyPresent = true;
 				styles += `\n${deprecatedStyleKeys[field]}: ${
 					entry[field as keyof IEntry]
-				} !important;`;
+				};`;
 				delete entry[field as keyof IEntry];
 			}
 		}
@@ -1873,7 +1873,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				string
 			>;
 			for (const field in style) {
-				styles += `\n  ${field}: ${style[field]} !important;`;
+				styles += `\n  ${field}: ${style[field]};`;
 			}
 			styles += '\n}';
 			entry.styles = styles + (entry.styles ?? '');
@@ -1895,7 +1895,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				>;
 				let styles = `\n${deprecatedStyles[field]} {`;
 				for (const key in style) {
-					styles += `\n  ${key}: ${style[key]} !important;`;
+					styles += `\n  ${key}: ${style[key]};`;
 				}
 				if (
 					field == 'tooltip_style' &&
@@ -1903,7 +1903,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				) {
 					styles += `  display: ${
 						entry['tooltip' as keyof IEntry] ? 'initial' : 'none'
-					} !important;`;
+					};`;
 					delete entry['tooltip' as keyof IEntry];
 				}
 				styles += '\n}';
@@ -1917,7 +1917,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	static get styles() {
 		return css`
 			:host {
-				display: flex !important;
+				display: flex;
 				flex-direction: column;
 			}
 			.content {
