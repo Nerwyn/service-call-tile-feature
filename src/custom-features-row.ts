@@ -135,11 +135,13 @@ class CustomFeaturesRow extends LitElement {
 		const styles = this.config.styles
 			? html`
 					<style>
-						${renderTemplate(
-							this.hass,
-							this.config.styles,
-							context,
-						)}
+						${(
+							renderTemplate(
+								this.hass,
+								this.config.styles,
+								context,
+							) as string
+						).replace(/;(?<! !important;)/g, ' !important;')}
 					</style>
 			  `
 			: '';

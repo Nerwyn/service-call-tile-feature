@@ -239,6 +239,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	toggleGuiMode(_e: CustomEvent) {
 		this.yamlString = undefined;
+		this.autofillCooldown = false;
 		this.guiMode = !this.guiMode;
 	}
 
@@ -586,7 +587,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					'ui.panel.lovelace.editor.action-editor.actions.repeat':
 						'Repeat',
 					'ui.panel.lovelace.editor.action-editor.actions.fire-dom-event':
-						'Fire DOM Event',
+						'Fire DOM event',
 				}[key];
 				return value ?? this.hass.localize(key, values);
 			},

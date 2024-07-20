@@ -263,7 +263,7 @@ export class BaseCustomFeature extends LitElement {
 		this.dispatchEvent(event);
 	}
 
-	handleConfirmation(action: IAction) {
+	handleConfirmation(action: IAction): boolean {
 		if ('confirmation' in action) {
 			let confirmation = action.confirmation;
 			if (typeof confirmation == 'string') {
@@ -276,9 +276,7 @@ export class BaseCustomFeature extends LitElement {
 
 				let text: string;
 				if (confirmation != true && confirmation?.text) {
-					text = this.renderTemplate(
-						confirmation.text as string,
-					) as string;
+					text = this.renderTemplate(confirmation.text) as string;
 				} else {
 					text = `Are you sure you want to run action '${
 						this.renderTemplate(action.action as string) as string
@@ -574,7 +572,9 @@ export class BaseCustomFeature extends LitElement {
 		return entry.styles
 			? html`
 					<style>
-						${this.renderTemplate(entry.styles, context)}
+						${(
+							this.renderTemplate(entry.styles, context) as string
+						).replace(/;(?<! !important;)/g, ' !important;')}
 					</style>
 			  `
 			: '';
@@ -729,4 +729,3 @@ export class BaseCustomFeature extends LitElement {
 		`;
 	}
 }
-
