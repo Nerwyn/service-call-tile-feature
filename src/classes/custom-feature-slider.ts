@@ -331,11 +331,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						this.shadowRoot as ShadowRoot
 					).querySelector('input');
 					if (sliderElement) {
-						console.log(
-							`--thumb-width: ${sliderElement.style.getPropertyValue(
-								'--thumb-width',
-							)}`,
-						);
 						let style = getComputedStyle(
 							sliderElement,
 							'::-webkit-slider-thumb',
@@ -346,16 +341,21 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 								'::-moz-range-thumb',
 							);
 						}
-						console.log(
-							`computed width: ${style.getPropertyValue(
-								'width',
-							)}`,
-						);
-						console.log(
-							`thumb width: ${style.getPropertyValue(
-								'--thumb-width',
-							)}`,
-						);
+						const thumbWidth =
+							style.getPropertyValue('--thumb-width');
+						if (thumbWidth) {
+							this.thumbWidth = parseInt(
+								thumbWidth.replace(/[^0-9]+/g, ''),
+							);
+						} else {
+							const height = style
+								.getPropertyValue('height')
+								.replace(/[^0-9]+/g, '');
+							if (height) {
+								this.thumbWidth = parseInt(height);
+							}
+						}
+						console.log(`thumb width: ${this.thumbWidth}`);
 					}
 				}
 				break;
@@ -372,13 +372,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			this.shadowRoot?.querySelector('.container') ?? this,
 		);
 
-		const thumbWidthMatch =
-			this.entry.styles?.match(/--thumb-width:(.*?);/g);
-		if (thumbWidthMatch) {
-			this.thumbWidth = parseInt(
-				thumbWidthMatch[0].replace(/--thumb-width:|px|;| /g, ''),
-			);
-		}
+		// const thumbWidthMatch =
+		// 	this.entry.styles?.match(/--thumb-width:(.*?);/g);
+		// if (thumbWidthMatch) {
+		// 	this.thumbWidth = parseInt(
+		// 		thumbWidthMatch[0].replace(/--thumb-width:|px|;| /g, ''),
+		// 	);
+		// }
 
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
