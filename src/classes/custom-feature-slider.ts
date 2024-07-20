@@ -313,6 +313,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			this.precision = 0;
 		}
 
+		const sliderElement = this.shadowRoot?.querySelector('input');
 		this.sliderClass = 'slider ';
 		switch (this.renderTemplate(this.entry.thumb as string)) {
 			case 'line':
@@ -325,26 +326,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				break;
 			case 'round': {
 				this.sliderClass += 'round-thumb';
-				if (this.shadowRoot) {
-					const sliderElement = (
-						this.shadowRoot as ShadowRoot
-					).querySelector('input');
-					if (sliderElement) {
-						const style = getComputedStyle(sliderElement);
-						const thumbWidth =
-							style.getPropertyValue('--thumb-width');
-						if (thumbWidth) {
-							this.thumbWidth = parseInt(
-								thumbWidth.replace(/[^0-9]+/g, ''),
-							);
-						} else {
-							const height = style.getPropertyValue('height');
-							if (height) {
-								this.thumbWidth = parseInt(
-									height.replace(/[^0-9]+/g, ''),
-								);
-							}
-						}
+				if (sliderElement) {
+					const style = getComputedStyle(sliderElement);
+					const height = style.getPropertyValue('height');
+					if (height) {
+						this.thumbWidth = parseInt(
+							height.replace(/[^0-9]+/g, ''),
+						);
 					}
 				}
 				break;
@@ -360,6 +348,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
 		);
+
+		if (sliderElement) {
+			const style = getComputedStyle(sliderElement);
+			const thumbWidth = style.getPropertyValue('--thumb-width');
+			if (thumbWidth) {
+				this.thumbWidth = parseInt(thumbWidth.replace(/[^0-9]+/g, ''));
+			}
+		}
 
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
