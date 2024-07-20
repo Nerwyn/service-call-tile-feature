@@ -331,10 +331,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					).querySelector('input');
 					if (sliderElement) {
 						const style = getComputedStyle(sliderElement);
-						console.log(style);
 						const thumbWidth =
 							style.getPropertyValue('--thumb-width');
-						console.log(thumbWidth);
 						if (thumbWidth) {
 							this.thumbWidth = parseInt(
 								thumbWidth.replace(/[^0-9]+/g, ''),
