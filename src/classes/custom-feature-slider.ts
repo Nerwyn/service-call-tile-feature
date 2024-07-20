@@ -325,7 +325,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				break;
 			case 'round': {
 				this.sliderClass += 'round-thumb';
-				this.thumbWidth = 40; // TODO
 				if (this.shadowRoot) {
 					const sliderElement = (
 						this.shadowRoot as ShadowRoot
@@ -348,14 +347,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 								thumbWidth.replace(/[^0-9]+/g, ''),
 							);
 						} else {
-							const height = style
-								.getPropertyValue('height')
-								.replace(/[^0-9]+/g, '');
+							const height = style.getPropertyValue('height');
 							if (height) {
-								this.thumbWidth = parseInt(height);
+								this.thumbWidth = parseInt(
+									height.replace(/[^0-9]+/g, ''),
+								);
 							}
 						}
-						console.log(`thumb width: ${this.thumbWidth}`);
 					}
 				}
 				break;
@@ -371,14 +369,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
 		);
-
-		// const thumbWidthMatch =
-		// 	this.entry.styles?.match(/--thumb-width:(.*?);/g);
-		// if (thumbWidthMatch) {
-		// 	this.thumbWidth = parseInt(
-		// 		thumbWidthMatch[0].replace(/--thumb-width:|px|;| /g, ''),
-		// 	);
-		// }
 
 		this.setThumbOffset();
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
