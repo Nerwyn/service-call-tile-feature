@@ -31,7 +31,10 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		for (const i in options) {
 			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
-			if (this.value == optionName && this.value != undefined) {
+			if (
+				this.value?.toString() == optionName.toString() &&
+				this.value != undefined
+			) {
 				optionClass = 'selected-option';
 			}
 

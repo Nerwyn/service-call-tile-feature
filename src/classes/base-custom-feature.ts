@@ -596,20 +596,16 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	buildLabel(entry: IEntry = this.entry, context?: object) {
-		let label = html``;
 		if (entry.label) {
 			const text: string = this.renderTemplate(
 				entry.label as string,
 				context,
 			) as string;
 			if (text) {
-				// prettier-ignore
-				label = html`<pre
-					class="label"
-				>${text}</pre>`;
+				return html`<pre class="label">${text}</pre>`;
 			}
 		}
-		return label;
+		return '';
 	}
 
 	// Skeletons for overridden event handlers
