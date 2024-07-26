@@ -274,7 +274,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					border: none;
 					padding: 10px;
 					color: inherit;
-					z-index: 2;
 
 					--mdc-icon-size: 16px;
 				}
@@ -291,7 +290,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					width: fit-content;
 					padding: 10px;
 					cursor: pointer;
-					z-index: 2;
 
 					--mdc-icon-size: 16px;
 					--background-opacity: 0;

@@ -691,7 +691,6 @@ export class BaseCustomFeature extends LitElement {
 					var(--color, var(--disabled-color))
 				);
 				opacity: var(--background-opacity, 0.2);
-				z-index: 1;
 			}
 
 			.icon {
@@ -700,7 +699,6 @@ export class BaseCustomFeature extends LitElement {
 				display: inline-flex;
 				flex-flow: column;
 				place-content: center;
-				z-index: 2;
 				color: var(--icon-color, inherit);
 				filter: var(--icon-filter, inherit);
 			}
@@ -718,7 +716,6 @@ export class BaseCustomFeature extends LitElement {
 				font-family: inherit;
 				font-size: 12px;
 				font-weight: bold;
-				z-index: 2;
 				color: var(--label-color, inherit);
 				filter: var(--label-filter, none);
 			}

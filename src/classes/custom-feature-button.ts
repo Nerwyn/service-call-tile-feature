@@ -285,7 +285,6 @@ export class CustomFeatureButton extends BaseCustomFeature {
 					height: 100%;
 					width: 100%;
 					border: none;
-					z-index: 2;
 					overflow: hidden;
 				}
 				button::before {
