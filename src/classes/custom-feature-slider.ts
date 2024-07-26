@@ -361,14 +361,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
 
 		return html`
-			${this.buildTooltip()}
 			<div class="container">
 				${this.buildBackground()}
 				${this.buildSlider(undefined, context)}
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
-			${this.buildTooltipStyle(context)}
+			${this.buildTooltip()} ${this.buildTooltipStyle(context)}
 			${this.buildStyles(undefined, context)}
 		`;
 	}
