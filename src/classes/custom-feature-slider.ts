@@ -405,7 +405,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					height: inherit;
 					background: none;
 					pointer-events: all;
-					z-index: 2;
 				}
 
 				.slider,
@@ -470,7 +469,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
-					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
@@ -488,7 +486,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
-					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
@@ -544,7 +541,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
-					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
@@ -563,7 +559,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					background: var(--color, var(--tile-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
-					z-index: 2;
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
@@ -581,7 +576,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				}
 
 				.tooltip {
-					z-index: 3;
 					background: var(--clear-background-color);
 					color: var(--primary-text-color);
 					position: absolute;
