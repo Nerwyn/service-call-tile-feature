@@ -25,10 +25,10 @@ module.exports = {
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
 			},
-			{
-				test: /\.(jsx?|tsx?)$/,
-				loader: 'minify-html-literals-loader',
-			},
+			// {
+			// 	test: /\.(jsx?|tsx?)$/,
+			// 	loader: 'minify-html-literals-loader',
+			// },
 		],
 	},
 	performance: {
