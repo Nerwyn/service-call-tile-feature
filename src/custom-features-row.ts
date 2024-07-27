@@ -9,7 +9,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { renderTemplate } from 'ha-nunjucks';
 
 import { IConfig, IEntry } from './models/interfaces';
-import { CustomFeaturesRowEditor } from './custom-features-row-editor';
+// import { CustomFeaturesRowEditor } from './custom-features-row-editor';
 import { atLeastHaVersion } from './utils';
 import './classes/custom-feature-button';
 import './classes/custom-feature-slider';
@@ -183,7 +183,7 @@ if (!window.structuredClone) {
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 }
 
-customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
+// customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
 customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 window.customCardFeatures = window.customCardFeatures || [];
 window.customCardFeatures.push({
