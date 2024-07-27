@@ -183,10 +183,16 @@ if (!window.structuredClone) {
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 }
 
-window.customCardFeatures = window.customCardFeatures || [];
 customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
+window.customCardFeatures = window.customCardFeatures || [];
 window.customCardFeatures.push({
+	type: 'service-call',
+	name: 'Custom Features Row',
+	configurable: true,
+});
+window.customTileFeatures = window.customTileFeatures || [];
+window.customTileFeatures.push({
 	type: 'service-call',
 	name: 'Custom Features Row',
 	configurable: true,
