@@ -5,7 +5,7 @@ let env =
 	execSync('git branch --show-current').toString().trim() == 'main'
 		? 'production'
 		: 'development';
-// env = 'production';
+env = 'production';
 
 module.exports = {
 	mode: env,
