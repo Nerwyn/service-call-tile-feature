@@ -191,9 +191,3 @@ window.customCardFeatures.push({
 	name: 'Custom Features Row',
 	configurable: true,
 });
-window.customTileFeatures = window.customTileFeatures || [];
-window.customTileFeatures.push({
-	type: 'service-call',
-	name: 'Custom Features Row',
-	configurable: true,
-});

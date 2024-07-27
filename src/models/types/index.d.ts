@@ -3,7 +3,6 @@ export {};
 declare global {
 	interface Window {
 		customCardFeatures: CustomCardFeature[];
-		customTileFeatures: CustomCardFeature[];
 	}
 
 	interface CustomCardFeature {
