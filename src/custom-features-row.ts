@@ -177,6 +177,12 @@ class CustomFeaturesRow extends LitElement {
 	}
 }
 
+if (!window.structuredClone) {
+	// eslint-disable-next-line
+	// @ts-ignore
+	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
+}
+
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
 customElements.define('service-call', CustomFeaturesRow); // Original name to not break old configs
 window.customCardFeatures = window.customCardFeatures || [];
@@ -185,9 +191,3 @@ window.customCardFeatures.push({
 	name: 'Custom Features Row',
 	configurable: true,
 });
-
-if (!window.structuredClone) {
-	// eslint-disable-next-line
-	// @ts-ignore
-	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
-}

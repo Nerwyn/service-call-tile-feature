@@ -572,9 +572,9 @@ export class BaseCustomFeature extends LitElement {
 		return entry.styles
 			? html`
 					<style>
-						${(
-							this.renderTemplate(entry.styles, context) as string
-						).replace(/;(?<! !important;)/g, ' !important;')}
+						${(this.renderTemplate(entry.styles, context) as string)
+							.replace(/ !important/g, '')
+							.replace(/;/g, ' !important;')}
 					</style>
 			  `
 			: '';
