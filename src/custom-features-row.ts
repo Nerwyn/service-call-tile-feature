@@ -141,7 +141,9 @@ class CustomFeaturesRow extends LitElement {
 								this.config.styles,
 								context,
 							) as string
-						).replace(/;(?<! !important;)/g, ' !important;')}
+						)
+							.replace(/!important/g, '')
+							.replace(/;/g, ' !important;')}
 					</style>
 			  `
 			: '';
