@@ -674,6 +674,8 @@ export class BaseCustomFeature extends LitElement {
 				font-size: inherit;
 				color: inherit;
 				flex-basis: 100%;
+				-webkit-tap-highlight-color: transparent;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 			}
 
 			.container {

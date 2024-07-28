@@ -1919,6 +1919,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 			:host {
 				display: flex;
 				flex-direction: column;
+				-webkit-tap-highlight-color: transparent;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 			}
 			.content {
 				padding: 12px;

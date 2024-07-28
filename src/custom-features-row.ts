@@ -161,6 +161,8 @@ class CustomFeaturesRow extends LitElement {
 	static get styles() {
 		return css`
 			:host {
+				-webkit-tap-highlight-color: transparent;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 				--mdc-icon-size: 20px;
 			}
 			.row {

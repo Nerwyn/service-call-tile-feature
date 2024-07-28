@@ -258,6 +258,8 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
+					-webkit-tap-highlight-color: transparent;
+					-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
 						0.08
