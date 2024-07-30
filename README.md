@@ -23,19 +23,17 @@ Call any service and most [actions](https://www.home-assistant.io/dashboards/act
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/buttons_tile.png" alt="buttons_tile" width="600"/>
 
-Buttons are the most basic type of custom feature, being based on the example provided in the Home Assistant developer documentation.
-
-In addition to tap actions, buttons also support double tap actions, hold actions, and an alternate momentary button mode. All of these are described in further detail below.
+Buttons are the most basic type of custom feature, being based on the example provided in the Home Assistant developer documentation. In addition to tap actions, buttons also support double tap actions, hold actions, and an alternate momentary button mode. All of these are described in further detail below. Buttons (like most features) can be given an icon and label, and further stylized with custom CSS.
 
 ## Selectors
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
 
-Selectors allow you to create a row of custom button features with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. But like all features in this project it can be used for any actions.
+Selectors allow you to create a row of custom button features with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. Like all features in this project it can be used for any action. Selectors do not have an overall icon or label, but each option has their own appearance fields.
 
-After adding a selector to your custom features row, you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature as described above.
+After adding a selector to your custom features row, you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature.
 
-This feature is set up to work with Home Assistant `select/input_select` entities out of the box. By setting the feature entity to one of these domains, you can use it to change the values of this entity with little more configuration. By default each button will call the `select/input_select.select_option` service. The list of options is automatically retrieved, but you still have to add each option button and give them appearance information so that they will render and be distinguishable.
+This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill entity enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and service call data filled in along with the `select_option` service call information. While the option fields and service call information will autofill, you still have to click the add option button and give them appearance information so that they will render and be distinguishable (you'll know that you've added all possible options when the last option you add has the text `Option` instead of a different value).
 
 Since each selector option is a custom feature button, you can override it's default behavior by changing it's tap action. Doing so will also break the default current option highlighting logic, but you can use the `Option` field within an option alongside to restore this. `Option` will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
 
