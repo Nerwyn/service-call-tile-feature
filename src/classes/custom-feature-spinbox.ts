@@ -288,7 +288,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					opacity: 0.77;
 					position: absolute;
 					width: fit-content;
-					padding: 10px;
+					padding: 0 10px;
 					cursor: pointer;
 
 					--mdc-icon-size: 16px;
@@ -305,8 +305,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 
 				custom-feature-button {
 					position: absolute;
-					width: initial;
-					width: 36px;
+					min-width: 36px;
+					width: min-content;
+					padding: 0 10px;
 
 					--opacity: 0;
 					--color: rgb(0, 0, 0, 0);
