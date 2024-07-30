@@ -157,6 +157,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		) {
 			return html`
 				<custom-feature-button
+					class="operator"
 					id=${operator}
 					.hass=${this.hass}
 					.entry=${actions}
