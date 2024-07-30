@@ -1423,6 +1423,7 @@ features:
           }
         tap_action:
           action: call-service
+          service: climate.set_temperature
           target:
             entity_id: climate.downstairs_thermostat
           data:
