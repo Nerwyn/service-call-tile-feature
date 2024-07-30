@@ -1425,6 +1425,8 @@ features:
           action: call-service
           target:
             entity_id: climate.downstairs_thermostat
+          data:
+            temperature: '{{ value }}'
   - type: custom:service-call
     entries:
       - type: button
