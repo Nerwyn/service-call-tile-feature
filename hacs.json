@@ -1,5 +1,5 @@
 {
-	"name": "Custom Features for Home Assistant Tile Card And More!",
+	"name": "Custom Features for Home Assistant Cards",
 	"content_in_root": false,
 	"homeassistant": "2024.7.2",
 	"filename": "custom-features-row.min.js",
