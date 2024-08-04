@@ -775,6 +775,11 @@ export class CustomFeaturesRowEditor extends LitElement {
 						},
 				  )
 				: ''}
+			${action == 'toggle'
+				? this.buildSelector('Target', `${actionType}.target`, {
+						target: {},
+				  })
+				: ''}
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
 				: ''}

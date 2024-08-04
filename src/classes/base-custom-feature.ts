@@ -106,6 +106,9 @@ export class BaseCustomFeature extends LitElement {
 				case 'more-info':
 					this.moreInfo(action);
 					break;
+				case 'toggle':
+					this.toggle(action);
+					break;
 				case 'fire-dom-event':
 					this.fireDomEvent(action);
 					break;
@@ -252,6 +255,15 @@ export class BaseCustomFeature extends LitElement {
 		});
 		event.detail = { entityId };
 		this.dispatchEvent(event);
+	}
+
+	toggle(action: IAction) {
+		this.hass.callService(
+			'homeassistant',
+			'toggle',
+			action.data,
+			action.target,
+		);
 	}
 
 	fireDomEvent(action: IAction) {

@@ -4,6 +4,7 @@ export const Actions = [
 	'url',
 	'assist',
 	'more-info',
+	'toggle',
 	'fire-dom-event',
 	'repeat',
 	'none',
