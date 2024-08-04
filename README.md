@@ -1,4 +1,4 @@
-# Custom Features for Tile Cards and More
+# Custom Features for Home Assistant Cards
 
 [![GitHub Release][releases-shield]][releases]
 [![License][license-shield]](LICENSE.md)
@@ -209,7 +209,7 @@ When setting the action for a slider or spinbox, you must use `value` within a t
 
 ### Action Types
 
-Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashboards/actions/) syntax. Most Home Assistant actions are supported.
+Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashboards/actions/) syntax. All Home Assistant actions are supported along with some additional ones.
 
 | Action         | Description                                                                                                                                                                                                                             |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -218,6 +218,7 @@ Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashbo
 | URL            | Navigate to an external URL.                                                                                                                                                                                                            |
 | Assist         | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app. The pipeline ID and start listening options only work in the mobile assist dialog.                                                         |
 | More info      | Open the more info dialog.                                                                                                                                                                                                              |
+| Toggle         | Toggle between the target's on and off (or similar) states.                                                                                                                                                                             |
 | Fire DOM event | Fire a browser dom event using the action object as the event detail. Useful for opening [browser mod popup cards](https://github.com/thomasloven/hass-browser_mod?tab=readme-ov-file#how-do-i-update-a-popup-from-the-browser-mod-15). |
 | Repeat         | Repeat the tap action ten times a second while held. Only applicable to hold.                                                                                                                                                           |
 | No action      | Explicilty set a command to do nothing.                                                                                                                                                                                                 |
