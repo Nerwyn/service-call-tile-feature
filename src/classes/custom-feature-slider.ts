@@ -384,6 +384,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				:host {
 					overflow: visible;
 					pointer-events: none;
+
+					--height: var(--feature-height, 40px);
 				}
 
 				.background {
@@ -532,7 +534,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				}
 
 				.round-thumb::-webkit-slider-thumb {
-					--height: var(--feature-height, 40px);
 					appearance: none;
 					-webkit-appearance: none;
 					height: var(--height);
@@ -549,7 +550,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				}
 
 				.round-thumb::-moz-range-thumb {
-					--height: var(--feature-height, 40px);
 					appearance: none;
 					-moz-appearance: none;
 					height: var(--height);
@@ -585,7 +585,10 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					line-height: 20px;
 					transform: var(
 						--tooltip-transform,
-						translate(var(--thumb-offset), -35px)
+						translate(
+							var(--thumb-offset),
+							calc(-0.5 * var(--height) - 0.4em - 10px)
+						)
 					);
 					display: var(--tooltip-display);
 				}
