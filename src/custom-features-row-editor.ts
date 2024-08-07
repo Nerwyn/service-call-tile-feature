@@ -632,7 +632,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			<div class="form">
 				${additionalFormOptions}
 				${this.buildSelector(
-					'Autofill Entity',
+					'Autofill entity',
 					'autofill_entity_id',
 					{
 						boolean: {},
@@ -718,7 +718,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${this.buildSelector(label, actionType, selector)}
 			${action != 'none' && actionType == 'double_tap_action'
 				? this.buildSelector(
-						'Double Tap Window',
+						'Double tap window',
 						'double_tap_action.double_tap_window',
 						{
 							number: {
@@ -733,7 +733,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				: action != 'none' && actionType == 'hold_action'
 				  ? html`<div class="form">
 							${this.buildSelector(
-								'Hold Time',
+								'Hold time',
 								'hold_action.hold_time',
 								{
 									number: {
@@ -750,7 +750,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								context,
 							) == 'repeat'
 								? this.buildSelector(
-										'Repeat Delay',
+										'Repeat delay',
 										'hold_action.repeat_delay',
 										{
 											number: {
@@ -842,7 +842,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				actionSelectors = html`
 					${actionsTabBar}
 					${this.buildActionOption(
-						'Start Action (optional)',
+						'Start behavior (optional)',
 						'momentary_start_action',
 						defaultUiActions,
 					)}
@@ -850,7 +850,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						"Set the action below, and then use the code editor to set a data field to the seconds the feature was held down using a template like '{{ hold_secs | float }}'.",
 					)}
 					${this.buildActionOption(
-						'End Action (optional)',
+						'End behavior (optional)',
 						'momentary_end_action',
 						defaultUiActions,
 						true,
@@ -863,17 +863,17 @@ export class CustomFeaturesRowEditor extends LitElement {
 				actionSelectors = html`
 					${actionsTabBar}
 					${this.buildActionOption(
-						'Tap action (optional)',
+						'Tap behavior (optional)',
 						'tap_action',
 						defaultUiActions,
 					)}
 					${this.buildActionOption(
-						'Double tap action (optional)',
+						'Double tap behavior (optional)',
 						'double_tap_action',
 						defaultUiActions,
 					)}
 					${this.buildActionOption(
-						'Hold action (optional)',
+						'Hold behavior (optional)',
 						'hold_action',
 						{
 							ui_action: {
@@ -952,7 +952,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						},
 					})}
 					${this.buildSelector(
-						'Update After Action Delay',
+						'Update after action delay',
 						'value_from_hass_delay',
 						{
 							number: {
@@ -969,7 +969,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${this.buildAppearancePanel(html`
 				${this.buildCommonAppearanceOptions()}
 				${this.buildSelector(
-					'Thumb Type',
+					'Thumb type',
 					'thumb',
 					{
 						select: {
@@ -984,7 +984,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${this.buildActionsPanel(html`
 				${this.buildAlertBox()}
 				${this.buildActionOption(
-					'Action',
+					'Behavior',
 					'tap_action',
 					{
 						ui_action: {
@@ -1037,13 +1037,13 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const actionSelectors = html`
 			${this.buildAlertBox()}
 			${this.buildActionOption(
-				'Tap action',
+				'Tap behavior',
 				'tap_action',
 				defaultTapActions,
 				true,
 			)}
 			${this.buildActionOption(
-				'Hold action (optional)',
+				'Hold behavior (optional)',
 				'hold_action',
 				defaultHoldActions,
 			)}
@@ -1119,7 +1119,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								},
 							})}
 							${this.buildSelector(
-								'Update After Action Delay',
+								'Update after action delay',
 								'value_from_hass_delay',
 								{
 									number: {
@@ -1132,7 +1132,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								1000,
 							)}
 							${this.buildSelector(
-								'Debounce Time',
+								'Debounce time',
 								'debounce_time',
 								{
 									number: {
