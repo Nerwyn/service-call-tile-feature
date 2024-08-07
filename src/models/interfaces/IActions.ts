@@ -3,7 +3,7 @@ export const Actions = [
 	'toggle',
 	'navigate',
 	'url',
-	'call-service',
+	'perform-action',
 	'assist',
 	'fire-dom-event',
 	'repeat',
@@ -28,7 +28,7 @@ export interface IConfirmation {
 }
 
 export interface IBrowserMod {
-	service?: string;
+	perform_action?: string;
 	data?: IData;
 	target?: ITarget;
 }
@@ -36,7 +36,7 @@ export interface IBrowserMod {
 export interface IAction {
 	action: Action;
 
-	service?: string;
+	perform_action?: string;
 	data?: IData;
 	target?: ITarget;
 

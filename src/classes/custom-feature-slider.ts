@@ -1,4 +1,4 @@
-import { CSSResult, html, css } from 'lit';
+import { css, CSSResult, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
@@ -438,7 +438,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
 							var(--color, var(--tile-color)),
-						-4px 0 0 6px var(--color, var(--tile-color))
+						-7px 0 0 8px var(--color, var(--tile-color))
 					);
 				}
 
@@ -458,7 +458,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
 							var(--color, var(--tile-color)),
-						-4px 0 0 6px var(--color, var(--tile-color))
+						-7px 0 0 8px var(--color, var(--tile-color))
 					);
 				}
 

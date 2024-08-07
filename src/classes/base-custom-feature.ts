@@ -1,20 +1,20 @@
-import { HomeAssistant, HapticType, forwardHaptic } from 'custom-card-helpers';
+import { HapticType, HomeAssistant, forwardHaptic } from 'custom-card-helpers';
 
-import { LitElement, CSSResult, html, css } from 'lit';
+import { renderTemplate } from 'ha-nunjucks';
+import { CSSResult, LitElement, css, html } from 'lit';
 import {
 	customElement,
 	eventOptions,
 	property,
 	state,
 } from 'lit/decorators.js';
-import { renderTemplate } from 'ha-nunjucks';
 
 import {
-	IEntry,
-	ITarget,
+	ActionType,
 	IAction,
 	IActions,
-	ActionType,
+	IEntry,
+	ITarget,
 } from '../models/interfaces';
 
 @customElement('base-custom-feature')
@@ -91,7 +91,8 @@ export class BaseCustomFeature extends LitElement {
 
 		try {
 			switch (action.action) {
-				case 'call-service':
+				case 'call-service' as 'perform-action': // deprecated in 2024.8
+				case 'perform-action':
 					this.callService(action);
 					break;
 				case 'navigate':
@@ -125,7 +126,8 @@ export class BaseCustomFeature extends LitElement {
 
 	callService(action: IAction) {
 		const domainService = this.renderTemplate(
-			action.service as string,
+			(action.perform_action ??
+				action['service' as 'perform_action']) as string, // deprecated in 2024.8
 		) as string;
 
 		const [domain, service] = domainService.split('.');

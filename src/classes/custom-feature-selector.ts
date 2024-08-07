@@ -1,4 +1,4 @@
-import { CSSResult, html, css } from 'lit';
+import { css, CSSResult, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import { BaseCustomFeature } from './base-custom-feature';
@@ -32,7 +32,8 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
 			if (
-				this.value?.toString() == optionName.toString() &&
+				(this.value ?? '').toString() ==
+					(optionName ?? '').toString() &&
 				this.value != undefined
 			) {
 				optionClass = 'selected-option';

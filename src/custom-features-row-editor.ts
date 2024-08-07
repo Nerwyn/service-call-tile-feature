@@ -1,24 +1,23 @@
-import { LitElement, TemplateResult, html, css } from 'lit';
-import { property, state } from 'lit/decorators.js';
 import { renderTemplate } from 'ha-nunjucks';
+import { css, html, LitElement, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
 
 import {
-	IConfig,
-	IEntry,
-	IOption,
-	IAction,
-	IActions,
-	IData,
-	ITarget,
-	TileFeatureType,
-	TileFeatureTypes,
 	Actions,
 	ActionType,
 	ActionTypes,
+	IAction,
+	IConfig,
+	IData,
+	IEntry,
+	IOption,
+	ITarget,
 	ThumbTypes,
+	TileFeatureType,
+	TileFeatureTypes,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
 
@@ -990,7 +989,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						ui_action: {
 							actions: actionsNoRepeat,
-							default_action: 'call-service',
+							default_action: 'perform-action',
 						},
 					},
 					true,
@@ -1026,7 +1025,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const defaultTapActions = {
 			ui_action: {
 				actions: actionsNoRepeat,
-				default_action: 'call-service',
+				default_action: 'perform-action',
 			},
 		};
 		const defaultHoldActions = {
@@ -1197,7 +1196,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				handler = this.handleActionCodeChanged;
 				value = dump(
 					(this.activeEntry?.[
-						(id ?? 'tap_action') as keyof IEntry
+						(id ?? 'tap_action') as ActionType
 					] as IAction) ?? {},
 				);
 				value = value.trim() == '{}' ? '' : value;
@@ -1458,9 +1457,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 		for (const actionType of ActionTypes) {
 			if (actionType in entry) {
 				const action =
-					entry[actionType as unknown as keyof IActions] ??
-					({} as IAction);
-				if (['call-service', 'more-info'].includes(action.action)) {
+					entry[actionType as ActionType] ?? ({} as IAction);
+				if (['perform-action', 'more-info'].includes(action.action)) {
 					const data = action.data ?? ({} as IData);
 					const target = action.target ?? ({} as ITarget);
 					for (const targetId of [
@@ -1484,7 +1482,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					) {
 						target.entity_id = entry.entity_id ?? parentEntityId;
 						action.target = target;
-						entry[actionType as keyof IActions] = action;
+						entry[actionType as ActionType] = action;
 					}
 				}
 			}
@@ -1574,15 +1572,15 @@ export class CustomFeaturesRowEditor extends LitElement {
 										entryEntityId ?? ''
 									).split('.');
 									const tap_action = {} as IAction;
-									tap_action.action = 'call-service';
+									tap_action.action = 'perform-action';
 									switch (domain) {
 										case 'select':
-											tap_action.service =
+											tap_action.perform_action =
 												'select.select_option';
 											break;
 										case 'input_select':
 										default:
-											tap_action.service =
+											tap_action.perform_action =
 												'input_select.select_option';
 											break;
 									}
@@ -1657,17 +1655,18 @@ export class CustomFeaturesRowEditor extends LitElement {
 						if (!entry.tap_action) {
 							const tap_action = {} as IAction;
 							const data = tap_action.data ?? {};
-							tap_action.action = 'call-service';
+							tap_action.action = 'perform-action';
 							switch (domain) {
 								case 'number':
-									tap_action.service = 'number.set_value';
+									tap_action.perform_action =
+										'number.set_value';
 									if (!data.value) {
 										data.value = '{{ value | float }}';
 										tap_action.data = data;
 									}
 									break;
 								case 'input_number':
-									tap_action.service =
+									tap_action.perform_action =
 										'input_number.set_value';
 									if (!data.value) {
 										data.value = '{{ value | float }}';
@@ -1807,12 +1806,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 		// For each type of action
 		for (const actionType of ActionTypes) {
 			if (actionType in entry) {
-				const action = entry[actionType as keyof IActions] as IAction;
+				const action = entry[actionType as ActionType] as IAction;
 				if (action) {
 					// Populate action field
 					if (!action.action) {
-						if (action.service) {
-							action.action = 'call-service';
+						if (action.perform_action) {
+							action.action = 'perform-action';
 						} else if (action.navigation_path) {
 							action.action = 'navigate';
 						} else if (action.url_path) {
@@ -1827,16 +1826,21 @@ export class CustomFeaturesRowEditor extends LitElement {
 						} else {
 							action.action = 'none';
 						}
+					} else if (
+						action.action == ('call-service' as 'perform-action')
+					) {
+						action.action = 'perform-action';
+						action.perform_action =
+							action['service' as 'perform_action'] ?? '';
+						delete action['service' as 'perform_action'];
 					}
 
-					if (action['service_data' as keyof IAction]) {
+					if (action['service_data' as 'data']) {
 						action.data = {
-							...(action[
-								'service_data' as keyof IAction
-							] as IData),
+							...action['service_data' as 'data'],
 							...action.data,
 						};
-						delete action['service_data' as keyof IAction];
+						delete action['service_data' as 'data'];
 					}
 				}
 			}
