@@ -696,7 +696,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					aria-level="3"
 				>
 					<ha-icon .icon=${'mdi:gesture-tap'}></ha-icon>
-					Actions
+					Interactions
 				</div>
 				<div class="content">${actionSelectors}</div>
 			</ha-expansion-panel>
