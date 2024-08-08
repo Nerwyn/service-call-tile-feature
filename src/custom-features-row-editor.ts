@@ -686,9 +686,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 			</div>`;
 	}
 
-	buildActionsPanel(actionSelectors: TemplateResult<1>) {
+	buildInteractionsPanel(actionSelectors: TemplateResult<1>) {
 		return html`
-			<ha-expansion-panel .header=${'Actions'}>
+			<ha-expansion-panel .header=${'Interactions'}>
 				<div
 					class="panel-header"
 					slot="header"
@@ -892,7 +892,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${this.buildAppearancePanel(html`
 				${this.buildCommonAppearanceOptions()}
 			`)}
-			${this.buildActionsPanel(actionSelectors)}
+			${this.buildInteractionsPanel(actionSelectors)}
 		`;
 	}
 
@@ -981,7 +981,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					'default',
 				)}
 			`)}
-			${this.buildActionsPanel(html`
+			${this.buildInteractionsPanel(html`
 				${this.buildAlertBox()}
 				${this.buildActionOption(
 					'Behavior',
@@ -1149,7 +1149,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					${this.buildAppearancePanel(
 						this.buildCommonAppearanceOptions(),
 					)}
-					${this.buildActionsPanel(actionSelectors)}
+					${this.buildInteractionsPanel(actionSelectors)}
 				`;
 				break;
 			}
