@@ -1812,6 +1812,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 					if (!action.action) {
 						if (action.perform_action) {
 							action.action = 'perform-action';
+						} else if (action['service' as 'perform_action']) {
+							// Deprecated in 2024.8
+							action.action = 'perform-action';
+							action.perform_action =
+								action['service' as 'perform_action'];
+							delete action['service' as 'perform_action'];
 						} else if (action.navigation_path) {
 							action.action = 'navigate';
 						} else if (action.url_path) {
