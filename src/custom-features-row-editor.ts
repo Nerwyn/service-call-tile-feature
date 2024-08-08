@@ -331,7 +331,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	handleSpinboxTabSelected(e: CustomEvent) {
 		this.yamlString = undefined;
-		const i = e.detail.value;
+		const i = e.detail.index;
 		switch (i) {
 			case 0:
 				this.activeEntryType = 'decrement';
@@ -351,7 +351,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
-		const i = e.detail.value;
+		const i = e.detail.index;
 		if (this.actionsTabIndex == i) {
 			return;
 		}
@@ -818,15 +818,13 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	buildButtonGuiEditor() {
 		const actionsTabBar = html`
-			<paper-tabs
-				scrollable
-				hide-scroll-buttons
-				.selected=${this.actionsTabIndex}
-				@selected-changed=${this.handleActionsTabSelected}
+			<mwc-tab-bar
+				.activeIndex=${this.actionsTabIndex}
+				@MDCTabBar:activated=${this.handleActionsTabSelected}
 			>
-				<paper-tab>Default</paper-tab>
-				<paper-tab>Momentary</paper-tab>
-			</paper-tabs>
+				<mwc-tab .label=${'default'}></mwc-tab>
+				<mwc-tab .label=${'momentary'}></mwc-tab>
+			</mwc-tab-bar>
 		`;
 		let actionSelectors: TemplateResult<1>;
 		const actionsNoRepeat = Actions.concat();
@@ -1049,16 +1047,14 @@ export class CustomFeaturesRowEditor extends LitElement {
 			)}
 		`;
 		const spinboxTabBar = html`
-			<paper-tabs
-				scrollable
-				hide-scroll-buttons
-				.selected=${this.spinboxTabIndex}
-				@selected-changed=${this.handleSpinboxTabSelected}
+			<mwc-tab-bar
+				.activeIndex=${this.spinboxTabIndex}
+				@MDCTabBar:activated=${this.handleSpinboxTabSelected}
 			>
-				<paper-tab>Decrement</paper-tab>
-				<paper-tab>Center</paper-tab>
-				<paper-tab>Increment</paper-tab>
-			</paper-tabs>
+				<mwc-tab .label=${'decrement'}></mwc-tab>
+				<mwc-tab .label=${'center'}></mwc-tab>
+				<mwc-tab .label=${'increment'}></mwc-tab>
+			</mwc-tab-bar>
 		`;
 
 		let spinboxGuiEditor: TemplateResult<1>;
@@ -2082,17 +2078,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 				font-size: var(--mdc-typography-body1-font-size, 1rem);
 				font-weight: 500;
 				padding: 8px;
-			}
-
-			paper-tabs {
-				color: var(--primary-text-color);
-				text-transform: uppercase;
-				border-bottom: 1px solid var(--divider-color);
-				--paper-tabs-selection-bar-color: var(--primary-color);
-			}
-			paper-tab.iron-selected {
-				box-shadow: inset 0 -2px 0 0 var(--primary-color);
-				transition: box-shadow 1s;
 			}
 
 			.form {
