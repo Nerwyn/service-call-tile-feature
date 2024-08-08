@@ -43,17 +43,17 @@ Since each selector option is a custom feature button, you can override it's def
 
 Sliders are input range elements made to look similar to the sliders found in Home Assistant default card features, similar to those available for light brightness and temperature. By default the slider will look like a normal tile light brightness or cover position slider, but you can change this to a few of other thumb styles using the `Thumb Type` appearance option.
 
-Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `Attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to a service call, set the value in the service call data to `{{ value | float }}`.
+Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `Attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to an action, set the value in the action data to `{{ value | float }}`.
 
-By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the service you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn_on` with `color_temp`), make sure to set step size to a whole number and to use the `int` filter in the action data template.
+By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the action you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn_on` with `color_temp`), make sure to set step size to a whole number and to use the `int` filter in the action data template.
 
-To prevent value bouncing, sliders will wait for one second before retreiving an updated value from Home Assistant after it's action is called. This time can be changed by changing `Update After Action Delay`.
+To prevent value bouncing, sliders will wait for one second before retreiving an updated value from Home Assistant after it's action is called. This time can be changed by changing `Update after action delay`.
 
 ## Spinboxes
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
 
-Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `Debounce Time` (default 1000ms), the user defined tap action will fire. Similar to sliders, spinboxes will wait one second before updating it's internal value but this can be changed using `Update After Action Delay`.
+Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `Debounce time` (default 1000ms), the user defined tap action will fire. Similar to sliders, spinboxes will wait one second before updating it's internal value but this can be changed using `Update after action delay`.
 
 Like sliders, the spinbox's action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `value` in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting the hold action to repeat. These should all be set in the `CENTER` tab of the spinbox configuration page.
 
@@ -96,7 +96,7 @@ Some additional logic is applied for certain attributes:
 - `elapsed` - Only for timer entities. Updated twice a second using the the current timestamp and the attributes `duration`, `remaining`, and `finishes_at`, and locked to a max value using the attribute `duration`.
   - _NOTE_: `elapsed` is not an actual attribute of timer entities, but is a possible `value_attribute` for timer entities for the purpose of displaying accurate timer elapsed values. Timer entities do have an attribute `remaining`, which only updates when the timer state changes. The actual `remaining` attribute can be calculated using the `elapsed` value and the timer `duration` attribute.
 
-If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `Autofill Entity` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
+If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `Autofill entity` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
 
 Haptics are disabled for features by default, but can be toggled on at the feature level.
 
@@ -106,7 +106,7 @@ Haptics are disabled for features by default, but can be toggled on at the featu
 
 Sliders and spinboxes have some additional general options. Both can have range `Min` and `Max` values defined by the user, but default to 0 and 100. Both can also have a `Step` size defined, which defaults to 1.
 
-Sliders and spinboxes will wait one second before updating their internal values from Home Assistant. This time can be changed by setting `Update After Action Delay`. Spinboxes will wait to fire their actions until a set amount of time after their buttons have stopped being pressed. This time defaults to one second and can be changed by setting `Debounce Time`.
+Sliders and spinboxes will wait one second before updating their internal values from Home Assistant. This time can be changed by setting `Update after action delay`. Spinboxes will wait to fire their actions until a set amount of time after their buttons have stopped being pressed. This time defaults to one second and can be changed by setting `Debounce time`.
 
 ## Appearance
 
@@ -166,7 +166,9 @@ While any CSS property can be used, these values are internal CSS attributes use
 | Name                     | Description                                                                                             |
 | ------------------------ | ------------------------------------------------------------------------------------------------------- |
 | flex-basis               | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`.    |
+| --feature-color          | Color of the feature, generally inherited from the card.                                                |
 | --feature-height         | Height of the features. Defaults to 40px (pre 2024.8.0) or 42px (2024.8.0 or later).                    |
+| --feature-border-radius  | The border radius of custom features. Defaults to 12px.                                                 |
 | --feature-button-spacing | The gap between custom features. Defaults to 12px.                                                      |
 | --color                  | Color of the custom feature. Can also be a CSS function.                                                |
 | --opacity                | Opacity of the custom feature. Defaults to 0.2.                                                         |
@@ -229,17 +231,17 @@ Double tap and hold actions have user adjustable timings to change how they are 
 
 #### Hold Time
 
-Hold actions are triggered by holding down on a button for a defined amount of time and then releasing. The default amount of time is 500ms. You can change this by setting `Hold Time` in the hold action to a different number.
+Hold actions are triggered by holding down on a button for a defined amount of time and then releasing. The default amount of time is 500ms. You can change this by setting `Hold time` in the hold action to a different number.
 
 #### Repeat and Repeat Delay
 
-By setting a hold action to `repeat`, the tap action will repeat while the button is held down. The default delay between repeats is 100ms. You can change this by setting `Repeat Delay` in the hold action to a different number. See the below section on [repeat](#repeat) for more.
+By setting a hold action to `repeat`, the tap action will repeat while the button is held down. The default delay between repeats is 100ms. You can change this by setting `Repeat delay` in the hold action to a different number. See the below section on [repeat](#repeat) for more.
 
 #### Double Tap Window
 
-Double tap actions have a default window of 200ms to trigger before a single tap action is triggered instead. You can change this by setting `Double Tap Window` in the double tap action to a different number.
+Double tap actions have a default window of 200ms to trigger before a single tap action is triggered instead. You can change this by setting `Double tap window` in the double tap action to a different number.
 
-**NOTE**: Setting `Double Tap Window` above or too close to `Hold Time` can result in undesirable behavior, as the hold timer expires before the double tap window does.
+**NOTE**: Setting `Double tap window` above or too close to `Hold time` can result in undesirable behavior, as the hold timer expires before the double tap window does.
 
 ### Momentary Button mode
 
@@ -269,8 +271,8 @@ features:
           - icon: mdi:lock
             option: locked
             tap_action:
-              action: call-service
-              service: lock.lock
+              action: perform-action
+              perform_action: lock.lock
               target:
                 entity_id: lock.front_door_ble
               data: {}
@@ -282,8 +284,8 @@ features:
           - icon: mdi:lock-open-outline
             option: unlocked
             tap_action:
-              action: call-service
-              service: lock.unlock
+              action: perform-action
+              perform_action: lock.unlock
               target:
                 entity_id: lock.front_door_ble
               data: {}
@@ -324,8 +326,8 @@ features:
     entries:
       - type: button
         tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           confirmation:
             text: >-
               Are you sure you want to turn the light {{ 'on' if
@@ -351,8 +353,8 @@ features:
             ;
           }
       - tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           target:
             entity_id: light.chandelier_bulb_1
         icon: mdi:lightbulb
@@ -365,8 +367,8 @@ features:
             --icon-color: orange;
           }
       - tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           target:
             entity_id: light.chandelier_bulb_2
         icon: mdi:lightbulb
@@ -379,8 +381,8 @@ features:
             --icon-color: yellow;
           }
       - tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           target:
             entity_id: light.chandelier_bulb_3
         icon: mdi:lightbulb
@@ -393,8 +395,8 @@ features:
             --icon-color: green;
           }
       - tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           target:
             entity_id: light.chandelier_bulb_4
         icon: mdi:lightbulb
@@ -407,8 +409,8 @@ features:
             --icon-color: blue;
           }
       - tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
+          perform_action: light.toggle
           target:
             entity_id: light.chandelier_bulb_5
         icon: mdi:lightbulb
@@ -428,8 +430,8 @@ features:
         value_attribute: rgb_color
         options:
           - tap_action:
-              action: call-service
-              service: light.turn_on
+              action: perform-action
+              perform_action: light.turn_on
               data:
                 color_name: red
               target:
@@ -449,8 +451,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: call-service
-              service: light.turn_on
+              action: perform-action
+              perform_action: light.turn_on
               data:
                 color_name: green
               target:
@@ -470,8 +472,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: call-service
-              service: light.turn_on
+              action: perform-action
+              perform_action: light.turn_on
               data:
                 color_name: blue
               target:
@@ -491,8 +493,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: call-service
-              service: light.turn_on
+              action: perform-action
+              perform_action: light.turn_on
               data:
                 color_temp: 500
               target:
@@ -514,8 +516,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: call-service
-              service: light.turn_on
+              action: perform-action
+              perform_action: light.turn_on
               target:
                 entity_id: light.chandelier
               data:
@@ -548,8 +550,8 @@ features:
         value_attribute: brightness
         icon: mdi:brightness-4
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           data:
             brightness_pct: '{{ value }}'
           target:
@@ -567,8 +569,8 @@ features:
         thumb: line
         value_attribute: color_temp
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           target:
             entity_id: light.chandelier
           data:
@@ -602,8 +604,8 @@ features:
           - 100
         value_attribute: brightness
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           data:
             brightness_pct: '{{ value | float }}'
           target:
@@ -669,21 +671,21 @@ features:
       - type: button
         haptics: true
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           data:
             entity_id: light.sunroom_ceiling
             color_name: red
         double_tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           xdouble_tap_window: 1000
           data:
             entity_id: light.sunroom_ceiling
             color_name: green
         hold_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           xhold_time: 2000
           data:
             entity_id: light.sunroom_ceiling
@@ -705,8 +707,8 @@ features:
         value_attribute: brightness
         icon: mdi:brightness-4
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           data:
             brightness_pct: '{{ value | int }}'
           target:
@@ -740,14 +742,14 @@ features:
         value_attribute: Hs color[0]
         icon: mdi:palette
         tap_action:
-          action: call-service
+          action: perform-action
           target:
             entity_id: light.sunroom_ceiling
           data:
             hs_color:
               - '{{ value }}'
               - 100
-          service: light.turn_on
+          perform_action: light.turn_on
         entity_id: light.sunroom_ceiling
         styles: |-
           :host {
@@ -762,8 +764,8 @@ features:
         thumb: line
         value_attribute: color_temp
         tap_action:
-          action: call-service
-          service: light.turn_on
+          action: perform-action
+          perform_action: light.turn_on
           data:
             color_temp: '{{ value }}'
             entity_id: light.sunroom_ceiling
@@ -784,8 +786,8 @@ features:
     entries:
       - type: slider
         tap_action:
-          action: call-service
-          service: cover.set_cover_position
+          action: perform-action
+          perform_action: cover.set_cover_position
           data:
             position: '{{ value }}'
             entity_id: cover.sunroom_curtains
@@ -794,7 +796,7 @@ features:
         entity_id: cover.sunroom_curtains
         styles: |-
           :host {
-            --color: var(--tile-color);
+            --color: var(--feature-color);
             --icon-color: var(--disabled-color);
           }
         range:
@@ -806,8 +808,8 @@ features:
       - type: slider
         entity_id: media_player.spotify
         tap_action:
-          action: call-service
-          service: media_player.volume_set
+          action: perform-action
+          perform_action: media_player.volume_set
           data:
             volume_level: '{{ value }}'
           target:
@@ -825,7 +827,7 @@ features:
           :host {
             --color: rgb(31, 223, 100);
             flex-direction: row;
-            border-radius: 40px;
+            border-radius: 42px;
             --tooltip-label: '{{ (value * 100) | int }}%';
             flex-basis: 500%;
           }
@@ -844,14 +846,14 @@ features:
         entity_id: media_player.spotify
         icon: mdi:play-pause
         tap_action:
-          action: call-service
-          service: media_player.media_play_pause
+          action: perform-action
+          perform_action: media_player.media_play_pause
           data: {}
           target:
             entity_id: media_player.spotify
         double_tap_action:
-          action: call-service
-          service: script.spotify_refresh_every_5_seconds_for_30_seconds
+          action: perform-action
+          perform_action: script.spotify_refresh_every_5_seconds_for_30_seconds
           target:
             entity_id: media_player.spotify
         value_attribute: state
@@ -862,8 +864,8 @@ features:
         entity_id: media_player.spotify
         value_attribute: media_position
         tap_action:
-          action: call-service
-          service: media_player.media_previous_track
+          action: perform-action
+          perform_action: media_player.media_previous_track
           target:
             entity_id: media_player.spotify
         label: >-
@@ -879,8 +881,8 @@ features:
           }
       - type: slider
         tap_action:
-          action: call-service
-          service: media_player.media_seek
+          action: perform-action
+          perform_action: media_player.media_seek
           data:
             seek_position: '{{ value }}'
           target:
@@ -904,8 +906,8 @@ features:
         entity_id: media_player.spotify
         value_attribute: media_position
         tap_action:
-          action: call-service
-          service: media_player.media_next_track
+          action: perform-action
+          perform_action: media_player.media_next_track
           target:
             entity_id: media_player.spotify
         label: >-
@@ -948,8 +950,8 @@ features:
             entity_id: input_select.lounge_tv_theater_mode
             option: Theater
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Theater
               target:
@@ -961,8 +963,8 @@ features:
             entity_id: input_select.lounge_tv_theater_mode
             option: Light
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Light
               target:
@@ -974,8 +976,8 @@ features:
             entity_id: input_select.lounge_tv_theater_mode
             option: Dark
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Dark
               target:
@@ -987,8 +989,8 @@ features:
             entity_id: input_select.lounge_tv_theater_mode
             option: 'Off'
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: 'Off'
               target:
@@ -1009,8 +1011,8 @@ features:
             entity_id: input_select.lounge_tv_listening_mode
             option: Movie
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Movie
               target:
@@ -1022,8 +1024,8 @@ features:
             entity_id: input_select.lounge_tv_listening_mode
             option: Music
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Music
               target:
@@ -1035,8 +1037,8 @@ features:
             entity_id: input_select.lounge_tv_listening_mode
             option: Game
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Game
               target:
@@ -1055,8 +1057,8 @@ features:
             entity_id: input_select.lounge_tv_source
             option: Google TV
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Google TV
               target:
@@ -1068,8 +1070,8 @@ features:
             entity_id: input_select.lounge_tv_source
             option: HTPC
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: HTPC
               target:
@@ -1081,8 +1083,8 @@ features:
             entity_id: input_select.lounge_tv_source
             option: DVD/VHS
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: DVD/VHS
               target:
@@ -1094,8 +1096,8 @@ features:
             entity_id: input_select.lounge_tv_source
             option: Vinyl
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: Vinyl
               target:
@@ -1107,8 +1109,8 @@ features:
             entity_id: input_select.lounge_tv_source
             option: External
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: External
               target:
@@ -1150,8 +1152,8 @@ features:
               }
             entity_id: input_select.select_test
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: A
               target:
@@ -1162,8 +1164,8 @@ features:
             icon: mdi:alpha-{{ config.option | lower }}
             entity_id: input_select.select_test
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: B
               target:
@@ -1179,8 +1181,8 @@ features:
             icon: mdi:alpha-{{ config.option | lower }}
             entity_id: input_select.select_test
             tap_action:
-              action: call-service
-              service: input_select.select_option
+              action: perform-action
+              perform_action: input_select.select_option
               data:
                 option: C
               target:
@@ -1200,8 +1202,8 @@ features:
       - type: button
         icon: mdi:arrow-down-bold
         tap_action:
-          action: call-service
-          service: input_number.decrement
+          action: perform-action
+          perform_action: input_number.decrement
           data:
             entity_id: input_number.slider_test
         hold_action:
@@ -1222,7 +1224,7 @@ features:
           :host {
             flex-basis: 600%;
             --tooltip-label: "The number is {{ value }}";
-            border-radius: 40px;
+            border-radius: 42px;
             --label-color: var(--disabled-color);
           }
           .icon {
@@ -1237,11 +1239,11 @@ features:
           - -128
           - 128
         tap_action:
-          action: call-service
+          action: perform-action
           target:
             entity_id:
               - input_number.slider_test
-          service: input_number.set_value
+          perform_action: input_number.set_value
           data:
             value: '{{ value | int }}'
         autofill_entity_id: true
@@ -1249,15 +1251,15 @@ features:
         value_attribute: state
       - type: button
         icon: mdi:arrow-up-bold
-        action: call-service
+        action: perform-action
         haptics: true
         hold_action:
           action: repeat
           repeat_delay: 10
         entity_id: input_number.slider_test
         tap_action:
-          action: call-service
-          service: input_number.increment
+          action: perform-action
+          perform_action: input_number.increment
           target:
             entity_id:
               - input_number.slider_test
@@ -1273,8 +1275,8 @@ features:
     entries:
       - type: spinbox
         tap_action:
-          action: call-service
-          service: input_number.set_value
+          action: perform-action
+          perform_action: input_number.set_value
           data:
             value: '{{ value }}'
           target:
@@ -1416,13 +1418,13 @@ features:
         entity_id: climate.downstairs_thermostat
         styles: |-
           :host {
-            --background: var(--tile-color);
-            --icon-color: var(--tile-color);
+            --background: var(--feature-color);
+            --icon-color: var(--feature-color);
             flex-flow: row;
           }
         tap_action:
-          action: call-service
-          service: climate.set_temperature
+          action: perform-action
+          perform_action: climate.set_temperature
           target:
             entity_id: climate.downstairs_thermostat
           data:
@@ -1531,8 +1533,8 @@ features:
       - type: button
         icon: mdi:timer-check
         tap_action:
-          action: call-service
-          service: timer.start
+          action: perform-action
+          perform_action: timer.start
           target:
             entity_id: timer.timer_test
         entity_id: timer.timer_test
@@ -1540,8 +1542,8 @@ features:
       - type: button
         icon: mdi:timer-pause
         tap_action:
-          action: call-service
-          service: timer.pause
+          action: perform-action
+          perform_action: timer.pause
           target:
             entity_id: timer.timer_test
         entity_id: timer.timer_test
@@ -1549,8 +1551,8 @@ features:
       - type: button
         icon: mdi:timer-cancel
         tap_action:
-          action: call-service
-          service: timer.cancel
+          action: perform-action
+          perform_action: timer.cancel
           target:
             entity_id: timer.timer_test
         entity_id: timer.timer_test

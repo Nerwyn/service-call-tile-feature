@@ -721,7 +721,7 @@ export class BaseCustomFeature extends LitElement {
 				height: var(--feature-height, 40px);
 				width: 100%;
 				border: none;
-				border-radius: 10px;
+				border-radius: var(--feature-border-radius, 12px);
 				padding: 0px;
 				box-sizing: border-box;
 				outline: 0px;

@@ -61,7 +61,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 				:host {
 					flex-flow: row;
 
-					--color: var(--tile-color);
+					--color: var(--feature-color);
 					--background: var(--disabled-color);
 					--hover-opacity: 0.2;
 				}

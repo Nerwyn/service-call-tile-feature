@@ -393,7 +393,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						--background,
 						var(
 							--color,
-							var(--tile-color, var(--state-inactive-color))
+							var(--feature-color, var(--state-inactive-color))
 						)
 					);
 				}
@@ -430,15 +430,15 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
-					border-color: var(--color, var(--tile-color));
+					border-color: var(--color, var(--feature-color));
 					background: #ffffff;
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color)),
-						-7px 0 0 8px var(--color, var(--tile-color))
+							var(--color, var(--feature-color)),
+						-7px 0 0 8px var(--color, var(--feature-color))
 					);
 				}
 
@@ -450,15 +450,15 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					border-style: solid;
 					border-width: 4px;
 					border-radius: var(--thumb-border-radius, 12px);
-					border-color: var(--color, var(--tile-color));
+					border-color: var(--color, var(--feature-color));
 					background: #ffffff;
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 12px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color)),
-						-7px 0 0 8px var(--color, var(--tile-color))
+							var(--color, var(--feature-color)),
+						-7px 0 0 8px var(--color, var(--feature-color))
 					);
 				}
 
@@ -467,13 +467,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					-webkit-appearance: none;
 					height: var(--feature-height, 40px);
 					width: var(--thumb-width, 16px);
-					background: var(--color, var(--tile-color));
+					background: var(--color, var(--feature-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color))
+							var(--color, var(--feature-color))
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -483,14 +483,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					-moz-appearance: none;
 					height: var(--feature-height, 40px);
 					width: var(--thumb-width, 16px);
-					border-color: var(--color, var(--tile-color));
-					background: var(--color, var(--tile-color));
+					border-color: var(--color, var(--feature-color));
+					background: var(--color, var(--feature-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, 16px) / 2)) 0 0 100vw
-							var(--color, var(--tile-color))
+							var(--color, var(--feature-color))
 					);
 					border-radius: var(--thumb-border-radius, 0);
 				}
@@ -538,13 +538,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					-webkit-appearance: none;
 					height: var(--height);
 					width: var(--thumb-width, var(--height));
-					background: var(--color, var(--tile-color));
+					background: var(--color, var(--feature-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
-							0 100vw var(--color, var(--tile-color))
+							0 100vw var(--color, var(--feature-color))
 					);
 					border-radius: var(--thumb-border-radius, var(--height));
 				}
@@ -554,14 +554,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					-moz-appearance: none;
 					height: var(--height);
 					width: var(--thumb-width, var(--height));
-					border-color: var(--color, var(--tile-color));
-					background: var(--color, var(--tile-color));
+					border-color: var(--color, var(--feature-color));
+					background: var(--color, var(--feature-color));
 					cursor: pointer;
 					opacity: var(--opacity, 1);
 					box-shadow: var(
 						--thumb-box-shadow,
 						calc(-100vw - (var(--thumb-width, var(--height)) / 2)) 0
-							0 100vw var(--color, var(--tile-color))
+							0 100vw var(--color, var(--feature-color))
 					);
 					border-radius: var(--thumb-border-radius, var(--height));
 				}
