@@ -304,7 +304,7 @@ show_entity_picture: false
 vertical: false
 layout_options:
   grid_columns: 4
-  grid_rows: ''
+  grid_rows: 5
 card_mod:
   style:
     ha-tile-info$: |
@@ -655,7 +655,7 @@ type: tile
 entity: light.chandelier
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 3
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
@@ -930,7 +930,7 @@ color: accent
 icon: ''
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 6
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
@@ -1128,7 +1128,7 @@ entity: input_select.lounge_tv_listening_mode
 color: green
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 3
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
@@ -1203,15 +1203,24 @@ features:
         icon: mdi:arrow-down-bold
         tap_action:
           action: perform-action
-          perform_action: input_number.decrement
-          data:
+          data: {}
+          target:
             entity_id: input_number.slider_test
+          perform_action: input_number.decrement
         hold_action:
           action: repeat
           repeat_delay: 10
         entity_id: input_number.slider_test
         value_attribute: state
-        styles: ''
+        styles: |-
+          {% if not  is_state("input_select.select_test", "A")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+          :host {
+            --feature-height: 64px;
+          }
       - type: slider
         thumb: round
         entity_id: input_number.slider_test
@@ -1223,9 +1232,10 @@ features:
         styles: |-
           :host {
             flex-basis: 600%;
+            border-radius: 40px;
             --tooltip-label: "The number is {{ value }}";
-            border-radius: 42px;
             --label-color: var(--disabled-color);
+            --feature-height: 64px;
           }
           .icon {
             color: var(--accent-color);
@@ -1235,6 +1245,11 @@ features:
             transform: translateX(var(--thumb-offset));
             --mdc-icon-size: 24px;
           }
+          {% if not  is_state("input_select.select_test", "A")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
         range:
           - -128
           - 128
@@ -1243,9 +1258,10 @@ features:
           target:
             entity_id:
               - input_number.slider_test
-          perform_action: input_number.set_value
           data:
             value: '{{ value | int }}'
+          confirmation: false
+          perform_action: input_number.set_value
         autofill_entity_id: true
         step: 0.5
         value_attribute: state
@@ -1259,28 +1275,113 @@ features:
         entity_id: input_number.slider_test
         tap_action:
           action: perform-action
-          perform_action: input_number.increment
           target:
             entity_id:
               - input_number.slider_test
+          perform_action: input_number.increment
         value_attribute: state
-        styles: ''
-    styles: |-
-      {% if not is_state(config.entity, "A")  %}
-      :host {
-        display: none;
-      }
-      {% endif %}
+        styles: |-
+          {% if not  is_state("input_select.select_test", "A")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+          :host {
+            --feature-height: 64px;
+          }
+      - type: button
+        icon: mdi:youtube
+        tap_action:
+          action: url
+          url_path: youtube.com
+        double_tap_action:
+          action: url
+          url_path: play.spotify.com
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: |-
+          {% if not  is_state("input_select.select_test", "B")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+      - type: button
+        icon: mdi:view-dashboard
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/0
+        double_tap_action:
+          action: navigate
+          navigation_path: /lovelace-extra/0
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: |-
+          {% if not  is_state("input_select.select_test", "B")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+      - type: button
+        icon: mdi:view-compact
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-extra/subview
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: |-
+          {% if not  is_state("input_select.select_test", "B")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+      - type: button
+        icon: mdi:assistant
+        tap_action:
+          action: assist
+          pipeline_id: last_used
+        label: ''
+        entity_id: input_select.select_test
+        value_attribute: state
+        styles: |-
+          {% if not  is_state("input_select.select_test", "C")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+        double_tap_action:
+          action: navigate
+          navigation_path: '?conversation=1'
+      - type: button
+        tap_action:
+          action: more-info
+          target:
+            entity_id: sensor.fordpass_elveh
+        entity_id: sensor.fordpass_elveh
+        value_attribute: state
+        styles: |-
+          :host {
+            background-image: url('http://homeassistant.local:8123/local/ford_mme.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 1;
+          }
+          {% if not  is_state("input_select.select_test", "C")  %}
+          :host {
+            display: none;
+          }
+          {% endif %}
+    styles: ''
   - type: custom:service-call
     entries:
       - type: spinbox
         tap_action:
           action: perform-action
-          perform_action: input_number.set_value
           data:
-            value: '{{ value }}'
+            value: '{{ value | float }}'
           target:
             entity_id: input_number.slider_test
+          perform_action: input_number.set_value
         range:
           - -128
           - 128
@@ -1302,87 +1403,12 @@ features:
           value_attribute: state
           styles: ''
         value_attribute: state
-        styles: ''
-    styles: |
-      {% if not is_state(config.entity, "A")  %}
-      :host {
-        display: none;
-      }
-      {% endif %}
-  - type: custom:service-call
-    entries:
-      - type: button
-        icon: mdi:youtube
-        tap_action:
-          action: url
-          url_path: youtube.com
-        double_tap_action:
-          action: url
-          url_path: play.spotify.com
-        entity_id: input_select.select_test
-        value_attribute: state
-        styles: ''
-      - type: button
-        icon: mdi:view-dashboard
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/0
-        double_tap_action:
-          action: navigate
-          navigation_path: /lovelace-extra/0
-        entity_id: input_select.select_test
-        value_attribute: state
-        styles: ''
-      - type: button
-        icon: mdi:view-compact
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace-extra/subview
-        entity_id: input_select.select_test
-        value_attribute: state
-        styles: ''
-    styles: |-
-      {% if not is_state(config.entity, "B")  %}
-      :host {
-        display: none;
-      }
-      {% endif %}
-  - type: custom:service-call
-    entries:
-      - type: button
-        icon: mdi:assistant
-        tap_action:
-          action: assist
-          pipeline_id: last_used
-        label: ''
-        entity_id: input_select.select_test
-        value_attribute: state
-        styles: ''
-        double_tap_action:
-          action: navigate
-          navigation_path: '?conversation=1'
-      - type: button
-        tap_action:
-          action: more-info
-          target:
-            entity_id: sensor.fordpass_elveh
-        entity_id: sensor.fordpass_elveh
-        value_attribute: state
         styles: |-
+          {% if not is_state("input_select.select_test", "A")  %}
           :host {
-            background-image: url('http://homeassistant.local:8123/local/ford_mme.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 1;
+            display: none;
           }
-    styles: |-
-
-      {% if not is_state(config.entity, "C")  %}
-      :host {
-        display: none;
-      }
-      {% endif %}
+          {% endif %}
 type: tile
 entity: input_select.select_test
 show_entity_picture: false
@@ -1390,7 +1416,7 @@ vertical: false
 color: primary
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 4
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="1200"/>
@@ -1472,7 +1498,7 @@ type: tile
 entity: climate.downstairs_thermostat
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 4
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
@@ -1565,7 +1591,7 @@ type: tile
 entity: timer.timer_test
 layout_options:
   grid_columns: 4
-  grid_rows: auto
+  grid_rows: 3
 ```
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/timer_tile.png" alt="timer_tile" width="600"/>

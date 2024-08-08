@@ -1,20 +1,20 @@
 import packageInfo from '../package.json';
 
-import { LitElement, TemplateResult, html, css } from 'lit';
+import { LitElement, TemplateResult, css, html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
 import { renderTemplate } from 'ha-nunjucks';
+import { HassEntity } from 'home-assistant-js-websocket';
 
-import { IConfig, IEntry } from './models/interfaces';
-import { CustomFeaturesRowEditor } from './custom-features-row-editor';
-import { atLeastHaVersion } from './utils';
 import './classes/custom-feature-button';
-import './classes/custom-feature-slider';
 import './classes/custom-feature-selector';
+import './classes/custom-feature-slider';
 import './classes/custom-feature-spinbox';
+import { CustomFeaturesRowEditor } from './custom-features-row-editor';
+import { IConfig, IEntry } from './models/interfaces';
+import { atLeastHaVersion } from './utils';
 
 console.info(
 	`%c CUSTOM-FEATURES-FOR-TILES-AND-MORE v${packageInfo.version}`,
@@ -182,9 +182,10 @@ class CustomFeaturesRow extends LitElement {
 }
 
 if (!window.structuredClone) {
-	// eslint-disable-next-line
-	// @ts-ignore
 	window.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
+}
+if (!window.performance) {
+	window.performance = window.Date as unknown as Performance;
 }
 
 customElements.define('custom-features-row-editor', CustomFeaturesRowEditor);
