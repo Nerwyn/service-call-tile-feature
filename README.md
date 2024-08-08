@@ -13,7 +13,7 @@
 
 _Formerly called Service Card Tile Feature_
 
-Call any service and most [actions](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
+Call any [action](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -33,7 +33,7 @@ Selectors allow you to create a row of custom button features with no gaps of wh
 
 After adding a selector to your custom features row, you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature.
 
-This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill entity enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and service call data filled in along with the `select_option` service call information. While the option fields and service call information will autofill, you still have to click the add option button and give them appearance information so that they will render and be distinguishable (you'll know that you've added all possible options when the last option you add has the text `Option` instead of a different value).
+This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill entity enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and action data filled in along with the `select_option` action information. While the option fields and action information will autofill, you still have to click the add option button and give them appearance information so that they will render and be distinguishable (you'll know that you've added all possible options when the last option you add has the text `Option` instead of a different value).
 
 Since each selector option is a custom feature button, you can override it's default behavior by changing it's tap action. Doing so will also break the default current option highlighting logic, but you can use the `Option` field within an option alongside to restore this. `Option` will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
 
@@ -45,7 +45,7 @@ Sliders are input range elements made to look similar to the sliders found in Ho
 
 Sliders can track either the state or attribute of an entity, meaning that when that entity's state or attribute changes so will the slider to match. By default it will track the `state` of an entity. To change this, set `Attribute` to the name of the attribute you want the slider to track. In order to pass the the slider's value to an action, set the value in the action data to `{{ value | float }}`.
 
-By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the action you are calling. If you find that the service you are calling does not like non-whole numbers (like `light.turn_on` with `color_temp`), make sure to set step size to a whole number and to use the `int` filter in the action data template.
+By default the slider's range will be from 0 to 100, with a step size of 1. You will need to adjust this depending on the action you are calling. If you find that the action you are calling does not like non-whole numbers (like `light.turn_on` with `color_temp`) in it's data, make sure to set step size to a whole number and to use the `int` filter in the action data template.
 
 To prevent value bouncing, sliders will wait for one second before retreiving an updated value from Home Assistant after it's action is called. This time can be changed by changing `Update after action delay`.
 
@@ -55,7 +55,7 @@ To prevent value bouncing, sliders will wait for one second before retreiving an
 
 Spinboxes allow you to create Home Assistant style number boxes with increment and decrement buttons, similar to the climate target temperature feature. By default the user can increment or decrement this feature's internal value using the corresponding buttons. Once the user stops pressing the buttons for a time period defined by `Debounce time` (default 1000ms), the user defined tap action will fire. Similar to sliders, spinboxes will wait one second before updating it's internal value but this can be changed using `Update after action delay`.
 
-Like sliders, the spinbox's action should use a service which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `value` in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting the hold action to repeat. These should all be set in the `CENTER` tab of the spinbox configuration page.
+Like sliders, the spinbox's action should use an action which sets a value similar to `number/input_number.set_value` or `climate.set_temperature` and the user should use `value` in a template to pass it to the action call. This way the user can keep incrementing or decrementing the value until they reach the desired value, and the action to update it in Home Assistant is only called once. You can make this features buttons repeat when held by setting the hold action to repeat. These should all be set in the `CENTER` tab of the spinbox configuration page.
 
 You can also override the default behavior of the increment and decrement buttons by changing the tab bar to `INCREMENT` or `DECREMENT` and modifying the actions there. Doing so will disable the normal increment/decrement and debounce button behavior and create a button feature instead. Spinbox button appearance and styles can also be modified more directly in the `INCREMENT` and `DECREMENT` tabs.
 
@@ -96,7 +96,7 @@ Some additional logic is applied for certain attributes:
 - `elapsed` - Only for timer entities. Updated twice a second using the the current timestamp and the attributes `duration`, `remaining`, and `finishes_at`, and locked to a max value using the attribute `duration`.
   - _NOTE_: `elapsed` is not an actual attribute of timer entities, but is a possible `value_attribute` for timer entities for the purpose of displaying accurate timer elapsed values. Timer entities do have an attribute `remaining`, which only updates when the timer state changes. The actual `remaining` attribute can be calculated using the `elapsed` value and the timer `duration` attribute.
 
-If you find that the autofilling of the entity ID in the service call or tile feature value is causing issues, setting `Autofill entity` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
+If you find that the autofilling of the entity ID in the action or tile feature value is causing issues, setting `Autofill entity` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
 
 Haptics are disabled for features by default, but can be toggled on at the feature level.
 
@@ -219,7 +219,7 @@ Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashbo
 | Toggle         | Toggle between the target's on and off (or similar) states.                                                                                                                                                                             |
 | Navigate       | Navigate to another Home Assistant page.                                                                                                                                                                                                |
 | URL            | Navigate to an external URL.                                                                                                                                                                                                            |
-| Call service   | Call any Home Assistant service.                                                                                                                                                                                                        |
+| Perform action | Call any Home Assistant service action.                                                                                                                                                                                                 |
 | Assist         | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app. The pipeline ID and start listening options only work in the mobile assist dialog.                                                         |
 | Fire DOM event | Fire a browser dom event using the action object as the event detail. Useful for opening [browser mod popup cards](https://github.com/thomasloven/hass-browser_mod?tab=readme-ov-file#how-do-i-update-a-popup-from-the-browser-mod-15). |
 | Repeat         | Repeat the tap action ten times a second while held. Only applicable to hold.                                                                                                                                                           |
