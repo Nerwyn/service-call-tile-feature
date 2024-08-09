@@ -1,4 +1,4 @@
-import { CSSResult, html, css } from 'lit';
+import { css, CSSResult, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { BaseCustomFeature } from './base-custom-feature';
@@ -311,10 +311,10 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				}
 				.option:active {
 					opacity: var(--hover-opacity) !important;
-					background-color: var(
+					background: var(
 						--color,
 						var(--state-inactive-color, var(--disabled-color))
-					);
+					) !important;
 				}
 			`,
 		];

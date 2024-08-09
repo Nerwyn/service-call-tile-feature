@@ -1455,8 +1455,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 				const action =
 					entry[actionType as ActionType] ?? ({} as IAction);
 				if (['perform-action', 'more-info'].includes(action.action)) {
-					const data = action.data ?? ({} as IData);
-					const target = action.target ?? ({} as ITarget);
+					const data = action.data ?? {};
+					const target = action.target ?? {};
 					for (const targetId of [
 						'entity_id',
 						'device_id',
