@@ -40,7 +40,7 @@ Explain what the issue is, and how things should look/behave. If possible provid
 
 ```
 
-**Your Full Remote Config**
+**Your Full Card Config**
 
 ```yaml
 
