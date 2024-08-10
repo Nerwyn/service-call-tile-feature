@@ -1480,6 +1480,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 						action.target = target;
 						entry[actionType as ActionType] = action;
 					}
+					action.data = data;
+					action.target = target;
 				}
 			}
 		}
