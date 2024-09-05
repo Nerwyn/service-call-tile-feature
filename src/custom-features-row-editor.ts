@@ -428,7 +428,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				entries = this.config.entries;
 				handlers = {
 					move: this.moveEntry,
-					copy: this.copyOption,
+					copy: this.copyEntry,
 					edit: this.editEntry,
 					remove: this.removeEntry,
 				};
@@ -2098,6 +2098,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				color: var(--secondary-text-color);
 			}
 
+			.copy-icon,
 			.edit-icon,
 			.remove-icon {
 				color: var(--secondary-text-color);
