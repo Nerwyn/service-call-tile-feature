@@ -241,7 +241,7 @@ By setting a hold action to `repeat`, the tap action will repeat while the butto
 
 Double tap actions have a default window of 200ms to trigger before a single tap action is triggered instead. You can change this by setting `Double tap window` in the double tap action to a different number.
 
-**NOTE**: Setting `Double tap window` above or too close to `Hold time` can result in undesirable behavior, as the hold timer expires before the double tap window does.
+**NOTE**: Setting `Double tap window` above or too close to `Hold time` can result in undesirable behavior, as the hold timer expires before the double tap timer does. If you increase the `Double tap window` you should also increase `Hold time` to not be too close to it by at least 100ms if not more. In a custom feature without a hold action defined, you can set `Hold behavior` explicitly to `Nothing` to render the `Hold time` field.
 
 ### Momentary Button mode
 
@@ -249,7 +249,7 @@ Double tap actions have a default window of 200ms to trigger before a single tap
 
 As an alternative to normal tap, hold, and double tap actions, buttons, including those within selectors and spinboxes, can also be used in a momentary mode. Configuring this option disables the normal tap, hold, and double tap actions.
 
-The momentary start action is fired when you first press down on a button. The momentary end action is fired when you release the button or touchpad. While these are meant to be used together you can use one or the other.
+The momentary start action is fired when you first press down on a button. The momentary end action is fired when you release the button. While these are meant to be used together you can use one or the other.
 
 You can include the number of seconds a button has been held down using `hold_secs` in a template. For convenience, the momentary end action YAML is included in a code box below the action, like shown above.
 

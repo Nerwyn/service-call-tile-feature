@@ -654,7 +654,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			.selector=${selector}
 			.value=${value ?? placeholder}
 			.label="${label}"
-			.placeholder="${placeholder},"
+			.placeholder=${placeholder}
 			.required=${false}
 			id="${key}"
 			@value-changed=${this.handleSelectorChange}
