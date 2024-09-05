@@ -623,7 +623,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	buildSelector(
-		label: string,
+		name: string,
 		key: string,
 		selector: object,
 		placeholder?: string | number | boolean | object,
@@ -650,10 +650,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 		return html`<ha-selector
 			.hass=${hass}
-			.name="${label}"
+			.name="${name}"
 			.selector=${selector}
 			.value=${value ?? placeholder}
-			.label="${label}"
 			.placeholder=${placeholder}
 			.required=${false}
 			id="${key}"

@@ -69,7 +69,7 @@ All custom features are encapsulated in a custom features row. This allows you t
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/add_custom_features_row.png" alt="add_custom_features_row" width="600"/>
 
-Within a custom features row you can add individual features using the add custom feature button. This works just like the top level add feature button but just for custom features. Each feature will look like a blank rectangle to start. Features can be reordered, edited, and deleted from here.
+Within a custom features row you can add individual features using the add custom feature button. This works just like the top level add feature button but just for custom features. Each feature will look like a blank rectangle to start. Features can be reordered, copied, edited, and deleted from here.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/add_custom_feature.png" alt="add_custom_feature" width="600"/>
 
