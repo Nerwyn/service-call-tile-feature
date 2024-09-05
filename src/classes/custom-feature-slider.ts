@@ -2,6 +2,13 @@ import { css, CSSResult, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { StyleInfo, styleMap } from 'lit/directives/style-map.js';
 
+import {
+	RANGE_MAX,
+	RANGE_MIN,
+	SLIDER_ANIMATION,
+	STEP,
+	STEP_COUNT,
+} from '../models/constants';
 import { IEntry } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
@@ -15,13 +22,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	oldValue?: number;
 	newValue?: number;
 	speed: number = 2;
-	range: [number, number] = [0, 100];
-	step: number = 1;
+	range: [number, number] = [RANGE_MIN, RANGE_MAX];
+	step: number = STEP;
 	intervalId?: ReturnType<typeof setTimeout>;
 
-	sliderClass: string = 'slider ';
+	@state() sliderWidth: number = 0;
 	thumbWidth: number = 0;
-	sliderWidth: number = 0;
+	sliderClass: string = 'slider ';
 	resizeObserver = new ResizeObserver((entries) => {
 		for (const entry of entries) {
 			this.sliderWidth = entry.contentRect.width;
@@ -68,7 +75,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						this.currentValue = end;
 						this.setThumbOffset();
 					}
-				}, 1);
+				}, SLIDER_ANIMATION);
 			} else if (start < end) {
 				this.sliderOn = true;
 				this.intervalId = setInterval(() => {
@@ -82,7 +89,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						this.currentValue = end;
 						this.setThumbOffset();
 					}
-				}, 1);
+				}, SLIDER_ANIMATION);
 			} else {
 				this.currentValue = end;
 			}
@@ -279,20 +286,18 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		};
 
 		if (this.entry.range) {
-			this.range = [
-				parseFloat(
-					this.renderTemplate(
-						this.entry.range[0] as unknown as string,
-						context,
-					) as string,
-				),
-				parseFloat(
-					this.renderTemplate(
-						this.entry.range[1] as unknown as string,
-						context,
-					) as string,
-				),
-			];
+			this.range[0] = parseFloat(
+				(this.renderTemplate(
+					this.entry.range[0] as unknown as string,
+					context,
+				) as string) ?? RANGE_MIN,
+			);
+			this.range[1] = parseFloat(
+				(this.renderTemplate(
+					this.entry.range[1] as unknown as string,
+					context,
+				) as string) ?? RANGE_MAX,
+			);
 		}
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
@@ -304,7 +309,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				) as string,
 			);
 		} else {
-			this.step = (this.range[1] - this.range[0]) / 100;
+			this.step = (this.range[1] - this.range[0]) / STEP_COUNT;
 		}
 		const splitStep = this.step.toString().split('.');
 		if (splitStep.length > 1) {

@@ -1,6 +1,11 @@
 import { css, CSSResult, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
+import {
+	DOUBLE_TAP_WINDOW,
+	HOLD_TIME,
+	REPEAT_DELAY,
+} from '../models/constants';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-button')
@@ -41,7 +46,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 							this.entry.double_tap_action
 								.double_tap_window as unknown as string,
 					  ) as number)
-					: 200;
+					: DOUBLE_TAP_WINDOW;
 				if (!this.clickTimer) {
 					this.clickTimer = setTimeout(() => {
 						this.fireHapticEvent('light');
@@ -93,7 +98,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				? (this.renderTemplate(
 						this.entry.hold_action?.hold_time as unknown as string,
 				  ) as number)
-				: 500;
+				: HOLD_TIME;
 			const holdAction = this.renderTemplate(
 				this.entry.hold_action?.action as string,
 			);
@@ -109,7 +114,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 										this.entry.hold_action
 											?.repeat_delay as unknown as string,
 								  ) as number)
-								: 100;
+								: REPEAT_DELAY;
 							if (!this.holdInterval) {
 								this.holdInterval = setInterval(() => {
 									this.fireHapticEvent('selection');

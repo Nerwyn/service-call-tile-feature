@@ -9,6 +9,7 @@ import {
 	state,
 } from 'lit/decorators.js';
 
+import { UPDATE_AFTER_ACTION_DELAY } from '../models/constants';
 import {
 	ActionType,
 	IAction,
@@ -615,7 +616,7 @@ export class BaseCustomFeature extends LitElement {
 
 	resetGetValueFromHass() {
 		const valueFromHassDelay = this.renderTemplate(
-			this.entry.value_from_hass_delay ?? 1000,
+			this.entry.value_from_hass_delay ?? UPDATE_AFTER_ACTION_DELAY,
 		) as number;
 		this.getValueFromHassTimer = setTimeout(
 			() => (this.getValueFromHass = true),

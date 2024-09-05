@@ -1,6 +1,7 @@
-import { CSSResult, html, css } from 'lit';
+import { css, CSSResult, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
+import { DEBOUNCE_TIME } from '../models/constants';
 import { IEntry } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 import './custom-feature-button';
@@ -10,7 +11,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	range: [number, number] = [-32768, 32767];
 	step: number = 1;
 	debounceTimer?: ReturnType<typeof setTimeout>;
-	debounceTime: number = 1000;
+	debounceTime: number = DEBOUNCE_TIME;
 
 	holdTimer?: ReturnType<typeof setTimeout>;
 	holdInterval?: ReturnType<typeof setInterval>;

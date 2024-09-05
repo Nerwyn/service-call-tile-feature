@@ -6,6 +6,19 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
 
 import {
+	AUTOFILL,
+	DEBOUNCE_TIME,
+	DOUBLE_TAP_WINDOW,
+	HAPTICS,
+	HOLD_TIME,
+	RANGE_MAX,
+	RANGE_MIN,
+	REPEAT_DELAY,
+	STEP,
+	STEP_COUNT,
+	UPDATE_AFTER_ACTION_DELAY,
+} from './models/constants';
+import {
 	Actions,
 	ActionType,
 	ActionTypes,
@@ -35,9 +48,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 	@state() errors?: string[];
 
 	yamlString?: string;
+	yamlStringsCache: Record<string, string> = {};
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
 	autofillCooldown = false;
-	codeEditorDelay?: ReturnType<typeof setTimeout>;
 	people: Record<string, string>[] = [];
 
 	static get properties() {
@@ -125,14 +138,37 @@ export class CustomFeaturesRowEditor extends LitElement {
 	moveOption(e: CustomEvent) {
 		e.stopPropagation();
 		const { oldIndex, newIndex } = e.detail;
-		const entry = structuredClone(this.activeEntry) as IOption;
+		const entry = structuredClone(this.activeEntry) as IEntry;
 		const options = entry.options ?? [];
 		options.splice(newIndex, 0, options.splice(oldIndex, 1)[0]);
 		entry.options = options;
 		this.entryChanged(entry);
 	}
 
+	copyEntry(e: CustomEvent) {
+		const entries = structuredClone(this.config.entries);
+		const i = (
+			e.currentTarget as unknown as CustomEvent & Record<'index', number>
+		).index;
+		const entry = structuredClone(entries[i]);
+		entries.splice(i, 1, entries[i], entry);
+		this.entriesChanged(entries);
+	}
+
+	copyOption(e: CustomEvent) {
+		const entry = structuredClone(this.activeEntry) as IEntry;
+		const options = structuredClone(entry.options) ?? [];
+		const i = (
+			e.currentTarget as unknown as CustomEvent & Record<'index', number>
+		).index;
+		const option = structuredClone(options[i]);
+		options.splice(i, 1, options[i], option);
+		entry.options = options;
+		this.entryChanged(entry);
+	}
+
 	editEntry(e: CustomEvent) {
+		this.yamlStringsCache = {};
 		this.yamlString = undefined;
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -157,6 +193,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	editOption(e: CustomEvent) {
+		this.yamlStringsCache = {};
 		this.yamlString = undefined;
 		const i = (
 			e.currentTarget as unknown as CustomEvent & Record<'index', number>
@@ -226,12 +263,14 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	exitEditEntry(_e: CustomEvent) {
 		this.activeEntryType = 'entry';
+		this.yamlStringsCache = {};
 		this.yamlString = undefined;
 		this.entryIndex = -1;
 	}
 
 	exitEditOption(_e: CustomEvent) {
 		this.activeEntryType = 'entry';
+		this.yamlStringsCache = {};
 		this.yamlString = undefined;
 		this.optionIndex = -1;
 	}
@@ -280,14 +319,10 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	handleYamlCodeChanged(e: CustomEvent) {
 		e.stopPropagation();
-		clearTimeout(this.codeEditorDelay);
-		this.codeEditorDelay = undefined;
-		this.codeEditorDelay = setTimeout(() => {
-			const yaml = e.detail.value;
-			if (yaml != this.yaml) {
-				this.yaml = yaml;
-			}
-		}, 1000);
+		const yaml = e.detail.value;
+		if (yaml != this.yaml) {
+			this.yaml = yaml;
+		}
 	}
 
 	handleStyleCodeChanged(e: CustomEvent) {
@@ -308,28 +343,26 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleActionCodeChanged(e: CustomEvent) {
+		e.stopPropagation();
 		const actionType = (e.target as HTMLElement).id as ActionType;
 		const actionYaml = e.detail.value;
-		e.stopPropagation();
-		clearTimeout(this.codeEditorDelay);
-		this.codeEditorDelay = undefined;
-		this.codeEditorDelay = setTimeout(() => {
-			if (this.activeEntry) {
-				try {
-					const actionObj = load(actionYaml) as IData;
-					if (JSON.stringify(actionObj ?? {}).includes('null')) {
-						return;
-					}
-					this.entryChanged({ [actionType]: actionObj });
-					this.errors = undefined;
-				} catch (e) {
-					this.errors = [(e as Error).message];
+		this.yamlStringsCache[actionType] = actionYaml;
+		if (this.activeEntry) {
+			try {
+				const actionObj = load(actionYaml) as IData;
+				if (JSON.stringify(actionObj ?? {}).includes('null')) {
+					return;
 				}
+				this.entryChanged({ [actionType]: actionObj });
+				this.errors = undefined;
+			} catch (e) {
+				this.errors = [(e as Error).message];
 			}
-		}, 1000);
+		}
 	}
 
 	handleSpinboxTabSelected(e: CustomEvent) {
+		this.yamlStringsCache = {};
 		this.yamlString = undefined;
 		const i = e.detail.index;
 		switch (i) {
@@ -351,6 +384,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleActionsTabSelected(e: CustomEvent) {
+		this.yamlStringsCache = {};
 		const i = e.detail.index;
 		if (this.actionsTabIndex == i) {
 			return;
@@ -359,6 +393,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleSelectorChange(e: CustomEvent) {
+		this.yamlStringsCache = {};
 		const key = (e.target as HTMLElement).id;
 		let value = e.detail.value;
 		if (key.endsWith('.confirmation.exemptions')) {
@@ -382,6 +417,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				entries = this.activeEntry?.options ?? [];
 				handlers = {
 					move: this.moveOption,
+					copy: this.copyOption,
 					edit: this.editOption,
 					remove: this.removeOption,
 				};
@@ -392,6 +428,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				entries = this.config.entries;
 				handlers = {
 					move: this.moveEntry,
+					copy: this.copyOption,
 					edit: this.editEntry,
 					remove: this.removeEntry,
 				};
@@ -458,6 +495,15 @@ export class CustomFeaturesRowEditor extends LitElement {
 										</div>
 									</div>
 									<ha-icon-button
+										class="copy-icon"
+										.index=${i}
+										@click=${handlers.copy}
+									>
+										<ha-icon
+											.icon="${'mdi:content-copy'}"
+										></ha-icon>
+									</ha-icon-button>
+									<ha-icon-button
 										class="edit-icon"
 										.index=${i}
 										@click=${handlers.edit}
@@ -484,42 +530,45 @@ export class CustomFeaturesRowEditor extends LitElement {
 		`;
 	}
 
-	buildAddEntryButton() {
-		return html`
-			<ha-button-menu
-				fixed
-				@action=${this.addEntry}
-				@closed=${(e: CustomEvent) => e.stopPropagation()}
-			>
-				<ha-button
-					slot="trigger"
-					outlined
-					.label="${'ADD CUSTOM FEATURE'}"
-				>
-					<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-				</ha-button>
-				${TileFeatureTypes.map(
-					(tileFeatureType) => html`
-						<ha-list-item .value=${tileFeatureType}>
-							${tileFeatureType}
-						</ha-list-item>
-					`,
-				)}
-			</ha-button-menu>
-		`;
-	}
-
-	buildAddOptionButton() {
-		return html`
-			<ha-button
-				slot="trigger"
-				outlined
-				.label="${'ADD OPTION'}"
-				@click=${this.addOption}
-			>
-				<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
-			</ha-button>
-		`;
+	buildAddEntryButton(field: 'entry' | 'option' = 'entry') {
+		switch (field) {
+			case 'option':
+				return html`
+					<ha-button
+						@click=${this.addOption}
+						outlined
+						class="add-list-item"
+						.label="${'ADD OPTION'}"
+					>
+						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+					</ha-button>
+				`;
+			case 'entry':
+			default:
+				return html`
+					<ha-button-menu
+						fixed
+						class="add-list-item"
+						@action=${this.addEntry}
+						@closed=${(e: CustomEvent) => e.stopPropagation()}
+					>
+						<ha-button
+							slot="trigger"
+							outlined
+							.label="${'ADD CUSTOM FEATURE'}"
+						>
+							<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
+						</ha-button>
+						${TileFeatureTypes.map(
+							(tileFeatureType) => html`
+								<ha-list-item .value=${tileFeatureType}>
+									${tileFeatureType}
+								</ha-list-item>
+							`,
+						)}
+					</ha-button-menu>
+				`;
+		}
 	}
 
 	buildEntryHeader() {
@@ -577,7 +626,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		label: string,
 		key: string,
 		selector: object,
-		backupValue: string | number | boolean | object = '',
+		placeholder?: string | number | boolean | object,
 	) {
 		const hass: HomeAssistant = {
 			...this.hass,
@@ -601,10 +650,11 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 		return html`<ha-selector
 			.hass=${hass}
-			.selector=${selector}
-			.value=${value ?? backupValue}
-			.label="${label}"
 			.name="${label}"
+			.selector=${selector}
+			.value=${value ?? placeholder}
+			.label="${label}"
+			.placeholder="${placeholder},"
 			.required=${false}
 			id="${key}"
 			@value-changed=${this.handleSelectorChange}
@@ -620,12 +670,17 @@ export class CustomFeaturesRowEditor extends LitElement {
 				entity: {},
 			})}
 			${
-				this.activeEntry?.entity_id
-					? this.buildSelector('Attribute', 'value_attribute', {
-							attribute: {
-								entity_id: this.activeEntry.entity_id,
+				this.hass.states[this.activeEntry?.entity_id ?? '']
+					? this.buildSelector(
+							'Attribute',
+							'value_attribute',
+							{
+								attribute: {
+									entity_id: this.activeEntry?.entity_id,
+								},
 							},
-					  })
+							'state',
+					  )
 					: ''
 			}
 			${additionalOptions}
@@ -637,7 +692,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						boolean: {},
 					},
-					true,
+					AUTOFILL,
 				)}
 				${this.buildSelector(
 					'Haptics',
@@ -645,7 +700,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						boolean: {},
 					},
-					false,
+					HAPTICS,
 				)}
 			</div>
 		</div> `;
@@ -728,9 +783,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 								unit_of_measurement: 'ms',
 							},
 						},
-						200,
+						DOUBLE_TAP_WINDOW,
 				  )
-				: action != 'none' && actionType == 'hold_action'
+				: actionType == 'hold_action' && this.activeEntry?.hold_action
 				  ? html`<div class="form">
 							${this.buildSelector(
 								'Hold time',
@@ -743,7 +798,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 										unit_of_measurement: 'ms',
 									},
 								},
-								500,
+								HOLD_TIME,
 							)}
 							${this.renderTemplate(
 								this.activeEntry?.hold_action?.action as string,
@@ -760,7 +815,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 												unit_of_measurement: 'ms',
 											},
 										},
-										100,
+										REPEAT_DELAY,
 								  )
 								: ''}
 				    </div>`
@@ -908,7 +963,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 			context,
 		);
 		const step =
-			this.renderTemplate(this.activeEntry?.step as number, context) ?? 1;
+			this.renderTemplate(this.activeEntry?.step as number, context) ??
+			STEP;
 		const unit = this.renderTemplate(
 			this.activeEntry?.unit_of_measurement as string,
 			context,
@@ -960,7 +1016,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								unit_of_measurement: 'ms',
 							},
 						},
-						1000,
+						UPDATE_AFTER_ACTION_DELAY,
 					)}
 				`,
 			)}
@@ -1001,8 +1057,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 		switch (this.optionIndex) {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
-				${this.buildEntryList('option')}${this.buildAddOptionButton()}
-				${this.buildCodeEditor('jinja2')}`;
+					<div class="">
+						${this.buildEntryList(
+							'option',
+						)}${this.buildAddEntryButton('option')}
+					</div>
+					${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
 				selectorGuiEditor = html`
@@ -1081,7 +1141,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					this.renderTemplate(
 						this.activeEntry?.step as number,
 						context,
-					) ?? 1;
+					) ?? STEP;
 				const unit = this.renderTemplate(
 					this.activeEntry?.unit_of_measurement as string,
 					context,
@@ -1125,7 +1185,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 										unit_of_measurement: 'ms',
 									},
 								},
-								1000,
+								UPDATE_AFTER_ACTION_DELAY,
 							)}
 							${this.buildSelector(
 								'Debounce time',
@@ -1138,7 +1198,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 										unit_of_measurement: 'ms',
 									},
 								},
-								1000,
+								DEBOUNCE_TIME,
 							)}
 						`,
 					)}
@@ -1178,6 +1238,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 		let title: string | undefined;
 		let value: string;
 		let handler: (e: CustomEvent) => void;
+		let autocompleteEntities: boolean;
+		let autocompleteIcons: boolean;
 		switch (mode) {
 			case 'jinja2':
 				value =
@@ -1186,21 +1248,28 @@ export class CustomFeaturesRowEditor extends LitElement {
 						: this.config.styles) ?? '';
 				handler = this.handleStyleCodeChanged;
 				title = 'CSS Styles';
+				autocompleteEntities = true;
+				autocompleteIcons = false;
 				break;
 			case 'action':
 				mode = 'yaml';
 				handler = this.handleActionCodeChanged;
-				value = dump(
-					(this.activeEntry?.[
-						(id ?? 'tap_action') as ActionType
-					] as IAction) ?? {},
-				);
+				id = id ?? 'tap_action';
+				value =
+					this.yamlStringsCache[id] ??
+					dump(
+						(this.activeEntry?.[id as ActionType] as IAction) ?? {},
+					);
 				value = value.trim() == '{}' ? '' : value;
+				autocompleteEntities = true;
+				autocompleteIcons = false;
 				break;
 			case 'yaml':
 			default:
 				value = this.yaml;
 				handler = this.handleYamlCodeChanged;
+				autocompleteEntities = true;
+				autocompleteIcons = true;
 				break;
 		}
 		return html`
@@ -1209,15 +1278,14 @@ export class CustomFeaturesRowEditor extends LitElement {
 				<ha-code-editor
 					mode="${mode}"
 					id="${id}"
-					autofocus
-					autocomplete-entities
-					autocomplete-icons
+					dir="ltr"
+					?autocomplete-entities="${autocompleteEntities}"
+					?autocomplete-icons="${autocompleteIcons}"
 					.hass=${this.hass}
 					.value=${value}
 					.error=${Boolean(this.errors)}
 					@value-changed=${handler}
-					@keydown=${(e: CustomEvent) => e.stopPropagation()}
-					dir="ltr"
+					@keydown=${(e: KeyboardEvent) => e.stopPropagation()}
 				></ha-code-editor>
 			</div>
 		`;
@@ -1288,8 +1356,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 		if (!this.autofillCooldown) {
 			this.autofillCooldown = true;
-			let config = this.updateDeprecatedFields(this.config);
-			config = this.autofillDefaultFields(config);
+			const config = this.autofillDefaultFields(this.config);
 			this.configChanged(config);
 			setTimeout(() => (this.autofillCooldown = false), 1000);
 		}
@@ -1300,8 +1367,20 @@ export class CustomFeaturesRowEditor extends LitElement {
 		switch (this.entryIndex) {
 			case -1:
 				editor = html`
-					${this.buildEntryList()}${this.buildAddEntryButton()}
-					${this.buildCodeEditor('jinja2')}${this.buildErrorPanel()}
+					<div class="content">
+						<div>
+							${this.buildEntryList()}${this.buildAddEntryButton()}
+						</div>
+						${this.buildCodeEditor('jinja2')}
+						<ha-button
+							@click=${this.handleUpdateDeprecatedConfig}
+							outlined
+							.label="${'UPDATE OLD CONFIG'}"
+						>
+							<ha-icon .icon=${'mdi:cog'} slot="icon"></ha-icon>
+						</ha-button>
+						${this.buildErrorPanel()}
+					</div>
 				`;
 				break;
 			default:
@@ -1506,7 +1585,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		for (let entry of updatedConfig.entries ?? []) {
 			if (
 				this.renderTemplate(
-					(entry.autofill_entity_id ?? true) as unknown as string,
+					(entry.autofill_entity_id ?? AUTOFILL) as unknown as string,
 					this.getEntryContext(entry),
 				)
 			) {
@@ -1546,7 +1625,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 							if (
 								this.renderTemplate(
 									(options[i].autofill_entity_id ??
-										true) as unknown as string,
+										AUTOFILL) as unknown as string,
 									this.getEntryContext(options[i]),
 								)
 							) {
@@ -1608,7 +1687,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 							entry.increment &&
 							this.renderTemplate(
 								(entry.increment?.autofill_entity_id ??
-									true) as unknown as string,
+									AUTOFILL) as unknown as string,
 								this.getEntryContext(entry.increment),
 							)
 						) {
@@ -1621,7 +1700,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 							entry.decrement &&
 							this.renderTemplate(
 								(entry.decrement?.autofill_entity_id ??
-									true) as unknown as string,
+									AUTOFILL) as unknown as string,
 								this.getEntryContext(entry.decrement),
 							)
 						) {
@@ -1641,18 +1720,19 @@ export class CustomFeaturesRowEditor extends LitElement {
 						if (rangeMin == undefined) {
 							rangeMin =
 								this.hass.states[entryEntityId]?.attributes
-									?.min ?? 0;
+									?.min ?? RANGE_MIN;
 						}
 						if (rangeMax == undefined) {
 							rangeMax =
 								this.hass.states[entryEntityId]?.attributes
-									?.max ?? 100;
+									?.max ?? RANGE_MAX;
 						}
 						entry.range = [rangeMin as number, rangeMax as number];
 
 						if (!entry.tap_action) {
 							const tap_action = {} as IAction;
 							const data = tap_action.data ?? {};
+							1;
 							tap_action.action = 'perform-action';
 							switch (domain) {
 								case 'number':
@@ -1701,7 +1781,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 											entry.range[0],
 											entryContext,
 										) as unknown as number)) /
-									100;
+									STEP_COUNT;
 							}
 						}
 						break;
@@ -1715,6 +1795,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 		}
 		updatedConfig.entries = updatedEntries;
 		return updatedConfig;
+	}
+
+	handleUpdateDeprecatedConfig() {
+		let config = this.updateDeprecatedFields(this.config);
+		config = this.autofillDefaultFields(config);
+		this.configChanged(config);
 	}
 
 	updateDeprecatedFields(config: IConfig = this.config): IConfig {
@@ -1962,7 +2048,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				display: flex;
 				color: var(--secondary-text-color);
 			}
-			ha-button-menu {
+			.add-list-item {
 				margin: 0 18px 12px;
 			}
 			ha-button {
