@@ -1,6 +1,6 @@
 {
 	"name": "custom-features-row",
-	"version": "4.0.10",
+	"version": "4.0.11",
 	"description": "Custom Features for Home Assistant Tile Card And More!",
 	"main": "./dist/custom-features-row.min.js",
 	"scripts": {
@@ -26,7 +26,7 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
 		"custom-card-helpers": "latest",
-		"ha-nunjucks": "latest",
+		"ha-nunjucks": "1.3.0-beta.002",
 		"js-yaml": "latest",
 		"lit": "latest"
 	},
