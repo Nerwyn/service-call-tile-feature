@@ -3,11 +3,12 @@
 	"version": "4.0.11",
 	"description": "Custom Features for Home Assistant Tile Card And More!",
 	"main": "./dist/custom-features-row.min.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "npx webpack",
 		"prelint": "tsc --noemit",
-		"lint": "eslint ./src --fix --ext .ts --config ./.eslintrc.js",
+		"lint": "eslint --fix --config ./.eslintrc.config.cjs",
 		"build-css": "tcm src"
 	},
 	"lint-staged": {
@@ -26,17 +27,17 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
 		"custom-card-helpers": "latest",
-		"ha-nunjucks": "1.3.0-beta.005",
+		"ha-nunjucks": "github:nerwyn/ha-nunjucks#1.3.0-beta.007",
 		"js-yaml": "latest",
 		"lit": "latest"
 	},
 	"devDependencies": {
 		"@types/js-yaml": "latest",
-		"@typescript-eslint/eslint-plugin": "latest",
-		"@typescript-eslint/parser": "latest",
-		"eslint": "latest",
-		"eslint-config-prettier": "latest",
-		"eslint-plugin-prettier": "latest",
+		"@typescript-eslint/eslint-plugin": "^8.5.0",
+		"@typescript-eslint/parser": "^8.5.0",
+		"eslint": "^9.10.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
 		"lint-staged": "latest",
 		"lit-css-loader": "latest",
 		"minify-html-literals-loader": "latest",
