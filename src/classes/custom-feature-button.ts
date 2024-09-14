@@ -45,7 +45,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 					? (this.renderTemplate(
 							this.entry.double_tap_action
 								.double_tap_window as unknown as string,
-					  ) as number)
+						) as number)
 					: DOUBLE_TAP_WINDOW;
 				if (!this.clickTimer) {
 					this.clickTimer = setTimeout(() => {
@@ -97,7 +97,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			const holdTime = this.entry.hold_action.hold_time
 				? (this.renderTemplate(
 						this.entry.hold_action?.hold_time as unknown as string,
-				  ) as number)
+					) as number)
 				: HOLD_TIME;
 			const holdAction = this.renderTemplate(
 				this.entry.hold_action?.action as string,
@@ -113,7 +113,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 								? (this.renderTemplate(
 										this.entry.hold_action
 											?.repeat_delay as unknown as string,
-								  ) as number)
+									) as number)
 								: REPEAT_DELAY;
 							if (!this.holdInterval) {
 								this.holdInterval = setInterval(() => {
@@ -241,7 +241,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				: html``;
 
 		const button = html`<button
-			class=${`${this.className} background` ?? 'background'}
+			class=${`${this.className} background`}
 			@mousedown=${this.onMouseDown}
 			@mouseup=${this.onMouseUp}
 			@mousemove=${this.onMouseMove}
