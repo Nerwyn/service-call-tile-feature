@@ -1350,7 +1350,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	render() {
-		if (!this.hass) {
+		if (!this.hass || !this.config) {
 			return html``;
 		}
 
