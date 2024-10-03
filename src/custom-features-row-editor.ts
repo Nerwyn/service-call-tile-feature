@@ -1800,7 +1800,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleUpdateDeprecatedConfig() {
-		let config = this.updateDeprecatedFields(this.config);
+		const config = this.updateDeprecatedFields(this.config);
 		// config = this.autofillDefaultFields(config);
 		this.configChanged(config);
 	}
