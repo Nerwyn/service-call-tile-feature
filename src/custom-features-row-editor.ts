@@ -244,10 +244,14 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	addEntry(e: CustomEvent) {
 		const i = e.detail.index as number;
+		console.log(i);
 		const entries = structuredClone(this.config.entries);
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
+		console.log(TileFeatureTypes);
+		console.log(TileFeatureTypes[i]);
+		console.log(entries);
 		this.autofillCooldown = false;
 		this.entriesChanged(entries);
 	}
