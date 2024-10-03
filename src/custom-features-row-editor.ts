@@ -50,7 +50,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 	yamlString?: string;
 	yamlStringsCache: Record<string, string> = {};
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
-	autofillCooldown = false;
 	people: Record<string, string>[] = [];
 
 	static get properties() {
@@ -63,7 +62,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	configChanged(config: IConfig) {
 		config = this.autofillDefaultFields(config);
-		console.log(config);
 		const event = new Event('config-changed', {
 			bubbles: true,
 			composed: true,
@@ -250,7 +248,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
-		// this.autofillCooldown = false;
 		this.entriesChanged(entries);
 	}
 
@@ -259,7 +256,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const options = entry.options ?? [];
 		options.push({});
 		entry.options = options;
-		// this.autofillCooldown = false;
 		this.entryChanged(entry);
 	}
 
@@ -1356,13 +1352,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 			return html``;
 		}
 
-		// if (!this.autofillCooldown) {
-		// 	this.autofillCooldown = true;
-		// 	const config = this.autofillDefaultFields(this.config);
-		// 	this.configChanged(config);
-		// 	setTimeout(() => (this.autofillCooldown = false), 1000);
-		// }
-
 		this.buildPeopleList();
 
 		let editor: TemplateResult<1>;
@@ -1801,7 +1790,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	handleUpdateDeprecatedConfig() {
 		const config = this.updateDeprecatedFields(this.config);
-		// config = this.autofillDefaultFields(config);
 		this.configChanged(config);
 	}
 
