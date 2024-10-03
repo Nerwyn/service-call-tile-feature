@@ -62,6 +62,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	configChanged(config: IConfig) {
+		config = this.autofillDefaultFields(config);
 		console.log(config);
 		const event = new Event('config-changed', {
 			bubbles: true,
@@ -249,7 +250,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
-		this.autofillCooldown = false;
+		// this.autofillCooldown = false;
 		this.entriesChanged(entries);
 	}
 
@@ -258,7 +259,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const options = entry.options ?? [];
 		options.push({});
 		entry.options = options;
-		this.autofillCooldown = false;
+		// this.autofillCooldown = false;
 		this.entryChanged(entry);
 	}
 
@@ -278,7 +279,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	toggleGuiMode(_e: CustomEvent) {
 		this.yamlString = undefined;
-		this.autofillCooldown = false;
+		this.configChanged(this.config);
 		this.guiMode = !this.guiMode;
 	}
 
@@ -1355,12 +1356,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 			return html``;
 		}
 
-		if (!this.autofillCooldown) {
-			this.autofillCooldown = true;
-			const config = this.autofillDefaultFields(this.config);
-			this.configChanged(config);
-			setTimeout(() => (this.autofillCooldown = false), 1000);
-		}
+		// if (!this.autofillCooldown) {
+		// 	this.autofillCooldown = true;
+		// 	const config = this.autofillDefaultFields(this.config);
+		// 	this.configChanged(config);
+		// 	setTimeout(() => (this.autofillCooldown = false), 1000);
+		// }
 
 		this.buildPeopleList();
 
@@ -1800,7 +1801,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	handleUpdateDeprecatedConfig() {
 		let config = this.updateDeprecatedFields(this.config);
-		config = this.autofillDefaultFields(config);
+		// config = this.autofillDefaultFields(config);
 		this.configChanged(config);
 	}
 
