@@ -35,6 +35,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			this.setThumbOffset();
 		}
 	});
+	rtl: boolean = false;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
@@ -264,14 +265,27 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		`;
 	}
 
-	buildTooltipStyle(context: object) {
-		return html`<style>
+	buildSliderStyles(context: object) {
+		const styles = `
 			:host {
-				--tooltip-label: '${this.renderTemplate(
-					'{{ value }}{{ unit }}',
-					context,
-				)}';
+				--tooltip-label: '${this.renderTemplate('{{ value }}{{ unit }}', context)}';
 			}
+			${
+				this.rtl
+					? `
+			.slider::-webkit-slider-thumb {
+				scale: -1;
+			}
+			.slider::-moz-range-thumb {
+				scale: -1;
+			}
+			`
+					: ''
+			}
+		`;
+
+		return html`<style>
+			${styles}
 		</style>`;
 	}
 
@@ -362,8 +376,12 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			}
 		}
 
+		this.rtl = getComputedStyle(this).direction == 'rtl';
 		this.setThumbOffset();
-		this.style.setProperty('--thumb-offset', `${this.thumbOffset}px`);
+		this.style.setProperty(
+			'--thumb-offset',
+			`calc(${this.rtl ? '-1 * ' : ''}${this.thumbOffset}px)`,
+		);
 
 		return html`
 			<div class="container">
@@ -372,7 +390,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				${this.buildIcon(undefined, context)}
 				${this.buildLabel(undefined, context)}
 			</div>
-			${this.buildTooltip()}${this.buildTooltipStyle(context)}
+			${this.buildTooltip()}${this.buildSliderStyles(context)}
 			${this.buildStyles(undefined, context)}
 		`;
 	}
