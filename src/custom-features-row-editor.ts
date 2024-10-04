@@ -50,7 +50,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 	yamlString?: string;
 	yamlStringsCache: Record<string, string> = {};
 	activeEntryType: 'entry' | 'option' | 'decrement' | 'increment' = 'entry';
-	autofillCooldown = false;
 	people: Record<string, string>[] = [];
 
 	static get properties() {
@@ -62,6 +61,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	configChanged(config: IConfig) {
+		config = this.autofillDefaultFields(config);
 		const event = new Event('config-changed', {
 			bubbles: true,
 			composed: true,
@@ -248,7 +248,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 		entries.push({
 			type: TileFeatureTypes[i],
 		});
-		this.autofillCooldown = false;
 		this.entriesChanged(entries);
 	}
 
@@ -257,7 +256,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const options = entry.options ?? [];
 		options.push({});
 		entry.options = options;
-		this.autofillCooldown = false;
 		this.entryChanged(entry);
 	}
 
@@ -277,7 +275,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	toggleGuiMode(_e: CustomEvent) {
 		this.yamlString = undefined;
-		this.autofillCooldown = false;
+		this.configChanged(this.config);
 		this.guiMode = !this.guiMode;
 	}
 
@@ -472,7 +470,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 										${icon
 											? html`<ha-icon
 													.icon="${icon}"
-											  ></ha-icon>`
+												></ha-icon>`
 											: ''}
 										<div class="feature-list-item-label">
 											<span class="primary"
@@ -490,7 +488,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 															.config.attribute
 															? ` ⸱ ${context.config.attribute}`
 															: ''}</span
-												  >`
+													>`
 												: ''}
 										</div>
 									</div>
@@ -680,7 +678,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								},
 							},
 							'state',
-					  )
+						)
 					: ''
 			}
 			${additionalOptions}
@@ -784,9 +782,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 							},
 						},
 						DOUBLE_TAP_WINDOW,
-				  )
+					)
 				: actionType == 'hold_action' && this.activeEntry?.hold_action
-				  ? html`<div class="form">
+					? html`<div class="form">
 							${this.buildSelector(
 								'Hold time',
 								'hold_action.hold_time',
@@ -816,10 +814,10 @@ export class CustomFeaturesRowEditor extends LitElement {
 											},
 										},
 										REPEAT_DELAY,
-								  )
+									)
 								: ''}
-				    </div>`
-				  : ''}
+						</div>`
+					: ''}
 			${action == 'more-info'
 				? this.buildSelector(
 						'Entity',
@@ -827,12 +825,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 						{
 							entity: {},
 						},
-				  )
+					)
 				: ''}
 			${action == 'toggle'
 				? this.buildSelector('Target', `${actionType}.target`, {
 						target: {},
-				  })
+					})
 				: ''}
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
@@ -845,16 +843,16 @@ export class CustomFeaturesRowEditor extends LitElement {
 							boolean: {},
 						},
 						false,
-				  )}
-				  ${this.activeEntry?.[actionType]?.confirmation
+					)}
+					${this.activeEntry?.[actionType]?.confirmation
 						? html`${this.buildSelector(
 								'Text',
 								`${actionType}.confirmation.text`,
 								{
 									text: {},
 								},
-						  )}
-						  ${this.buildSelector(
+							)}
+							${this.buildSelector(
 								'Exemptions',
 								`${actionType}.confirmation.exemptions`,
 								{
@@ -865,7 +863,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 										reorder: false,
 									},
 								},
-						  )}`
+							)}`
 						: ''}`
 				: ''}
 		</div>`;
@@ -1318,7 +1316,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 								(error) => html`<li>${error}</li>`,
 							)}
 						</ul>
-				  </div>`
+					</div>`
 				: ''}
 		`;
 	}
@@ -1350,15 +1348,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	render() {
-		if (!this.hass) {
+		if (!this.hass || !this.config) {
 			return html``;
-		}
-
-		if (!this.autofillCooldown) {
-			this.autofillCooldown = true;
-			const config = this.autofillDefaultFields(this.config);
-			this.configChanged(config);
-			setTimeout(() => (this.autofillCooldown = false), 1000);
 		}
 
 		this.buildPeopleList();
@@ -1798,8 +1789,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	handleUpdateDeprecatedConfig() {
-		let config = this.updateDeprecatedFields(this.config);
-		config = this.autofillDefaultFields(config);
+		const config = this.updateDeprecatedFields(this.config);
 		this.configChanged(config);
 	}
 
