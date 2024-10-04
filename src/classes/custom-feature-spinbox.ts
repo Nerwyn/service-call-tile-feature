@@ -259,7 +259,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		return html`
 			${this.buildBackground()}${this.buildButton('decrement')}
 			${this.buildIcon()}${this.buildLabel()}
-			${this.buildButton('increment')}${this.buildStyles()}
+			${this.buildButton(
+				'increment',
+			)}${this.buildSpinboxStyles()}${this.buildStyles()}
 		`;
 	}
 
