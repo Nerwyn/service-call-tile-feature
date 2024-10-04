@@ -232,6 +232,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		}
 
 		this.rtl = getComputedStyle(this).direction == 'rtl';
+		console.log(this.rtl);
 
 		return html`
 			${this.buildBackground()}${this.buildButton(
