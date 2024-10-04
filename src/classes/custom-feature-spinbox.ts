@@ -38,7 +38,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 				? (this.renderTemplate(
 						this.entry[operator]?.hold_action
 							?.hold_time as unknown as string,
-				  ) as number)
+					) as number)
 				: 500;
 			this.holdTimer = setTimeout(() => {
 				clearTimeout(this.debounceTimer);
@@ -50,7 +50,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 						? (this.renderTemplate(
 								this.entry.hold_action
 									?.repeat_delay as unknown as string,
-						  ) as number)
+							) as number)
 						: 100;
 					if (!this.holdInterval) {
 						this.holdInterval = setInterval(() => {
@@ -231,10 +231,16 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 			);
 		}
 
+		this.rtl = getComputedStyle(this).direction == 'rtl';
+
 		return html`
-			${this.buildBackground()}${this.buildButton('decrement')}
+			${this.buildBackground()}${this.buildButton(
+				this.rtl ? 'increment' : 'decrement',
+			)}
 			${this.buildIcon()}${this.buildLabel()}
-			${this.buildButton('increment')}${this.buildStyles()}
+			${this.buildButton(
+				this.rtl ? 'decrement' : 'increment',
+			)}${this.buildStyles()}
 		`;
 	}
 

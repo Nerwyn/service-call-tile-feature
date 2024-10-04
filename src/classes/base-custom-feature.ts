@@ -41,6 +41,8 @@ export class BaseCustomFeature extends LitElement {
 	initialX?: number;
 	initialY?: number;
 
+	rtl: boolean = false;
+
 	fireHapticEvent(haptic: HapticType) {
 		if (
 			this.renderTemplate(this.entry.haptics as unknown as string) ??
@@ -632,7 +634,7 @@ export class BaseCustomFeature extends LitElement {
 							.replace(/ !important/g, '')
 							.replace(/;/g, ' !important;')}
 					</style>
-			  `
+				`
 			: '';
 	}
 

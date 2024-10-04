@@ -35,7 +35,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			this.setThumbOffset();
 		}
 	});
-	rtl: boolean = false;
 
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
