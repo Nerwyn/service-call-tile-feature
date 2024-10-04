@@ -192,6 +192,28 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 			: html``;
 	}
 
+	buildSpinboxStyles() {
+		const styles = `
+			${
+				this.rtl
+					? `
+			#decrement {
+				right: 0px;
+			}
+
+			#increment {
+				left: 0px;
+			}
+			`
+					: ''
+			}
+		`;
+
+		return html`<style>
+			${styles}
+		</style>`;
+	}
+
 	render() {
 		this.setValue();
 
