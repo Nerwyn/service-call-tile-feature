@@ -134,6 +134,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	buildButton(operator: 'increment' | 'decrement') {
+		console.log(operator);
 		const actions = this.entry[operator] ?? {};
 		if (!actions.icon) {
 			actions.icon = operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
@@ -232,16 +233,11 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		}
 
 		this.rtl = getComputedStyle(this).direction == 'rtl';
-		console.log(this.rtl);
 
 		return html`
-			${this.buildBackground()}${this.buildButton(
-				this.rtl ? 'increment' : 'decrement',
-			)}
+			${this.buildBackground()}${this.buildButton('decrement')}
 			${this.buildIcon()}${this.buildLabel()}
-			${this.buildButton(
-				this.rtl ? 'decrement' : 'increment',
-			)}${this.buildStyles()}
+			${this.buildButton('increment')}${this.buildStyles()}
 		`;
 	}
 
