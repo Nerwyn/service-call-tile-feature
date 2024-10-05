@@ -40,8 +40,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.swiping) {
-			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = false;
 			this.value = slider.value;
 
 			this.fireHapticEvent('selection');
@@ -110,8 +110,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.swiping) {
-			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = false;
 			this.currentValue = slider.value;
 			this.value = slider.value;
 			this.setThumbOffset();

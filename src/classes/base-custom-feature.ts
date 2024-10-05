@@ -89,6 +89,9 @@ export class BaseCustomFeature extends LitElement {
 		}
 
 		if (!action || !this.handleConfirmation(action)) {
+			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = true;
+			this.requestUpdate();
 			return;
 		}
 
