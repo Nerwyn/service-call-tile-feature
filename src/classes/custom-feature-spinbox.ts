@@ -55,7 +55,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					if (!this.holdInterval) {
 						this.holdInterval = setInterval(() => {
 							this.operateValue(operator);
-							this.fireHapticEvent('selection');
 						}, repeatDelay);
 					}
 				}
@@ -122,6 +121,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 				break;
 		}
 		this.value = Math.min(Math.max(newValue, this.range[0]), this.range[1]);
+		this.fireHapticEvent('selection');
 	}
 
 	endAction() {
