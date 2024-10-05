@@ -219,7 +219,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			) || (Number(value) as number) > this.range[0];
 	}
 
-	buildLabel(entry: IEntry = this.entry, context?: object) {
+	buildLabel(entry: IEntry = this.config, context?: object) {
 		return this.sliderOn ? super.buildLabel(entry, context) : html``;
 	}
 
@@ -231,7 +231,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		`;
 	}
 
-	buildSlider(entry: IEntry = this.entry, context: object) {
+	buildSlider(entry: IEntry = this.config, context: object) {
 		const style: StyleInfo = {};
 		if (
 			this.renderTemplate(entry.tap_action?.action as string, context) ==
@@ -298,16 +298,16 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			value: this.getValueFromHass ? this.value : this.currentValue,
 		};
 
-		if (this.entry.range) {
+		if (this.config.range) {
 			this.range[0] = parseFloat(
 				(this.renderTemplate(
-					this.entry.range[0] as unknown as string,
+					this.config.range[0] as unknown as string,
 					context,
 				) as string) ?? RANGE_MIN,
 			);
 			this.range[1] = parseFloat(
 				(this.renderTemplate(
-					this.entry.range[1] as unknown as string,
+					this.config.range[1] as unknown as string,
 					context,
 				) as string) ?? RANGE_MAX,
 			);
@@ -315,10 +315,10 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 
 		this.speed = (this.range[1] - this.range[0]) / 50;
 
-		if (this.entry.step) {
+		if (this.config.step) {
 			this.step = parseFloat(
 				this.renderTemplate(
-					this.entry.step as unknown as string,
+					this.config.step as unknown as string,
 				) as string,
 			);
 		} else {
@@ -333,7 +333,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 
 		const sliderElement = this.shadowRoot?.querySelector('input');
 		this.sliderClass = 'slider ';
-		switch (this.renderTemplate(this.entry.thumb as string)) {
+		switch (this.renderTemplate(this.config.thumb as string)) {
 			case 'line':
 				this.sliderClass += 'line-thumb';
 				this.thumbWidth = 10;

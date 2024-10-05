@@ -31,9 +31,9 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		this.setValue();
 
 		const selector = [this.buildBackground()];
-		const options = this.entry.options ?? [];
+		const options = this.config.options ?? [];
 		for (const option of options) {
-			option.haptics = option.haptics ?? this.entry.haptics;
+			option.haptics = option.haptics ?? this.config.haptics;
 			selector.push(
 				html`<custom-feature-button
 					.hass=${this.hass}
@@ -51,7 +51,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 	}
 
 	updated() {
-		const options = this.entry.options ?? [];
+		const options = this.config.options ?? [];
 		const optionElements = Array.from(
 			this.shadowRoot?.children ?? [],
 		).slice(1);

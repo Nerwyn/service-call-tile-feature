@@ -15,8 +15,8 @@ import { deepGet, deepSet, getDeepKeys } from '../utils';
 
 @customElement('base-custom-feature')
 export class BaseCustomFeature extends LitElement {
-	@property({ attribute: false }) hass!: HomeAssistant;
-	@property({ attribute: false }) entry!: IEntry;
+	@property() hass!: HomeAssistant;
+	@property() config!: IEntry;
 
 	@state() value?: string | number | boolean = 0;
 	entityId?: string;
@@ -40,7 +40,7 @@ export class BaseCustomFeature extends LitElement {
 
 	fireHapticEvent(haptic: HapticType) {
 		if (
-			this.renderTemplate(this.entry.haptics as unknown as string) ??
+			this.renderTemplate(this.config.haptics as unknown as string) ??
 			false
 		) {
 			forwardHaptic(haptic);
@@ -61,7 +61,7 @@ export class BaseCustomFeature extends LitElement {
 
 	sendAction(
 		actionType: ActionType,
-		actions: IActions = this.entry as IActions,
+		actions: IActions = this.config as IActions,
 	) {
 		let action;
 		switch (actionType) {
@@ -312,12 +312,12 @@ export class BaseCustomFeature extends LitElement {
 
 	setValue() {
 		this.entityId = this.renderTemplate(
-			this.entry.entity_id as string,
+			this.config.entity_id as string,
 		) as string;
 
 		this.unitOfMeasurement =
 			(this.renderTemplate(
-				this.entry.unit_of_measurement as string,
+				this.config.unit_of_measurement as string,
 			) as string) ?? '';
 
 		if (this.getValueFromHass && this.entityId) {
@@ -326,7 +326,7 @@ export class BaseCustomFeature extends LitElement {
 
 			this.valueAttribute = (
 				this.renderTemplate(
-					(this.entry.value_attribute as string) ?? 'state',
+					(this.config.value_attribute as string) ?? 'state',
 				) as string
 			).toLowerCase();
 			if (!this.hass.states[this.entityId]) {
@@ -513,7 +513,7 @@ export class BaseCustomFeature extends LitElement {
 			hold_secs: holdSecs,
 			unit: this.unitOfMeasurement,
 			config: {
-				...this.entry,
+				...this.config,
 				entity: this.entityId,
 				attribute: this.valueAttribute,
 			},
@@ -578,7 +578,7 @@ export class BaseCustomFeature extends LitElement {
 
 	resetGetValueFromHass() {
 		const valueFromHassDelay = this.renderTemplate(
-			this.entry.value_from_hass_delay ?? UPDATE_AFTER_ACTION_DELAY,
+			this.config.value_from_hass_delay ?? UPDATE_AFTER_ACTION_DELAY,
 		) as number;
 		this.getValueFromHassTimer = setTimeout(() => {
 			this.getValueFromHass = true;
@@ -586,7 +586,7 @@ export class BaseCustomFeature extends LitElement {
 		}, valueFromHassDelay);
 	}
 
-	buildStyles(entry: IEntry = this.entry, context?: object) {
+	buildStyles(entry: IEntry = this.config, context?: object) {
 		return entry.styles
 			? html`
 					<style>
@@ -602,7 +602,7 @@ export class BaseCustomFeature extends LitElement {
 		return html` <div class="background"></div>`;
 	}
 
-	buildIcon(entry: IEntry = this.entry, context?: object) {
+	buildIcon(entry: IEntry = this.config, context?: object) {
 		let icon = html``;
 		if (entry.icon) {
 			icon = html`<ha-icon
@@ -613,7 +613,7 @@ export class BaseCustomFeature extends LitElement {
 		return icon;
 	}
 
-	buildLabel(entry: IEntry = this.entry, context?: object) {
+	buildLabel(entry: IEntry = this.config, context?: object) {
 		if (entry.label) {
 			const text: string = this.renderTemplate(
 				entry.label as string,

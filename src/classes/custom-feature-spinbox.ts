@@ -30,13 +30,13 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 			| 'increment'
 			| 'decrement';
 		if (
-			this.renderTemplate(this.entry.hold_action?.action ?? 'none') ==
+			this.renderTemplate(this.config.hold_action?.action ?? 'none') ==
 				'repeat' &&
 			!this.holdTimer
 		) {
-			const holdTime = this.entry.hold_action?.hold_time
+			const holdTime = this.config.hold_action?.hold_time
 				? (this.renderTemplate(
-						this.entry[operator]?.hold_action
+						this.config[operator]?.hold_action
 							?.hold_time as unknown as string,
 					) as number)
 				: 500;
@@ -46,9 +46,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 				this.getValueFromHass = false;
 
 				if (!this.swiping) {
-					const repeatDelay = this.entry.hold_action?.repeat_delay
+					const repeatDelay = this.config.hold_action?.repeat_delay
 						? (this.renderTemplate(
-								this.entry.hold_action
+								this.config.hold_action
 									?.repeat_delay as unknown as string,
 							) as number)
 						: 100;
@@ -134,11 +134,11 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	buildButton(operator: 'increment' | 'decrement') {
-		const actions = this.entry[operator] ?? {};
+		const actions = this.config[operator] ?? {};
 		if (!actions.icon) {
 			actions.icon = operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
 		}
-		actions.haptics = actions.haptics ?? this.entry.haptics;
+		actions.haptics = actions.haptics ?? this.config.haptics;
 
 		if (
 			this.renderTemplate(actions?.tap_action?.action ?? 'none') !=
@@ -186,7 +186,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		}
 	}
 
-	buildLabel(entry: IEntry = this.entry, context?: object) {
+	buildLabel(entry: IEntry = this.config, context?: object) {
 		return this.value != undefined
 			? super.buildLabel(entry, context)
 			: html``;
@@ -219,25 +219,25 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	render() {
 		this.setValue();
 
-		if (this.entry.range) {
+		if (this.config.range) {
 			this.range = [
 				parseFloat(
 					this.renderTemplate(
-						this.entry.range[0] as unknown as string,
+						this.config.range[0] as unknown as string,
 					) as string,
 				),
 				parseFloat(
 					this.renderTemplate(
-						this.entry.range[1] as unknown as string,
+						this.config.range[1] as unknown as string,
 					) as string,
 				),
 			];
 		}
 
-		if (this.entry.step) {
+		if (this.config.step) {
 			this.step = parseFloat(
 				this.renderTemplate(
-					this.entry.step as unknown as string,
+					this.config.step as unknown as string,
 				) as string,
 			);
 		}
@@ -248,10 +248,10 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 			this.precision = 0;
 		}
 
-		if (this.entry.debounce_time) {
+		if (this.config.debounce_time) {
 			this.debounceTime = parseFloat(
 				this.renderTemplate(
-					this.entry.debounce_time as unknown as string,
+					this.config.debounce_time as unknown as string,
 				) as string,
 			);
 		}
