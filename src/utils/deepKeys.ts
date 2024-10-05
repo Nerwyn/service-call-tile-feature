@@ -1,4 +1,17 @@
-export function deepGet(obj: object, key: string): object {
+export function getDeepKeys<T extends object>(obj: T): string[] {
+	let keys: string[] = [];
+	for (const key in obj) {
+		if (typeof obj[key as keyof object] === 'object') {
+			const subkeys = getDeepKeys(obj[key as keyof object]);
+			keys = keys.concat(subkeys.map((subkey) => key + '.' + subkey));
+		} else {
+			keys.push(key);
+		}
+	}
+	return keys;
+}
+
+export function deepGet<T extends object>(obj: T, key: string) {
 	const keys = key.split('.');
 	if (obj == undefined) {
 		return undefined as unknown as object;
@@ -9,11 +22,11 @@ export function deepGet(obj: object, key: string): object {
 	return deepGet(obj[keys[0] as keyof object], keys.splice(1).join('.'));
 }
 
-export function deepSet(
-	obj: object,
+export function deepSet<T extends object>(
+	obj: T,
 	key: string,
 	value: string | number | boolean | string[],
-): object {
+): T {
 	const keys = key.split('.');
 	if (keys.length == 1) {
 		obj[keys[0] as keyof object] = value as never;
@@ -33,4 +46,34 @@ export function deepSet(
 		deepSet(obj[keys[0] as keyof object], keys.splice(1).join('.'), value);
 	}
 	return obj;
+}
+
+export function mergeDeep<T extends object>(target: T, ...sources: [T]): T {
+	function isObject(item: object) {
+		return item && typeof item === 'object' && !Array.isArray(item);
+	}
+
+	if (!sources.length) {
+		return target;
+	}
+	const source: object = sources.shift() as object;
+
+	if (isObject(target) && isObject(source)) {
+		for (const key in source) {
+			if (isObject(source[key as keyof object])) {
+				if (!target[key as keyof object])
+					Object.assign(target, { [key]: {} });
+				mergeDeep(
+					target[key as keyof object],
+					source[key as keyof object],
+				);
+			} else {
+				Object.assign(target, {
+					[key]: source[key as keyof object],
+				});
+			}
+		}
+	}
+
+	return mergeDeep(target, ...sources);
 }

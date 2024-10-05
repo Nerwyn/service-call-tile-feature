@@ -10,13 +10,8 @@ import {
 } from 'lit/decorators.js';
 
 import { UPDATE_AFTER_ACTION_DELAY } from '../models/constants';
-import {
-	ActionType,
-	IAction,
-	IActions,
-	IEntry,
-	ITarget,
-} from '../models/interfaces';
+import { ActionType, IAction, IActions, IEntry } from '../models/interfaces';
+import { deepGet, deepSet, getDeepKeys } from '../utils';
 
 @customElement('base-custom-feature')
 export class BaseCustomFeature extends LitElement {
@@ -88,6 +83,13 @@ export class BaseCustomFeature extends LitElement {
 				break;
 		}
 
+		if (!action) {
+			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = true;
+			this.requestUpdate();
+			return;
+		}
+		action = this.deepRenderTemplate(action);
 		if (!action || !this.handleConfirmation(action)) {
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = true;
@@ -97,15 +99,11 @@ export class BaseCustomFeature extends LitElement {
 
 		try {
 			switch (action.action) {
-				case 'call-service' as 'perform-action': // deprecated in 2024.8
-				case 'perform-action':
-					this.callService(action);
-					break;
 				case 'navigate':
 					this.navigate(action);
 					break;
 				case 'url':
-					this.toUrl(action);
+					this.url(action);
 					break;
 				case 'assist':
 					this.assist(action);
@@ -115,6 +113,10 @@ export class BaseCustomFeature extends LitElement {
 					break;
 				case 'toggle':
 					this.toggle(action);
+					break;
+				case 'call-service' as 'perform-action': // deprecated in 2024.8
+				case 'perform-action':
+					this.callService(action);
 					break;
 				case 'fire-dom-event':
 					this.fireDomEvent(action);
@@ -131,49 +133,16 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	callService(action: IAction) {
-		const domainService = this.renderTemplate(
-			(action.perform_action ??
-				action['service' as 'perform_action']) as string, // deprecated in 2024.8
-		) as string;
-
-		const [domain, service] = domainService.split('.');
-		const data = structuredClone(action.data);
-		for (const key in data) {
-			if (Array.isArray(data[key])) {
-				for (const i in data[key] as string[]) {
-					(data[key] as string[])[i] = this.renderTemplate(
-						(data[key] as string[])[i],
-					) as string;
-				}
-			} else {
-				data[key] = this.renderTemplate(data[key] as string);
-			}
-		}
-		const target = structuredClone(action.target);
-		for (const key in target) {
-			if (Array.isArray(target[key as keyof ITarget])) {
-				for (const i in target[key as keyof ITarget] as string[]) {
-					(target[key as keyof ITarget] as string[])[i] =
-						this.renderTemplate(
-							(target[key as keyof ITarget] as string[])[i],
-						) as string;
-				}
-			} else {
-				target[key as keyof ITarget] = this.renderTemplate(
-					target[key as keyof ITarget] as string,
-				) as string;
-			}
-		}
-		this.hass.callService(domain, service, data, target);
+		const [domain, service] = (
+			action.perform_action ??
+			(action['service' as 'perform_action'] as string)
+		).split('.');
+		this.hass.callService(domain, service, action.data, action.target);
 	}
 
 	navigate(action: IAction) {
-		const path = this.renderTemplate(
-			action.navigation_path as string,
-		) as string;
-		const replace = this.renderTemplate(
-			action.navigation_replace as unknown as string,
-		) as boolean;
+		const path = (action.navigation_path as string) ?? '';
+		const replace = action.navigation_replace ?? false;
 		if (path.includes('//')) {
 			console.error(
 				'Protocol detected in navigation path. To navigate to another website use the action "url" with the key "url_path" instead.',
@@ -198,8 +167,8 @@ export class BaseCustomFeature extends LitElement {
 		window.dispatchEvent(event);
 	}
 
-	toUrl(action: IAction) {
-		let url = this.renderTemplate(action.url_path as string) as string;
+	url(action: IAction) {
+		let url = action.url_path ?? '';
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
@@ -207,13 +176,6 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	assist(action: IAction) {
-		const pipelineId = this.renderTemplate(
-			action.pipeline_id as string,
-		) as string;
-		const startListening = this.renderTemplate(
-			action.start_listening as unknown as string,
-		) as boolean;
-
 		// eslint-disable-next-line
 		// @ts-ignore
 		if (this.hass?.auth?.external?.config?.hasAssist) {
@@ -222,8 +184,8 @@ export class BaseCustomFeature extends LitElement {
 			this.hass?.auth?.external?.fireMessage({
 				type: 'assist/show',
 				payload: {
-					pipeline_id: pipelineId ?? 'last_used',
-					start_listening: startListening ?? true,
+					pipeline_id: action.pipeline_id,
+					start_listening: action.start_listening,
 				},
 			});
 		} else {
@@ -250,18 +212,12 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	moreInfo(action: IAction) {
-		const entityId = this.renderTemplate(
-			(action.target?.entity_id ??
-				action.data?.entity_id ??
-				'') as string,
-		) as string;
-
 		const event = new Event('hass-more-info', {
 			bubbles: true,
 			cancelable: true,
 			composed: true,
 		});
-		event.detail = { entityId };
+		event.detail = { entityId: action.target?.entity_id };
 		this.dispatchEvent(event);
 	}
 
@@ -316,7 +272,7 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	fireDomEvent(action: IAction) {
-		const event = new Event('ll-custom', {
+		const event = new Event(action.event_type ?? 'll-custom', {
 			composed: true,
 			bubbles: true,
 		});
@@ -325,46 +281,24 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	handleConfirmation(action: IAction): boolean {
-		if ('confirmation' in action) {
-			let confirmation = action.confirmation;
-			if (typeof confirmation == 'string') {
-				confirmation = this.renderTemplate(
-					action.confirmation as string,
-				) as boolean;
-			}
-			if (confirmation != false) {
+		if (action.confirmation) {
+			let text = `Are you sure you want to run action '${action.action}'?`;
+			if (action.confirmation == true) {
 				this.fireHapticEvent('warning');
-
-				let text: string;
-				if (confirmation != true && confirmation?.text) {
-					text = this.renderTemplate(confirmation.text) as string;
-				} else {
-					text = `Are you sure you want to run action '${
-						this.renderTemplate(action.action as string) as string
-					}'?`;
-				}
-				if (confirmation == true) {
-					if (!confirm(text)) {
-						return false;
-					}
-				} else {
-					if (confirmation?.exemptions) {
-						if (
-							!confirmation.exemptions
-								?.map((exemption) =>
-									this.renderTemplate(exemption.user),
-								)
-								.includes(this.hass.user.id)
-						) {
-							if (!confirm(text)) {
-								return false;
-							}
-						}
-					} else if (!confirm(text)) {
-						return false;
-					}
-				}
+				return confirm(text);
 			}
+			if (action.confirmation?.text) {
+				text = action.confirmation.text;
+			}
+			if (
+				action.confirmation?.exemptions
+					?.map((exemption) => exemption.user)
+					.includes(this.hass.user.id)
+			) {
+				return true;
+			}
+			this.fireHapticEvent('warning');
+			return confirm(text);
 		}
 		return true;
 	}
@@ -617,6 +551,22 @@ export class BaseCustomFeature extends LitElement {
 		}
 
 		return str;
+	}
+
+	deepRenderTemplate<T extends object>(obj: T, context?: object): T {
+		const res = structuredClone(obj);
+		const keys = getDeepKeys(res);
+		for (const key of keys) {
+			deepSet(
+				res,
+				key,
+				this.renderTemplate(
+					deepGet(res, key) as unknown as string,
+					context,
+				),
+			);
+		}
+		return res;
 	}
 
 	resetGetValueFromHass() {

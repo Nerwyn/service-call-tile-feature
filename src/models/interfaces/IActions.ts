@@ -49,6 +49,7 @@ export interface IAction {
 	pipeline_id?: string;
 	start_listening?: boolean;
 
+	event_type?: string;
 	browser_mod?: IBrowserMod;
 
 	hold_time?: number;
