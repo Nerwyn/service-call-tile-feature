@@ -7,6 +7,11 @@ import './custom-feature-button';
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onClick(e: MouseEvent) {
+		// Update value
+		clearTimeout(this.getValueFromHassTimer);
+		this.getValueFromHass = false;
+		this.value = (e.currentTarget as HTMLElement).id;
+
 		// Get all selection options
 		const options = Array.from(
 			(e.currentTarget as HTMLElement).parentNode?.children ?? [],
@@ -19,10 +24,6 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 
 		// Set selected option class
 		(e.currentTarget as HTMLElement).className = 'selected-option';
-
-		// Update value
-		this.getValueFromHass = false;
-		this.value = (e.currentTarget as HTMLElement).id;
 		this.resetGetValueFromHass();
 	}
 

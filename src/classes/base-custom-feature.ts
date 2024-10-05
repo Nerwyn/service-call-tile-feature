@@ -620,10 +620,10 @@ export class BaseCustomFeature extends LitElement {
 		const valueFromHassDelay = this.renderTemplate(
 			this.entry.value_from_hass_delay ?? UPDATE_AFTER_ACTION_DELAY,
 		) as number;
-		this.getValueFromHassTimer = setTimeout(
-			() => (this.getValueFromHass = true),
-			valueFromHassDelay,
-		);
+		this.getValueFromHassTimer = setTimeout(() => {
+			this.getValueFromHass = true;
+			this.requestUpdate();
+		}, valueFromHassDelay);
 	}
 
 	buildStyles(entry: IEntry = this.entry, context?: object) {
