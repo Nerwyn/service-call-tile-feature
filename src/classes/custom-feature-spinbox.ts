@@ -138,6 +138,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		if (!actions.icon) {
 			actions.icon = operator == 'increment' ? 'mdi:plus' : 'mdi:minus';
 		}
+		actions.haptics = actions.haptics ?? this.entry.haptics;
 
 		if (
 			this.renderTemplate(actions?.tap_action?.action ?? 'none') !=

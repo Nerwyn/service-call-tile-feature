@@ -33,6 +33,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		const selector = [this.buildBackground()];
 		const options = this.entry.options ?? [];
 		for (const option of options) {
+			option.haptics = option.haptics ?? this.entry.haptics;
 			selector.push(
 				html`<custom-feature-button
 					.hass=${this.hass}

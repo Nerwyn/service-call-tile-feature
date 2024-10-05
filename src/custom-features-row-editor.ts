@@ -844,7 +844,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		</div>`;
 	}
 
-	buildButtonGuiEditor() {
+	buildButtonGuiEditor(parentEntry?: IEntry) {
 		const actionsTabBar = html`
 			<mwc-tab-bar
 				.activeIndex=${this.actionsTabIndex}
@@ -917,12 +917,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${this.buildMainFeatureOptions()}
 			<div class="form">
 				${this.buildSelector(
-					'Autofill entity',
+					'Autofill',
 					'autofill_entity_id',
 					{
 						boolean: {},
 					},
-					AUTOFILL,
+					parentEntry?.autofill_entity_id ?? AUTOFILL,
 				)}
 				${this.buildSelector(
 					'Haptics',
@@ -930,7 +930,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						boolean: {},
 					},
-					HAPTICS,
+					parentEntry?.haptics ?? HAPTICS,
 				)}
 			</div>
 			${this.buildAppearancePanel(html`
@@ -1009,7 +1009,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					UPDATE_AFTER_ACTION_DELAY,
 				)}
 				${this.buildSelector(
-					'Autofill entity',
+					'Autofill',
 					'autofill_entity_id',
 					{
 						boolean: {},
@@ -1062,27 +1062,35 @@ export class CustomFeaturesRowEditor extends LitElement {
 		switch (this.optionIndex) {
 			case -1:
 				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
+					${this.buildSelector(
+						'Update after action delay',
+						'value_from_hass_delay',
+						{
+							number: {
+								min: 0,
+								step: 1,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						UPDATE_AFTER_ACTION_DELAY,
+					)}
 					<div class="form">
 						${this.buildSelector(
-							'Update after action delay',
-							'value_from_hass_delay',
-							{
-								number: {
-									min: 0,
-									step: 1,
-									mode: 'box',
-									unit_of_measurement: 'ms',
-								},
-							},
-							UPDATE_AFTER_ACTION_DELAY,
-						)}
-						${this.buildSelector(
-							'Autofill entity',
+							'Autofill',
 							'autofill_entity_id',
 							{
 								boolean: {},
 							},
 							AUTOFILL,
+						)}
+						${this.buildSelector(
+							'Haptics',
+							'haptics',
+							{
+								boolean: {},
+							},
+							HAPTICS,
 						)}
 					</div>
 					<div class="">
@@ -1097,7 +1105,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 					${this.buildSelector('Option', 'option', {
 						text: {},
 					})}
-					${this.buildButtonGuiEditor()}
+					${this.buildButtonGuiEditor(
+						this.config.entries[this.entryIndex],
+					)}
 				`;
 				break;
 		}
@@ -1150,7 +1160,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 			case 0:
 			// falls through
 			case 2:
-				spinboxGuiEditor = this.buildButtonGuiEditor();
+				spinboxGuiEditor = this.buildButtonGuiEditor(
+					this.config.entries[this.entryIndex],
+				);
 				break;
 			case 1:
 			default: {
@@ -1177,72 +1189,74 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 				spinboxGuiEditor = html`
 					${this.buildMainFeatureOptions()}
-					${this.buildSelector('Step', 'step', {
-						number: {
-							min: 0,
-							step: step,
-							mode: 'box',
-							unit_of_measurement: unit,
-						},
-					})}
-					${this.buildSelector('Min', 'range.0', {
-						number: {
-							max: rangeMax,
-							step: step,
-							mode: 'box',
-							unit_of_measurement: unit,
-						},
-					})}
-					${this.buildSelector('Max', 'range.1', {
-						number: {
-							min: rangeMin,
-							step: step,
-							mode: 'box',
-							unit_of_measurement: unit,
-						},
-					})}
-					${this.buildSelector(
-						'Update after action delay',
-						'value_from_hass_delay',
-						{
+					<div class="form">
+						${this.buildSelector('Step', 'step', {
 							number: {
 								min: 0,
-								step: 1,
+								step: step,
 								mode: 'box',
-								unit_of_measurement: 'ms',
+								unit_of_measurement: unit,
 							},
-						},
-						UPDATE_AFTER_ACTION_DELAY,
-					)}
-					${this.buildSelector(
-						'Debounce time',
-						'debounce_time',
-						{
+						})}
+						${this.buildSelector('Min', 'range.0', {
 							number: {
-								min: 0,
-								step: 1,
+								max: rangeMax,
+								step: step,
 								mode: 'box',
-								unit_of_measurement: 'ms',
+								unit_of_measurement: unit,
 							},
-						},
-						DEBOUNCE_TIME,
-					)}
-					${this.buildSelector(
-						'Autofill entity',
-						'autofill_entity_id',
-						{
-							boolean: {},
-						},
-						AUTOFILL,
-					)}
-					${this.buildSelector(
-						'Haptics',
-						'haptics',
-						{
-							boolean: {},
-						},
-						HAPTICS,
-					)}
+						})}
+						${this.buildSelector('Max', 'range.1', {
+							number: {
+								min: rangeMin,
+								step: step,
+								mode: 'box',
+								unit_of_measurement: unit,
+							},
+						})}
+						${this.buildSelector(
+							'Update after action delay',
+							'value_from_hass_delay',
+							{
+								number: {
+									min: 0,
+									step: 1,
+									mode: 'box',
+									unit_of_measurement: 'ms',
+								},
+							},
+							UPDATE_AFTER_ACTION_DELAY,
+						)}
+						${this.buildSelector(
+							'Debounce time',
+							'debounce_time',
+							{
+								number: {
+									min: 0,
+									step: 1,
+									mode: 'box',
+									unit_of_measurement: 'ms',
+								},
+							},
+							DEBOUNCE_TIME,
+						)}
+						${this.buildSelector(
+							'Autofill',
+							'autofill_entity_id',
+							{
+								boolean: {},
+							},
+							AUTOFILL,
+						)}
+						${this.buildSelector(
+							'Haptics',
+							'haptics',
+							{
+								boolean: {},
+							},
+							HAPTICS,
+						)}
+					</div>
 					${this.buildAppearancePanel(
 						this.buildCommonAppearanceOptions(),
 					)}
