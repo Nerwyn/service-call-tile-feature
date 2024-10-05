@@ -7,17 +7,17 @@ import './custom-feature-button';
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onClick(e: MouseEvent) {
-		// // Get all selection options
-		// const options =
-		// 	(e.currentTarget as HTMLElement).parentNode?.children ?? [];
-		// // Set class of all selection options to default
-		// for (const option of options) {
-		// 	if (option.tagName.toLowerCase() == 'custom-feature-button') {
-		// 		option.className = 'option';
-		// 	}
-		// }
-		// // Set selected option class
-		// (e.currentTarget as HTMLElement).className = 'selected-option';
+		// Get all selection options
+		const options =
+			(e.currentTarget as HTMLElement).parentNode?.children ?? [];
+		// Set class of all selection options to default
+		for (const option of options) {
+			if (option.tagName.toLowerCase() == 'custom-feature-button') {
+				option.className = 'option';
+			}
+		}
+		// Set selected option class
+		(e.currentTarget as HTMLElement).className = 'selected-option';
 	}
 
 	render() {
@@ -26,6 +26,26 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		const selector = [this.buildBackground()];
 
 		const options = this.entry.options ?? [];
+		for (const i in options) {
+			selector.push(
+				html`<custom-feature-button
+					.hass=${this.hass}
+					.entry=${options[i]}
+					.shouldRenderRipple=${false}
+					@click=${this.onClick}
+					@contextmenu=${this.onContextMenu}
+				/>`,
+			);
+		}
+
+		return html`${selector}${this.buildStyles()}`;
+	}
+
+	updated() {
+		const options = this.entry.options ?? [];
+		const optionElements = Array.from(
+			this.shadowRoot?.children ?? [],
+		).slice(1);
 		for (const i in options) {
 			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
@@ -37,19 +57,8 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 				optionClass = 'selected-option';
 			}
 
-			selector.push(
-				html`<custom-feature-button
-					class=${optionClass}
-					.hass=${this.hass}
-					.entry=${options[i]}
-					.shouldRenderRipple=${false}
-					@click=${this.onClick}
-					@contextmenu=${this.onContextMenu}
-				/>`,
-			);
+			optionElements[i].className = optionClass;
 		}
-
-		return html`${selector}${this.buildStyles()}`;
 	}
 
 	static get styles() {
