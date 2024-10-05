@@ -198,11 +198,13 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 				this.rtl
 					? `
 			#decrement {
-				right: 0px;
+				left: unset !important;
+				right: 0 !important;
 			}
 
 			#increment {
-				left: 0px;
+				left: 0 !important;
+				right: unset !important;
 			}
 			`
 					: ''
