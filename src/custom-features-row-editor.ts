@@ -826,7 +826,15 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
 				: ''}
-			${action == 'eval' ? this.buildCodeEditor('eval', actionType) : ''}
+			${action == 'eval'
+				? html`
+						${this.buildAlertBox(
+							"Evaluating raw JavaScript strings in browser is considered extremely unsafe. Do not use unless you know what you're doing!",
+							'warning',
+						)}
+						${this.buildCodeEditor('eval', actionType)}
+					`
+				: ''}
 			${action != 'none'
 				? html`${this.buildSelector(
 						'Confirmation',
