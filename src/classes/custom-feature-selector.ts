@@ -7,19 +7,17 @@ import './custom-feature-button';
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onClick(e: MouseEvent) {
-		// Get all selection options
-		const options =
-			(e.currentTarget as HTMLElement).parentNode?.children ?? [];
-
-		// Set class of all selection options to default
-		for (const option of options) {
-			if (option.tagName.toLowerCase() == 'custom-feature-button') {
-				option.className = 'option';
-			}
-		}
-
-		// Set selected option class
-		(e.currentTarget as HTMLElement).className = 'selected-option';
+		// // Get all selection options
+		// const options =
+		// 	(e.currentTarget as HTMLElement).parentNode?.children ?? [];
+		// // Set class of all selection options to default
+		// for (const option of options) {
+		// 	if (option.tagName.toLowerCase() == 'custom-feature-button') {
+		// 		option.className = 'option';
+		// 	}
+		// }
+		// // Set selected option class
+		// (e.currentTarget as HTMLElement).className = 'selected-option';
 	}
 
 	render() {
