@@ -1338,6 +1338,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				autocompleteIcons = false;
 				break;
 			case 'eval':
+				mode = 'jinja2';
 				value =
 					this.yamlStringsCache[`${id}.eval`] ??
 					(this.activeEntry?.[id as ActionType] as IAction).eval ??
