@@ -7,6 +7,7 @@ export const Actions = [
 	'assist',
 	'fire-dom-event',
 	'repeat',
+	'eval',
 	'none',
 ] as const;
 export type Action = (typeof Actions)[number];
@@ -51,6 +52,8 @@ export interface IAction {
 
 	event_type?: string;
 	browser_mod?: IBrowserMod;
+
+	eval?: string;
 
 	hold_time?: number;
 	repeat_delay?: number;

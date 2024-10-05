@@ -121,6 +121,9 @@ export class BaseCustomFeature extends LitElement {
 				case 'fire-dom-event':
 					this.fireDomEvent(action);
 					break;
+				case 'eval':
+					this.eval(action);
+					break;
 				case 'repeat':
 				case 'none':
 				default:
@@ -278,6 +281,10 @@ export class BaseCustomFeature extends LitElement {
 		});
 		event.detail = action;
 		this.dispatchEvent(event);
+	}
+
+	eval(action: IAction) {
+		eval(action.eval ?? '');
 	}
 
 	handleConfirmation(action: IAction): boolean {

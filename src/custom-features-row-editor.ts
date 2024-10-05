@@ -359,6 +359,19 @@ export class CustomFeaturesRowEditor extends LitElement {
 		}
 	}
 
+	handleEvalCodeChanged(e: CustomEvent) {
+		e.stopPropagation();
+		const actionType = (e.target as HTMLElement).id as ActionType;
+		const evalString = e.detail.value;
+		if (this.activeEntry) {
+			this.entryChanged({
+				[actionType]: {
+					eval: evalString,
+				},
+			});
+		}
+	}
+
 	handleSpinboxTabSelected(e: CustomEvent) {
 		this.yamlStringsCache = {};
 		this.yamlString = undefined;
@@ -634,6 +647,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 						'Repeat',
 					'ui.panel.lovelace.editor.action-editor.actions.fire-dom-event':
 						'Fire DOM event',
+					'ui.panel.lovelace.editor.action-editor.actions.eval':
+						'Evaluate JS',
 				}[key];
 				return value ?? this.hass.localize(key, values);
 			},
@@ -741,7 +756,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		const action = this.renderTemplate(
 			this.activeEntry?.[actionType]?.action ?? 'none',
 			context,
-		);
+		) as string;
 		return html`<div class="action-options">
 			${this.buildSelector(label, actionType, selector)}
 			${action != 'none' && actionType == 'double_tap_action'
@@ -810,6 +825,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 			${buildCodeEditor || action == 'fire-dom-event'
 				? this.buildCodeEditor('action', actionType)
 				: ''}
+			${action == 'eval' ? this.buildCodeEditor('eval', actionType) : ''}
 			${action != 'none'
 				? html`${this.buildSelector(
 						'Confirmation',
@@ -1319,6 +1335,15 @@ export class CustomFeaturesRowEditor extends LitElement {
 					);
 				value = value.trim() == '{}' ? '' : value;
 				autocompleteEntities = true;
+				autocompleteIcons = false;
+				break;
+			case 'eval':
+				value =
+					this.yamlStringsCache[`${id}.eval`] ??
+					(this.activeEntry?.[id as ActionType] as IAction).eval ??
+					'';
+				handler = this.handleEvalCodeChanged;
+				autocompleteEntities = false;
 				autocompleteIcons = false;
 				break;
 			case 'yaml':
