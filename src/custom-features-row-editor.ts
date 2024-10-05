@@ -1190,14 +1190,6 @@ export class CustomFeaturesRowEditor extends LitElement {
 				spinboxGuiEditor = html`
 					${this.buildMainFeatureOptions()}
 					<div class="form">
-						${this.buildSelector('Step', 'step', {
-							number: {
-								min: 0,
-								step: step,
-								mode: 'box',
-								unit_of_measurement: unit,
-							},
-						})}
 						${this.buildSelector('Min', 'range.0', {
 							number: {
 								max: rangeMax,
@@ -1209,6 +1201,14 @@ export class CustomFeaturesRowEditor extends LitElement {
 						${this.buildSelector('Max', 'range.1', {
 							number: {
 								min: rangeMin,
+								step: step,
+								mode: 'box',
+								unit_of_measurement: unit,
+							},
+						})}
+						${this.buildSelector('Step', 'step', {
+							number: {
+								min: 0,
 								step: step,
 								mode: 'box',
 								unit_of_measurement: unit,
@@ -1227,19 +1227,21 @@ export class CustomFeaturesRowEditor extends LitElement {
 							},
 							UPDATE_AFTER_ACTION_DELAY,
 						)}
-						${this.buildSelector(
-							'Debounce time',
-							'debounce_time',
-							{
-								number: {
-									min: 0,
-									step: 1,
-									mode: 'box',
-									unit_of_measurement: 'ms',
-								},
+					</div>
+					${this.buildSelector(
+						'Debounce time',
+						'debounce_time',
+						{
+							number: {
+								min: 0,
+								step: 1,
+								mode: 'box',
+								unit_of_measurement: 'ms',
 							},
-							DEBOUNCE_TIME,
-						)}
+						},
+						DEBOUNCE_TIME,
+					)}
+					<div class="form">
 						${this.buildSelector(
 							'Autofill',
 							'autofill_entity_id',
