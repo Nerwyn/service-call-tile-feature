@@ -8,30 +8,36 @@ import './custom-feature-button';
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onClick(e: MouseEvent) {
 		// Get all selection options
-		const options =
-			(e.currentTarget as HTMLElement).parentNode?.children ?? [];
+		const options = Array.from(
+			(e.currentTarget as HTMLElement).parentNode?.children ?? [],
+		).slice(1);
+
 		// Set class of all selection options to default
 		for (const option of options) {
-			if (option.tagName.toLowerCase() == 'custom-feature-button') {
-				option.className = 'option';
-			}
+			option.className = 'option';
 		}
+
 		// Set selected option class
 		(e.currentTarget as HTMLElement).className = 'selected-option';
+
+		// Update value
+		this.getValueFromHass = false;
+		this.value = (e.currentTarget as HTMLElement).id;
+		this.resetGetValueFromHass();
 	}
 
 	render() {
 		this.setValue();
 
 		const selector = [this.buildBackground()];
-
 		const options = this.entry.options ?? [];
-		for (const i in options) {
+		for (const option of options) {
 			selector.push(
 				html`<custom-feature-button
 					.hass=${this.hass}
-					.entry=${options[i]}
+					.entry=${option}
 					.shouldRenderRipple=${false}
+					id=${this.renderTemplate(option.option as string)}
 					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
 				/>`,
