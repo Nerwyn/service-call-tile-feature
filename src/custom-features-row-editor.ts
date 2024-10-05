@@ -1009,7 +1009,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						{
 							number: {
 								min: 0,
-								step: 0,
+								step: 1,
 								mode: 'box',
 								unit_of_measurement: 'ms',
 							},
@@ -1060,6 +1060,19 @@ export class CustomFeaturesRowEditor extends LitElement {
 							'option',
 						)}${this.buildAddEntryButton('option')}
 					</div>
+					${this.buildSelector(
+						'Update after action delay',
+						'value_from_hass_delay',
+						{
+							number: {
+								min: 0,
+								step: 1,
+								mode: 'box',
+								unit_of_measurement: 'ms',
+							},
+						},
+						UPDATE_AFTER_ACTION_DELAY,
+					)}
 					${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
