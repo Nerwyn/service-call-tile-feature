@@ -1054,25 +1054,27 @@ export class CustomFeaturesRowEditor extends LitElement {
 		let selectorGuiEditor: TemplateResult<1>;
 		switch (this.optionIndex) {
 			case -1:
-				selectorGuiEditor = html`${this.buildMainFeatureOptions()}
+				selectorGuiEditor = html`${this.buildMainFeatureOptions(
+						undefined,
+						html` ${this.buildSelector(
+							'Update after action delay',
+							'value_from_hass_delay',
+							{
+								number: {
+									min: 0,
+									step: 1,
+									mode: 'box',
+									unit_of_measurement: 'ms',
+								},
+							},
+							UPDATE_AFTER_ACTION_DELAY,
+						)}`,
+					)}
 					<div class="">
 						${this.buildEntryList(
 							'option',
 						)}${this.buildAddEntryButton('option')}
 					</div>
-					${this.buildSelector(
-						'Update after action delay',
-						'value_from_hass_delay',
-						{
-							number: {
-								min: 0,
-								step: 1,
-								mode: 'box',
-								unit_of_measurement: 'ms',
-							},
-						},
-						UPDATE_AFTER_ACTION_DELAY,
-					)}
 					${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
