@@ -37,7 +37,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 			selector.push(
 				html`<custom-feature-button
 					.hass=${this.hass}
-					.entry=${option}
+					.config=${option}
 					.shouldRenderRipple=${false}
 					id=${this.renderTemplate(option.option as string)}
 					@mouseup=${this.onMouseUp}

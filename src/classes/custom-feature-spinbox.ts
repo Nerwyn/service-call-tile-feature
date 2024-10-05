@@ -162,7 +162,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					class="operator"
 					id=${operator}
 					.hass=${this.hass}
-					.entry=${actions}
+					.config=${actions}
 					.shouldRenderRipple=${false}
 					@contextMenu=${this.onContextMenu}
 				/>
@@ -173,7 +173,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					class="operator"
 					id="${operator}"
 					.hass=${this.hass}
-					.entry=${actions}
+					.config=${actions}
 					@mousedown=${this.onMouseDown}
 					@mouseup=${this.onMouseUp}
 					@mousemove=${this.onMouseMove}
