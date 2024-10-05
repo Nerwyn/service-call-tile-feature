@@ -366,6 +366,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		if (this.activeEntry) {
 			this.entryChanged({
 				[actionType]: {
+					...this.activeEntry[actionType],
 					eval: evalString,
 				},
 			});
