@@ -100,7 +100,7 @@ class CustomFeaturesRow extends LitElement {
 					row.push(
 						html`<custom-feature-slider
 							.hass=${this.hass}
-							.entry=${entry}
+							.config=${entry}
 						/>`,
 					);
 					break;
@@ -108,7 +108,7 @@ class CustomFeaturesRow extends LitElement {
 					row.push(
 						html`<custom-feature-selector
 							.hass=${this.hass}
-							.entry=${entry}
+							.config=${entry}
 						/>`,
 					);
 					break;
@@ -116,7 +116,7 @@ class CustomFeaturesRow extends LitElement {
 					row.push(
 						html`<custom-feature-spinbox
 							.hass=${this.hass}
-							.entry=${entry}
+							.config=${entry}
 						/>`,
 					);
 					break;
@@ -125,7 +125,7 @@ class CustomFeaturesRow extends LitElement {
 					row.push(
 						html`<custom-feature-button
 							.hass=${this.hass}
-							.entry=${entry}
+							.config=${entry}
 						/>`,
 					);
 					break;
@@ -145,7 +145,7 @@ class CustomFeaturesRow extends LitElement {
 							.replace(/!important/g, '')
 							.replace(/;/g, ' !important;')}
 					</style>
-			  `
+				`
 			: '';
 
 		const version = this.hass.config.version;
