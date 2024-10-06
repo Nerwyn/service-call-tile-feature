@@ -96,7 +96,7 @@ Some additional logic is applied for certain attributes:
 - `elapsed` - Only for timer entities. Updated twice a second using the the current timestamp and the attributes `duration`, `remaining`, and `finishes_at`, and locked to a max value using the attribute `duration`.
   - _NOTE_: `elapsed` is not an actual attribute of timer entities, but is a possible `value_attribute` for timer entities for the purpose of displaying accurate timer elapsed values. Timer entities do have an attribute `remaining`, which only updates when the timer state changes. The actual `remaining` attribute can be calculated using the `elapsed` value and the timer `duration` attribute.
 
-If you find that the autofilling of the entity ID in the action or tile feature value is causing issues, setting `Autofill entity` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
+If you find that the autofilling of the entity ID in the action or tile feature value is causing issues, setting `Autofill` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
 
 Haptics are disabled for features by default, but can be toggled on at the feature level.
 
@@ -108,6 +108,14 @@ Sliders and spinboxes have some additional general options. Both can have range 
 
 Sliders and spinboxes will wait one second before updating their internal values from Home Assistant. This time can be changed by setting `Update after action delay`. Spinboxes will wait to fire their actions until a set amount of time after their buttons have stopped being pressed. This time defaults to one second and can be changed by setting `Debounce time`.
 
+### Selector General Options
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_general_options.png" alt="selector_general_options" width="600"/>
+
+Selectors are made up of option buttons, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row.
+
+Like sliders and spinboxes, selectors have a one second delay before updating their internal values from Home Assistant, which can be adjusted using `Update after action delay`.
+
 ## Appearance
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/appearance_options.png" alt="appearance_options" width="600"/>
@@ -116,7 +124,7 @@ All features (except for selectors, which support these options at the option le
 
 ### A Note on Templating
 
-Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Not all functions supported by Home Assistant templates are supported by this templating system. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available functions. If you want additional functions to be added, please make a feature request on that repository, not this one.
+Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Most extensions supported by Home Assistant templates are supported by this templating system, but not all and the syntax may vary. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available extensions. If you want additional extensions to be added or have templating questions or bugs, please make an issue or discussion on that repository, not this one.
 
 You can include the current value of a tile feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a momentary end action. Each custom feature can also reference it's entry using `config` within templates. `config.entity` and `config.attribute` will return the features entity ID and attribute with their templates rendered (if they have them), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template.
 
@@ -222,6 +230,7 @@ Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashbo
 | Perform action | Call any Home Assistant service action.                                                                                                                                                                                                 |
 | Assist         | Open the assist dialog. Uses the mobile dialog if available, like in the Home Assistant app. The pipeline ID and start listening options only work in the mobile assist dialog.                                                         |
 | Fire DOM event | Fire a browser dom event using the action object as the event detail. Useful for opening [browser mod popup cards](https://github.com/thomasloven/hass-browser_mod?tab=readme-ov-file#how-do-i-update-a-popup-from-the-browser-mod-15). |
+| Evaluate JS    | Evaluate a string as JavaScript code. You have access to the custom feature via `this`, which includes `this.hass` and `this.config`. **Potentially dangerous, do not use unless you know what you're doing.**                          |
 | Repeat         | Repeat the tap action ten times a second while held. Only applicable to hold.                                                                                                                                                           |
 | No action      | Explicilty set a command to do nothing.                                                                                                                                                                                                 |
 

@@ -6,8 +6,8 @@ export const Actions = [
 	'perform-action',
 	'assist',
 	'fire-dom-event',
-	'repeat',
 	'eval',
+	'repeat',
 	'none',
 ] as const;
 export type Action = (typeof Actions)[number];
