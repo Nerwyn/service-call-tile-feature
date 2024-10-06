@@ -6,7 +6,7 @@ import './custom-feature-button';
 
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
-	onEnd(e: MouseEvent) {
+	onClick(e: MouseEvent) {
 		clearTimeout(this.getValueFromHassTimer);
 		this.getValueFromHass = false;
 		this.value = (e.currentTarget as HTMLElement).id;
@@ -26,8 +26,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					.config=${option}
 					.shouldRenderRipple=${false}
 					id=${this.renderTemplate(option.option as string)}
-					@mouseup=${this.onMouseUp}
-					@touchend=${this.onTouchEnd}
+					@click=${this.onClick}
 					@contextmenu=${this.onContextMenu}
 				/>`,
 			);
