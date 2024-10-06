@@ -249,7 +249,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			@touchstart=${this.onTouchStart}
 			@touchend=${this.onTouchEnd}
 			@touchmove=${this.onTouchMove}
-			@touchcanecel=${this.onTouchCancel}
+			@touchcancel=${this.onTouchCancel}
 			@contextmenu=${this.onContextMenu}
 		>
 			${ripple}
