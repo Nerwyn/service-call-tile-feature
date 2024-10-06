@@ -12,18 +12,18 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		this.getValueFromHass = false;
 		this.value = (e.currentTarget as HTMLElement).id;
 
-		// Get all selection options
-		const options = Array.from(
-			(e.currentTarget as HTMLElement).parentNode?.children ?? [],
-		).slice(1);
+		// // Get all selection options
+		// const options = Array.from(
+		// 	(e.currentTarget as HTMLElement).parentNode?.children ?? [],
+		// ).slice(1);
 
-		// Set class of all selection options to default
-		for (const option of options) {
-			option.className = 'option';
-		}
+		// // Set class of all selection options to default
+		// for (const option of options) {
+		// 	option.className = 'option';
+		// }
 
-		// Set selected option class
-		(e.currentTarget as HTMLElement).className = 'selected-option';
+		// // Set selected option class
+		// (e.currentTarget as HTMLElement).className = 'selected-option';
 		this.resetGetValueFromHass();
 	}
 
