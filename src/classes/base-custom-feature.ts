@@ -85,9 +85,7 @@ export class BaseCustomFeature extends LitElement {
 
 		action &&= this.deepRenderTemplate(action);
 		if (!action || !this.handleConfirmation(action)) {
-			clearTimeout(this.getValueFromHassTimer);
-			this.getValueFromHass = true;
-			this.requestUpdate();
+			this.dispatchEvent(new CustomEvent('confirmation-failed'));
 			return;
 		}
 
@@ -302,6 +300,16 @@ export class BaseCustomFeature extends LitElement {
 			return confirm(text);
 		}
 		return true;
+	}
+
+	firstUpdated() {
+		this.addEventListener('confirmation-failed', this.confirmationFailed);
+	}
+
+	confirmationFailed() {
+		clearTimeout(this.getValueFromHassTimer);
+		this.getValueFromHass = true;
+		this.requestUpdate();
 	}
 
 	setValue() {

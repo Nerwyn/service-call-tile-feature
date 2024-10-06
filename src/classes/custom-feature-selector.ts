@@ -7,23 +7,9 @@ import './custom-feature-button';
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onEnd(e: MouseEvent) {
-		// Update value
 		clearTimeout(this.getValueFromHassTimer);
 		this.getValueFromHass = false;
 		this.value = (e.currentTarget as HTMLElement).id;
-
-		// // Get all selection options
-		// const options = Array.from(
-		// 	(e.currentTarget as HTMLElement).parentNode?.children ?? [],
-		// ).slice(1);
-
-		// // Set class of all selection options to default
-		// for (const option of options) {
-		// 	option.className = 'option';
-		// }
-
-		// // Set selected option class
-		// (e.currentTarget as HTMLElement).className = 'selected-option';
 		this.resetGetValueFromHass();
 	}
 
@@ -59,9 +45,8 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
 			if (
-				(this.value ?? '').toString() ==
-					(optionName ?? '').toString() &&
-				this.value != undefined
+				this.value != undefined &&
+				(this.value ?? '').toString() == (optionName ?? '').toString()
 			) {
 				optionClass = 'selected-option';
 			}
