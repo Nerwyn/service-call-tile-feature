@@ -56,7 +56,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				}
 			}
 		} else {
-			// No double tap action defiend, tap action is triggered
+			// No double tap action defined, tap action is triggered
 			this.fireHapticEvent('light');
 			this.sendAction('tap_action');
 			this.endAction();

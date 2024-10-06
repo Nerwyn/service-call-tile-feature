@@ -83,13 +83,7 @@ export class BaseCustomFeature extends LitElement {
 				break;
 		}
 
-		if (!action) {
-			clearTimeout(this.getValueFromHassTimer);
-			this.getValueFromHass = true;
-			this.requestUpdate();
-			return;
-		}
-		action = this.deepRenderTemplate(action);
+		action &&= this.deepRenderTemplate(action);
 		if (!action || !this.handleConfirmation(action)) {
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = true;
