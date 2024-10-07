@@ -27,7 +27,7 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
 		"custom-card-helpers": "latest",
-		"ha-nunjucks": "^1.3.0-alpha.25",
+		"ha-nunjucks": "^1.3.0-alpha.26",
 		"js-yaml": "latest",
 		"lit": "latest"
 	},
