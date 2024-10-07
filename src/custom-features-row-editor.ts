@@ -2169,6 +2169,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				justify-content: flex-start;
 				flex-grow: 1;
 				gap: 8px;
+				overflow: hidden;
 			}
 			.primary:first-letter {
 				text-transform: capitalize;
