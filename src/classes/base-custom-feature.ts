@@ -1,4 +1,4 @@
-import { HapticType, HomeAssistant, forwardHaptic } from 'custom-card-helpers';
+import { HapticType, HomeAssistant } from '../models/interfaces';
 
 import { renderTemplate } from 'ha-nunjucks';
 import { CSSResult, LitElement, css, html } from 'lit';
@@ -43,7 +43,12 @@ export class BaseCustomFeature extends LitElement {
 			this.renderTemplate(this.config.haptics as unknown as string) ??
 			false
 		) {
-			forwardHaptic(haptic);
+			const event = new Event('haptic', {
+				bubbles: true,
+				composed: true,
+			});
+			(event as unknown as Record<string, HapticType>).detail = haptic;
+			window.dispatchEvent(event);
 		}
 	}
 
@@ -292,7 +297,7 @@ export class BaseCustomFeature extends LitElement {
 			if (
 				action.confirmation?.exemptions
 					?.map((exemption) => exemption.user)
-					.includes(this.hass.user.id)
+					.includes(this.hass.user?.id as string)
 			) {
 				return true;
 			}

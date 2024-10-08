@@ -2,8 +2,8 @@ import { renderTemplate } from 'ha-nunjucks';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
-import { HomeAssistant } from 'custom-card-helpers';
 import { dump, load } from 'js-yaml';
+import { HomeAssistant } from './models/interfaces';
 
 import {
 	AUTOFILL,

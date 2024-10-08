@@ -4,9 +4,9 @@ import { LitElement, TemplateResult, css, html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
-import { HomeAssistant } from 'custom-card-helpers';
 import { renderTemplate } from 'ha-nunjucks';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { HomeAssistant } from './models/interfaces';
 
 import './classes/custom-feature-button';
 import './classes/custom-feature-selector';
