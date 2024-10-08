@@ -47,7 +47,7 @@ export class BaseCustomFeature extends LitElement {
 				bubbles: true,
 				composed: true,
 			});
-			(event as unknown as Record<string, HapticType>).detail = haptic;
+			event.detail = haptic;
 			window.dispatchEvent(event);
 		}
 	}
