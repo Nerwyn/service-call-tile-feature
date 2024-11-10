@@ -96,7 +96,7 @@ Some additional logic is applied for certain attributes:
 - `elapsed` - Only for timer entities. Updated twice a second using the the current timestamp and the attributes `duration`, `remaining`, and `finishes_at`, and locked to a max value using the attribute `duration`.
   - _NOTE_: `elapsed` is not an actual attribute of timer entities, but is a possible `value_attribute` for timer entities for the purpose of displaying accurate timer elapsed values. Timer entities do have an attribute `remaining`, which only updates when the timer state changes. The actual `remaining` attribute can be calculated using the `elapsed` value and the timer `duration` attribute.
 
-If you find that the autofilling of the entity ID in the action or tile feature value is causing issues, setting `Autofill` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
+If you find that the autofilling of the entity ID in the action or feature value is causing issues, setting `Autofill` to `false` may help. Just remember to set the entity ID of the feature and the entity, device, area, or label ID of the action target.
 
 Haptics are disabled for features by default, but can be toggled on at the feature level.
 
@@ -126,7 +126,42 @@ All features (except for selectors, which support these options at the option le
 
 Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Most extensions supported by Home Assistant templates are supported by this templating system, but not all and the syntax may vary. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available extensions. If you want additional extensions to be added or have templating questions or bugs, please make an issue or discussion on that repository, not this one.
 
-You can include the current value of a tile feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a momentary end action. Each custom feature can also reference it's entry using `config` within templates. `config.entity` and `config.attribute` will return the features entity ID and attribute with their templates rendered (if they have them), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template.
+You can include the current value of a feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a momentary end action. Each custom feature can also reference it's entry using `config` within templates. `config.entity` and `config.attribute` will return the features entity ID and attribute with their templates rendered (if they have them), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template. Information about the parent card such as it's entity ID, state, and attributes can be accessed using `stateObj`. The structure of `stateObj` can be found [here](https://github.com/home-assistant/home-assistant-js-websocket/blob/1d51737f6092b95e2bc98e85aca752771b97b760/lib/types.ts#L72-L96) as a `HassEntity` type and is listed below.
+
+<details>
+
+<summary>stateObj</summary>
+
+```typescript
+type HassEntity {
+  entity_id: string;
+  state: string;
+  attributes: {
+    [key: string]: any;
+  };
+  last_changed: string;
+  last_updated: string;
+  attributes: {
+    friendly_name?: string;
+    unit_of_measurement?: string;
+    icon?: string;
+    entity_picture?: string;
+    supported_features?: number;
+    hidden?: boolean;
+    assumed_state?: boolean;
+    device_class?: string;
+    state_class?: string;
+    restored?: boolean;
+  };
+  context: {
+    id: string;
+    user_id?: string;
+    parent_id?: string;
+  };
+}
+```
+
+</details>
 
 ### CSS Styles
 
@@ -185,7 +220,7 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --icon-filter            | Filter to apply to the icon color.                                                                      |
 | --label-filter           | Filter to apply to the string label color.                                                              |
 | --background             | Color for the custom feature background. Sometimes equivalent to `--color`. Can also be a CSS function. |
-| --background-opacity     | Opacity of the tile feature background. Defaults to 0.2.                                                |
+| --background-opacity     | Opacity of the feature background. Defaults to 0.2.                                                     |
 
 #### Slider CSS Attributes
 
@@ -270,6 +305,12 @@ While all configuration can now be done through the user interface, these YAML e
 
 A lock tile with lock and unlock selector options
 
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/lock_tile.png" alt="lock_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
+
 ```yaml
 features:
   - type: custom:service-call
@@ -323,11 +364,17 @@ card_mod:
       }
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/lock_tile.png" alt="lock_tile" width="600"/>
+</details>
 
 ## Example 2
 
 A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -667,11 +714,17 @@ layout_options:
   grid_rows: 3
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
+</details>
 
 ## Example 3
 
 Multiple sliders for a room's light and curtains.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -942,11 +995,17 @@ layout_options:
   grid_rows: 6
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
+</details>
 
 ## Example 4
 
 Selectors for input selects. Note that the opacity of selector buttons is set to 0 by default, so they are completely transparent against the selector background.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -1140,11 +1199,17 @@ layout_options:
   grid_rows: 3
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
+</details>
 
 ## Example 5
 
 Using a selector to display different features.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="1200"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -1428,11 +1493,17 @@ layout_options:
   grid_rows: 4
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_show_tile.png" alt="selector_show_tile" width="1200"/>
+</details>
 
 ## Example 6
 
 A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different comic based on how long you hold it using momentary button mode.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -1510,11 +1581,17 @@ layout_options:
   grid_rows: 4
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
+</details>
 
 ## Example 7
 
 A read only timer display with buttons and multiple labels.
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/timer_tile.png" alt="timer_tile" width="600"/>
+
+<details>
+
+<summary>Remote Config</summary>
 
 ```yaml
 features:
@@ -1603,7 +1680,7 @@ layout_options:
   grid_rows: 3
 ```
 
-<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/timer_tile.png" alt="timer_tile" width="600"/>
+</details>
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
 [commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
