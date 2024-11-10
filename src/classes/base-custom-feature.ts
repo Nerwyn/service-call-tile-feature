@@ -9,6 +9,7 @@ import {
 	state,
 } from 'lit/decorators.js';
 
+import { HassEntity } from 'home-assistant-js-websocket';
 import { UPDATE_AFTER_ACTION_DELAY } from '../models/constants';
 import { ActionType, IAction, IActions, IEntry } from '../models/interfaces';
 import { deepGet, deepSet, getDeepKeys } from '../utils';
@@ -17,6 +18,7 @@ import { deepGet, deepSet, getDeepKeys } from '../utils';
 export class BaseCustomFeature extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IEntry;
+	@property() stateObj!: HassEntity;
 
 	@state() value?: string | number | boolean = 0;
 	entityId?: string;
@@ -524,6 +526,7 @@ export class BaseCustomFeature extends LitElement {
 				entity: this.entityId,
 				attribute: this.valueAttribute,
 			},
+			stateObj: this.stateObj,
 			...context,
 		};
 		context = {

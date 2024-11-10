@@ -63,14 +63,6 @@ class CustomFeaturesRow extends LitElement {
 			return null;
 		}
 
-		// Render template context
-		const context = {
-			config: {
-				...this.config,
-				entity: this.stateObj.entity_id,
-			},
-		};
-
 		const row: TemplateResult[] = [];
 		for (const entry of this.config.entries) {
 			const context = {
@@ -78,6 +70,7 @@ class CustomFeaturesRow extends LitElement {
 					...entry,
 					entity: '',
 					attribute: '',
+					stateObj: this.stateObj,
 				},
 			};
 			context.config.entity = renderTemplate(
@@ -101,6 +94,7 @@ class CustomFeaturesRow extends LitElement {
 						html`<custom-feature-slider
 							.hass=${this.hass}
 							.config=${entry}
+							.stateObj=${this.stateObj}
 						/>`,
 					);
 					break;
@@ -109,6 +103,7 @@ class CustomFeaturesRow extends LitElement {
 						html`<custom-feature-selector
 							.hass=${this.hass}
 							.config=${entry}
+							.stateObj=${this.stateObj}
 						/>`,
 					);
 					break;
@@ -117,6 +112,7 @@ class CustomFeaturesRow extends LitElement {
 						html`<custom-feature-spinbox
 							.hass=${this.hass}
 							.config=${entry}
+							.stateObj=${this.stateObj}
 						/>`,
 					);
 					break;
@@ -126,11 +122,20 @@ class CustomFeaturesRow extends LitElement {
 						html`<custom-feature-button
 							.hass=${this.hass}
 							.config=${entry}
+							.stateObj=${this.stateObj}
 						/>`,
 					);
 					break;
 			}
 		}
+
+		const context = {
+			config: {
+				...this.config,
+				entity: this.stateObj.entity_id,
+			},
+			stateObj: this.stateObj,
+		};
 
 		const styles = this.config.styles
 			? html`

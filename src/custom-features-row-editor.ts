@@ -1478,6 +1478,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 	renderTemplate(str: string | number | boolean, context: object) {
 		context = {
 			render: (str2: string) => this.renderTemplate(str2, context),
+			stateObj: {
+				entity: this.context.entity_id,
+			},
 			...context,
 		};
 
