@@ -309,7 +309,7 @@ A lock tile with lock and unlock selector options
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -374,7 +374,7 @@ A light tile with a button for each bulb, a color selector, brightness and tempe
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -724,7 +724,7 @@ Multiple sliders for a room's light and curtains.
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -1005,7 +1005,7 @@ Selectors for input selects. Note that the opacity of selector buttons is set to
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -1209,7 +1209,7 @@ Using a selector to display different features.
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -1503,7 +1503,7 @@ A better looking temperature spinbox with hold on repeat, tile color, and an ico
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
@@ -1591,7 +1591,7 @@ A read only timer display with buttons and multiple labels.
 
 <details>
 
-<summary>Remote Config</summary>
+<summary>Config</summary>
 
 ```yaml
 features:
