@@ -11,7 +11,7 @@ export interface IConfig {
 export interface IEntry
 	extends IActions,
 		ISliderOptions,
-		ISelectorOptions,
+		IDropdownSelectorOptions,
 		ISpinboxOptions {
 	type?: TileFeatureType;
 
@@ -30,11 +30,20 @@ export interface IEntry
 
 export const TileFeatureTypes = [
 	'button',
-	'slider',
+	'dropdown',
 	'selector',
+	'slider',
 	'spinbox',
 ] as const;
 export type TileFeatureType = (typeof TileFeatureTypes)[number];
+
+export interface IOption extends IEntry {
+	option?: string;
+}
+
+export interface IDropdownSelectorOptions {
+	options?: IOption[];
+}
 
 export const ThumbTypes = ['default', 'line', 'flat', 'round'] as const;
 export type ThumbType = (typeof ThumbTypes)[number];
@@ -46,14 +55,6 @@ export interface ISliderOptions {
 
 	slider_style?: StyleInfo;
 	tooltip_style?: StyleInfo;
-}
-
-export interface IOption extends IEntry {
-	option?: string;
-}
-
-export interface ISelectorOptions {
-	options?: IOption[];
 }
 
 export interface ISpinboxOptions {

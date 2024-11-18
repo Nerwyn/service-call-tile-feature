@@ -9,6 +9,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant } from './models/interfaces';
 
 import './classes/custom-feature-button';
+import './classes/custom-feature-dropdown';
 import './classes/custom-feature-selector';
 import './classes/custom-feature-slider';
 import './classes/custom-feature-spinbox';
@@ -89,6 +90,15 @@ class CustomFeaturesRow extends LitElement {
 					'button') as string
 			).toLowerCase();
 			switch (entryType) {
+				case 'spinbox':
+					row.push(
+						html`<custom-feature-spinbox
+							.hass=${this.hass}
+							.config=${entry}
+							.stateObj=${this.stateObj}
+						/>`,
+					);
+					break;
 				case 'slider':
 					row.push(
 						html`<custom-feature-slider
@@ -107,9 +117,9 @@ class CustomFeaturesRow extends LitElement {
 						/>`,
 					);
 					break;
-				case 'spinbox':
+				case 'dropdown':
 					row.push(
-						html`<custom-feature-spinbox
+						html`<custom-feature-dropdown
 							.hass=${this.hass}
 							.config=${entry}
 							.stateObj=${this.stateObj}

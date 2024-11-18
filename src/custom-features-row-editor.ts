@@ -1082,7 +1082,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 		`;
 	}
 
-	buildSelectorGuiEditor() {
+	buildDropdownSelectorGuiEditor(type: 'dropdown' | 'selector') {
 		let selectorGuiEditor: TemplateResult<1>;
 		switch (this.optionIndex) {
 			case -1:
@@ -1126,18 +1126,76 @@ export class CustomFeaturesRowEditor extends LitElement {
 					${this.buildCodeEditor('jinja2')}`;
 				break;
 			default:
+				let optionGuiEditor: TemplateResult<1>;
+				switch (type) {
+					case 'dropdown':
+						optionGuiEditor = this.buildDropdownOptionGuiEditor(
+							this.config.entries[this.entryIndex],
+						);
+						break;
+					case 'selector':
+					default:
+						optionGuiEditor = this.buildButtonGuiEditor(
+							this.config.entries[this.entryIndex],
+						);
+						break;
+				}
+
 				selectorGuiEditor = html`
 					${this.buildSelector('Option', 'option', {
 						text: {},
 					})}
-					${this.buildButtonGuiEditor(
-						this.config.entries[this.entryIndex],
-					)}
+					${optionGuiEditor}
 				`;
 				break;
 		}
 
 		return selectorGuiEditor;
+	}
+
+	buildDropdownOptionGuiEditor(parentEntry: IEntry) {
+		let actionSelectors: TemplateResult<1>;
+		const actionsNoRepeat = Actions.concat();
+		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
+		const defaultUiActions = {
+			ui_action: {
+				actions: actionsNoRepeat,
+				default_action: 'none',
+			},
+		};
+
+		actionSelectors = html`
+			${this.buildActionOption(
+				'Behavior',
+				'tap_action',
+				defaultUiActions,
+			)}
+		`;
+		return html`
+			${this.buildMainFeatureOptions()}
+			<div class="form">
+				${this.buildSelector(
+					'Autofill',
+					'autofill_entity_id',
+					{
+						boolean: {},
+					},
+					parentEntry?.autofill_entity_id ?? AUTOFILL,
+				)}
+				${this.buildSelector(
+					'Haptics',
+					'haptics',
+					{
+						boolean: {},
+					},
+					parentEntry?.haptics ?? HAPTICS,
+				)}
+			</div>
+			${this.buildAppearancePanel(html`
+				${this.buildCommonAppearanceOptions()}
+			`)}
+			${this.buildInteractionsPanel(actionSelectors)}
+		`;
 	}
 
 	buildSpinboxGuiEditor() {
@@ -1298,12 +1356,16 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	buildEntryGuiEditor() {
 		let entryGuiEditor: TemplateResult<1>;
-		switch (this.config.entries[this.entryIndex].type) {
+		const type = this.config.entries[this.entryIndex].type;
+		switch (type) {
 			case 'slider':
 				entryGuiEditor = this.buildSliderGuiEditor();
 				break;
+			case 'dropdown':
 			case 'selector':
-				entryGuiEditor = this.buildSelectorGuiEditor();
+				entryGuiEditor = this.buildDropdownSelectorGuiEditor(
+					type as 'dropdown' | 'selector',
+				);
 				break;
 			case 'spinbox':
 				entryGuiEditor = this.buildSpinboxGuiEditor();
