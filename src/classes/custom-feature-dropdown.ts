@@ -51,22 +51,17 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			@touchmove=${this.onTouchMove}
 			@contextmenu=${this.onContextMenu}
 		>
-			${this.buildRipple()}${dropdownOptions}
+			${dropdownOptions}
 		</select>`;
 
-		const ripple =
-			this.shouldRenderRipple && this.renderRipple
-				? html`<md-ripple></md-ripple>`
-				: html``;
-
-		return html`${dropdown}${this.buildStyles()}`;
+		return html`${this.buildBackground()}${dropdown}${this.buildRipple()}${this.buildStyles()}`;
 	}
 
 	updated() {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
 			this.shadowRoot?.querySelector('select')?.children ?? [],
-		).splice(1);
+		);
 		for (const i in options) {
 			const optionName = this.renderTemplate(options[i].option as string);
 			let optionClass = 'option';
@@ -108,7 +103,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 
 				select {
-					background: 0px 0px !important;
+					background: 0 0 !important;
 					opacity: 1 !important;
 					position: absolute;
 					cursor: pointer;
@@ -117,15 +112,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					border: none;
 					overflow: hidden;
 				}
-				select::before {
-					content: '';
-					position: absolute;
-					top: 0px;
-					left: 0px;
-					height: 100%;
-					width: 100%;
-					background: var(--color, var(--disabled-color));
-					opacity: var(--opacity, 0.2);
+
+				option {
+					background: var(--disabled-color);
 				}
 			`,
 		];

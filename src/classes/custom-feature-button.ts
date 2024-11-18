@@ -274,8 +274,8 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				button::before {
 					content: '';
 					position: absolute;
-					top: 0px;
-					left: 0px;
+					top: 0;
+					left: 0;
 					height: 100%;
 					width: 100%;
 					background: var(--color, var(--disabled-color));
