@@ -42,7 +42,15 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				</option>`,
 			);
 		}
-		const dropdown = html`<select>
+		const dropdown = html`<select
+			@mousedown=${this.onMouseDown}
+			@mouseup=${this.onMouseUp}
+			@mousemove=${this.onMouseMove}
+			@touchstart=${this.onTouchStart}
+			@touchend=${this.onTouchEnd}
+			@touchmove=${this.onTouchMove}
+			@contextmenu=${this.onContextMenu}
+		>
 			${this.buildRipple()}${dropdownOptions}
 		</select>`;
 
