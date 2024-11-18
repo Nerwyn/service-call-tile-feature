@@ -38,7 +38,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			option.haptics = option.haptics ?? this.config.haptics;
 			dropdownOptions.push(
 				html`<option value=${this.renderTemplate(option.option ?? '')}>
-					${this.renderTemplate(option.label ?? '')}
+					<custom-feature-dropdown-option
+						.hass=${this.hass}
+						.config=${option}
+						.stateObj=${this.stateObj}
+					/>
 				</option>`,
 			);
 		}
@@ -112,9 +116,22 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					border: none;
 					overflow: hidden;
 				}
+			`,
+		];
+	}
+}
 
-				option {
-					background: var(--disabled-color);
+@customElement('custom-feature-dropdown-option')
+export class CustomFeatureDropdownOption extends BaseCustomFeature {
+	render() {
+		return html`${this.buildBackground()}${this.buildIcon()}${this.buildLabel()}${this.buildStyles()}`;
+	}
+
+	static get styles() {
+		return [
+			super.styles as CSSResult,
+			css`
+				:host {
 				}
 			`,
 		];
