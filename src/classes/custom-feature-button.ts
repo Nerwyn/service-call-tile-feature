@@ -1,5 +1,5 @@
 import { css, CSSResult, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 
 import {
 	DOUBLE_TAP_WINDOW,
@@ -10,11 +10,6 @@ import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-button')
 export class CustomFeatureButton extends BaseCustomFeature {
-	@property() shouldRenderRipple = true;
-	@state() renderRipple = true;
-	renderRippleOff?: ReturnType<typeof setTimeout>;
-	renderRippleOn?: ReturnType<typeof setTimeout>;
-
 	clickTimer?: ReturnType<typeof setTimeout>;
 	clickCount: number = 0;
 
@@ -219,26 +214,8 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		super.endAction();
 	}
 
-	toggleRipple() {
-		clearTimeout(this.renderRippleOff);
-		clearTimeout(this.renderRippleOn);
-		this.renderRippleOff = setTimeout(
-			() => (this.renderRipple = false),
-			2000,
-		);
-		this.renderRippleOn = setTimeout(
-			() => (this.renderRipple = true),
-			2500,
-		);
-	}
-
 	render() {
 		this.setValue();
-
-		const ripple =
-			this.shouldRenderRipple && this.renderRipple
-				? html`<md-ripple></md-ripple>`
-				: html``;
 
 		const button = html`<button
 			class=${`${this.className} background`}
@@ -252,7 +229,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			@touchcancel=${this.onTouchCancel}
 			@contextmenu=${this.onContextMenu}
 		>
-			${ripple}
+			${this.buildRipple()}
 		</button>`;
 
 		return html`${button}${this.buildIcon()}${this.buildLabel()}${this.buildStyles()}`;

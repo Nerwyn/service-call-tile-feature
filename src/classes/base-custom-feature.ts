@@ -38,6 +38,11 @@ export class BaseCustomFeature extends LitElement {
 	initialX?: number;
 	initialY?: number;
 
+	@property() shouldRenderRipple = true;
+	@state() renderRipple = true;
+	renderRippleOff?: ReturnType<typeof setTimeout>;
+	renderRippleOn?: ReturnType<typeof setTimeout>;
+
 	rtl: boolean = false;
 
 	fireHapticEvent(haptic: HapticType) {
@@ -594,6 +599,25 @@ export class BaseCustomFeature extends LitElement {
 			this.getValueFromHass = true;
 			this.requestUpdate();
 		}, valueFromHassDelay);
+	}
+
+	toggleRipple() {
+		clearTimeout(this.renderRippleOff);
+		clearTimeout(this.renderRippleOn);
+		this.renderRippleOff = setTimeout(
+			() => (this.renderRipple = false),
+			2000,
+		);
+		this.renderRippleOn = setTimeout(
+			() => (this.renderRipple = true),
+			2500,
+		);
+	}
+
+	buildRipple() {
+		return this.shouldRenderRipple && this.renderRipple
+			? html`<md-ripple></md-ripple>`
+			: html``;
 	}
 
 	buildStyles(entry: IEntry = this.config, context?: object) {
