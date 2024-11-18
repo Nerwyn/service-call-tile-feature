@@ -290,6 +290,13 @@ export class CustomFeatureButton extends BaseCustomFeature {
 							var(--state-inactive-color, var(--disabled-color))
 						) !important;
 					}
+					:not(.option, .selected-option):hover {
+						opacity: var(--hover-opacity) !important;
+						background: var(
+							--color,
+							var(--disabled-color)
+						) !important;
+					}
 				}
 				.option:active {
 					opacity: var(--hover-opacity) !important;
