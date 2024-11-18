@@ -97,7 +97,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 						0.12
 					);
 					--ha-ripple-color: var(--secondary-text-color);
-					--mdc-ripple-hover-color: var(
+					--md-ripple-hover-color: var(
 						--ha-ripple-hover-color,
 						var(--ha-ripple-color, var(--secondary-text-color))
 					);
