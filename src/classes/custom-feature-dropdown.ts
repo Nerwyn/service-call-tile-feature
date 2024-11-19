@@ -62,9 +62,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			? html`<div class="dropdown">${dropdownOptions}</div>`
 			: '';
 
-		const select = html` <div class="select">
+		const select = html`${this.buildBackground()}
 			<div
-				class="background"
+				class="select"
 				@mousedown=${this.onMouseDown}
 				@mouseup=${this.onMouseUp}
 				@mousemove=${this.onMouseMove}
@@ -73,14 +73,13 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				@touchmove=${this.onTouchMove}
 				@contextmenu=${this.onContextMenu}
 			>
+				${selectedOption
+					? html`${this.buildIcon(selectedOption)}${this.buildLabel(
+							selectedOption,
+						)}`
+					: ''}
 				${this.buildRipple()}
-			</div>
-			${selectedOption
-				? html`${this.buildIcon(selectedOption)}${this.buildLabel(
-						selectedOption,
-					)}`
-				: ''}
-		</div>`;
+			</div>`;
 
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
@@ -128,9 +127,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 						--ha-ripple-pressed-color,
 						var(--ha-ripple-color, var(--secondary-text-color))
 					);
-				}
-				.background {
-					pointer-events: all;
 				}
 				.select {
 					display: flex;
@@ -189,8 +185,20 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	render() {
 		this.setValue();
 
-		return html`<div class="container">
-				${this.buildBackground()}${this.buildIcon()}${this.buildLabel()}${this.buildRipple()}
+		return html`${this.buildBackground()}
+			<div
+				class="option"
+				@mousedown=${this.onMouseDown}
+				@mouseup=${this.onMouseUp}
+				@mousemove=${this.onMouseMove}
+				@mouseleave=${this.onMouseLeave}
+				@touchstart=${this.onTouchStart}
+				@touchend=${this.onTouchEnd}
+				@touchmove=${this.onTouchMove}
+				@touchcancel=${this.onTouchCancel}
+				@contextmenu=${this.onContextMenu}
+			>
+				${this.buildIcon()}${this.buildLabel()}${this.buildRipple()}
 			</div>
 			${this.buildStyles()}`;
 	}
@@ -202,8 +210,13 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				:host {
 					height: var(--mdc-menu-item-height, 48px);
 					width: 100%;
+					overflow: visible;
 				}
-				.background {
+				.option {
+					display: flex;
+					flex-direction: row;
+					min-width: 100px;
+					height: 100%;
 				}
 			`,
 		];
