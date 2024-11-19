@@ -261,6 +261,9 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					overflow: visible;
 					--color: rgb(0, 0, 0, 0);
 				}
+				.background {
+					pointer-events: none;
+				}
 				.label {
 					font: inherit;
 				}
