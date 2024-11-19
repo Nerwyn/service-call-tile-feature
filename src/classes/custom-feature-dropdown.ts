@@ -80,7 +80,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					: ''}
 				${this.buildRipple()}
 			</div>
-			<ha-icon class="down-arrow" .icon="mdi:menu-down"></ha-icon>`;
+			<ha-icon class="down-arrow" .icon=${'mdi:menu-down'}></ha-icon>`;
 
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
