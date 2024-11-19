@@ -136,6 +136,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 				.background {
 					border-radius: inherit;
+					pointer-events: none;
 				}
 				.select {
 					display: flex;

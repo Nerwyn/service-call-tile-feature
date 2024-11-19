@@ -745,7 +745,6 @@ export class BaseCustomFeature extends LitElement {
 					var(--color, var(--disabled-color))
 				);
 				opacity: var(--background-opacity, 0.2);
-				pointer-events: none;
 			}
 
 			.icon {
