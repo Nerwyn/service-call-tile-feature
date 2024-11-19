@@ -106,6 +106,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
+	// TODO add event listener to change option and close dropdown
+
 	static get styles() {
 		return [
 			super.styles as CSSResult,
@@ -147,6 +149,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 				.label {
 					justify-content: flex-start;
+					font: inherit;
+					opacity: 0.88;
 				}
 				.dropdown {
 					position: fixed;
@@ -173,6 +177,19 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					opacity: 0;
 					transform: scale(0);
 				}
+				.selected-option {
+					color: var(--mdc-theme-primary, #6200ee);
+					--ha-ripple-color: var(--mdc-theme-primary, #6200ee);
+					--mdc-ripple-hover-color: var(--ha-ripple-color);
+					--md-ripple-pressed-color: var(--ha-ripple-color);
+					--background: var(--ha-ripple-color);
+					--background-opacity: 0.12;
+					--md-ripple-hover-opacity: 0.14;
+					--md-ripple-pressed-opacity: 0.4;
+				}
+				.option {
+					--md-ripple-pressed-opacity: 0.2;
+				}
 			`,
 		];
 	}
@@ -191,6 +208,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
 			this.sendAction('tap_action');
+			// TODO fire event to indicate option changed
 			this.toggleRipple();
 		}
 	}
@@ -235,6 +253,15 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					width: 100%;
 					overflow: visible;
 					--color: rgb(0, 0, 0, 0);
+				}
+				.label {
+					font: inherit;
+				}
+				.icon {
+					color: var(
+						--mdc-theme-text-icon-on-background,
+						rgba(0, 0, 0, 0.38)
+					);
 				}
 				.option {
 					display: flex;
