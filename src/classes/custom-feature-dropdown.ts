@@ -113,6 +113,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			super.styles as CSSResult,
 			css`
 				:host {
+					overflow: visible;
 					-webkit-tap-highlight-color: transparent;
 					-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 					--md-ripple-hover-opacity: var(
@@ -132,6 +133,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 						--ha-ripple-pressed-color,
 						var(--ha-ripple-color, var(--secondary-text-color))
 					);
+				}
+				.background {
+					border-radius: inherit;
 				}
 				.select {
 					display: flex;
@@ -153,11 +157,13 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					opacity: 0.88;
 				}
 				.dropdown {
-					position: fixed;
+					position: absolute;
 					overflow: visible;
+					z-index: 1;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
+					padding: 8px 0;
 					max-height: 100vh;
 					will-change: transform, opacity;
 					transform: scale(1);
