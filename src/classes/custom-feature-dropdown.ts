@@ -86,21 +86,26 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	updated() {
-		const options = this.config.options ?? [];
-		const optionElements = Array.from(
-			this.shadowRoot?.querySelector('select')?.children ?? [],
-		);
-		for (const i in options) {
-			const optionName = this.renderTemplate(options[i].option as string);
-			let optionClass = 'option';
-			if (
-				this.value != undefined &&
-				(this.value ?? '').toString() == (optionName ?? '').toString()
-			) {
-				optionClass = 'selected-option';
-			}
+		if (this.showDropdown) {
+			const options = this.config.options ?? [];
+			const optionElements = Array.from(
+				this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
+			);
+			for (const i in options) {
+				const optionName = this.renderTemplate(
+					options[i].option as string,
+				);
+				let optionClass = 'option';
+				if (
+					this.value != undefined &&
+					(this.value ?? '').toString() ==
+						(optionName ?? '').toString()
+				) {
+					optionClass = 'selected-option';
+				}
 
-			optionElements[i].className = optionClass;
+				optionElements[i].className = optionClass;
+			}
 		}
 	}
 
