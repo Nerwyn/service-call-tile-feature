@@ -64,7 +64,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			${dropdownOptions}
 		</div>`;
 
-		const select = html`${this.buildBackground()}
+		const select = html`<div class="container">
+			${this.buildBackground()}
 			<div
 				class="select"
 				@mousedown=${this.onMouseDown}
@@ -82,7 +83,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					: ''}
 				${this.buildRipple()}
 			</div>
-			<ha-icon class="down-arrow" .icon=${'mdi:menu-down'}></ha-icon>`;
+			<ha-icon class="down-arrow" .icon=${'mdi:menu-down'}></ha-icon>
+		</div>`;
 
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
@@ -114,6 +116,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			css`
 				:host {
 					overflow: visible;
+					cursor: pointer;
 					-webkit-tap-highlight-color: transparent;
 					-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 					--md-ripple-hover-opacity: var(
@@ -135,7 +138,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					);
 				}
 				.background {
-					border-radius: inherit;
 					pointer-events: none;
 				}
 				.select {
@@ -151,6 +153,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				.down-arrow {
 					position: absolute;
 					right: 10px;
+					pointer-events: none;
 				}
 				.label {
 					justify-content: flex-start;
