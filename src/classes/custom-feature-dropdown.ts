@@ -134,23 +134,22 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					flex-direction: row;
 					align-items: center;
 					gap: 10px;
-					padding: 6px 10px;
+					padding: 0 10px;
 					height: 100%;
 					width: -webkit-fill-available;
 					width: -moz-available;
 				}
 				.down-arrow {
 					position: absolute;
-					right: 0px;
+					right: 10px;
 				}
 				.label {
 					justify-content: flex-start;
 				}
 				.dropdown {
-					display: flex;
-					flex-direction: column;
 					position: fixed;
 					overflow: visible;
+					background: var(--ha-card-background);
 				}
 			`,
 		];
@@ -213,6 +212,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					height: var(--mdc-menu-item-height, 48px);
 					width: 100%;
 					overflow: visible;
+					--color: rgb(0, 0, 0, 0);
 				}
 				.option {
 					display: flex;
@@ -220,6 +220,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					align-items: center;
 					min-width: 100px;
 					padding: 0 20px;
+					gap: 24px;
 					height: 100%;
 				}
 			`,
