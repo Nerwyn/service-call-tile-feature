@@ -58,9 +58,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				/>
 			`);
 		}
-		const dropdown = this.showDropdown
-			? html`<div class="dropdown">${dropdownOptions}</div>`
-			: '';
+		const dropdown = html`<div
+			class="dropdown ${this.showDropdown ? '' : 'collapsed'}"
+		>
+			${dropdownOptions}
+		</div>`;
 
 		const select = html`${this.buildBackground()}
 			<div
@@ -86,26 +88,21 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	updated() {
-		if (this.showDropdown) {
-			const options = this.config.options ?? [];
-			const optionElements = Array.from(
-				this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
-			);
-			for (const i in options) {
-				const optionName = this.renderTemplate(
-					options[i].option as string,
-				);
-				let optionClass = 'option';
-				if (
-					this.value != undefined &&
-					(this.value ?? '').toString() ==
-						(optionName ?? '').toString()
-				) {
-					optionClass = 'selected-option';
-				}
-
-				optionElements[i].className = optionClass;
+		const options = this.config.options ?? [];
+		const optionElements = Array.from(
+			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
+		);
+		for (const i in options) {
+			const optionName = this.renderTemplate(options[i].option as string);
+			let optionClass = 'option';
+			if (
+				this.value != undefined &&
+				(this.value ?? '').toString() == (optionName ?? '').toString()
+			) {
+				optionClass = 'selected-option';
 			}
+
+			optionElements[i].className = optionClass;
 		}
 	}
 
@@ -155,6 +152,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					position: fixed;
 					overflow: visible;
 					background: var(--ha-card-background);
+					transition:
+						opacity 0.03s linear,
+						transform 0.12s cubic-bezier(0, 0, 0.2, 1),
+						height 250ms cubic-bezier(0, 0, 0.2, 1);
+				}
+				.collapsed {
+					height: 0px;
+					width: 0px;
 				}
 			`,
 		];
