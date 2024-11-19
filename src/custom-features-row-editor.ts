@@ -1755,6 +1755,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						this.getEntryContext(entry),
 					)
 				) {
+					case 'dropdown':
 					case 'selector': {
 						// Get option names from attributes if it exists
 						const options = entry.options ?? [];
