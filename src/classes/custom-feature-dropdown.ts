@@ -22,7 +22,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
-	onEnd(e: MouseEvent | TouchEvent) {
+	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
 			// clearTimeout(this.getValueFromHassTimer);
 			// this.getValueFromHass = false;
@@ -59,7 +59,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			`);
 		}
 		const dropdown = this.showDropdown
-			? html`<div class="dropdown">${options}</div>`
+			? html`<div class="dropdown">${dropdownOptions}</div>`
 			: '';
 
 		const select = html` <div class="select">
@@ -82,7 +82,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				: ''}
 		</div>`;
 
-		return html`${this.buildBackground()}${select}${dropdown}${this.buildStyles()}`;
+		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
 
 	updated() {
@@ -129,17 +129,30 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 						var(--ha-ripple-color, var(--secondary-text-color))
 					);
 				}
+				.background {
+					pointer-events: all;
+				}
 				.select {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
 					gap: 10px;
 					padding: 6px 10px;
+					height: 100%;
+					width: -webkit-fill-available;
+					width: -moz-available;
 				}
 				.down-arrow {
 					position: absolute;
 					right: 0px;
-					--mdc-icon-size: 20px;
+				}
+				.label {
+					justify-content: flex-start;
+				}
+				.dropdown {
+					display: flex;
+					flex-direction: column;
+					position: absolute;
 				}
 			`,
 		];
