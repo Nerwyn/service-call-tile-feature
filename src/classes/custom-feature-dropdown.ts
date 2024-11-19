@@ -79,7 +79,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 						)}`
 					: ''}
 				${this.buildRipple()}
-			</div>`;
+			</div>
+			<ha-icon class="down-arrow" .icon="mdi:menu-down"></ha-icon>`;
 
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
@@ -148,7 +149,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				.dropdown {
 					display: flex;
 					flex-direction: column;
-					position: absolute;
+					position: fixed;
+					overflow: visible;
 				}
 			`,
 		];
@@ -215,7 +217,9 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				.option {
 					display: flex;
 					flex-direction: row;
+					align-items: center;
 					min-width: 100px;
+					padding: 0 20px;
 					height: 100%;
 				}
 			`,
