@@ -256,11 +256,18 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	@property() config!: IOption;
 
-	onStart(_e: MouseEvent | TouchEvent) {
+	onStart(e: MouseEvent | TouchEvent) {
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
 		this.renderRipple = true;
 		this.swiping = false;
+		if ('targetTouches' in e) {
+			this.initialX = e.targetTouches[0].clientX;
+			this.initialY = e.targetTouches[0].clientY;
+		} else {
+			this.initialX = e.clientX;
+			this.initialY = e.clientY;
+		}
 		this.fireHapticEvent('light');
 	}
 
