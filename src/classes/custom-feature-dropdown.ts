@@ -110,7 +110,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				${selectedOption
 					? html`${this.buildIcon(selectedOption)}${this.buildLabel(
 							selectedOption,
-						)}`
+						)}${this.buildStyles(selectedOption)}`
 					: ''}
 				${this.buildRipple()}
 			</div>
@@ -276,7 +276,9 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 			this.toggleRipple();
 			this.sendAction('tap_action');
 			this.endAction();
-			this.closeDropdown(this.config.option);
+			this.closeDropdown(
+				this.renderTemplate(this.config.option as string) as string,
+			);
 		}
 	}
 
