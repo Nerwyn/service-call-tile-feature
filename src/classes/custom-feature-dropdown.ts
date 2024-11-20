@@ -132,11 +132,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
-	closeDropdownOnExternal(e: MouseEvent) {
+	closeDropdownOnExternal = (e: MouseEvent) => {
 		if (typeof e.composedPath && !e.composedPath().includes(this)) {
 			this.showDropdown = false;
 		}
-	}
+	};
 
 	connectedCallback() {
 		super.connectedCallback();
