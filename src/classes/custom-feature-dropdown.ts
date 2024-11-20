@@ -60,6 +60,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 		const dropdown = html`<div
 			class="dropdown ${this.showDropdown ? '' : 'collapsed'}"
+			@close-dropdown=${() => (this.showDropdown = false)}
 		>
 			${dropdownOptions}
 		</div>`;
@@ -107,8 +108,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			optionElements[i].className = optionClass;
 		}
 	}
-
-	// TODO add event listener to change option and close dropdown
 
 	static get styles() {
 		return [
@@ -161,9 +160,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					opacity: 0.88;
 				}
 				.dropdown {
+					top: var(--feature-height, 42px);
+					left: 0;
 					position: absolute;
 					overflow: visible;
-					z-index: 1;
+					z-index: 5;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
@@ -217,9 +218,14 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
-			this.sendAction('tap_action');
-			// TODO fire event to indicate option changed
 			this.toggleRipple();
+			this.sendAction('tap_action');
+			this.dispatchEvent(
+				new Event('close-dropdown', {
+					composed: true,
+					bubbles: true,
+				}),
+			);
 		}
 	}
 
