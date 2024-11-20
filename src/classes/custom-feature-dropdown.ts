@@ -139,10 +139,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	connectedCallback() {
+		super.connectedCallback();
 		document.body.addEventListener('click', this.closeDropdownOnExternal);
 	}
 
 	disconnectedCallback() {
+		super.disconnectedCallback();
 		document.body.removeEventListener(
 			'click',
 			this.closeDropdownOnExternal,
