@@ -269,6 +269,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.sendAction('tap_action');
+			this.endAction();
 			this.closeDropdown(this.config.option);
 		}
 	}
@@ -286,6 +287,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 		const diffX = (this.initialX ?? currentX) - currentX;
 		const diffY = (this.initialY ?? currentY) - currentY;
+		console.log(`${diffX},${diffY}`);
 
 		// Only consider significant enough movement
 		const sensitivity = 8;
