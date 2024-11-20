@@ -1,7 +1,7 @@
 import { css, CSSResult, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
-import { IEntry } from '../models/interfaces';
+import { IEntry, IOption } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-dropdown')
@@ -47,13 +47,20 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
-			// clearTimeout(this.getValueFromHassTimer);
-			// this.getValueFromHass = false;
-			// this.value = (e.currentTarget as HTMLElement).id;
-			// this.resetGetValueFromHass();
 			this.showDropdown = !this.showDropdown;
 			this.toggleRipple();
 		}
+	}
+
+	handleCloseDropdown(e: Event) {
+		const value = e.detail?.value;
+		if (value != undefined) {
+			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = false;
+			this.value = value;
+			this.resetGetValueFromHass();
+		}
+		this.showDropdown = false;
 	}
 
 	render() {
@@ -83,7 +90,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 		const dropdown = html`<div
 			class="dropdown ${this.showDropdown ? '' : 'collapsed'}"
-			@close-dropdown=${() => (this.showDropdown = false)}
+			@close-dropdown=${this.handleCloseDropdown}
 		>
 			${dropdownOptions}
 		</div>`;
@@ -132,7 +139,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
-	closeDropdownOnExternal = (e: MouseEvent) => {
+	handleExternalClick = (e: MouseEvent) => {
 		if (typeof e.composedPath && !e.composedPath().includes(this)) {
 			this.showDropdown = false;
 		}
@@ -140,15 +147,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 	connectedCallback() {
 		super.connectedCallback();
-		document.body.addEventListener('click', this.closeDropdownOnExternal);
+		document.body.addEventListener('click', this.handleExternalClick);
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		document.body.removeEventListener(
-			'click',
-			this.closeDropdownOnExternal,
-		);
+		document.body.removeEventListener('click', this.handleExternalClick);
 	}
 
 	static get styles() {
@@ -238,7 +242,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					--background: var(--ha-ripple-color);
 					--background-opacity: 0.12;
 					--md-ripple-hover-opacity: 0.14;
-					--md-ripple-pressed-opacity: 0.4;
+					--md-ripple-pressed-opacity: 0.26;
 				}
 				.option {
 					--md-ripple-pressed-opacity: 0.2;
@@ -250,6 +254,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 @customElement('custom-feature-dropdown-option')
 export class CustomFeatureDropdownOption extends BaseCustomFeature {
+	@property() config!: IOption;
+
 	onStart(_e: MouseEvent | TouchEvent) {
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
@@ -259,10 +265,11 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
+		console.log(this.swiping);
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.sendAction('tap_action');
-			this.closeDropdown();
+			this.closeDropdown(this.config.option);
 		}
 	}
 
@@ -300,13 +307,15 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		this.closeDropdown();
 	}
 
-	closeDropdown() {
-		this.dispatchEvent(
-			new Event('close-dropdown', {
-				composed: true,
-				bubbles: true,
-			}),
-		);
+	closeDropdown(value?: string) {
+		const event = new Event('close-dropdown', {
+			composed: true,
+			bubbles: true,
+		});
+		event.detail = {
+			value,
+		};
+		this.dispatchEvent(event);
 	}
 
 	render() {
