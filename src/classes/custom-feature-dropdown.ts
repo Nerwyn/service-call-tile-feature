@@ -90,6 +90,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
 
+	firstUpdated() {
+		document.body.addEventListener('click', (e: MouseEvent) => {
+			if (typeof e.composedPath && !e.composedPath().includes(this)) {
+				this.showDropdown = false;
+			}
+		});
+	}
+
 	updated() {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
@@ -220,12 +228,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.sendAction('tap_action');
-			this.dispatchEvent(
-				new Event('close-dropdown', {
-					composed: true,
-					bubbles: true,
-				}),
-			);
+			this.closeDropdown();
 		}
 	}
 
@@ -233,10 +236,21 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		this.endAction();
 		this.swiping = true;
 		this.toggleRipple();
+		this.closeDropdown();
 	}
 
 	onTouchCancel(_e: TouchEvent) {
 		this.toggleRipple();
+		this.closeDropdown();
+	}
+
+	closeDropdown() {
+		this.dispatchEvent(
+			new Event('close-dropdown', {
+				composed: true,
+				bubbles: true,
+			}),
+		);
 	}
 
 	render() {
