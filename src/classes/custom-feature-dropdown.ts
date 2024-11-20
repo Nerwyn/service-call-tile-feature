@@ -22,6 +22,29 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
+	onMove(e: TouchEvent | MouseEvent) {
+		let currentX: number;
+		let currentY: number;
+		if ('targetTouches' in e) {
+			currentX = e.targetTouches[0].clientX;
+			currentY = e.targetTouches[0].clientY;
+		} else {
+			currentX = e.clientX;
+			currentY = e.clientY;
+		}
+
+		const diffX = (this.initialX ?? currentX) - currentX;
+		const diffY = (this.initialY ?? currentY) - currentY;
+
+		// Only consider significant enough movement
+		const sensitivity = 8;
+		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+			this.endAction();
+			this.swiping = true;
+			this.toggleRipple();
+		}
+	}
+
 	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
 			// clearTimeout(this.getValueFromHassTimer);
@@ -90,14 +113,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		return html`${select}${dropdown}${this.buildStyles()}`;
 	}
 
-	firstUpdated() {
-		document.body.addEventListener('click', (e: MouseEvent) => {
-			if (typeof e.composedPath && !e.composedPath().includes(this)) {
-				this.showDropdown = false;
-			}
-		});
-	}
-
 	updated() {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
@@ -115,6 +130,23 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			optionElements[i].className = optionClass;
 		}
+	}
+
+	closeDropdownOnExternal(e: MouseEvent) {
+		if (typeof e.composedPath && !e.composedPath().includes(this)) {
+			this.showDropdown = false;
+		}
+	}
+
+	connectedCallback() {
+		document.body.addEventListener('click', this.closeDropdownOnExternal);
+	}
+
+	disconnectedCallback() {
+		document.body.removeEventListener(
+			'click',
+			this.closeDropdownOnExternal,
+		);
 	}
 
 	static get styles() {
@@ -232,11 +264,33 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
+	onMove(e: TouchEvent | MouseEvent) {
+		let currentX: number;
+		let currentY: number;
+		if ('targetTouches' in e) {
+			currentX = e.targetTouches[0].clientX;
+			currentY = e.targetTouches[0].clientY;
+		} else {
+			currentX = e.clientX;
+			currentY = e.clientY;
+		}
+
+		const diffX = (this.initialX ?? currentX) - currentX;
+		const diffY = (this.initialY ?? currentY) - currentY;
+
+		// Only consider significant enough movement
+		const sensitivity = 8;
+		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+			this.endAction();
+			this.swiping = true;
+			this.toggleRipple();
+		}
+	}
+
 	onMouseLeave(_e: MouseEvent) {
 		this.endAction();
 		this.swiping = true;
 		this.toggleRipple();
-		this.closeDropdown();
 	}
 
 	onTouchCancel(_e: TouchEvent) {
