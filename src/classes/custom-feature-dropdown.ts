@@ -272,7 +272,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	}
 
 	onEnd(_e: MouseEvent | TouchEvent) {
-		console.log(this.swiping);
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.sendAction('tap_action');
@@ -294,7 +293,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 		const diffX = (this.initialX ?? currentX) - currentX;
 		const diffY = (this.initialY ?? currentY) - currentY;
-		console.log(`${diffX},${diffY}`);
 
 		// Only consider significant enough movement
 		const sensitivity = 8;
