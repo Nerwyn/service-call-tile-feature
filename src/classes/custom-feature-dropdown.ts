@@ -79,6 +79,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			}
 
 			option.haptics = option.haptics ?? this.config.haptics;
+			option.label = option.label ?? option.option;
 			dropdownOptions.push(html`
 				<custom-feature-dropdown-option
 					.hass=${this.hass}
@@ -209,16 +210,15 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					top: var(--feature-height, 42px);
 					left: 0;
 					position: absolute;
-					overflow: visible;
+					overflow-y: scroll;
 					z-index: 5;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
 					padding: 8px 0;
-					max-height: 100vh;
+					max-height: 90vh;
 					will-change: transform, opacity;
 					transform: scale(1);
-					transform-origin: top left;
 					opacity: 1;
 					transition:
 						opacity 0.03s linear,
