@@ -148,13 +148,21 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
 
+			console.log(`Dropdown initial height: ${dropdown.offsetHeight}`);
+			console.log(
+				`Available height down: ${window.innerHeight - edgeOffset - rect.bottom}`,
+			);
+			console.log(
+				`Available height up: ${window.innerHeight - edgeOffset - rect.bottom}`,
+			);
+
 			let down = true;
 			if (
 				// If dropdown is too large
 				dropdown.offsetHeight >
 					window.innerHeight - edgeOffset - rect.bottom &&
 				// If dropdown is on lower half of window
-				rect.top + rect.bottom < window.innerHeight
+				rect.top + rect.bottom > window.innerHeight
 			) {
 				down = false;
 			}
