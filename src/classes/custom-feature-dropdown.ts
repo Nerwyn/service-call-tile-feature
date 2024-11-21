@@ -255,14 +255,13 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					opacity: 0.88;
 				}
 				.dropdown {
-					top: var(--feature-height, 42px);
 					position: fixed;
 					z-index: 9;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
 					padding: 8px 0;
-					max-height: 100vh;
+					height: min-content;
 					will-change: transform, opacity;
 					overflow-y: scroll;
 					transform: scale(1);
@@ -270,14 +269,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					transition:
 						opacity 0.03s linear,
 						transform 0.12s cubic-bezier(0, 0, 0.2, 1),
-						max-height 250ms cubic-bezier(0, 0, 0.2, 1);
+						height 250ms cubic-bezier(0, 0, 0.2, 1);
 					box-shadow:
 						0px 5px 5px -3px rgba(0, 0, 0, 0.2),
 						0px 8px 10px 1px rgba(0, 0, 0, 0.14),
 						0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 				}
 				.collapsed {
-					max-height: 0;
+					height: 0;
 					opacity: 0;
 					transform: scale(0);
 				}
