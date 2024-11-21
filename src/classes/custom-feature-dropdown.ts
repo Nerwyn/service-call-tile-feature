@@ -138,6 +138,17 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			optionElements[i].className = optionClass;
 		}
+
+		if (this.showDropdown) {
+			const windowHeight = window.innerHeight;
+			const dropdownY = this.getBoundingClientRect().bottom;
+
+			const dropdownHeight = windowHeight - dropdownY;
+			const dropdown = this.shadowRoot?.querySelector(
+				'.dropdown',
+			) as HTMLElement;
+			dropdown.style.setProperty('height', `${dropdownHeight}px`);
+		}
 	}
 
 	handleExternalClick = (e: MouseEvent) => {
