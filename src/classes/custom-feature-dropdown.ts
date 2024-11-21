@@ -80,7 +80,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			// Determine dropdown direction
 			const rect = this.getBoundingClientRect();
-			const edgeOffset = 15;
+			const edgeOffset = 27;
 			let down = true;
 			if (
 				// If dropdown is too large
