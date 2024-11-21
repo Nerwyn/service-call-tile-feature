@@ -7,8 +7,6 @@ import { BaseCustomFeature } from './base-custom-feature';
 @customElement('custom-feature-dropdown')
 export class CustomFeatureDropdown extends BaseCustomFeature {
 	@state() showDropdown: boolean = false;
-	// dropdownUpdated: boolean = false;
-	rect?: DOMRect;
 
 	onStart(e: MouseEvent | TouchEvent) {
 		clearTimeout(this.renderRippleOff);
@@ -69,8 +67,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		this.setValue();
 
 		// Dropdown position and height
-		this.rect = this.getBoundingClientRect() ?? this.rect;
-		if (this.showDropdown && this.rect) {
+		if (this.showDropdown) {
 			// Calculate dropdown height without vertical scroll
 			let optionHeight = parseInt(
 				this.style
@@ -82,13 +79,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				optionHeight * (this.config.options?.length ?? 0) + 16;
 
 			// Determine dropdown direction
+			const rect = this.getBoundingClientRect();
 			let down = true;
 			if (
 				// If dropdown is too large
 				dropdownHeight0 >
-					window.innerHeight - optionHeight - this.rect.bottom &&
+					window.innerHeight - optionHeight - rect.bottom &&
 				// If dropdown is on lower half of window
-				this.rect.top + this.rect.bottom > window.innerHeight
+				rect.top + rect.bottom > window.innerHeight
 			) {
 				down = false;
 			}
@@ -98,12 +96,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			) as HTMLElement;
 			dropdownElement.style.setProperty(
 				'max-height',
-				`${(down ? window.innerHeight - this.rect.bottom : this.rect.top) - optionHeight - 16}px`,
+				`${(down ? window.innerHeight - rect.bottom : rect.top) - optionHeight - 16}px`,
 			);
-			dropdownElement.style.setProperty('left', `${this.rect.left}px`);
+			dropdownElement.style.setProperty('left', `${rect.left}px`);
 			dropdownElement.style.setProperty(
 				down ? 'top' : 'bottom',
-				`${down ? this.rect.bottom : window.innerHeight - this.rect.top}px`,
+				`${down ? rect.bottom : window.innerHeight - rect.top}px`,
 			);
 			dropdownElement.style.removeProperty(down ? 'bottom' : 'top');
 		}
@@ -180,8 +178,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			optionElements[i].className = optionClass;
 		}
-
-		this.rect = this.getBoundingClientRect();
 	}
 
 	handleExternalClick = (e: MouseEvent) => {
@@ -190,20 +186,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	};
 
-	handlePageScroll = (_e: Event) => {
-		this.rect = this.getBoundingClientRect();
-	};
-
 	connectedCallback() {
 		super.connectedCallback();
 		document.body.addEventListener('click', this.handleExternalClick);
-		document.body.addEventListener('scroll', this.handlePageScroll);
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		document.body.removeEventListener('click', this.handleExternalClick);
-		document.body.removeEventListener('scroll', this.handlePageScroll);
 	}
 
 	static get styles() {
