@@ -175,7 +175,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			);
 			dropdown.style.setProperty(
 				'max-height',
-				`${window.innerHeight - (down ? rect.bottom : rect.top) - edgeOffset}px`,
+				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset}px`,
 			);
 		} else if (!this.showDropdown) {
 			setTimeout(() => {
