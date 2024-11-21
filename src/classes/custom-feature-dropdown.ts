@@ -147,7 +147,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			const dropdown = this.shadowRoot?.querySelector(
 				'.dropdown',
 			) as HTMLElement;
-			dropdown.style.setProperty('height', `${dropdownHeight}px`);
+			dropdown.style.setProperty('height', `${dropdownHeight - 48}px`);
 		}
 	}
 
