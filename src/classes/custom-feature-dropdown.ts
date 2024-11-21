@@ -175,7 +175,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			);
 			dropdown.style.setProperty('overflow-y', 'scroll');
 			this.dropdownUpdated = true;
-		} else {
+		} else if (!this.showDropdown) {
 			setTimeout(() => {
 				dropdown.style.removeProperty('left');
 				dropdown.style.removeProperty('top');
