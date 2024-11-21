@@ -171,7 +171,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			dropdown.style.setProperty('left', `${rect.left}px`);
 			dropdown.style.setProperty(
 				down ? 'top' : 'bottom',
-				`${down ? rect.bottom : rect.top}px`,
+				`${down ? rect.bottom : window.innerHeight - rect.top}px`,
 			);
 			dropdown.style.setProperty(
 				'max-height',
