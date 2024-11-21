@@ -7,7 +7,8 @@ import { BaseCustomFeature } from './base-custom-feature';
 @customElement('custom-feature-dropdown')
 export class CustomFeatureDropdown extends BaseCustomFeature {
 	@state() showDropdown: boolean = false;
-	dropdownUpdated: boolean = false;
+	// dropdownUpdated: boolean = false;
+	rect?: DOMRect;
 
 	onStart(e: MouseEvent | TouchEvent) {
 		clearTimeout(this.renderRippleOff);
@@ -66,6 +67,42 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 	render() {
 		this.setValue();
+
+		// Dropdown position and height
+		if (this.showDropdown && this.rect) {
+			let optionHeight = parseInt(
+				this.style
+					.getPropertyValue('--mdc-menu-item-height')
+					.replace(/D/g, ''),
+			);
+			optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
+			const dropdownHeight0 =
+				optionHeight * (this.config.options?.length ?? 0) + 16;
+
+			let down = true;
+			if (
+				// If dropdown is too large
+				dropdownHeight0 >
+					window.innerHeight - optionHeight - this.rect.bottom &&
+				// If dropdown is on lower half of window
+				this.rect.top + this.rect.bottom > window.innerHeight
+			) {
+				down = false;
+			}
+
+			const dropdownElement = this.shadowRoot?.querySelector(
+				'.dropdown',
+			) as HTMLElement;
+			dropdownElement.style.setProperty('left', `${this.rect.left}px`);
+			dropdownElement.style.setProperty(
+				down ? 'top' : 'bottom',
+				`${down ? this.rect.bottom : window.innerHeight - this.rect.top}px`,
+			);
+			dropdownElement.style.setProperty(
+				'max-height',
+				`${(down ? window.innerHeight - this.rect.bottom : this.rect.top) - optionHeight - 16}px`,
+			);
+		}
 
 		const dropdownOptions = [];
 		const options = this.config.options ?? [];
@@ -140,52 +177,54 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			optionElements[i].className = optionClass;
 		}
 
-		// Dropdown position and height
-		const dropdown = this.shadowRoot?.querySelector(
-			'.dropdown',
-		) as HTMLElement;
-		if (this.showDropdown && !this.dropdownUpdated) {
-			this.dropdownUpdated = true;
-			const rect = this.getBoundingClientRect();
-			const edgeOffset = 48;
-			let optionHeight = parseInt(
-				this.style
-					.getPropertyValue('--mdc-menu-item-height')
-					.replace(/D/g, ''),
-			);
-			optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
-			const dropdownHeight0 =
-				optionHeight * (this.config.options?.length ?? 0) + 16;
+		this.rect = this.getBoundingClientRect();
 
-			let down = true;
-			if (
-				// If dropdown is too large
-				dropdownHeight0 >
-					window.innerHeight - edgeOffset - rect.bottom &&
-				// If dropdown is on lower half of window
-				rect.top + rect.bottom > window.innerHeight
-			) {
-				down = false;
-			}
+		// // Dropdown position and height
+		// const dropdown = this.shadowRoot?.querySelector(
+		// 	'.dropdown',
+		// ) as HTMLElement;
+		// if (this.showDropdown && !this.dropdownUpdated) {
+		// 	this.dropdownUpdated = true;
+		// 	const rect = this.getBoundingClientRect();
+		// 	const edgeOffset = 48;
+		// 	let optionHeight = parseInt(
+		// 		this.style
+		// 			.getPropertyValue('--mdc-menu-item-height')
+		// 			.replace(/D/g, ''),
+		// 	);
+		// 	optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
+		// 	const dropdownHeight0 =
+		// 		optionHeight * (this.config.options?.length ?? 0) + 16;
 
-			dropdown.style.setProperty('left', `${rect.left}px`);
-			dropdown.style.setProperty(
-				down ? 'top' : 'bottom',
-				`${down ? rect.bottom : window.innerHeight - rect.top}px`,
-			);
-			dropdown.style.setProperty(
-				'max-height',
-				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
-			);
-		} else if (!this.showDropdown) {
-			setTimeout(() => {
-				this.dropdownUpdated = false;
-				dropdown.style.removeProperty('left');
-				dropdown.style.removeProperty('top');
-				dropdown.style.removeProperty('bottom');
-				dropdown.style.removeProperty('max-height');
-			}, 150);
-		}
+		// 	let down = true;
+		// 	if (
+		// 		// If dropdown is too large
+		// 		dropdownHeight0 >
+		// 			window.innerHeight - edgeOffset - rect.bottom &&
+		// 		// If dropdown is on lower half of window
+		// 		rect.top + rect.bottom > window.innerHeight
+		// 	) {
+		// 		down = false;
+		// 	}
+
+		// 	dropdown.style.setProperty('left', `${rect.left}px`);
+		// 	dropdown.style.setProperty(
+		// 		down ? 'top' : 'bottom',
+		// 		`${down ? rect.bottom : window.innerHeight - rect.top}px`,
+		// 	);
+		// 	dropdown.style.setProperty(
+		// 		'max-height',
+		// 		`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
+		// 	);
+		// } else if (!this.showDropdown) {
+		// 	setTimeout(() => {
+		// 		this.dropdownUpdated = false;
+		// 		dropdown.style.removeProperty('left');
+		// 		dropdown.style.removeProperty('top');
+		// 		dropdown.style.removeProperty('bottom');
+		// 		dropdown.style.removeProperty('max-height');
+		// 	}, 150);
+		// }
 	}
 
 	handleExternalClick = (e: MouseEvent) => {
