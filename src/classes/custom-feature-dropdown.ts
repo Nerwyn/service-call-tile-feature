@@ -343,6 +343,11 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
+	onTouchEnd(e: TouchEvent) {
+		e.preventDefault();
+		super.onTouchEnd(e);
+	}
+
 	onMouseLeave(_e: MouseEvent) {
 		this.endAction();
 		this.swiping = true;
