@@ -147,7 +147,10 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			const dropdown = this.shadowRoot?.querySelector(
 				'.dropdown',
 			) as HTMLElement;
-			dropdown.style.setProperty('height', `${dropdownHeight - 48}px`);
+			dropdown.style.setProperty(
+				'max-height',
+				`${dropdownHeight - 48}px`,
+			);
 		}
 	}
 
@@ -222,7 +225,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					left: 0;
 					position: absolute;
 					overflow-y: scroll;
-					z-index: 5;
+					z-index: 9;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
