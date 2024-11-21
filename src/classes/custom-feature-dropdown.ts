@@ -119,7 +119,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			}
 
 			option.haptics = option.haptics ?? this.config.haptics;
-			option.label = option.label ?? option.option;
+			option.label =
+				option.label || option.icon ? option.label : option.option;
 			dropdownOptions.push(html`
 				<custom-feature-dropdown-option
 					.hass=${this.hass}
@@ -167,16 +168,13 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
 		);
 		for (const i in options) {
-			const optionName = this.renderTemplate(options[i].option as string);
-			let optionClass = 'option';
-			if (
+			optionElements[i].className = `option ${
 				this.value != undefined &&
-				(this.value ?? '').toString() == (optionName ?? '').toString()
-			) {
-				optionClass = 'selected-option';
-			}
-
-			optionElements[i].className = optionClass;
+				(this.value ?? '').toString() ==
+					(
+						this.renderTemplate(options[i].option as string) ?? ''
+					).toString()
+			}`;
 		}
 	}
 
@@ -272,7 +270,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					opacity: 0;
 					transform: scale(0);
 				}
-				.selected-option {
+				.option {
+					min-width: 100px;
+					padding: 0 20px;
+					--md-ripple-pressed-opacity: 0.2;
+				}
+				.selected {
 					color: var(--mdc-theme-primary, #6200ee);
 					--ha-ripple-color: var(--mdc-theme-primary, #6200ee);
 					--mdc-ripple-hover-color: var(--ha-ripple-color);
@@ -281,9 +284,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					--background-opacity: 0.12;
 					--md-ripple-hover-opacity: 0.14;
 					--md-ripple-pressed-opacity: 0.26;
-				}
-				.option {
-					--md-ripple-pressed-opacity: 0.2;
 				}
 			`,
 		];
@@ -417,9 +417,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					min-width: 100px;
-					padding: 0 20px;
-					gap: 24px;
+					gap: var(--mdc-list-item-graphic-margin, 24px);
 					height: 100%;
 				}
 			`,
