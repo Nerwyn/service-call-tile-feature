@@ -140,16 +140,16 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 
 		if (this.showDropdown) {
-			const windowHeight = window.innerHeight;
-			const dropdownY = this.getBoundingClientRect().bottom;
-
-			const dropdownHeight = windowHeight - dropdownY;
+			const rect = this.getBoundingClientRect();
 			const dropdown = this.shadowRoot?.querySelector(
 				'.dropdown',
 			) as HTMLElement;
+
+			dropdown.style.setProperty('left', `${rect.left}px`);
+			dropdown.style.setProperty('top', `${rect.bottom}px`);
 			dropdown.style.setProperty(
 				'max-height',
-				`${dropdownHeight - 48}px`,
+				`${window.innerHeight - rect.bottom - 48}px`,
 			);
 		}
 	}
@@ -222,15 +222,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 				.dropdown {
 					top: var(--feature-height, 42px);
-					left: 0;
-					position: absolute;
+					position: fixed;
 					overflow-y: scroll;
 					z-index: 9;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
 					padding: 8px 0;
-					max-height: 90vh;
+					max-height: 100vh;
 					will-change: transform, opacity;
 					transform: scale(1);
 					opacity: 1;
