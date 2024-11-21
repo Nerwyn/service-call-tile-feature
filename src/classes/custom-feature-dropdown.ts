@@ -147,8 +147,15 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		if (this.showDropdown && !this.dropdownUpdated) {
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
+			let optionHeight = parseInt(
+				this.style
+					.getPropertyValue('--mdc-menu-item-height')
+					.replace(/D/g, '') ?? 48,
+			);
+			const dropdownHeight0 =
+				optionHeight * (this.config.options?.length ?? 0) + 16;
 
-			console.log(`Dropdown initial height: ${dropdown.offsetHeight}`);
+			console.log(`Dropdown initial height: ${dropdownHeight0}`);
 			console.log(
 				`Available height down: ${window.innerHeight - edgeOffset - rect.bottom}`,
 			);
@@ -156,7 +163,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			let down = true;
 			if (
 				// If dropdown is too large
-				dropdown.offsetHeight >
+				dropdownHeight0 >
 					window.innerHeight - edgeOffset - rect.bottom &&
 				// If dropdown is on lower half of window
 				rect.top + rect.bottom > window.innerHeight
@@ -171,9 +178,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			);
 			dropdown.style.setProperty(
 				'max-height',
-				`${window.innerHeight - rect.bottom - edgeOffset}px`,
+				`${window.innerHeight - (down ? rect.bottom : rect.top) - edgeOffset}px`,
 			);
-			dropdown.style.setProperty('overflow-y', 'scroll');
 			this.dropdownUpdated = true;
 		} else if (!this.showDropdown) {
 			setTimeout(() => {
@@ -181,7 +187,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				dropdown.style.removeProperty('top');
 				dropdown.style.removeProperty('bottom');
 				dropdown.style.removeProperty('max-height');
-				dropdown.style.removeProperty('overflow-y');
 				this.dropdownUpdated = false;
 			}, 150);
 		}
@@ -263,6 +268,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					padding: 8px 0;
 					max-height: 100vh;
 					will-change: transform, opacity;
+					overflow-y: scroll;
 					transform: scale(1);
 					opacity: 1;
 					transition:
