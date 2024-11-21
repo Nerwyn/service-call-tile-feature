@@ -174,6 +174,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					(
 						this.renderTemplate(options[i].option as string) ?? ''
 					).toString()
+					? 'selected'
+					: ''
 			}`;
 		}
 	}
