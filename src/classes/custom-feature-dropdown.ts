@@ -7,6 +7,7 @@ import { BaseCustomFeature } from './base-custom-feature';
 @customElement('custom-feature-dropdown')
 export class CustomFeatureDropdown extends BaseCustomFeature {
 	@state() showDropdown: boolean = false;
+	dropdownUpdated: boolean = false;
 
 	onStart(e: MouseEvent | TouchEvent) {
 		clearTimeout(this.renderRippleOff);
@@ -143,8 +144,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		const dropdown = this.shadowRoot?.querySelector(
 			'.dropdown',
 		) as HTMLElement;
-
-		if (this.showDropdown) {
+		if (this.showDropdown && !this.dropdownUpdated) {
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
 
@@ -177,6 +177,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				`${window.innerHeight - rect.bottom - edgeOffset}px`,
 			);
 			dropdown.style.setProperty('overflow-y', 'scroll');
+			this.dropdownUpdated = true;
 		} else {
 			setTimeout(() => {
 				dropdown.style.removeProperty('left');
@@ -184,6 +185,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				dropdown.style.removeProperty('bottom');
 				dropdown.style.removeProperty('max-height');
 				dropdown.style.removeProperty('overflow-y');
+				this.dropdownUpdated = false;
 			}, 150);
 		}
 	}
