@@ -70,6 +70,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 		// Dropdown position and height
 		if (this.showDropdown && this.rect) {
+			// Calculate dropdown height without vertical scroll
 			let optionHeight = parseInt(
 				this.style
 					.getPropertyValue('--mdc-menu-item-height')
@@ -79,6 +80,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			const dropdownHeight0 =
 				optionHeight * (this.config.options?.length ?? 0) + 16;
 
+			// Determine dropdown direction
 			let down = true;
 			if (
 				// If dropdown is too large
@@ -93,15 +95,16 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			const dropdownElement = this.shadowRoot?.querySelector(
 				'.dropdown',
 			) as HTMLElement;
+			dropdownElement.style.setProperty(
+				'max-height',
+				`${(down ? window.innerHeight - this.rect.bottom : this.rect.top) - optionHeight - 16}px`,
+			);
 			dropdownElement.style.setProperty('left', `${this.rect.left}px`);
 			dropdownElement.style.setProperty(
 				down ? 'top' : 'bottom',
 				`${down ? this.rect.bottom : window.innerHeight - this.rect.top}px`,
 			);
-			dropdownElement.style.setProperty(
-				'max-height',
-				`${(down ? window.innerHeight - this.rect.bottom : this.rect.top) - optionHeight - 16}px`,
-			);
+			dropdownElement.style.removeProperty(down ? 'bottom' : 'top');
 		}
 
 		const dropdownOptions = [];
@@ -178,53 +181,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 
 		this.rect = this.getBoundingClientRect();
-
-		// // Dropdown position and height
-		// const dropdown = this.shadowRoot?.querySelector(
-		// 	'.dropdown',
-		// ) as HTMLElement;
-		// if (this.showDropdown && !this.dropdownUpdated) {
-		// 	this.dropdownUpdated = true;
-		// 	const rect = this.getBoundingClientRect();
-		// 	const edgeOffset = 48;
-		// 	let optionHeight = parseInt(
-		// 		this.style
-		// 			.getPropertyValue('--mdc-menu-item-height')
-		// 			.replace(/D/g, ''),
-		// 	);
-		// 	optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
-		// 	const dropdownHeight0 =
-		// 		optionHeight * (this.config.options?.length ?? 0) + 16;
-
-		// 	let down = true;
-		// 	if (
-		// 		// If dropdown is too large
-		// 		dropdownHeight0 >
-		// 			window.innerHeight - edgeOffset - rect.bottom &&
-		// 		// If dropdown is on lower half of window
-		// 		rect.top + rect.bottom > window.innerHeight
-		// 	) {
-		// 		down = false;
-		// 	}
-
-		// 	dropdown.style.setProperty('left', `${rect.left}px`);
-		// 	dropdown.style.setProperty(
-		// 		down ? 'top' : 'bottom',
-		// 		`${down ? rect.bottom : window.innerHeight - rect.top}px`,
-		// 	);
-		// 	dropdown.style.setProperty(
-		// 		'max-height',
-		// 		`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
-		// 	);
-		// } else if (!this.showDropdown) {
-		// 	setTimeout(() => {
-		// 		this.dropdownUpdated = false;
-		// 		dropdown.style.removeProperty('left');
-		// 		dropdown.style.removeProperty('top');
-		// 		dropdown.style.removeProperty('bottom');
-		// 		dropdown.style.removeProperty('max-height');
-		// 	}, 150);
-		// }
 	}
 
 	handleExternalClick = (e: MouseEvent) => {
