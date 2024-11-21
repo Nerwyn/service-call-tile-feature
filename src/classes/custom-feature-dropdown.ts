@@ -146,12 +146,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		if (this.showDropdown) {
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
-			const height0 = dropdown.offsetHeight;
 
 			let down = true;
 			if (
 				// If dropdown is too large
-				height0 > window.innerHeight - edgeOffset - rect.bottom &&
+				dropdown.offsetHeight >
+					window.innerHeight - edgeOffset - rect.bottom &&
 				// If dropdown is on lower half of window
 				rect.top + rect.bottom < window.innerHeight
 			) {
@@ -167,11 +167,15 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				'max-height',
 				`${window.innerHeight - rect.bottom - edgeOffset}px`,
 			);
+			dropdown.style.setProperty('overflow-y', 'scroll');
 		} else {
-			dropdown.style.removeProperty('left');
-			dropdown.style.removeProperty('top');
-			dropdown.style.removeProperty('bottom');
-			dropdown.style.removeProperty('max-height');
+			setTimeout(() => {
+				dropdown.style.removeProperty('left');
+				dropdown.style.removeProperty('top');
+				dropdown.style.removeProperty('bottom');
+				dropdown.style.removeProperty('max-height');
+				dropdown.style.removeProperty('overscroll-y');
+			}, 150);
 		}
 	}
 
@@ -244,7 +248,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				.dropdown {
 					top: var(--feature-height, 42px);
 					position: fixed;
-					overflow-y: scroll;
 					z-index: 9;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
