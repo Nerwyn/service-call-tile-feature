@@ -69,6 +69,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		this.setValue();
 
 		// Dropdown position and height
+		this.rect = this.getBoundingClientRect() ?? this.rect;
 		if (this.showDropdown && this.rect) {
 			// Calculate dropdown height without vertical scroll
 			let optionHeight = parseInt(
