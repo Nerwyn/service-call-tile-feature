@@ -150,11 +150,13 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			let optionHeight = parseInt(
 				this.style
 					.getPropertyValue('--mdc-menu-item-height')
-					.replace(/D/g, '') ?? 48,
+					.replace(/D/g, ''),
 			);
+			optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
 			const dropdownHeight0 =
 				optionHeight * (this.config.options?.length ?? 0) + 16;
 
+			console.log(`Option height: ${optionHeight}`);
 			console.log(`Dropdown initial height: ${dropdownHeight0}`);
 			console.log(
 				`Available height down: ${window.innerHeight - edgeOffset - rect.bottom}`,
