@@ -189,14 +189,20 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	};
 
+	handlePageScroll = (_e: Event) => {
+		this.rect = this.getBoundingClientRect();
+	};
+
 	connectedCallback() {
 		super.connectedCallback();
 		document.body.addEventListener('click', this.handleExternalClick);
+		document.body.addEventListener('scroll', this.handlePageScroll);
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		document.body.removeEventListener('click', this.handleExternalClick);
+		document.body.removeEventListener('scroll', this.handlePageScroll);
 	}
 
 	static get styles() {
