@@ -405,6 +405,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					pointer-events: none;
 				}
 				.label {
+					justify-content: flex-start;
 					font: inherit;
 				}
 				.icon {
