@@ -152,9 +152,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			console.log(
 				`Available height down: ${window.innerHeight - edgeOffset - rect.bottom}`,
 			);
-			console.log(
-				`Available height up: ${window.innerHeight - edgeOffset - rect.bottom}`,
-			);
 
 			let down = true;
 			if (
