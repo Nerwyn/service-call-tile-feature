@@ -139,18 +139,22 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			optionElements[i].className = optionClass;
 		}
 
+		// Dropdown position and height
+		const dropdown = this.shadowRoot?.querySelector(
+			'.dropdown',
+		) as HTMLElement;
 		if (this.showDropdown) {
 			const rect = this.getBoundingClientRect();
-			const dropdown = this.shadowRoot?.querySelector(
-				'.dropdown',
-			) as HTMLElement;
-
 			dropdown.style.setProperty('left', `${rect.left}px`);
 			dropdown.style.setProperty('top', `${rect.bottom}px`);
 			dropdown.style.setProperty(
 				'max-height',
 				`${window.innerHeight - rect.bottom - 48}px`,
 			);
+		} else {
+			dropdown.style.removeProperty('left');
+			dropdown.style.removeProperty('top');
+			dropdown.style.removeProperty('max-height');
 		}
 	}
 
