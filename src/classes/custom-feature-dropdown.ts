@@ -145,15 +145,32 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		) as HTMLElement;
 		if (this.showDropdown) {
 			const rect = this.getBoundingClientRect();
+			const edgeOffset = 48;
+			const height0 = dropdown.offsetHeight;
+
+			let down = true;
+			if (
+				// If dropdown is too large
+				height0 > window.innerHeight - edgeOffset - rect.bottom &&
+				// If dropdown is on lower half of window
+				rect.top + rect.bottom < window.innerHeight
+			) {
+				down = false;
+			}
+
 			dropdown.style.setProperty('left', `${rect.left}px`);
-			dropdown.style.setProperty('top', `${rect.bottom}px`);
+			dropdown.style.setProperty(
+				down ? 'top' : 'bottom',
+				`${down ? rect.bottom : rect.top}px`,
+			);
 			dropdown.style.setProperty(
 				'max-height',
-				`${window.innerHeight - rect.bottom - 48}px`,
+				`${window.innerHeight - rect.bottom - edgeOffset}px`,
 			);
 		} else {
 			dropdown.style.removeProperty('left');
 			dropdown.style.removeProperty('top');
+			dropdown.style.removeProperty('bottom');
 			dropdown.style.removeProperty('max-height');
 		}
 	}
