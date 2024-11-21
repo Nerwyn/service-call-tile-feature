@@ -80,11 +80,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			// Determine dropdown direction
 			const rect = this.getBoundingClientRect();
+			const edgeOffset = 15;
 			let down = true;
 			if (
 				// If dropdown is too large
 				dropdownHeight0 >
-					window.innerHeight - optionHeight - rect.bottom &&
+					window.innerHeight - edgeOffset - rect.bottom &&
 				// If dropdown is on lower half of window
 				rect.top + rect.bottom > window.innerHeight
 			) {
@@ -96,7 +97,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			) as HTMLElement;
 			dropdownElement.style.setProperty(
 				'max-height',
-				`${(down ? window.innerHeight - rect.bottom : rect.top) - optionHeight - 16}px`,
+				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
 			);
 			dropdownElement.style.setProperty('left', `${rect.left}px`);
 			dropdownElement.style.setProperty(
