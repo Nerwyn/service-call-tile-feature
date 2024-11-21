@@ -143,6 +143,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		const dropdown = this.shadowRoot?.querySelector(
 			'.dropdown',
 		) as HTMLElement;
+		dropdown.style.removeProperty('left');
+		dropdown.style.removeProperty('top');
+		dropdown.style.removeProperty('bottom');
+		dropdown.style.removeProperty('max-height');
+		dropdown.style.removeProperty('overflow-y');
 		if (this.showDropdown) {
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
@@ -168,14 +173,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				`${window.innerHeight - rect.bottom - edgeOffset}px`,
 			);
 			dropdown.style.setProperty('overflow-y', 'scroll');
-		} else {
-			setTimeout(() => {
-				dropdown.style.removeProperty('left');
-				dropdown.style.removeProperty('top');
-				dropdown.style.removeProperty('bottom');
-				dropdown.style.removeProperty('max-height');
-				dropdown.style.removeProperty('overscroll-y');
-			}, 150);
 		}
 	}
 
