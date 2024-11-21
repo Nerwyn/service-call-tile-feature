@@ -145,6 +145,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			'.dropdown',
 		) as HTMLElement;
 		if (this.showDropdown && !this.dropdownUpdated) {
+			this.dropdownUpdated = true;
 			const rect = this.getBoundingClientRect();
 			const edgeOffset = 48;
 			let optionHeight = parseInt(
@@ -155,12 +156,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			optionHeight = isNaN(optionHeight) ? 48 : optionHeight;
 			const dropdownHeight0 =
 				optionHeight * (this.config.options?.length ?? 0) + 16;
-
-			console.log(`Option height: ${optionHeight}`);
-			console.log(`Dropdown initial height: ${dropdownHeight0}`);
-			console.log(
-				`Available height down: ${window.innerHeight - edgeOffset - rect.bottom}`,
-			);
 
 			let down = true;
 			if (
@@ -175,21 +170,20 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			dropdown.style.setProperty('left', `${rect.left}px`);
 			dropdown.style.setProperty(
-				down ? 'top' : 'bottom',
-				`${down ? rect.bottom : rect.top}px`,
+				'top',
+				`${down ? rect.bottom : window.innerHeight - dropdownHeight0}px`,
 			);
 			dropdown.style.setProperty(
 				'max-height',
 				`${window.innerHeight - (down ? rect.bottom : rect.top) - edgeOffset}px`,
 			);
-			this.dropdownUpdated = true;
 		} else if (!this.showDropdown) {
 			setTimeout(() => {
+				this.dropdownUpdated = false;
 				dropdown.style.removeProperty('left');
 				dropdown.style.removeProperty('top');
 				dropdown.style.removeProperty('bottom');
 				dropdown.style.removeProperty('max-height');
-				this.dropdownUpdated = false;
 			}, 150);
 		}
 	}
