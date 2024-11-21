@@ -417,8 +417,10 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
+					justify-content: center;
 					gap: var(--mdc-list-item-graphic-margin, 24px);
 					height: 100%;
+					width: 100%;
 				}
 			`,
 		];
