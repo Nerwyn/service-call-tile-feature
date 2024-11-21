@@ -170,12 +170,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 			dropdown.style.setProperty('left', `${rect.left}px`);
 			dropdown.style.setProperty(
-				'top',
-				`${down ? rect.bottom : window.innerHeight - rect.top}px`,
+				down ? 'top' : 'bottom',
+				`${down ? rect.bottom : rect.top}px`,
 			);
 			dropdown.style.setProperty(
 				'max-height',
-				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset}px`,
+				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
 			);
 		} else if (!this.showDropdown) {
 			setTimeout(() => {
