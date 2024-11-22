@@ -234,8 +234,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					gap: 10px;
 					padding: 0 10px;
 					height: 100%;
-					width: -webkit-fill-available;
-					width: -moz-available;
+					width: 100%;
+					box-sizing: border-box;
 				}
 				.down-arrow {
 					position: absolute;
@@ -420,7 +420,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					justify-content: center;
 					padding-left: var(
 						--mdc-list-side-padding-left,
 						var(--mdc-list-side-padding, 20px)
