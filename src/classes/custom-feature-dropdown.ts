@@ -275,7 +275,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 				.option {
 					min-width: 100px;
-					padding: 0 20px;
 					--md-ripple-pressed-opacity: 0.2;
 				}
 				.selected {
@@ -284,7 +283,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					--mdc-ripple-hover-color: var(--ha-ripple-color);
 					--md-ripple-pressed-color: var(--ha-ripple-color);
 					--background: var(--ha-ripple-color);
-					--background-opacity: 0.12;
+					--background-opacity: 0.26;
 					--md-ripple-hover-opacity: 0.14;
 					--md-ripple-pressed-opacity: 0.26;
 				}
@@ -422,6 +421,14 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					flex-direction: row;
 					align-items: center;
 					justify-content: center;
+					padding-left: var(
+						--mdc-list-side-padding-left,
+						var(--mdc-list-side-padding, 20px)
+					);
+					padding-right: var(
+						--mdc-list-side-padding-right,
+						var(--mdc-list-side-padding, 20px)
+					);
 					gap: var(--mdc-list-item-graphic-margin, 24px);
 					height: 100%;
 					width: 100%;
