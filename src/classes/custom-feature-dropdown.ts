@@ -284,7 +284,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					--md-ripple-pressed-color: var(--ha-ripple-color);
 					--background: var(--ha-ripple-color);
 					--background-opacity: 0.26;
-					--md-ripple-hover-opacity: 0.14;
+					--md-ripple-hover-opacity: 0;
 					--md-ripple-pressed-opacity: 0.26;
 				}
 			`,
