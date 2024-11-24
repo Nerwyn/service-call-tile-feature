@@ -13,7 +13,7 @@
 
 _Formerly called Service Card Tile Feature_
 
-Call any [action](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, sliders, selectors, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
+Call any [action](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, dropdowns, selectors, sliders, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -25,17 +25,29 @@ Call any [action](https://www.home-assistant.io/dashboards/actions/) via card fe
 
 Buttons are the most basic type of custom feature, being based on the example provided in the Home Assistant developer documentation. In addition to tap actions, buttons also support double tap actions, hold actions, and an alternate momentary button mode. All of these are described in further detail below. Buttons (like most features) can be given an icon and label, and further stylized with custom CSS.
 
+## Dropdowns
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/dropdowns_tile.png" alt="dropdowns_tile" width="600"/>
+
+Dropdowns allow you to create a dropdown window with multiple user provided options, similar to those available for select entities and climate attributes. Clicking on the dropdown will show you all of the available options. Like all features in this project each option can be used for any action. The Dropdown window itself does not have an icon or label, but each option has their own appearance fields and the currently selected option will be displayed in the dropdown window.
+
+You need to define the options to be listed out in the dropdown list manually. Each of these options is a custom element that supports an action and it's own appearance fields. The currently selected option is the one whose `Option` field matches the state or attribute value of the dropdown parent entity.
+
+This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and action data filled in along with the `select_option` action information. If no icon or label is provided, the option will use its option as its label.
+
+You can override the default behavior of each option by changing their action. The `Option` field will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
+
 ## Selectors
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_tile.png" alt="selector_tile" width="600"/>
 
 Selectors allow you to create a row of custom button features with no gaps of which the currently active one will be highlighted, similar to those available for alarm control panel and thermostat modes. Like all features in this project it can be used for any action. Selectors do not have an overall icon or label, but each option has their own appearance fields.
 
-After adding a selector to your custom features row, you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature.
+After adding a selector to your custom features row, you will see nothing! This is because you need to define the options to be listed out in the selector manually. Each of these options is actually a custom button feature. The currently selected option is the one whose `Option` field matches the state or attribute value of the dropdown parent entity.
 
-This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and action data filled in along with the `select_option` action information. While the option fields and action information will autofill, you still have to click the add option button and give them appearance information so that they will render and be distinguishable (you'll know that you've added all possible options when the last option you add has the text `Option` instead of a different value).
+Like dropdowns, this feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and action data filled in along with the `select_option` action information. While the option fields and action information will autofill, you still have to click the add option button and give them appearance information so that they will render and be distinguishable (you'll know that you've added all possible options when the last option you add has the text `Option` instead of a different value).
 
-Since each selector option is a custom feature button, you can override it's default behavior by changing it's tap action. Doing so will also break the default current option highlighting logic, but you can use the `Option` field within an option alongside to restore this. `Option` will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
+Since each selector option is a custom feature button, you can override it's default behavior by changing it's tap action. The `Option` field will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
 
 ## Sliders
 
@@ -368,7 +380,7 @@ card_mod:
 
 ## Example 2
 
-A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options.
+A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options. TODO update this with dropdown
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
 
