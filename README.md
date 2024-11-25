@@ -380,7 +380,7 @@ card_mod:
 
 ## Example 2
 
-A light tile with a button for each bulb, a color selector, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options. TODO update this with dropdown
+A light tile with a button for each bulb, a color selector and dropdown, brightness and temperature sliders, and a brightness spinbox with emphasis on certain options.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="light_tile" width="600"/>
 
@@ -394,8 +394,8 @@ features:
     entries:
       - type: button
         tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           confirmation:
             text: >-
               Are you sure you want to turn the light {{ 'on' if
@@ -420,9 +420,10 @@ features:
             {% endif %}
             ;
           }
+        haptics: true
       - tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           target:
             entity_id: light.chandelier_bulb_1
         icon: mdi:lightbulb
@@ -435,8 +436,8 @@ features:
             --icon-color: orange;
           }
       - tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           target:
             entity_id: light.chandelier_bulb_2
         icon: mdi:lightbulb
@@ -449,8 +450,8 @@ features:
             --icon-color: yellow;
           }
       - tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           target:
             entity_id: light.chandelier_bulb_3
         icon: mdi:lightbulb
@@ -463,8 +464,8 @@ features:
             --icon-color: green;
           }
       - tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           target:
             entity_id: light.chandelier_bulb_4
         icon: mdi:lightbulb
@@ -477,8 +478,8 @@ features:
             --icon-color: blue;
           }
       - tap_action:
-          action: perform-action
-          perform_action: light.toggle
+          action: call-service
+          service: light.toggle
           target:
             entity_id: light.chandelier_bulb_5
         icon: mdi:lightbulb
@@ -498,8 +499,8 @@ features:
         value_attribute: rgb_color
         options:
           - tap_action:
-              action: perform-action
-              perform_action: light.turn_on
+              action: call-service
+              service: light.turn_on
               data:
                 color_name: red
               target:
@@ -519,8 +520,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: perform-action
-              perform_action: light.turn_on
+              action: call-service
+              service: light.turn_on
               data:
                 color_name: green
               target:
@@ -540,8 +541,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: perform-action
-              perform_action: light.turn_on
+              action: call-service
+              service: light.turn_on
               data:
                 color_name: blue
               target:
@@ -561,8 +562,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: perform-action
-              perform_action: light.turn_on
+              action: call-service
+              service: light.turn_on
               data:
                 color_temp: 500
               target:
@@ -584,8 +585,8 @@ features:
                 {% endif %}
               }
           - tap_action:
-              action: perform-action
-              perform_action: light.turn_on
+              action: call-service
+              service: light.turn_on
               target:
                 entity_id: light.chandelier
               data:
@@ -605,11 +606,124 @@ features:
                 {% endif %}
               }
         styles: |-
+          :host {
+            flex-basis: 500%;
+          }
           .background {
             {% if is_state("light.chandelier", "on") %}
             --background: rgb({{ state_attr("light.chandelier", "rgb_color") }});
             {% endif %}
           }
+      - type: dropdown
+        entity_id: light.chandelier
+        options:
+          - entity_id: light.chandelier
+            option: 255,166,87
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_on
+              target:
+                entity_id: light.chandelier
+              data:
+                brightness_pct: 100
+                kelvin: 2000
+            icon: mdi:checkbox-blank-circle
+            styles: |-
+              .icon {
+                color: rgb(255,166,87);
+              }
+          - entity_id: light.chandelier
+            option: 255,0,0
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_on
+              target:
+                entity_id:
+                  - light.chandelier
+              data:
+                rgb_color:
+                  - 255
+                  - 0
+                  - 0
+                brightness_pct: 100
+            icon: mdi:checkbox-blank-circle
+            styles: |-
+              .icon {
+                color: var(--red-color);
+              }
+          - entity_id: light.chandelier
+            option: 0,255,0
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_on
+              target:
+                entity_id:
+                  - light.chandelier
+              data:
+                rgb_color:
+                  - 0
+                  - 255
+                  - 0
+                brightness_pct: 100
+            icon: mdi:checkbox-blank-circle
+            styles: |-
+              .icon {
+                color: var(--green-color);
+              }
+          - entity_id: light.chandelier
+            option: 0,0,255
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_on
+              target:
+                entity_id:
+                  - light.chandelier
+              data:
+                rgb_color:
+                  - 0
+                  - 0
+                  - 255
+                brightness_pct: 100
+            icon: mdi:checkbox-blank-circle
+            styles: |-
+              .icon {
+                color: var(--blue-color);
+              }
+          - entity_id: light.chandelier
+            option: 128,0,128
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_on
+              target:
+                entity_id:
+                  - light.chandelier
+              data:
+                rgb_color:
+                  - 128
+                  - 0
+                  - 128
+                brightness_pct: 100
+            icon: mdi:checkbox-blank-circle
+            styles: |-
+              .icon {
+                color: var(--purple-color);
+              }
+          - entity_id: light.chandelier
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_off
+              target:
+                entity_id:
+                  - light.chandelier
+              data: {}
+            icon: mdi:checkbox-blank-circle-outline
+            styles: ''
+        value_attribute: rgb_color
+        styles: |-
+          .option {
+            min-width: 0;
+          }
+    styles: ''
   - type: custom:service-call
     entries:
       - type: slider
@@ -618,8 +732,8 @@ features:
         value_attribute: brightness
         icon: mdi:brightness-4
         tap_action:
-          action: perform-action
-          perform_action: light.turn_on
+          action: call-service
+          service: light.turn_on
           data:
             brightness_pct: '{{ value }}'
           target:
@@ -637,12 +751,13 @@ features:
         thumb: line
         value_attribute: color_temp
         tap_action:
-          action: perform-action
-          perform_action: light.turn_on
+          action: call-service
+          service: light.turn_on
           target:
             entity_id: light.chandelier
           data:
             color_temp: '{{ value }}'
+          confirmation: true
         label: '{{ value }}{{ unit }}'
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
@@ -665,15 +780,14 @@ features:
         icon: mdi:brightness-4
         unit_of_measurement: '%'
         label: '{{ value }}{{ unit }}'
-        step: 5
-        debounceTime: 1000
+        step: 1
         range:
           - 0
           - 100
         value_attribute: brightness
         tap_action:
-          action: perform-action
-          perform_action: light.turn_on
+          action: call-service
+          service: light.turn_on
           data:
             brightness_pct: '{{ value | float }}'
           target:
@@ -719,11 +833,12 @@ features:
             --icon-color: var(--on-color);
             --label-color: var(--on-color);
           }
+        debounce_time: 1004
 type: tile
 entity: light.chandelier
 layout_options:
   grid_columns: 4
-  grid_rows: 3
+  grid_rows: 5
 ```
 
 </details>
@@ -1509,7 +1624,7 @@ layout_options:
 
 ## Example 6
 
-A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different comic based on how long you hold it using momentary button mode.
+A better looking temperature spinbox with hold on repeat, tile color, and an icon and label. Also an XKCD button that opens a different comic based on how long you hold it using momentary button mode, and two buttons that change background color based on their state.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/spinbox_tile.png" alt="spinbox_tile" width="600"/>
 
@@ -1585,7 +1700,7 @@ features:
             exemptions:
               - user: 7e9bf9d73edc48df8ece5cec7e9a4f00
               - user: af773a442cd7493f8178f7c23b7882d7
-            text: Display Cold & Flue Index?
+            text: Display Cold & Flu Index?
 type: tile
 entity: climate.downstairs_thermostat
 layout_options:
