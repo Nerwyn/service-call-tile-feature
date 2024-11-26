@@ -608,7 +608,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 					(
 						(renderTemplate(
 							this.hass,
-							this.activeEntry?.type as string,
+							this.config.entries[this.entryIndex]
+								?.type as string,
 							this.getEntryContext(this.activeEntry ?? {}),
 						) ?? 'selector') as string
 					).toLowerCase()
