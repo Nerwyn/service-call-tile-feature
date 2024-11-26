@@ -505,6 +505,7 @@ features:
                 color_name: red
               target:
                 entity_id: light.chandelier
+              confirmation: true
             option: 255,0,0
             label: Red
             icon: mdi:alpha-r
@@ -641,18 +642,16 @@ features:
                 entity_id:
                   - light.chandelier
               data:
-                rgb_color:
-                  - 255
-                  - 0
-                  - 0
                 brightness_pct: 100
+                color_name: red
+              confirmation: true
             icon: mdi:checkbox-blank-circle
             styles: |-
               .icon {
                 color: var(--red-color);
               }
           - entity_id: light.chandelier
-            option: 0,255,0
+            option: 0,128,0
             tap_action:
               action: perform-action
               perform_action: light.turn_on
@@ -660,11 +659,9 @@ features:
                 entity_id:
                   - light.chandelier
               data:
-                rgb_color:
-                  - 0
-                  - 255
-                  - 0
                 brightness_pct: 100
+                color_name: green
+              confirmation: false
             icon: mdi:checkbox-blank-circle
             styles: |-
               .icon {
@@ -679,11 +676,8 @@ features:
                 entity_id:
                   - light.chandelier
               data:
-                rgb_color:
-                  - 0
-                  - 0
-                  - 255
                 brightness_pct: 100
+                color_name: blue
             icon: mdi:checkbox-blank-circle
             styles: |-
               .icon {
@@ -709,7 +703,6 @@ features:
                 color: var(--purple-color);
               }
           - entity_id: light.chandelier
-            option: 'off'
             tap_action:
               action: perform-action
               perform_action: light.turn_off
@@ -719,6 +712,7 @@ features:
               data: {}
             icon: mdi:checkbox-blank-circle-outline
             styles: ''
+            option: 'off'
         value_attribute: '{{- "rgb_color" if is_state(config.entity, "on") else "state" }}'
         styles: |-
           .option {
