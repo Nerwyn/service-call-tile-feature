@@ -709,6 +709,7 @@ features:
                 color: var(--purple-color);
               }
           - entity_id: light.chandelier
+            option: 'off'
             tap_action:
               action: perform-action
               perform_action: light.turn_off
@@ -718,7 +719,7 @@ features:
               data: {}
             icon: mdi:checkbox-blank-circle-outline
             styles: ''
-        value_attribute: rgb_color
+        value_attribute: '{{- "rgb_color" if is_state(config.entity, "on") else "state" }}'
         styles: |-
           .option {
             min-width: 0;
