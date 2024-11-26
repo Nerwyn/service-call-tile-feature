@@ -433,7 +433,23 @@ export class CustomFeaturesRowEditor extends LitElement {
 					edit: this.editOption,
 					remove: this.removeOption,
 				};
-				listHeader = 'Selector Options';
+				switch (
+					(
+						(renderTemplate(
+							this.hass,
+							this.activeEntry?.type as string,
+							this.getEntryContext(this.activeEntry ?? {}),
+						) ?? 'selector') as string
+					).toLowerCase()
+				) {
+					case 'dropdown':
+						listHeader = 'Dropdown Options';
+						break;
+					case 'selector':
+					default:
+						listHeader = 'Selector Options';
+						break;
+				}
 				break;
 			case 'entry':
 			default:
@@ -588,7 +604,23 @@ export class CustomFeaturesRowEditor extends LitElement {
 		let exitHandler: (e: CustomEvent) => void;
 		switch (this.activeEntryType) {
 			case 'option':
-				title = 'Selector Option';
+				switch (
+					(
+						(renderTemplate(
+							this.hass,
+							this.activeEntry?.type as string,
+							this.getEntryContext(this.activeEntry ?? {}),
+						) ?? 'selector') as string
+					).toLowerCase()
+				) {
+					case 'dropdown':
+						title = 'Dropdown Option';
+						break;
+					case 'selector':
+					default:
+						title = 'Selector Option';
+						break;
+				}
 				exitHandler = this.exitEditOption;
 				break;
 			case 'decrement':

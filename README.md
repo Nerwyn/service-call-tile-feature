@@ -120,11 +120,11 @@ Sliders and spinboxes have some additional general options. Both can have range 
 
 Sliders and spinboxes will wait one second before updating their internal values from Home Assistant. This time can be changed by setting `Update after action delay`. Spinboxes will wait to fire their actions until a set amount of time after their buttons have stopped being pressed. This time defaults to one second and can be changed by setting `Debounce time`.
 
-### Selector General Options
+### Dropdown and Selector General Options
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_general_options.png" alt="selector_general_options" width="600"/>
 
-Selectors are made up of option buttons, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row.
+Dropdowns and selectors are made up of option, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row. Dropdowns have dropdown options which can each have a single action, and selectors have buttons which can have multiple different actions.
 
 Like sliders and spinboxes, selectors have a one second delay before updating their internal values from Home Assistant, which can be adjusted using `Update after action delay`.
 
