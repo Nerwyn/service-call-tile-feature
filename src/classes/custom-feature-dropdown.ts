@@ -314,11 +314,11 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	onEnd(_e: MouseEvent | TouchEvent) {
 		if (!this.swiping) {
 			this.toggleRipple();
-			this.sendAction('tap_action');
-			this.endAction();
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,
 			);
+			this.sendAction('tap_action');
+			this.endAction();
 		}
 	}
 
