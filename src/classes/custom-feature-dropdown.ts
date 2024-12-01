@@ -63,10 +63,30 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		this.showDropdown = false;
 	}
 
+	buildDropdownStyles() {
+		const styles = `
+		${
+			this.rtl
+				? `
+		.down-arrow {
+			right: unset !important;
+			left: 10px !important;
+		}
+		`
+				: ''
+		}
+		`;
+
+		return html`<style>
+			${styles}
+		</style>`;
+	}
+
 	render() {
 		this.setValue();
 
 		// Dropdown position and height
+		this.rtl = getComputedStyle(this).direction == 'rtl';
 		if (this.showDropdown) {
 			// Calculate dropdown height without vertical scroll
 			let optionHeight = parseInt(
@@ -99,7 +119,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				'max-height',
 				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
 			);
-			dropdownElement.style.setProperty('left', `${rect.left}px`);
+			this.rtl
+				? dropdownElement.style.setProperty('right', `${rect.right}px`)
+				: dropdownElement.style.setProperty('left', `${rect.left}px`);
 			dropdownElement.style.setProperty(
 				down ? 'top' : 'bottom',
 				`${down ? rect.bottom : window.innerHeight - rect.top}px`,
@@ -160,7 +182,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			<ha-icon class="down-arrow" .icon=${'mdi:menu-down'}></ha-icon>
 		</div>`;
 
-		return html`${select}${dropdown}${this.buildStyles()}`;
+		return html`${select}${dropdown}${this.buildDropdownStyles()}${this.buildStyles()}`;
 	}
 
 	updated() {
