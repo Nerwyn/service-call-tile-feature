@@ -208,6 +208,6 @@ customElements.define('service-call', CustomFeaturesRow); // Original name to no
 window.customCardFeatures = window.customCardFeatures || [];
 window.customCardFeatures.push({
 	type: 'service-call',
-	name: 'Custom Features Row',
+	name: 'Custom features row',
 	configurable: true,
 });
