@@ -1,13 +1,13 @@
 # Custom Features for Home Assistant Cards
 
-[![GitHub Release][releases-shield]][releases]
-[![License][license-shield]](LICENSE.md)
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
-![Project Maintenance][maintenance-shield]
-[![GitHub Activity][last-commit-shield]][commits]
-[![Community Forum][forum-shield]][forum]
+[![GitHub Release](https://img.shields.io/github/release/Nerwyn/service-call-tile-feature.svg?style=for-the-badge)](https://github.com/nerwyn/service-call-tile-feature/releases)
+[![License](https://img.shields.io/github/license/Nerwyn/service-call-tile-feature.svg?style=for-the-badge)](LICENSE)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge)](https://github.com/hacs/default)
+![Project Maintenance](https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge)
+[![GitHub Activity](https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge)](https://github.com/Nerwyn/service-call-tile-feature/commits/main)
+[![Community Forum](https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge)](https://community.home-assistant.io/t/service-call-button-tile-feature/620724)
 
-[![Github][github]][github]
+![Github](https://img.shields.io/github/followers/Nerwyn.svg?style=social)
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
@@ -73,9 +73,7 @@ You can also override the default behavior of the increment and decrement button
 
 # How To Use
 
-This project now has a fully featured configuration user interface! To get started, install this project using HACS by adding it as a custom frontend repository. Then go to a dashboard.
-
-Create a tile card, or any other card that supports card features. The entity ID can be anything you like. Click `ADD FEATURE` and then `Custom features row`
+This project now has a fully featured configuration user interface! To get started, install this project using HACS. Then go to a dashboard and create a tile card, or any other card that supports card features. The entity ID can be anything you like. Click `ADD FEATURE` and then `Custom features row`
 
 All custom features are encapsulated in a custom features row. This allows you to add multiple custom features to a row, apply overall CSS styles, and change the widths of features in the row relative to each other using the `flex-basis` CSS property. You can add a custom features row just like any default feature, except that this feature is available for all entities.
 
@@ -1814,13 +1812,3 @@ layout_options:
 ```
 
 </details>
-
-[last-commit-shield]: https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge
-[commits]: https://github.com/Nerwyn/service-call-tile-feature/commits/main
-[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-[forum]: https://community.home-assistant.io/t/service-call-button-tile-feature/620724
-[license-shield]: https://img.shields.io/github/license/Nerwyn/service-call-tile-feature.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/Nerwyn/service-call-tile-feature.svg?style=for-the-badge
-[releases]: https://github.com/nerwyn/service-call-tile-feature/releases
-[github]: https://img.shields.io/github/followers/Nerwyn.svg?style=social
