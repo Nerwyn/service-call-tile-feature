@@ -75,7 +75,7 @@ You can also override the default behavior of the increment and decrement button
 
 This project now has a fully featured configuration user interface! To get started, install this project using HACS by adding it as a custom frontend repository. Then go to a dashboard.
 
-Create a tile card, or any other card that supports card features. The entity ID can be anything you like. Click `ADD FEATURE` and then `Custom Features Row`
+Create a tile card, or any other card that supports card features. The entity ID can be anything you like. Click `ADD FEATURE` and then `Custom features row`
 
 All custom features are encapsulated in a custom features row. This allows you to add multiple custom features to a row, apply overall CSS styles, and change the widths of features in the row relative to each other using the `flex-basis` CSS property. You can add a custom features row just like any default feature, except that this feature is available for all entities.
 
@@ -132,7 +132,7 @@ Like sliders and spinboxes, selectors have a one second delay before updating th
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/appearance_options.png" alt="appearance_options" width="600"/>
 
-All features (except for selectors, which support these options at the option level) can have a `Label`, `Icon`, and `Units`. These fields can also be set using templates. Like the overall custom features row, each custom feature can have it's CSS styles set (including using templates).
+All features can have a `Label`, `Icon`, and `Units` (dropdowns and selectors support these fields at the option level). These fields can also be set using templates. Like the overall custom features row, each custom feature can have it's CSS styles set (including using templates).
 
 ### A Note on Templating
 
@@ -249,12 +249,23 @@ While any CSS property can be used, these values are internal CSS attributes use
 
 | Name            | Description                                  |
 | --------------- | -------------------------------------------- |
-| --color         | The hover and selected color of an option.   |
+| --color         | Hover and selected color of an option.       |
 | --hover-opacity | Opacity to use when hovering over an option. |
+
+## Dropdown CSS Attributes
+
+| Name                                | Description                                            |
+| ----------------------------------- | ------------------------------------------------------ |
+| --mdc-menu-item-height              | Height of each dropdown option.                        |
+| --mdc-theme-text-icon-on-background | Color of dropdown option icon in list.                 |
+| --mdc-list-side-padding-left        | Left padding of option.                                |
+| --mdc-list-side-padding-right       | Right padding of option.                               |
+| --mdc-list-side-padding             | Side padding of option, lower priority than above two. |
+| --mdc-list-item-graphic-margin      | Gap between option icon and label.                     |
 
 ## Actions
 
-There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons, selector options, and spinbox buttons support all three, and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
+There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons, selector options, and spinbox buttons support all three. Dropdown options and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/button_actions_options.png" alt="button_actions_options" width="600"/>
 
