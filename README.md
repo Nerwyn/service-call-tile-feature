@@ -3,7 +3,7 @@
 [![GitHub Release](https://img.shields.io/github/release/Nerwyn/service-call-tile-feature.svg?style=for-the-badge)](https://github.com/nerwyn/service-call-tile-feature/releases)
 [![License](https://img.shields.io/github/license/Nerwyn/service-call-tile-feature.svg?style=for-the-badge)](LICENSE)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge)](https://github.com/hacs/default)
-![Project Maintenance](https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge)
+[![Project Maintenance](https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge)](https://github.com/Nerwyn)
 [![GitHub Activity](https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge)](https://github.com/Nerwyn/service-call-tile-feature/commits/main)
 [![Community Forum](https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge)](https://community.home-assistant.io/t/service-call-button-tile-feature/620724)
 
