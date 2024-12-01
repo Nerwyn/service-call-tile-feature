@@ -120,7 +120,10 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				`${(down ? window.innerHeight - rect.bottom : rect.top) - edgeOffset - 16}px`,
 			);
 			this.rtl
-				? dropdownElement.style.setProperty('right', `${rect.right}px`)
+				? dropdownElement.style.setProperty(
+						'right',
+						`${window.innerWidth - rect.right}px`,
+					)
 				: dropdownElement.style.setProperty('left', `${rect.left}px`);
 			dropdownElement.style.setProperty(
 				down ? 'top' : 'bottom',
