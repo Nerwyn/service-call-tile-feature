@@ -402,7 +402,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 		return html`${this.buildBackground()}
 			<div
-				class="option"
+				class="container"
 				@mousedown=${this.onMouseDown}
 				@mouseup=${this.onMouseUp}
 				@mousemove=${this.onMouseMove}
@@ -441,7 +441,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 						rgba(0, 0, 0, 0.38)
 					);
 				}
-				.option {
+				.container {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
