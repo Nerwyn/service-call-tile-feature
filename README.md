@@ -4,10 +4,10 @@
 [![License](https://img.shields.io/github/license/Nerwyn/service-call-tile-feature.svg?style=for-the-badge)](LICENSE)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge)](https://github.com/hacs/default)
 [![Project Maintenance](https://img.shields.io/badge/maintainer-Nerwyn-blue.svg?style=for-the-badge)](https://github.com/Nerwyn)
+![Github](https://img.shields.io/github/followers/Nerwyn.svg?style=for-the-badge)
 [![GitHub Activity](https://img.shields.io/github/last-commit/Nerwyn/service-call-tile-feature?style=for-the-badge)](https://github.com/Nerwyn/service-call-tile-feature/commits/main)
 [![Community Forum](https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge)](https://community.home-assistant.io/t/service-call-button-tile-feature/620724)
-
-![Github](https://img.shields.io/github/followers/Nerwyn.svg?style=social)
+[![Buy Me A Coffee](https://img.shields.io/badge/donate-☕buy_me_a_coffee-yellow.svg?style=for-the-badge)](https://www.buymeacoffee.com/nerwyn)
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=service-call-tile-feature&owner=Nerwyn&category=Plugin)
 
