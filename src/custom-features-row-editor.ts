@@ -1716,7 +1716,11 @@ export class CustomFeaturesRowEditor extends LitElement {
 			if (actionType in entry) {
 				const action =
 					entry[actionType as ActionType] ?? ({} as IAction);
-				if (['perform-action', 'more-info'].includes(action.action)) {
+				if (
+					['perform-action', 'more-info', 'toggle'].includes(
+						action.action,
+					)
+				) {
 					const data = action.data ?? {};
 					const target = action.target ?? {};
 					for (const targetId of [

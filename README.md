@@ -849,7 +849,7 @@ layout_options:
 
 ## Example 3
 
-Multiple sliders for a room's light and curtains.
+Multiple sliders for a room's light, curtains, and media control.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/slider_tile.png" alt="slider_tile" width="600"/>
 
@@ -1092,6 +1092,7 @@ features:
           :host {
             --color: rgb(31, 223, 100);
             --tooltip-label: '{{ (value / 60) | int }}:{{ 0 if (value - 60*((value / 60) | int)) < 10 else "" }}{{ (value - 60*((value / 60) | int)) | int }}';
+            --thumb-width: 1px;
             flex-basis: 1200%;
             height: 10px;
           }
