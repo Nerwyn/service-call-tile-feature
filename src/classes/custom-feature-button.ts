@@ -176,13 +176,23 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
 			sensitivity
 		) {
-			this.endAction();
-			this.swiping = true;
-			this.toggleRipple();
+			this.onPointerCancel(e);
 		}
 	}
 
 	onPointerCancel(_e: PointerEvent) {
+		if (
+			this.renderTemplate(
+				this.config.momentary_start_action?.action ?? 'none',
+			) != 'none' &&
+			this.renderTemplate(
+				this.config.momentary_end_action?.action ?? 'none',
+			) != 'none'
+		) {
+			this.momentaryEnd = performance.now();
+			this.sendAction('momentary_end_action');
+		}
+
 		this.endAction();
 		this.swiping = true;
 		this.toggleRipple();

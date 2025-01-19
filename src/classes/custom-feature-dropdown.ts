@@ -338,13 +338,11 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
 			sensitivity
 		) {
-			this.endAction();
-			this.swiping = true;
-			this.toggleRipple();
+			this.onPointerCancel(e);
 		}
 	}
 
-	onPointerLeave(_e: MouseEvent) {
+	onPointerCancel(_e: PointerEvent) {
 		this.endAction();
 		this.swiping = true;
 		this.toggleRipple();
@@ -374,7 +372,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
-				@pointerleave=${this.onPointerLeave}
+				@pointercancel=${this.onPointerCancel}
 				@touchend=${this.onTouchEnd}
 				@contextmenu=${this.onContextMenu}
 			>
