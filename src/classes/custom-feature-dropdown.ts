@@ -259,7 +259,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				}
 				.dropdown {
 					position: fixed;
-					z-index: 9;
+					z-index: 8;
 					color: var(--mdc-theme-on-surface);
 					background: var(--mdc-theme-surface);
 					border-radius: var(--mdc-shape-medium, 4px);
