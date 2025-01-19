@@ -350,6 +350,10 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		this.toggleRipple();
 	}
 
+	onTouchEnd(e: TouchEvent) {
+		e.preventDefault();
+	}
+
 	closeDropdown(value?: string) {
 		const event = new Event('close-dropdown', {
 			composed: true,
@@ -371,6 +375,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
 				@pointerleave=${this.onPointerLeave}
+				@touchend=${this.onTouchEnd}
 				@contextmenu=${this.onContextMenu}
 			>
 				${this.buildIcon()}${this.buildLabel()}${this.buildRipple()}
