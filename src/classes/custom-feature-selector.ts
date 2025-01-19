@@ -6,7 +6,7 @@ import './custom-feature-button';
 
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
-	onEnd(e: MouseEvent | TouchEvent) {
+	onPointerUp(e: PointerEvent) {
 		clearTimeout(this.getValueFromHassTimer);
 		this.getValueFromHass = false;
 		this.value = (e.currentTarget as HTMLElement).id;
@@ -26,12 +26,9 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					.config=${option}
 					.shouldRenderRipple=${false}
 					id=${this.renderTemplate(option.option as string)}
-					@mousedown=${this.onMouseDown}
-					@mouseup=${this.onMouseUp}
-					@mousemove=${this.onMouseMove}
-					@touchstart=${this.onTouchStart}
-					@touchend=${this.onTouchEnd}
-					@touchmove=${this.onTouchMove}
+					@pointerdown=${this.onPointerDown}
+					@pointerup=${this.onPointerUp}
+					@pointermove=${this.onPointerMove}
 					@contextmenu=${this.onContextMenu}
 				/>`,
 			);

@@ -2,12 +2,7 @@ import { HapticType, HomeAssistant } from '../models/interfaces';
 
 import { renderTemplate } from 'ha-nunjucks';
 import { CSSResult, LitElement, css, html } from 'lit';
-import {
-	customElement,
-	eventOptions,
-	property,
-	state,
-} from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 import { HassEntity } from 'home-assistant-js-websocket';
 import { UPDATE_AFTER_ACTION_DELAY } from '../models/constants';
@@ -30,13 +25,17 @@ export class BaseCustomFeature extends LitElement {
 	unitOfMeasurement: string = '';
 	precision?: number;
 
-	buttonPressStart?: number;
-	buttonPressEnd?: number;
-	fireMouseEvent?: boolean = true;
+	momentaryStart?: number;
+	momentaryEnd?: number;
 
 	swiping: boolean = false;
+
 	initialX?: number;
 	initialY?: number;
+	currentX?: number;
+	currentY?: number;
+	deltaX?: number;
+	deltaY?: number;
 
 	@property() shouldRenderRipple = true;
 	@state() renderRipple = true;
@@ -60,15 +59,17 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	endAction() {
-		clearInterval(this.valueUpdateInterval);
-		this.valueUpdateInterval = undefined;
-
-		this.buttonPressStart = undefined;
-		this.buttonPressEnd = undefined;
+		this.momentaryStart = undefined;
+		this.momentaryEnd = undefined;
 
 		this.swiping = false;
+
 		this.initialX = undefined;
 		this.initialY = undefined;
+		this.currentX = undefined;
+		this.currentY = undefined;
+		this.deltaX = undefined;
+		this.deltaY = undefined;
 	}
 
 	sendAction(
@@ -515,8 +516,8 @@ export class BaseCustomFeature extends LitElement {
 		context?: object,
 	): string | number | boolean {
 		let holdSecs: number = 0;
-		if (this.buttonPressStart && this.buttonPressEnd) {
-			holdSecs = (this.buttonPressEnd - this.buttonPressStart) / 1000;
+		if (this.momentaryStart && this.momentaryEnd) {
+			holdSecs = (this.momentaryEnd - this.momentaryStart) / 1000;
 		}
 
 		context = {
@@ -526,6 +527,12 @@ export class BaseCustomFeature extends LitElement {
 			value: this.value as string,
 			hold_secs: holdSecs,
 			unit: this.unitOfMeasurement,
+			initialX: this.initialX,
+			initialY: this.initialY,
+			currentX: this.currentX,
+			currentY: this.currentY,
+			deltaX: this.deltaX,
+			deltaY: this.deltaY,
 			config: {
 				...this.config,
 				entity: this.entityId,
@@ -553,17 +560,22 @@ export class BaseCustomFeature extends LitElement {
 			};
 		}
 
-		const res = renderTemplate(this.hass, str as string, context);
-		if (res != str) {
-			return res;
+		try {
+			const res = renderTemplate(this.hass, str as string, context);
+			if (res != str) {
+				return res;
+			}
+		} catch (e) {
+			console.error(e);
+			return '';
 		}
 
 		// Legacy string interpolation
-		if (typeof str == 'string') {
+		if (typeof str == 'string' && /VALUE|UNIT|HOLD_SECS/g.test(str)) {
 			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
 				if (str == key) {
 					return context[key as keyof object] as string;
-				} else if (str.includes(key)) {
+				} else {
 					str = str.replace(
 						new RegExp(key, 'g'),
 						(context[key as keyof object] ?? '') as string,
@@ -660,50 +672,32 @@ export class BaseCustomFeature extends LitElement {
 		return '';
 	}
 
-	// Skeletons for overridden event handlers
-	onStart(_e: MouseEvent | TouchEvent) {}
-	onEnd(_e: MouseEvent | TouchEvent) {}
-	onMove(_e: MouseEvent | TouchEvent) {}
-
-	@eventOptions({ passive: true })
-	onMouseDown(e: MouseEvent | TouchEvent) {
-		if (this.fireMouseEvent) {
-			this.onStart(e);
-		}
-	}
-	onMouseUp(e: MouseEvent | TouchEvent) {
-		if (this.fireMouseEvent) {
-			this.onEnd(e);
-		}
-		this.fireMouseEvent = true;
-	}
-	@eventOptions({ passive: true })
-	onMouseMove(e: MouseEvent | TouchEvent) {
-		if (this.fireMouseEvent) {
-			this.onMove(e);
+	onPointerDown(e: PointerEvent) {
+		if (!this.initialX && !this.initialY) {
+			this.initialX = e.clientX;
+			this.initialY = e.clientY;
+			this.currentX = e.clientX;
+			this.currentY = e.clientY;
+			this.deltaX = 0;
+			this.deltaY = 0;
 		}
 	}
 
-	@eventOptions({ passive: true })
-	onTouchStart(e: TouchEvent) {
-		this.fireMouseEvent = false;
-		this.onStart(e);
-	}
-	onTouchEnd(e: TouchEvent) {
-		this.fireMouseEvent = false;
-		this.onEnd(e);
-	}
-	@eventOptions({ passive: true })
-	onTouchMove(e: TouchEvent) {
-		this.fireMouseEvent = false;
-		this.onMove(e);
+	onPointerUp(_e: PointerEvent) {}
+
+	onPointerMove(e: PointerEvent) {
+		if (this.currentX && this.currentY && e.isPrimary) {
+			this.deltaX = e.clientX - this.currentX;
+			this.deltaY = e.clientY - this.currentY;
+			this.currentX = e.clientX;
+			this.currentY = e.clientY;
+		}
 	}
 
 	onContextMenu(e: PointerEvent) {
-		if (!this.fireMouseEvent) {
+		if (e.pointerType != 'mouse') {
 			e.preventDefault();
 			e.stopPropagation();
-			return false;
 		}
 	}
 

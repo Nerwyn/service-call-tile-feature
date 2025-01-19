@@ -17,7 +17,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
-	onClick(e: TouchEvent | MouseEvent) {
+	onClick(e: PointerEvent) {
 		e.stopImmediatePropagation();
 		this.clickCount++;
 
@@ -58,74 +58,72 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		}
 	}
 
-	onStart(e: TouchEvent | MouseEvent) {
+	onPointerDown(e: PointerEvent) {
+		this.swiping = false;
+
+		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
 		this.renderRipple = true;
-		this.swiping = false;
-		if ('targetTouches' in e) {
-			this.initialX = e.targetTouches[0].clientX;
-			this.initialY = e.targetTouches[0].clientY;
-		} else {
-			this.initialX = e.clientX;
-			this.initialY = e.clientY;
-		}
 
-		if (
-			this.config.momentary_start_action &&
-			this.renderTemplate(
-				this.config.momentary_start_action?.action ?? 'none',
-			) != 'none'
-		) {
-			this.fireHapticEvent('light');
-			this.buttonPressStart = performance.now();
-			this.sendAction('momentary_start_action');
-		} else if (
-			this.config.momentary_end_action &&
-			this.renderTemplate(
-				this.config.momentary_end_action?.action ?? 'none',
-			) != 'none'
-		) {
-			this.fireHapticEvent('light');
-			this.buttonPressStart = performance.now();
-		} else if (!this.holdTimer && this.config.hold_action) {
-			const holdTime = this.config.hold_action.hold_time
-				? (this.renderTemplate(
-						this.config.hold_action?.hold_time as unknown as string,
-					) as number)
-				: HOLD_TIME;
-			const holdAction = this.renderTemplate(
-				this.config.hold_action?.action as string,
-			);
+		if (!this.swiping) {
+			if (
+				this.config.momentary_start_action &&
+				this.renderTemplate(
+					this.config.momentary_start_action?.action ?? 'none',
+				) != 'none'
+			) {
+				this.fireHapticEvent('light');
+				this.momentaryStart = performance.now();
+				this.sendAction('momentary_start_action');
+			} else if (
+				this.config.momentary_end_action &&
+				this.renderTemplate(
+					this.config.momentary_end_action?.action ?? 'none',
+				) != 'none'
+			) {
+				this.fireHapticEvent('light');
+				this.momentaryStart = performance.now();
+			} else if (!this.holdTimer && this.config.hold_action) {
+				const holdTime = this.config.hold_action.hold_time
+					? (this.renderTemplate(
+							this.config.hold_action
+								?.hold_time as unknown as string,
+						) as number)
+					: HOLD_TIME;
+				const holdAction = this.renderTemplate(
+					this.config.hold_action?.action as string,
+				);
 
-			if (holdAction != 'none') {
-				this.holdTimer = setTimeout(() => {
-					if (!this.swiping) {
-						this.hold = true;
-						if (holdAction == 'repeat') {
-							const repeatDelay = this.config.hold_action
-								?.repeat_delay
-								? (this.renderTemplate(
-										this.config.hold_action
-											?.repeat_delay as unknown as string,
-									) as number)
-								: REPEAT_DELAY;
-							if (!this.holdInterval) {
-								this.holdInterval = setInterval(() => {
-									this.fireHapticEvent('selection');
-									this.sendAction('tap_action');
-								}, repeatDelay);
+				if (holdAction != 'none') {
+					this.holdTimer = setTimeout(() => {
+						if (!this.swiping) {
+							this.hold = true;
+							if (holdAction == 'repeat') {
+								const repeatDelay = this.config.hold_action
+									?.repeat_delay
+									? (this.renderTemplate(
+											this.config.hold_action
+												?.repeat_delay as unknown as string,
+										) as number)
+									: REPEAT_DELAY;
+								if (!this.holdInterval) {
+									this.holdInterval = setInterval(() => {
+										this.fireHapticEvent('selection');
+										this.sendAction('tap_action');
+									}, repeatDelay);
+								}
+							} else {
+								this.fireHapticEvent('selection');
 							}
-						} else {
-							this.fireHapticEvent('selection');
 						}
-					}
-				}, holdTime);
+					}, holdTime);
+				}
 			}
 		}
 	}
 
-	onEnd(e: TouchEvent | MouseEvent) {
+	onPointerUp(e: PointerEvent) {
 		if (!this.swiping) {
 			if (
 				this.config.momentary_end_action &&
@@ -134,7 +132,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				) != 'none'
 			) {
 				this.fireHapticEvent('selection');
-				this.buttonPressEnd = performance.now();
+				this.momentaryEnd = performance.now();
 				this.sendAction('momentary_end_action');
 				this.endAction();
 			} else if (
@@ -167,36 +165,26 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		}
 	}
 
-	onMove(e: TouchEvent | MouseEvent) {
-		let currentX: number;
-		let currentY: number;
-		if ('targetTouches' in e) {
-			currentX = e.targetTouches[0].clientX;
-			currentY = e.targetTouches[0].clientY;
-		} else {
-			currentX = e.clientX;
-			currentY = e.clientY;
-		}
-
-		const diffX = (this.initialX ?? currentX) - currentX;
-		const diffY = (this.initialY ?? currentY) - currentY;
+	onPointerMove(e: PointerEvent) {
+		super.onPointerMove(e);
 
 		// Only consider significant enough movement
 		const sensitivity = 8;
-		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+		const totalDeltaX = (this.currentX ?? 0) - (this.initialX ?? 0);
+		const totalDeltaY = (this.currentY ?? 0) - (this.initialY ?? 0);
+		if (
+			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
+			sensitivity
+		) {
 			this.endAction();
 			this.swiping = true;
 			this.toggleRipple();
 		}
 	}
 
-	onMouseLeave(_e: MouseEvent) {
+	onPointerCancel(_e: PointerEvent) {
 		this.endAction();
 		this.swiping = true;
-		this.toggleRipple();
-	}
-
-	onTouchCancel(_e: TouchEvent) {
 		this.toggleRipple();
 	}
 
@@ -219,14 +207,10 @@ export class CustomFeatureButton extends BaseCustomFeature {
 
 		const button = html`<button
 			class=${`${this.className} background`}
-			@mousedown=${this.onMouseDown}
-			@mouseup=${this.onMouseUp}
-			@mousemove=${this.onMouseMove}
-			@mouseleave=${this.onMouseLeave}
-			@touchstart=${this.onTouchStart}
-			@touchend=${this.onTouchEnd}
-			@touchmove=${this.onTouchMove}
-			@touchcancel=${this.onTouchCancel}
+			@pointerdown=${this.onPointerDown}
+			@pointerup=${this.onPointerUp}
+			@pointermove=${this.onPointerMove}
+			@pointercancel=${this.onPointerCancel}
 			@contextmenu=${this.onContextMenu}
 		>
 			${this.buildRipple()}

@@ -16,15 +16,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	holdTimer?: ReturnType<typeof setTimeout>;
 	holdInterval?: ReturnType<typeof setInterval>;
 
-	onStart(e: TouchEvent | MouseEvent) {
+	onPointerDown(e: PointerEvent) {
 		this.swiping = false;
-		if ('targetTouches' in e) {
-			this.initialX = e.targetTouches[0].clientX;
-			this.initialY = e.targetTouches[0].clientY;
-		} else {
-			this.initialX = e.clientX;
-			this.initialY = e.clientY;
-		}
+		super.onPointerDown(e);
 
 		const operator = (e.currentTarget as HTMLElement).id as
 			| 'increment'
@@ -62,7 +56,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		}
 	}
 
-	onEnd(e: TouchEvent | MouseEvent) {
+	onPointerUp(e: PointerEvent) {
 		clearTimeout(this.debounceTimer);
 
 		if (!this.swiping) {
@@ -82,23 +76,17 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		this.endAction();
 	}
 
-	onMove(e: TouchEvent | MouseEvent) {
-		let currentX: number;
-		let currentY: number;
-		if ('targetTouches' in e) {
-			currentX = e.targetTouches[0].clientX;
-			currentY = e.targetTouches[0].clientY;
-		} else {
-			currentX = e.clientX;
-			currentY = e.clientY;
-		}
-
-		const diffX = (this.initialX ?? currentX) - currentX;
-		const diffY = (this.initialY ?? currentY) - currentY;
+	onPointerMove(e: PointerEvent) {
+		super.onPointerMove(e);
 
 		// Only consider significant enough movement
 		const sensitivity = 8;
-		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+		const totalDeltaX = (this.currentX ?? 0) - (this.initialX ?? 0);
+		const totalDeltaY = (this.currentY ?? 0) - (this.initialY ?? 0);
+		if (
+			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
+			sensitivity
+		) {
 			this.endAction();
 			clearTimeout(this.debounceTimer);
 			this.swiping = true;
@@ -174,12 +162,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					id="${operator}"
 					.hass=${this.hass}
 					.config=${actions}
-					@mousedown=${this.onMouseDown}
-					@mouseup=${this.onMouseUp}
-					@mousemove=${this.onMouseMove}
-					@touchstart=${this.onTouchStart}
-					@touchend=${this.onTouchEnd}
-					@touchmove=${this.onTouchMove}
+					@pointerdown=${this.onPointerDown}
+					@pointerup=${this.onPointerUp}
+					@pointermove=${this.onPointerMove}
 					@contextmenu=${this.onContextMenu}
 				/>
 			`;

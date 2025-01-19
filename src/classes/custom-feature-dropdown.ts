@@ -8,46 +8,34 @@ import { BaseCustomFeature } from './base-custom-feature';
 export class CustomFeatureDropdown extends BaseCustomFeature {
 	@state() showDropdown: boolean = false;
 
-	onStart(e: MouseEvent | TouchEvent) {
+	onPointerDown(e: PointerEvent) {
+		this.swiping = false;
+		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
 		this.renderRipple = true;
-		this.swiping = false;
-		if ('targetTouches' in e) {
-			this.initialX = e.targetTouches[0].clientX;
-			this.initialY = e.targetTouches[0].clientY;
-		} else {
-			this.initialX = e.clientX;
-			this.initialY = e.clientY;
-		}
 	}
 
-	onMove(e: TouchEvent | MouseEvent) {
-		let currentX: number;
-		let currentY: number;
-		if ('targetTouches' in e) {
-			currentX = e.targetTouches[0].clientX;
-			currentY = e.targetTouches[0].clientY;
-		} else {
-			currentX = e.clientX;
-			currentY = e.clientY;
-		}
-
-		const diffX = (this.initialX ?? currentX) - currentX;
-		const diffY = (this.initialY ?? currentY) - currentY;
-
-		// Only consider significant enough movement
-		const sensitivity = 8;
-		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
-			this.endAction();
-			this.swiping = true;
+	onPointerUp(_e: PointerEvent) {
+		if (!this.swiping) {
+			this.showDropdown = !this.showDropdown;
 			this.toggleRipple();
 		}
 	}
 
-	onEnd(_e: MouseEvent | TouchEvent) {
-		if (!this.swiping) {
-			this.showDropdown = !this.showDropdown;
+	onPointerMove(e: PointerEvent) {
+		super.onPointerMove(e);
+
+		// Only consider significant enough movement
+		const sensitivity = 8;
+		const totalDeltaX = (this.currentX ?? 0) - (this.initialX ?? 0);
+		const totalDeltaY = (this.currentY ?? 0) - (this.initialY ?? 0);
+		if (
+			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
+			sensitivity
+		) {
+			this.endAction();
+			this.swiping = true;
 			this.toggleRipple();
 		}
 	}
@@ -167,12 +155,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			${this.buildBackground()}
 			<div
 				class="select"
-				@mousedown=${this.onMouseDown}
-				@mouseup=${this.onMouseUp}
-				@mousemove=${this.onMouseMove}
-				@touchstart=${this.onTouchStart}
-				@touchend=${this.onTouchEnd}
-				@touchmove=${this.onTouchMove}
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
 				@contextmenu=${this.onContextMenu}
 			>
 				${selectedOption
@@ -321,22 +306,16 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	@property() config!: IOption;
 
-	onStart(e: MouseEvent | TouchEvent) {
+	onPointerDown(e: PointerEvent) {
+		this.swiping = false;
+		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
 		this.renderRipple = true;
-		this.swiping = false;
-		if ('targetTouches' in e) {
-			this.initialX = e.targetTouches[0].clientX;
-			this.initialY = e.targetTouches[0].clientY;
-		} else {
-			this.initialX = e.clientX;
-			this.initialY = e.clientY;
-		}
 		this.fireHapticEvent('light');
 	}
 
-	onEnd(_e: MouseEvent | TouchEvent) {
+	onPointerUp(_e: PointerEvent) {
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.closeDropdown(
@@ -347,43 +326,27 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
-	onMove(e: TouchEvent | MouseEvent) {
-		let currentX: number;
-		let currentY: number;
-		if ('targetTouches' in e) {
-			currentX = e.targetTouches[0].clientX;
-			currentY = e.targetTouches[0].clientY;
-		} else {
-			currentX = e.clientX;
-			currentY = e.clientY;
-		}
-
-		const diffX = (this.initialX ?? currentX) - currentX;
-		const diffY = (this.initialY ?? currentY) - currentY;
+	onPointerMove(e: PointerEvent) {
+		super.onPointerMove(e);
 
 		// Only consider significant enough movement
 		const sensitivity = 8;
-		if (Math.abs(Math.abs(diffX) - Math.abs(diffY)) > sensitivity) {
+		const totalDeltaX = (this.currentX ?? 0) - (this.initialX ?? 0);
+		const totalDeltaY = (this.currentY ?? 0) - (this.initialY ?? 0);
+		if (
+			Math.abs(Math.abs(totalDeltaX) - Math.abs(totalDeltaY)) >
+			sensitivity
+		) {
 			this.endAction();
 			this.swiping = true;
 			this.toggleRipple();
 		}
 	}
 
-	onTouchEnd(e: TouchEvent) {
-		e.preventDefault();
-		super.onTouchEnd(e);
-	}
-
-	onMouseLeave(_e: MouseEvent) {
+	onPointerLeave(_e: MouseEvent) {
 		this.endAction();
 		this.swiping = true;
 		this.toggleRipple();
-	}
-
-	onTouchCancel(_e: TouchEvent) {
-		this.toggleRipple();
-		this.closeDropdown();
 	}
 
 	closeDropdown(value?: string) {
@@ -403,14 +366,10 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		return html`${this.buildBackground()}
 			<div
 				class="content"
-				@mousedown=${this.onMouseDown}
-				@mouseup=${this.onMouseUp}
-				@mousemove=${this.onMouseMove}
-				@mouseleave=${this.onMouseLeave}
-				@touchstart=${this.onTouchStart}
-				@touchend=${this.onTouchEnd}
-				@touchmove=${this.onTouchMove}
-				@touchcancel=${this.onTouchCancel}
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
+				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			>
 				${this.buildIcon()}${this.buildLabel()}${this.buildRipple()}

@@ -106,7 +106,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		}
 	}
 
-	onStart(e: MouseEvent | TouchEvent) {
+	onPointerDown(e: PointerEvent) {
+		super.onPointerDown(e);
 		const slider = e.currentTarget as HTMLInputElement;
 
 		if (!this.swiping) {
@@ -120,7 +121,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		}
 	}
 
-	onEnd(_e: MouseEvent | TouchEvent) {
+	onPointerUp(_e: PointerEvent) {
 		this.setThumbOffset();
 		this.showTooltip = false;
 		this.setValue();
@@ -148,28 +149,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		this.resetGetValueFromHass();
 	}
 
-	onMove(e: MouseEvent | TouchEvent) {
-		let currentX: number;
-		if ('clientX' in e) {
-			currentX = e.clientX;
-		} else {
-			currentX = e.touches[0].clientX;
-		}
-		let currentY: number;
-		if ('clientY' in e) {
-			currentY = e.clientY;
-		} else {
-			currentY = e.touches[0].clientY;
-		}
+	onPointerMove(e: PointerEvent) {
+		super.onPointerMove(e);
 
-		if (this.initialY == undefined) {
-			this.initialY = currentY;
-		}
-		if (this.initialX == undefined) {
-			this.initialX = currentX;
-		} else if (
-			Math.abs(currentX - this.initialX) <
-			Math.abs(currentY - this.initialY) - 40
+		// Only consider significant enough movement
+		const sensitivity = 40;
+		if (
+			Math.abs((this.currentX ?? 0) - (this.initialX ?? 0)) <
+			Math.abs((this.currentY ?? 0) - (this.initialY ?? 0)) - sensitivity
 		) {
 			this.swiping = true;
 			this.getValueFromHass = true;
@@ -253,12 +240,9 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				value="${value}"
 				.value="${value}"
 				@input=${this.onInput}
-				@mousedown=${this.onMouseDown}
-				@mouseup=${this.onMouseUp}
-				@mousemove=${this.onMouseMove}
-				@touchstart=${this.onTouchStart}
-				@touchend=${this.onTouchEnd}
-				@touchmove=${this.onTouchMove}
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
 				@contextmenu=${this.onContextMenu}
 			/>
 		`;

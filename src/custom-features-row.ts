@@ -163,14 +163,19 @@ class CustomFeaturesRow extends LitElement {
 				`
 			: '';
 
+		const polyfillPointerEvents = !window.PointerEvent
+			? html`<script src="https://cdn.jsdelivr.net/npm/@wessberg/pointer-events@1.0.9/dist/index.min.js"></script>`
+			: '';
+
 		const version = this.hass.config.version;
 		return html`<div
-			class="row ${classMap({
-				'no-padding': atLeastHaVersion(version, 2024, 8),
-			})}"
-		>
-			${row}${styles}
-		</div>`;
+				class="row ${classMap({
+					'no-padding': atLeastHaVersion(version, 2024, 8),
+				})}"
+			>
+				${row}${styles}
+			</div>
+			${polyfillPointerEvents}`;
 	}
 
 	static get styles() {
