@@ -315,7 +315,8 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		this.fireHapticEvent('light');
 	}
 
-	onPointerUp(_e: PointerEvent) {
+	onPointerUp(e: PointerEvent) {
+		e.preventDefault();
 		if (!this.swiping) {
 			this.toggleRipple();
 			this.closeDropdown(
