@@ -198,6 +198,12 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		this.toggleRipple();
 	}
 
+	onPointerLeave(e: PointerEvent) {
+		if (e.pointerType == 'mouse' && this.initialX && this.initialY) {
+			this.onPointerCancel(e);
+		}
+	}
+
 	endAction() {
 		clearTimeout(this.clickTimer as ReturnType<typeof setTimeout>);
 		this.clickTimer = undefined;
@@ -221,6 +227,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			@pointerup=${this.onPointerUp}
 			@pointermove=${this.onPointerMove}
 			@pointercancel=${this.onPointerCancel}
+			@pointerleave=${this.onPointerLeave}
 			@contextmenu=${this.onContextMenu}
 		>
 			${this.buildRipple()}

@@ -35,7 +35,7 @@ You need to define the options to be listed out in the dropdown list manually. E
 
 This feature works best with Home Assistant `select/input_select` entities. By setting the feature entity to one of these domains and leaving autofill enabled, any options you add will automatically have the ordered option from the select entity in both the `option` and action data filled in along with the `select_option` action information. If no icon or label is provided, the option will use its option as its label.
 
-You can override the default behavior of each option by changing their action. The `Option` field will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be highlighted. The option highlight color defaults to the parent card color (usually the tile card color), but can be changed by setting the CSS attribute `--color` to a different value, either for the entire feature or an individual option.
+You can override the default behavior of each option by changing their action. The `Option` field will be the value to compare against the feature's value, whether that is it's entity's state or one of it's attributes. If they match and are not undefined, then the the option will be displayed in the dropdown window. You can use a template in the parent attribute field for more advanced matching.
 
 ## Selectors
 
