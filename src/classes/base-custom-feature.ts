@@ -694,6 +694,18 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
+	onPointerCancel(_e: PointerEvent) {
+		this.endAction();
+		this.swiping = true;
+		this.toggleRipple();
+	}
+
+	onPointerLeave(e: PointerEvent) {
+		if (e.pointerType == 'mouse' && this.initialX && this.initialY) {
+			this.onPointerCancel(e);
+		}
+	}
+
 	onContextMenu(e: PointerEvent) {
 		if (e.pointerType != 'mouse') {
 			e.preventDefault();

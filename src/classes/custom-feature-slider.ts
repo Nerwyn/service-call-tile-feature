@@ -243,6 +243,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			/>
 		`;

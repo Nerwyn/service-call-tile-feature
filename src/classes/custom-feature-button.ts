@@ -180,7 +180,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		}
 	}
 
-	onPointerCancel(_e: PointerEvent) {
+	onPointerCancel(e: PointerEvent) {
 		if (
 			this.renderTemplate(
 				this.config.momentary_start_action?.action ?? 'none',
@@ -193,15 +193,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			this.sendAction('momentary_end_action');
 		}
 
-		this.endAction();
-		this.swiping = true;
-		this.toggleRipple();
-	}
-
-	onPointerLeave(e: PointerEvent) {
-		if (e.pointerType == 'mouse' && this.initialX && this.initialY) {
-			this.onPointerCancel(e);
-		}
+		super.onPointerCancel(e);
 	}
 
 	endAction() {
