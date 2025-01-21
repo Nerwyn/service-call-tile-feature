@@ -342,12 +342,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
-	onPointerCancel(_e: PointerEvent) {
-		this.endAction();
-		this.swiping = true;
-		this.toggleRipple();
-	}
-
 	onTouchEnd(e: TouchEvent) {
 		e.preventDefault();
 	}
@@ -373,6 +367,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
 				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
 				@touchend=${this.onTouchEnd}
 				@contextmenu=${this.onContextMenu}
 			>
