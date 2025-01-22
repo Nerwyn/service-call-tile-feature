@@ -59,6 +59,28 @@ class CustomFeaturesRow extends LitElement {
 		this.config = config;
 	}
 
+	renderTemplate(
+		str: string | number | boolean,
+		context?: object,
+	): string | number | boolean {
+		context = {
+			render: (str2: string) => this.renderTemplate(str2, context),
+			...context,
+		};
+
+		try {
+			const res = renderTemplate(this.hass, str as string, context);
+			if (res != str) {
+				return res;
+			}
+		} catch (e) {
+			console.error(e);
+			return '';
+		}
+
+		return str;
+	}
+
 	render() {
 		if (!this.config || !this.hass || !this.stateObj) {
 			return null;
@@ -74,19 +96,17 @@ class CustomFeaturesRow extends LitElement {
 					stateObj: this.stateObj,
 				},
 			};
-			context.config.entity = renderTemplate(
-				this.hass,
+			context.config.entity = this.renderTemplate(
 				entry.entity_id ?? '',
 				context,
 			) as string;
-			context.config.attribute = renderTemplate(
-				this.hass,
+			context.config.attribute = this.renderTemplate(
 				entry.value_attribute ?? 'state',
 				context,
 			) as string;
 
 			const entryType = (
-				(renderTemplate(this.hass, entry.type as string, context) ??
+				(this.renderTemplate(entry.type as string, context) ??
 					'button') as string
 			).toLowerCase();
 			switch (entryType) {
@@ -151,8 +171,7 @@ class CustomFeaturesRow extends LitElement {
 			? html`
 					<style>
 						${(
-							renderTemplate(
-								this.hass,
+							this.renderTemplate(
 								this.config.styles,
 								context,
 							) as string
