@@ -39,7 +39,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	onInput(e: InputEvent) {
 		const slider = e.currentTarget as HTMLInputElement;
 
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = false;
 			this.value = slider.value;
@@ -126,7 +126,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		this.showTooltip = false;
 		this.setValue();
 
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			if (!this.newValue && this.newValue != 0) {
 				this.newValue = Number(this.value);
 			}

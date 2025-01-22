@@ -17,8 +17,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	onPointerUp(_e: PointerEvent) {
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			this.showDropdown = !this.showDropdown;
+			this.endAction();
 			this.toggleRipple();
 		}
 	}
@@ -158,6 +159,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			>
 				${selectedOption
@@ -317,7 +320,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 	onPointerUp(e: PointerEvent) {
 		e.preventDefault();
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			this.toggleRipple();
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,

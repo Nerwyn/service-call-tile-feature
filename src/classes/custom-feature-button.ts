@@ -124,7 +124,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 	}
 
 	onPointerUp(e: PointerEvent) {
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			if (
 				this.config.momentary_end_action &&
 				this.renderTemplate(

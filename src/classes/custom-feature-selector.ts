@@ -7,10 +7,13 @@ import './custom-feature-button';
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
 	onPointerUp(e: PointerEvent) {
-		clearTimeout(this.getValueFromHassTimer);
-		this.getValueFromHass = false;
-		this.value = (e.currentTarget as HTMLElement).id;
-		this.resetGetValueFromHass();
+		if (!this.swiping && this.initialX && this.initialY) {
+			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = false;
+			this.value = (e.currentTarget as HTMLElement).id;
+			this.resetGetValueFromHass();
+			this.endAction();
+		}
 	}
 
 	render() {
@@ -29,6 +32,8 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					@pointerdown=${this.onPointerDown}
 					@pointerup=${this.onPointerUp}
 					@pointermove=${this.onPointerMove}
+					@pointercancel=${this.onPointerCancel}
+					@pointerleave=${this.onPointerLeave}
 					@contextmenu=${this.onContextMenu}
 				/>`,
 			);

@@ -59,7 +59,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	onPointerUp(e: PointerEvent) {
 		clearTimeout(this.debounceTimer);
 
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = false;
 
