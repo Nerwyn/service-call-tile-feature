@@ -6,10 +6,11 @@
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "npx webpack",
+		"build": "npx webpack && gzip -fk dist/custom-features-row.min.js",
 		"prelint": "tsc --noemit",
 		"lint": "eslint --fix --config ./.eslintrc.config.cjs",
-		"build-css": "tcm src"
+		"build-css": "tcm src",
+		"setup": "git config --add core.hooksPath githooks && npm i"
 	},
 	"lint-staged": {
 		"*": "prettier -w"
@@ -27,7 +28,6 @@
 	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
 	"dependencies": {
 		"ha-nunjucks": "latest",
-		"home-assistant-js-websocket": "latest",
 		"js-yaml": "latest",
 		"lit": "latest"
 	},
@@ -46,6 +46,7 @@
 		"ts-loader": "latest",
 		"typescript": "latest",
 		"webpack": "latest",
-		"webpack-cli": "latest"
+		"webpack-cli": "latest",
+		"home-assistant-js-websocket": "latest"
 	}
 }
