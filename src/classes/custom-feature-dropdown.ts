@@ -318,14 +318,14 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		this.fireHapticEvent('light');
 	}
 
-	onPointerUp(e: PointerEvent) {
+	async onPointerUp(e: PointerEvent) {
 		e.preventDefault();
 		if (!this.swiping && this.initialX && this.initialY) {
 			this.toggleRipple();
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,
 			);
-			this.sendAction('tap_action');
+			await this.sendAction('tap_action');
 			this.endAction();
 		}
 	}

@@ -1,4 +1,10 @@
-import { HapticType, HomeAssistant } from '../models/interfaces';
+import {
+	Action,
+	HapticType,
+	HomeAssistant,
+	IConfirmation,
+	IDialog,
+} from '../models/interfaces';
 
 import { renderTemplate } from 'ha-nunjucks';
 import { CSSResult, LitElement, css, html } from 'lit';
@@ -72,7 +78,7 @@ export class BaseCustomFeature extends LitElement {
 		this.deltaY = undefined;
 	}
 
-	sendAction(
+	async sendAction(
 		actionType: ActionType,
 		actions: IActions = this.config as IActions,
 	) {
@@ -97,7 +103,7 @@ export class BaseCustomFeature extends LitElement {
 		}
 
 		action &&= this.deepRenderTemplate(action);
-		if (!action || !this.handleConfirmation(action)) {
+		if (!action || !(await this.handleConfirmation(action))) {
 			this.dispatchEvent(new CustomEvent('confirmation-failed'));
 			return;
 		}
@@ -141,22 +147,35 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	callService(action: IAction) {
-		const [domain, service] = (
+		const performAction =
 			action.perform_action ??
-			(action['service' as 'perform_action'] as string)
-		).split('.');
+			(action['service' as 'perform_action'] as string);
+
+		if (!performAction) {
+			this.showFailureToast(action.action);
+			return;
+		}
+
+		const [domain, service] = performAction.split('.');
 		this.hass.callService(domain, service, action.data, action.target);
 	}
 
 	navigate(action: IAction) {
-		const path = (action.navigation_path as string) ?? '';
-		const replace = action.navigation_replace ?? false;
+		const path = action.navigation_path as string;
+
+		if (!path) {
+			this.showFailureToast(action.action);
+			return;
+		}
+
 		if (path.includes('//')) {
 			console.error(
 				'Protocol detected in navigation path. To navigate to another website use the action "url" with the key "url_path" instead.',
 			);
 			return;
 		}
+
+		const replace = action.navigation_replace ?? false;
 		if (replace == true) {
 			window.history.replaceState(
 				window.history.state?.root ? { root: true } : null,
@@ -177,6 +196,12 @@ export class BaseCustomFeature extends LitElement {
 
 	url(action: IAction) {
 		let url = action.url_path ?? '';
+
+		if (!url) {
+			this.showFailureToast(action.action);
+			return;
+		}
+
 		if (!url.includes('//')) {
 			url = `https://${url}`;
 		}
@@ -220,12 +245,19 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	moreInfo(action: IAction) {
+		const entityId = action.target?.entity_id ?? this.config.entity_id;
+
+		if (!entityId) {
+			this.showFailureToast(action.action);
+			return;
+		}
+
 		const event = new Event('hass-more-info', {
 			bubbles: true,
 			cancelable: true,
 			composed: true,
 		});
-		event.detail = { entityId: action.target?.entity_id };
+		event.detail = { entityId };
 		this.dispatchEvent(event);
 	}
 
@@ -234,6 +266,11 @@ export class BaseCustomFeature extends LitElement {
 			...action.data,
 			...action.target,
 		};
+
+		if (!Object.keys(target).length) {
+			this.showFailureToast(action.action);
+			return;
+		}
 
 		if (Array.isArray(target.entity_id)) {
 			for (const entityId of target.entity_id) {
@@ -292,27 +329,119 @@ export class BaseCustomFeature extends LitElement {
 		eval(action.eval ?? '');
 	}
 
-	handleConfirmation(action: IAction): boolean {
-		if (action.confirmation) {
-			let text = `Are you sure you want to run action '${action.action}'?`;
-			if (action.confirmation == true) {
-				this.fireHapticEvent('warning');
-				return confirm(text);
-			}
-			if (action.confirmation?.text) {
-				text = action.confirmation.text;
-			}
-			if (
-				action.confirmation?.exemptions
-					?.map((exemption) => exemption.user)
-					.includes(this.hass.user?.id as string)
-			) {
-				return true;
-			}
+	openDialog(dialogConfig: IDialog) {
+		const event = new Event('dialog-open', {
+			composed: true,
+			bubbles: true,
+		});
+		event.detail = dialogConfig;
+
+		let target = (this.getRootNode() as ShadowRoot).querySelector(
+			'custom-feature-dialog',
+		) as LitElement;
+		if (!target) {
+			target = (
+				(
+					this.getRootNode() as ShadowRoot
+				).host.getRootNode() as ShadowRoot
+			).querySelector('custom-feature-dialog') as LitElement;
+		}
+
+		target.shadowRoot?.querySelector('dialog')?.dispatchEvent(event);
+	}
+
+	async handleConfirmation(action: IAction): Promise<boolean> {
+		if (
+			action.confirmation &&
+			(!(action.confirmation as IConfirmation).exemptions ||
+				!(action.confirmation as IConfirmation).exemptions?.some(
+					(e) => e.user == this.hass.user?.id,
+				))
+		) {
 			this.fireHapticEvent('warning');
-			return confirm(text);
+
+			let text = (action.confirmation as IConfirmation).text;
+			if (!text) {
+				let serviceName;
+				const [domain, service] = (
+					action.perform_action ??
+					action['service' as 'perform_action'] ??
+					''
+				).split('.');
+				if (this.hass.services[domain]?.[service]) {
+					const localize =
+						await this.hass.loadBackendTranslation('title');
+					serviceName = `${
+						localize(`component.${domain}.title`) || domain
+					}: ${
+						localize(
+							`component.${domain}.services.${service}.name`,
+						) ||
+						this.hass.services[domain][service].name ||
+						service
+					}`;
+				}
+
+				text = this.hass.localize(
+					'ui.panel.lovelace.cards.actions.action_confirmation',
+					{
+						action:
+							serviceName ??
+							this.hass.localize(
+								`ui.panel.lovelace.editor.action-editor.actions.${action.action}`,
+							) ??
+							action.action,
+					},
+				);
+			}
+			this.openDialog({
+				type: 'confirmation',
+				text: text,
+			});
+
+			return await new Promise((resolve) => {
+				const handler = (e: Event) => {
+					this.removeEventListener('confirmation-result', handler);
+					resolve(e.detail);
+				};
+				this.addEventListener('confirmation-result', handler);
+			});
 		}
 		return true;
+	}
+
+	showFailureToast(action: Action) {
+		let suffix = '';
+		switch (action) {
+			case 'more-info':
+				suffix = 'no_entity_more_info';
+				break;
+			case 'navigate':
+				suffix = 'no_navigation_path';
+				break;
+			case 'url':
+				suffix = 'no_url';
+				break;
+			case 'toggle':
+				suffix = 'no_entity_toggle';
+				break;
+			case 'perform-action':
+			case 'call-service' as 'perform-action':
+			default:
+				suffix = 'no_action';
+				break;
+		}
+		const event = new Event('hass-notification', {
+			bubbles: true,
+			composed: true,
+		});
+		event.detail = {
+			message: this.hass.localize(
+				`ui.panel.lovelace.cards.actions.${suffix}`,
+			),
+		};
+		this.dispatchEvent(event);
+		this.fireHapticEvent('failure');
 	}
 
 	firstUpdated() {

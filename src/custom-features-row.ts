@@ -9,6 +9,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant } from './models/interfaces';
 
 import './classes/custom-feature-button';
+import './classes/custom-feature-dialog';
 import './classes/custom-feature-dropdown';
 import './classes/custom-feature-selector';
 import './classes/custom-feature-slider';
@@ -184,12 +185,13 @@ class CustomFeaturesRow extends LitElement {
 
 		const version = this.hass.config.version;
 		return html`<div
-			class="row ${classMap({
-				'no-padding': atLeastHaVersion(version, 2024, 8),
-			})}"
-		>
-			${row}${styles}
-		</div>`;
+				class="row ${classMap({
+					'no-padding': atLeastHaVersion(version, 2024, 8),
+				})}"
+			>
+				${row}${styles}
+			</div>
+			<custom-feature-dialog .hass=${this.hass}></custom-feature-dialog>`;
 	}
 
 	static get styles() {

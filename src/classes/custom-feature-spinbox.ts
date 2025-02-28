@@ -68,8 +68,8 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 				| 'decrement';
 			this.operateValue(operator);
 
-			this.debounceTimer = setTimeout(() => {
-				this.sendAction('tap_action');
+			this.debounceTimer = setTimeout(async () => {
+				await this.sendAction('tap_action');
 				this.resetGetValueFromHass();
 			}, this.debounceTime);
 		}

@@ -17,7 +17,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 	holdInterval?: ReturnType<typeof setInterval>;
 	hold: boolean = false;
 
-	onClick(e: PointerEvent) {
+	async onClick(e: PointerEvent) {
 		e.stopImmediatePropagation();
 		this.clickCount++;
 
@@ -31,7 +31,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			if (this.clickCount > 1) {
 				// Double tap action is triggered
 				this.fireHapticEvent('success');
-				this.sendAction('double_tap_action');
+				await this.sendAction('double_tap_action');
 				this.endAction();
 			} else {
 				// Single tap action is triggered if double tap is not within 200ms
@@ -43,9 +43,9 @@ export class CustomFeatureButton extends BaseCustomFeature {
 						) as number)
 					: DOUBLE_TAP_WINDOW;
 				if (!this.clickTimer) {
-					this.clickTimer = setTimeout(() => {
+					this.clickTimer = setTimeout(async () => {
 						this.fireHapticEvent('light');
-						this.sendAction('tap_action');
+						await this.sendAction('tap_action');
 						this.endAction();
 					}, doubleTapWindow);
 				}
@@ -53,12 +53,12 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		} else {
 			// No double tap action defined, tap action is triggered
 			this.fireHapticEvent('light');
-			this.sendAction('tap_action');
+			await this.sendAction('tap_action');
 			this.endAction();
 		}
 	}
 
-	onPointerDown(e: PointerEvent) {
+	async onPointerDown(e: PointerEvent) {
 		this.swiping = false;
 
 		super.onPointerDown(e);
@@ -75,7 +75,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			) {
 				this.fireHapticEvent('light');
 				this.momentaryStart = performance.now();
-				this.sendAction('momentary_start_action');
+				await this.sendAction('momentary_start_action');
 			} else if (
 				this.config.momentary_end_action &&
 				this.renderTemplate(
@@ -108,10 +108,13 @@ export class CustomFeatureButton extends BaseCustomFeature {
 										) as number)
 									: REPEAT_DELAY;
 								if (!this.holdInterval) {
-									this.holdInterval = setInterval(() => {
-										this.fireHapticEvent('selection');
-										this.sendAction('tap_action');
-									}, repeatDelay);
+									this.holdInterval = setInterval(
+										async () => {
+											this.fireHapticEvent('selection');
+											await this.sendAction('tap_action');
+										},
+										repeatDelay,
+									);
 								}
 							} else {
 								this.fireHapticEvent('selection');
@@ -123,7 +126,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		}
 	}
 
-	onPointerUp(e: PointerEvent) {
+	async onPointerUp(e: PointerEvent) {
 		if (!this.swiping && this.initialX && this.initialY) {
 			if (
 				this.config.momentary_end_action &&
@@ -133,7 +136,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			) {
 				this.fireHapticEvent('selection');
 				this.momentaryEnd = performance.now();
-				this.sendAction('momentary_end_action');
+				await this.sendAction('momentary_end_action');
 				this.endAction();
 			} else if (
 				this.config.momentary_start_action &&
@@ -154,7 +157,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 					)
 				) {
 					this.fireHapticEvent('medium');
-					this.sendAction('hold_action');
+					await this.sendAction('hold_action');
 				}
 				this.endAction();
 			} else {
@@ -180,7 +183,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		}
 	}
 
-	onPointerCancel(e: PointerEvent) {
+	async onPointerCancel(e: PointerEvent) {
 		if (
 			this.renderTemplate(
 				this.config.momentary_start_action?.action ?? 'none',
@@ -190,7 +193,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			) != 'none'
 		) {
 			this.momentaryEnd = performance.now();
-			this.sendAction('momentary_end_action');
+			await this.sendAction('momentary_end_action');
 		}
 
 		super.onPointerCancel(e);
