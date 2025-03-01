@@ -127,6 +127,7 @@ export class CustomFeatureDialog extends LitElement {
 				flex-direction: column;
 				position: fixed;
 				border: none;
+				outline: none;
 				background: var(
 					--ha-card-background,
 					var(--card-background-color, #fff)
