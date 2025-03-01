@@ -318,8 +318,8 @@ export class BaseCustomFeature extends LitElement {
 
 	fireDomEvent(action: IAction) {
 		const event = new Event(action.event_type ?? 'll-custom', {
-			composed: true,
 			bubbles: true,
+			composed: true,
 		});
 		event.detail = action;
 		this.dispatchEvent(event);
@@ -329,25 +329,13 @@ export class BaseCustomFeature extends LitElement {
 		eval(action.eval ?? '');
 	}
 
-	openDialog(dialogConfig: IDialog) {
-		const event = new Event('dialog-open', {
-			composed: true,
+	showDialog(dialogConfig: IDialog) {
+		const event = new Event('dialog-show', {
 			bubbles: true,
+			composed: true,
 		});
 		event.detail = dialogConfig;
-
-		let target = (this.getRootNode() as ShadowRoot).querySelector(
-			'custom-feature-dialog',
-		) as LitElement;
-		if (!target) {
-			target = (
-				(
-					this.getRootNode() as ShadowRoot
-				).host.getRootNode() as ShadowRoot
-			).querySelector('custom-feature-dialog') as LitElement;
-		}
-
-		target.shadowRoot?.querySelector('dialog')?.dispatchEvent(event);
+		this.dispatchEvent(event);
 	}
 
 	async handleConfirmation(action: IAction): Promise<boolean> {
@@ -394,20 +382,35 @@ export class BaseCustomFeature extends LitElement {
 					},
 				);
 			}
-			this.openDialog({
+			this.showDialog({
 				type: 'confirmation',
 				text: text,
 			});
 
 			return await new Promise((resolve) => {
 				const handler = (e: Event) => {
-					this.removeEventListener('confirmation-result', handler);
+					this.shadowRoot?.removeEventListener(
+						'confirmation-result',
+						handler,
+					);
 					resolve(e.detail);
 				};
-				this.addEventListener('confirmation-result', handler);
+				this.shadowRoot?.addEventListener(
+					'confirmation-result',
+					handler,
+				);
 			});
 		}
 		return true;
+	}
+
+	onConfirmationResult(result: boolean) {
+		const event = new Event('confirmation-result', {
+			bubbles: false,
+			composed: false,
+		});
+		event.detail = result;
+		this.shadowRoot?.dispatchEvent(event);
 	}
 
 	showFailureToast(action: Action) {
@@ -442,16 +445,6 @@ export class BaseCustomFeature extends LitElement {
 		};
 		this.dispatchEvent(event);
 		this.fireHapticEvent('failure');
-	}
-
-	firstUpdated() {
-		this.addEventListener('confirmation-failed', this.confirmationFailed);
-	}
-
-	confirmationFailed() {
-		clearTimeout(this.getValueFromHassTimer);
-		this.getValueFromHass = true;
-		this.requestUpdate();
 	}
 
 	setValue() {
@@ -840,6 +833,16 @@ export class BaseCustomFeature extends LitElement {
 			e.preventDefault();
 			e.stopPropagation();
 		}
+	}
+
+	confirmationFailed() {
+		clearTimeout(this.getValueFromHassTimer);
+		this.getValueFromHass = true;
+		this.requestUpdate();
+	}
+
+	firstUpdated() {
+		this.addEventListener('confirmation-failed', this.confirmationFailed);
 	}
 
 	static get styles(): CSSResult | CSSResult[] {

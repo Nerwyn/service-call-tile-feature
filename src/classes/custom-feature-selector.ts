@@ -6,6 +6,14 @@ import './custom-feature-button';
 
 @customElement('custom-feature-selector')
 export class CustomFeatureSelector extends BaseCustomFeature {
+	onConfirmationResult(result: boolean) {
+		const options = (this.shadowRoot?.querySelectorAll('.option') ??
+			[]) as BaseCustomFeature[];
+		for (const option of options) {
+			option.onConfirmationResult(result);
+		}
+	}
+
 	onPointerUp(e: PointerEvent) {
 		if (!this.swiping && this.initialX && this.initialY) {
 			clearTimeout(this.getValueFromHassTimer);
@@ -49,15 +57,16 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		).slice(1);
 		for (const i in options) {
 			const optionName = this.renderTemplate(options[i].option as string);
-			let optionClass = 'option';
+			let selected = false;
 			if (
 				this.value != undefined &&
 				(this.value ?? '').toString() == (optionName ?? '').toString()
 			) {
-				optionClass = 'selected-option';
+				selected = true;
 			}
 
-			optionElements[i].className = optionClass;
+			optionElements[i].className =
+				`${selected ? 'selected' : ''} option`;
 		}
 	}
 
@@ -78,7 +87,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					--background-opacity: 0;
 				}
 
-				.selected-option {
+				.selected {
 					--opacity: 1;
 					--background-opacity: 1;
 					--hover-opacity: 1;

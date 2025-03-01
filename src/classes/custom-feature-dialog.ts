@@ -12,8 +12,8 @@ export class CustomFeatureDialog extends LitElement {
 
 	outsideClickAnimation: boolean = false;
 
-	showDialog(e: CustomEvent) {
-		this.config = e.detail;
+	showDialog(config: IDialog) {
+		this.config = config;
 		this.open = true;
 		setTimeout(() => {
 			this.outsideClickAnimation = true;
@@ -107,7 +107,6 @@ export class CustomFeatureDialog extends LitElement {
 
 		return html`<dialog
 			class="${className} ${this.open ? '' : 'closed'}"
-			@dialog-open=${this.showDialog}
 			@dialog-close=${this.closeDialog}
 			@click=${this.onClick}
 		>

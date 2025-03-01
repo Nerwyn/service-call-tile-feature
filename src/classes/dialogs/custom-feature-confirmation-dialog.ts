@@ -31,47 +31,7 @@ export class ConfirmationDialog extends BaseDialog {
 		});
 		event.detail = result;
 
-		const row = (
-			this.getRootNode() as ShadowRoot
-		).host.getRootNode() as ShadowRoot;
-		let targets: Element[] = [];
-
-		// TODO clean up this querying with classes on children, parents, and childless
-
-		// No children
-		targets.push(
-			...Array.from(
-				row.querySelectorAll(
-					'custom-feature-button, custom-feature-slider',
-				),
-			),
-		);
-
-		// Selector and spinbox buttons
-		const featureWithChildren =
-			row.querySelectorAll(
-				'custom-feature-selector, custom-feature-spinbox',
-			) ?? [];
-		for (const feature of featureWithChildren) {
-			const subfeatures =
-				feature.shadowRoot?.querySelectorAll(
-					'custom-feature-button, custom-feature-spinbox-operator',
-				) ?? [];
-			targets.push(...Array.from(subfeatures));
-		}
-
-		// Dropdown options
-		const dropdowns = row.querySelectorAll('custom-feature-dropdown') ?? [];
-		for (const dropdown of dropdowns) {
-			const options =
-				dropdown.shadowRoot?.querySelector('.dropdown')?.children ?? [];
-			targets.push(...Array.from(options));
-		}
-
-		for (const target of targets) {
-			(target as HTMLElement).dispatchEvent(event);
-		}
-
+		this.dispatchEvent(event);
 		this.closeDialog();
 	}
 

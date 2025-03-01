@@ -6,7 +6,15 @@ import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-dropdown')
 export class CustomFeatureDropdown extends BaseCustomFeature {
-	@state() showDropdown: boolean = false;
+	@state() open: boolean = false;
+
+	onConfirmationResult(result: boolean) {
+		const options = (this.shadowRoot?.querySelectorAll('.option') ??
+			[]) as BaseCustomFeature[];
+		for (const option of options) {
+			option.onConfirmationResult(result);
+		}
+	}
 
 	onPointerDown(e: PointerEvent) {
 		this.swiping = false;
@@ -18,7 +26,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 	onPointerUp(_e: PointerEvent) {
 		if (!this.swiping && this.initialX && this.initialY) {
-			this.showDropdown = !this.showDropdown;
+			this.open = !this.open;
 			this.endAction();
 			this.toggleRipple();
 		}
@@ -41,7 +49,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
-	handleCloseDropdown(e: Event) {
+	closeDropdown(e: Event) {
 		const value = e.detail?.value;
 		if (value != undefined) {
 			clearTimeout(this.getValueFromHassTimer);
@@ -49,7 +57,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			this.value = value;
 			this.resetGetValueFromHass();
 		}
-		this.showDropdown = false;
+		this.open = false;
 	}
 
 	buildDropdownStyles() {
@@ -76,7 +84,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 		// Dropdown position and height
 		this.rtl = getComputedStyle(this).direction == 'rtl';
-		if (this.showDropdown) {
+		if (this.open) {
 			// Calculate dropdown height without vertical scroll
 			let optionHeight = parseInt(
 				this.style
@@ -146,8 +154,8 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			`);
 		}
 		const dropdown = html`<div
-			class="dropdown ${this.showDropdown ? '' : 'collapsed'}"
-			@close-dropdown=${this.handleCloseDropdown}
+			class="dropdown ${this.open ? '' : 'collapsed'}"
+			@dropdown-close=${this.closeDropdown}
 		>
 			${dropdownOptions}
 		</div>`;
@@ -182,21 +190,23 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
 		);
 		for (const i in options) {
-			optionElements[i].className = `option ${
+			const optionName = this.renderTemplate(options[i].option as string);
+			let selected = false;
+			if (
 				this.value != undefined &&
-				(this.value ?? '').toString() ==
-					(
-						this.renderTemplate(options[i].option as string) ?? ''
-					).toString()
-					? 'selected'
-					: ''
-			}`;
+				(this.value ?? '').toString() == (optionName ?? '').toString()
+			) {
+				selected = true;
+			}
+
+			optionElements[i].className =
+				`${selected ? 'selected' : ''} option`;
 		}
 	}
 
 	handleExternalClick = (e: MouseEvent) => {
 		if (typeof e.composedPath && !e.composedPath().includes(this)) {
-			this.showDropdown = false;
+			this.open = false;
 		}
 	};
 
@@ -350,9 +360,9 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	}
 
 	closeDropdown(value?: string) {
-		const event = new Event('close-dropdown', {
-			composed: true,
+		const event = new Event('dropdown-close', {
 			bubbles: true,
+			composed: true,
 		});
 		event.detail = {
 			value,
