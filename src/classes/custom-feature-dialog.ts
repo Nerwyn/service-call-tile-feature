@@ -9,14 +9,14 @@ export class CustomFeatureDialog extends LitElement {
 	@property() hass!: HomeAssistant;
 	@state() config!: IDialog;
 	@state() open: boolean = false;
-
-	outsideClickAnimation: boolean = false;
+	@state() fadedIn: boolean = false;
+	fadedInTimer?: ReturnType<typeof setTimeout> = undefined;
 
 	showDialog(config: IDialog) {
 		this.config = config;
 		this.open = true;
-		setTimeout(() => {
-			this.outsideClickAnimation = true;
+		this.fadedInTimer = setTimeout(() => {
+			this.fadedIn = true;
 		}, 250);
 
 		const dialog = this.shadowRoot?.querySelector('dialog');
@@ -32,11 +32,9 @@ export class CustomFeatureDialog extends LitElement {
 	}
 
 	closeDialog() {
+		clearTimeout(this.fadedInTimer);
+		this.fadedIn = false;
 		this.open = false;
-		this.outsideClickAnimation = false;
-		setTimeout(() => {
-			this.outsideClickAnimation = false;
-		}, 250);
 
 		const dialog = this.shadowRoot?.querySelector('dialog');
 		if (dialog) {
@@ -55,7 +53,7 @@ export class CustomFeatureDialog extends LitElement {
 	}
 
 	onClick(e: MouseEvent) {
-		if (this.outsideClickAnimation && this.config.type == 'confirmation') {
+		if (this.fadedIn && this.config.type == 'confirmation') {
 			const rect = (e.target as HTMLElement)?.getBoundingClientRect();
 			if (
 				rect &&
@@ -106,7 +104,9 @@ export class CustomFeatureDialog extends LitElement {
 		}
 
 		return html`<dialog
-			class="${className} ${this.open ? '' : 'closed'}"
+			class="${className} ${this.open ? '' : 'closed'} ${this.fadedIn
+				? 'faded-in'
+				: 'faded-out'}"
 			@dialog-close=${this.closeDialog}
 			@click=${this.onClick}
 		>
@@ -144,13 +144,7 @@ export class CustomFeatureDialog extends LitElement {
 					height 0.5s cubic-bezier(0.2, 0, 0, 1),
 					opacity 0.05s linear;
 			}
-			dialog::backdrop {
-				background-color: var(
-					--mdc-dialog-scrim-color,
-					rgba(0, 0, 0, 0.32)
-				);
-			}
-			.closed {
+			dialog.closed {
 				transform: translateY(-50px) !important;
 				height: 0 !important;
 				opacity: 0 !important;
@@ -158,6 +152,28 @@ export class CustomFeatureDialog extends LitElement {
 					transform 0.15s cubic-bezier(0.3, 0, 0, 1),
 					height 0.15s cubic-bezier(0.3, 0, 0.8, 0.15),
 					opacity 0.05s linear 0.025s !important;
+			}
+
+			dialog::backdrop {
+				background-color: var(
+					--md-sys-color-scrim-mode,
+					var(
+						--md-sys-color-scrim,
+						var(--mdc-dialog-scrim-color, #000)
+					)
+				);
+				--md-sys-color-scrim-mode: light-dark(
+					var(--md-sys-color-scrim-light),
+					var(--md-sys-color-scrim-dark)
+				);
+			}
+			dialog.faded-in::backdrop {
+				opacity: 0.32;
+				transition: opacity 0.15s linear;
+			}
+			dialog.faded-out::backdrop {
+				opacity: 0;
+				transition: opacity 0.075s linear;
 			}
 
 			.confirmation {
