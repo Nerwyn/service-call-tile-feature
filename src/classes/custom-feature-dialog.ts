@@ -98,6 +98,7 @@ export class CustomFeatureDialog extends LitElement {
 					content = html`<custom-feature-confirmation-dialog
 						.hass=${this.hass}
 						.config=${this.config}
+						.open=${this.open && this.fadedIn}
 					></custom-feature-confirmation-dialog>`;
 					break;
 			}
