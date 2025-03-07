@@ -125,11 +125,10 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		const options = this.config.options ?? [];
 		let selectedOption: IEntry | undefined = undefined;
 		for (const option of options) {
-			const optionName = this.renderTemplate(option.option as string);
-			if (
-				this.value != undefined &&
-				(this.value ?? '').toString() == (optionName ?? '').toString()
-			) {
+			const optionName = String(
+				this.renderTemplate(option.option as string),
+			);
+			if (String(this.value) == optionName) {
 				selectedOption = option;
 			}
 
@@ -182,15 +181,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
 		);
 		for (const i in options) {
-			optionElements[i].className = `option ${
-				this.value != undefined &&
-				(this.value ?? '').toString() ==
-					(
-						this.renderTemplate(options[i].option as string) ?? ''
-					).toString()
+			optionElements[i].className = `${
+				String(this.value) ==
+				String(this.renderTemplate(options[i].option as string))
 					? 'selected'
 					: ''
-			}`;
+			} option`;
 		}
 	}
 

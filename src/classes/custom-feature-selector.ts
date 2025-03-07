@@ -48,16 +48,12 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 			this.shadowRoot?.children ?? [],
 		).slice(1);
 		for (const i in options) {
-			const optionName = this.renderTemplate(options[i].option as string);
-			let optionClass = 'option';
-			if (
-				this.value != undefined &&
-				(this.value ?? '').toString() == (optionName ?? '').toString()
-			) {
-				optionClass = 'selected-option';
-			}
-
-			optionElements[i].className = optionClass;
+			optionElements[i].className = `${
+				String(this.value) ==
+				String(this.renderTemplate(options[i].option as string))
+					? 'selected'
+					: ''
+			} option`;
 		}
 	}
 
@@ -78,7 +74,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					--background-opacity: 0;
 				}
 
-				.selected-option {
+				.selected {
 					--opacity: 1;
 					--background-opacity: 1;
 					--hover-opacity: 1;
