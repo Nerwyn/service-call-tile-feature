@@ -187,7 +187,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	updated() {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
-			this.shadowRoot?.children ?? [],
+			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
 		).slice(1);
 		for (const i in options) {
 			optionElements[i].className = `${
