@@ -216,21 +216,21 @@ All sub-elements within a custom feature are given easy to remember classes to a
 
 While any CSS property can be used, these values are internal CSS attributes used by custom features. You can choose to either use these values or to set these fields directly using class selectors for each sub-element.
 
-| Name                     | Description                                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| flex-basis               | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`.    |
-| --feature-color          | Color of the feature, generally inherited from the card.                                                |
-| --feature-height         | Height of the features. Defaults to 40px (pre 2024.8.0) or 42px (2024.8.0 or later).                    |
-| --feature-border-radius  | The border radius of custom features. Defaults to 12px.                                                 |
-| --feature-button-spacing | The gap between custom features. Defaults to 12px.                                                      |
-| --color                  | Color of the custom feature. Can also be a CSS function.                                                |
-| --opacity                | Opacity of the custom feature. Defaults to 0.2.                                                         |
-| --icon-color             | Color of the icon.                                                                                      |
-| --label-color            | Color of the string label.                                                                              |
-| --icon-filter            | Filter to apply to the icon color.                                                                      |
-| --label-filter           | Filter to apply to the string label color.                                                              |
-| --background             | Color for the custom feature background. Sometimes equivalent to `--color`. Can also be a CSS function. |
-| --background-opacity     | Opacity of the feature background. Defaults to 0.2.                                                     |
+| Name                     | Description                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| flex-basis               | Percentage of the row the the feature should populate relative to it's siblings. Defaults to `100%`. |
+| --feature-color          | Color of the feature. Inherited from the card, like tile icon color or climate mode color.           |
+| --feature-height         | Height of the features. Defaults to 40px (pre 2024.8.0) or 42px (2024.8.0 or later).                 |
+| --feature-border-radius  | The border radius of custom features. Defaults to 12px.                                              |
+| --feature-button-spacing | The gap between custom features. Defaults to 12px.                                                   |
+| --color                  | Color of the custom feature.                                                                         |
+| --opacity                | Opacity of the custom feature. Defaults to 0.2.                                                      |
+| --icon-color             | Color of the icon.                                                                                   |
+| --label-color            | Color of the string label.                                                                           |
+| --icon-filter            | Filter to apply to the icon color.                                                                   |
+| --label-filter           | Filter to apply to the string label color.                                                           |
+| --background             | Color for the custom feature background. Sometimes equivalent to `--color`.                          |
+| --background-opacity     | Opacity of the feature background. Defaults to 0.2.                                                  |
 
 #### Slider CSS Attributes
 
@@ -245,10 +245,10 @@ While any CSS property can be used, these values are internal CSS attributes use
 
 ## Selector CSS Attributes
 
-| Name            | Description                                  |
-| --------------- | -------------------------------------------- |
-| --color         | Hover and selected color of an option.       |
-| --hover-opacity | Opacity to use when hovering over an option. |
+| Name            | Description                                       |
+| --------------- | ------------------------------------------------- |
+| --color         | Hover and selected background color of an option. |
+| --hover-opacity | Opacity to use when hovering over an option.      |
 
 ## Dropdown CSS Attributes
 
@@ -408,12 +408,12 @@ features:
           confirmation:
             text: >-
               Are you sure you want to turn the light {{ 'on' if
-              is_state('light.chandelier', 'off') else 'off' }}?
+              is_state(config.entity, 'off') else 'off' }}?
             exemptions: []
           target:
             entity_id: light.chandelier
         icon: >-
-          {{ iif(is_state("light.chandelier", "on"), "mdi:ceiling-light",
+          {{ iif(is_state(config.entity, "on"), "mdi:ceiling-light",
           "mdi:ceiling-light-outline") }}
         label: '{{ value if value > 0 else "" }}{{ unit if value > 0 else "" }}'
         value_attribute: brightness
@@ -424,8 +424,8 @@ features:
           :host {
             flex-basis: 200%;
             --icon-color: red;
-            {% if is_state("light.chandelier", "on") %}
-            --color: rgb({{ state_attr("light.chandelier", "rgb_color") }});
+            {% if is_state(config.entity, "on") %}
+            --color: rgb({{ state_attr(config.entity, "rgb_color") }});
             {% endif %}
             ;
           }
@@ -525,7 +525,7 @@ features:
               :host {
                 --label-color: red;
                 --color: red;
-                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '255,0,0' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '255,0,0' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -546,7 +546,7 @@ features:
               :host {
                 --label-color: green;
                 --color: green;
-                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '0,128,0' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '0,128,0' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -567,7 +567,7 @@ features:
               :host {
                 --label-color: blue;
                 --color: blue;
-                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '0,0,255' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '0,0,255' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -589,7 +589,7 @@ features:
                 flex-basis: 200%;
                 --label-color: white;
                 --color: white;
-                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '255,166,87' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '255,166,87' %}
                 --label-filter: invert(1);
                 --icon-filter: invert(1);
                 {% endif %}
@@ -611,7 +611,7 @@ features:
               :host {
                 --label-color: purple;
                 --color: purple;
-                {% if (state_attr("light.chandelier", "rgb_color") or []).join(',') == '128,0,128' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '128,0,128' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -620,8 +620,8 @@ features:
             flex-basis: 500%;
           }
           .background {
-            {% if is_state("light.chandelier", "on") %}
-            --background: rgb({{ state_attr("light.chandelier", "rgb_color") }});
+            {% if is_state(config.entity, "on") %}
+            --background: rgb({{ state_attr(config.entity, "rgb_color") }});
             {% endif %}
           }
       - type: dropdown
@@ -721,8 +721,8 @@ features:
               data: {}
             icon: mdi:checkbox-blank-circle-outline
             styles: ''
-            option: 'off'
-        value_attribute: '{{- "rgb_color" if is_state(config.entity, "on") else "state" }}'
+            option: 'null'
+        value_attribute: rgb_color
         styles: |-
           .option {
             min-width: 0;
@@ -766,8 +766,8 @@ features:
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
-          - '{{ state_attr("light.chandelier", "min_mireds") }}'
-          - '{{ state_attr("light.chandelier", "max_mireds") }}'
+          - '{{ state_attr(config.entity, "min_mireds") }}'
+          - '{{ state_attr(config.entity, "max_mireds") }}'
         step: 1
         entity_id: light.chandelier
         styles: |-
@@ -831,8 +831,8 @@ features:
         entity_id: light.chandelier
         styles: |-
           :host {
-            --light-color: rgb({{ state_attr("light.chandelier", "rgb_color") }});
-            --on-color: {{ "var(--light-color)" if is_state("light.chandelier", "on") else "initial" }};
+            --light-color: rgb({{ state_attr(config.entity, "rgb_color") }});
+            --on-color: {{ "var(--light-color)" if is_state(config.entity, "on") else "initial" }};
             --background: var(--on-color);
             --icon-color: var(--on-color);
             --label-color: var(--on-color);
@@ -884,13 +884,13 @@ features:
             entity_id: light.sunroom_ceiling
             color_name: blue
         icon: mdi:power
-        label: '{{ states("light.sunroom_ceiling") }}'
+        label: '{{ states(config.entity) }}'
         entity_id: light.sunroom_ceiling
         value_attribute: state
         styles: |-
           :host {
-            {% if is_state("light.sunroom_ceiling", "on") %}
-            --color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }});
+            {% if is_state(config.entity, "on") %}
+            --color: rgb({{ state_attr(config.entity, "rgb_color") }});
             {% endif %};
           }
       - type: slider
@@ -915,12 +915,12 @@ features:
         styles: |
           :host {
             flex-basis: 200%;
-            {% if is_state("light.sunroom_ceiling", "on") %}
-            --color: rgb({{ state_attr("light.sunroom_ceiling", "rgb_color") }})
+            {% if is_state(config.entity, "on") %}
+            --color: rgb({{ state_attr(config.entity, "rgb_color") }})
             {% endif %}
           }
           .tooltip {
-            {% if is_state("light.sunroom_ceiling", "off") %}
+            {% if is_state(config.entity, "off") %}
             display: none;
             {% endif %}
           }
@@ -966,8 +966,8 @@ features:
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
-          - '{{ state_attr("light.sunroom_ceiling", "min_mireds") }}'
-          - '{{ state_attr("light.sunroom_ceiling", "max_mireds") }}'
+          - '{{ state_attr(config.entity, "min_mireds") }}'
+          - '{{ state_attr(config.entity, "max_mireds") }}'
         step: 1
         styles: |-
           :host {
@@ -1647,8 +1647,8 @@ features:
         step: 1
         debounceTime: 1000
         range:
-          - '{{ state_attr("climate.downstairs_thermostat", "min_temp") }}'
-          - '{{ state_attr("climate.downstairs_thermostat", "max_temp") }}'
+          - '{{ state_attr(config.entity, "min_temp") }}'
+          - '{{ state_attr(config.entity, "max_temp") }}'
         value_attribute: temperature
         unit_of_measurement: °F
         hold_action:
