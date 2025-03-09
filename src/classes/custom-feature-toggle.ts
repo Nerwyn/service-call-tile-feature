@@ -64,9 +64,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	render() {
 		this.setValue();
 		if (this.getValueFromHass) {
-			this.checked = ['true', 'yes', 'on', 'enable', '1'].includes(
-				String(this.value),
-			);
+			this.checked =
+				['true', 'yes', 'on', 'enable', '1'].includes(
+					String(this.value).toLowerCase(),
+				) || Number(this.value) > 0;
 		}
 
 		// TODO thumb variations
