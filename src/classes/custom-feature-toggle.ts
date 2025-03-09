@@ -1,5 +1,6 @@
-import { css, CSSResult, html } from 'lit';
+import { css, CSSResult, html, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { ToggleThumbType } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-toggle')
@@ -54,7 +55,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		super.endAction();
 	}
 
-	renderTemplate(str: string, context: object) {
+	renderTemplate(str: string, context?: object) {
 		context = {
 			...context,
 			checked: this.checked,
@@ -62,23 +63,58 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		return super.renderTemplate(str, context);
 	}
 
-	render() {
-		this.setValue();
+	setValue() {
+		super.setValue();
 		if (this.getValueFromHass) {
 			this.checked =
 				['true', 'yes', 'on', 'enable', '1'].includes(
 					String(this.value).toLowerCase(),
 				) || Number(this.value) > 0;
 		}
+	}
 
-		// TODO thumb variations
+	buildMD3Switch() {
+		return html``;
+	}
+
+	buildMD2Switch() {
+		return html``;
+	}
+
+	buildCheckbox() {
+		return html``;
+	}
+
+	buildDefaultToggle() {
 		return html`
 			<div class="background"></div>
 			<div class="thumb ${this.checked ? 'checked' : ''}">
 				${this.buildIcon()}${this.buildLabel()}
 			</div>
-			${this.buildStyles()}
 		`;
+	}
+
+	render() {
+		this.setValue();
+
+		let toggle: TemplateResult<1>;
+		switch (this.renderTemplate(this.config.thumb as ToggleThumbType)) {
+			case 'md3-switch':
+				toggle = this.buildMD3Switch();
+				break;
+			case 'md2-switch':
+				toggle = this.buildMD2Switch();
+				break;
+			case 'checkbox':
+				toggle = this.buildCheckbox();
+				break;
+			case 'default':
+			default:
+				toggle = this.buildDefaultToggle();
+				break;
+		}
+
+		return html`${toggle}${this.buildStyles()} `;
 	}
 
 	firstUpdated() {

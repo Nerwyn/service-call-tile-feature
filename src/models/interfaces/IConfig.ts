@@ -50,8 +50,7 @@ export const ToggleThumbTypes = [
 	'default',
 	'md3-switch',
 	'md2-switch',
-	'md3-checkbox',
-	'md2-checkbox',
+	'checkbox',
 ] as const;
 export type SliderThumbType = (typeof SliderThumbTypes)[number];
 export type ToggleThumbType = (typeof ToggleThumbTypes)[number];

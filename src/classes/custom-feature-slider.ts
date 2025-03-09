@@ -9,7 +9,7 @@ import {
 	STEP,
 	STEP_COUNT,
 } from '../models/constants';
-import { IEntry } from '../models/interfaces';
+import { IEntry, SliderThumbType } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-slider')
@@ -319,7 +319,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 
 		const sliderElement = this.shadowRoot?.querySelector('input');
 		this.sliderClass = 'slider ';
-		switch (this.renderTemplate(this.config.thumb as string)) {
+		switch (this.renderTemplate(this.config.thumb as SliderThumbType)) {
 			case 'line':
 				this.sliderClass += 'line-thumb';
 				this.thumbWidth = 10;
