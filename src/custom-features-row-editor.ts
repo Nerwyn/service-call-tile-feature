@@ -3,7 +3,6 @@ import { css, html, LitElement, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { dump, load } from 'js-yaml';
-import { HomeAssistant } from './models/interfaces';
 
 import {
 	AUTOFILL,
@@ -22,6 +21,7 @@ import {
 	Actions,
 	ActionType,
 	ActionTypes,
+	HomeAssistant,
 	IAction,
 	IConfig,
 	IData,
@@ -31,6 +31,7 @@ import {
 	SliderThumbTypes,
 	TileFeatureType,
 	TileFeatureTypes,
+	ToggleThumbTypes,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
 
@@ -1388,7 +1389,66 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	buildToggleGuiEditor() {
-		return html`<h1>Coming Soon!</h1>`;
+		const actionsNoRepeat = Actions.concat();
+		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
+
+		return html`
+			${this.buildMainFeatureOptions()}
+			${this.buildSelector(
+				'Update after action delay',
+				'value_from_hass_delay',
+				{
+					number: {
+						min: 0,
+						step: 1,
+						mode: 'box',
+						unit_of_measurement: 'ms',
+					},
+				},
+				UPDATE_AFTER_ACTION_DELAY,
+			)}
+			<div class="form">
+				${this.buildSelector(
+					'Autofill',
+					'autofill_entity_id',
+					{
+						boolean: {},
+					},
+					AUTOFILL,
+				)}
+				${this.buildSelector(
+					'Haptics',
+					'haptics',
+					{
+						boolean: {},
+					},
+					HAPTICS,
+				)}
+			</div>
+			${this.buildAppearancePanel(html`
+				${this.buildCommonAppearanceOptions()}
+				${this.buildSelector(
+					'Thumb type',
+					'thumb',
+					{
+						select: {
+							mode: 'dropdown',
+							options: ToggleThumbTypes,
+							reorder: false,
+						},
+					},
+					'default',
+				)}
+			`)}
+			${this.buildInteractionsPanel(html`
+				${this.buildActionOption('Behavior', 'tap_action', {
+					ui_action: {
+						actions: actionsNoRepeat,
+						default_action: 'toggle',
+					},
+				})}
+			`)}
+		`;
 	}
 
 	buildEntryGuiEditor() {
@@ -1986,6 +2046,16 @@ export class CustomFeaturesRowEditor extends LitElement {
 						}
 						break;
 					}
+					case 'toggle':
+						if (!entry.tap_action) {
+							entry.tap_action = {
+								action: 'toggle',
+								target: {
+									entity_id: entryEntityId,
+								},
+							};
+						}
+						break;
 					case 'button':
 					case 'default':
 						break;

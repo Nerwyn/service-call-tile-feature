@@ -44,6 +44,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.getValueFromHass = true;
 			this.setValue();
 		} else if (Math.abs(horizontal) > swipeSensitivity) {
+			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
 		}
 	}
@@ -76,6 +77,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			<div class="thumb ${this.checked ? 'checked' : ''}">
 				${this.buildIcon()}${this.buildLabel()}
 			</div>
+			${this.buildStyles()}
 		`;
 	}
 
@@ -106,7 +108,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					justify-content: center;
 					height: 100%;
 					width: 50%;
-					background: var(--color, var(--disabled-color));
+					background: var(--color, var(--state-inactive-color));
 					opacity: var(--opacity, 1);
 					border-radius: var(--feature-border-radius, 12px);
 					transition:
