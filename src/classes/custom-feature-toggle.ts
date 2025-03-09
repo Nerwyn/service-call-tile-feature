@@ -87,9 +87,19 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 	buildDefaultToggle() {
 		return html`
-			<div class="background"></div>
-			<div class="thumb ${this.checked ? 'checked' : ''}">
-				${this.buildIcon()}${this.buildLabel()}
+			<div
+				class="container"
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
+				@contextmenu=${this.onContextMenu}
+			>
+				<div class="background"></div>
+				<div class="thumb ${this.checked ? 'checked' : ''}">
+					${this.buildIcon()}${this.buildLabel()}
+				</div>
 			</div>
 		`;
 	}
@@ -115,16 +125,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		}
 
 		return html`${toggle}${this.buildStyles()} `;
-	}
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.addEventListener('pointerdown', this.onPointerDown);
-		this.addEventListener('pointerup', this.onPointerUp);
-		this.addEventListener('pointermove', this.onPointerMove);
-		this.addEventListener('pointercancel', this.onPointerCancel);
-		this.addEventListener('pointerleave', this.onPointerLeave);
-		this.addEventListener('contextmenu', this.onContextMenu);
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
