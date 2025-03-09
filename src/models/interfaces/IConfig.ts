@@ -1,5 +1,3 @@
-import { StyleInfo } from 'lit/directives/style-map.js';
-
 import { IActions } from './IActions';
 
 export interface IConfig {
@@ -12,7 +10,8 @@ export interface IEntry
 	extends IActions,
 		ISliderOptions,
 		IDropdownSelectorOptions,
-		ISpinboxOptions {
+		ISpinboxOptions,
+		IToggleOptions {
 	type?: TileFeatureType;
 
 	entity_id?: string;
@@ -34,6 +33,7 @@ export const TileFeatureTypes = [
 	'selector',
 	'slider',
 	'spinbox',
+	'toggle',
 ] as const;
 export type TileFeatureType = (typeof TileFeatureTypes)[number];
 
@@ -45,16 +45,23 @@ export interface IDropdownSelectorOptions {
 	options?: IOption[];
 }
 
-export const ThumbTypes = ['default', 'line', 'flat', 'round'] as const;
+export const SliderThumbTypes = ['default', 'line', 'flat', 'round'] as const;
+export const ToggleThumbTypes = [
+	'default',
+	'md3-switch',
+	'md2-switch',
+	'md3-checkbox',
+	'md2-checkbox',
+] as const;
+export type SliderThumbType = (typeof SliderThumbTypes)[number];
+export type ToggleThumbType = (typeof ToggleThumbTypes)[number];
+export const ThumbTypes = [...SliderThumbTypes, ...ToggleThumbTypes];
 export type ThumbType = (typeof ThumbTypes)[number];
 
 export interface ISliderOptions {
 	range?: [number, number];
 	step?: number;
 	thumb?: ThumbType;
-
-	slider_style?: StyleInfo;
-	tooltip_style?: StyleInfo;
 }
 
 export interface ISpinboxOptions {
@@ -63,4 +70,8 @@ export interface ISpinboxOptions {
 	debounce_time?: number;
 	increment?: IEntry;
 	decrement?: IEntry;
+}
+
+export interface IToggleOptions {
+	thumb?: ThumbType;
 }

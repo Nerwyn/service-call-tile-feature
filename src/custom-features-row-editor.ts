@@ -28,7 +28,7 @@ import {
 	IEntry,
 	IOption,
 	ITarget,
-	ThumbTypes,
+	SliderThumbTypes,
 	TileFeatureType,
 	TileFeatureTypes,
 } from './models/interfaces';
@@ -1091,7 +1091,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						select: {
 							mode: 'dropdown',
-							options: ThumbTypes,
+							options: SliderThumbTypes,
 							reorder: false,
 						},
 					},
@@ -1387,6 +1387,10 @@ export class CustomFeaturesRowEditor extends LitElement {
 		return html`${spinboxTabBar}${spinboxGuiEditor}`;
 	}
 
+	buildToggleGuiEditor() {
+		return html`<h1>Coming Soon!</h1>`;
+	}
+
 	buildEntryGuiEditor() {
 		let entryGuiEditor: TemplateResult<1>;
 		const type = this.config.entries[this.entryIndex].type;
@@ -1402,6 +1406,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 				break;
 			case 'spinbox':
 				entryGuiEditor = this.buildSpinboxGuiEditor();
+				break;
+			case 'toggle':
+				entryGuiEditor = this.buildToggleGuiEditor();
 				break;
 			case 'button':
 			default:

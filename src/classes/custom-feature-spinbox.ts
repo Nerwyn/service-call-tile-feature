@@ -26,7 +26,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	onPointerDown(e: PointerEvent) {
-		this.swiping = false;
 		super.onPointerDown(e);
 
 		const operator = (e.currentTarget as HTMLElement).id as

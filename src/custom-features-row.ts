@@ -16,6 +16,7 @@ import './classes/custom-feature-dropdown';
 import './classes/custom-feature-selector';
 import './classes/custom-feature-slider';
 import './classes/custom-feature-spinbox';
+import './classes/custom-feature-toggle';
 import { CustomFeaturesRowEditor } from './custom-features-row-editor';
 import { IConfig, IEntry } from './models/interfaces';
 import { atLeastHaVersion } from './utils';
@@ -113,6 +114,15 @@ class CustomFeaturesRow extends LitElement {
 					'button') as string
 			).toLowerCase();
 			switch (entryType) {
+				case 'toggle':
+					row.push(
+						html`<custom-feature-toggle
+							.hass=${this.hass}
+							.config=${entry}
+							.stateObj=${this.stateObj}
+						/>`,
+					);
+					break;
 				case 'spinbox':
 					row.push(
 						html`<custom-feature-spinbox

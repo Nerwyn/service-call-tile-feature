@@ -59,8 +59,6 @@ export class CustomFeatureButton extends BaseCustomFeature {
 	}
 
 	async onPointerDown(e: PointerEvent) {
-		this.swiping = false;
-
 		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);

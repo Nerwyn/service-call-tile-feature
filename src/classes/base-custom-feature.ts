@@ -796,6 +796,7 @@ export class BaseCustomFeature extends LitElement {
 
 	onPointerDown(e: PointerEvent) {
 		if (!this.initialX && !this.initialY) {
+			this.swiping = false;
 			this.initialX = e.clientX;
 			this.initialY = e.clientY;
 			this.currentX = e.clientX;
@@ -828,8 +829,8 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
-	onContextMenu(e: PointerEvent) {
-		if (e.pointerType != 'mouse') {
+	onContextMenu(e: MouseEvent | PointerEvent) {
+		if ((e as PointerEvent).pointerType != 'mouse') {
 			e.preventDefault();
 			e.stopPropagation();
 		}

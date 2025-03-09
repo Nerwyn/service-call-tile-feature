@@ -17,7 +17,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	onPointerDown(e: PointerEvent) {
-		this.swiping = false;
 		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
@@ -188,7 +187,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
 			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
-		).slice(1);
+		);
 		for (const i in options) {
 			optionElements[i].className = `${
 				String(this.value) ==
@@ -315,7 +314,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	@property() config!: IOption;
 
 	onPointerDown(e: PointerEvent) {
-		this.swiping = false;
 		super.onPointerDown(e);
 		clearTimeout(this.renderRippleOff);
 		clearTimeout(this.renderRippleOn);
