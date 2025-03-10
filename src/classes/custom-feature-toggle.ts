@@ -25,6 +25,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.checked = !this.checked;
 			this.fireHapticEvent('light');
 			await this.sendAction('tap_action');
+			this.toggleRipple();
 		}
 		this.endAction();
 		this.resetGetValueFromHass();
@@ -44,6 +45,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
+			this.toggleRipple();
 		} else if (Math.abs(horizontal) > swipeSensitivity) {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
@@ -82,7 +84,23 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildCheckbox() {
-		return html``;
+		return html`
+			<div
+				class="container"
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
+				@contextmenu=${this.onContextMenu}
+			>
+				<div class="checkbox ${this.checked ? 'checked' : ''}">
+					${this.buildIcon()}
+				</div>
+				${this.buildRipple()}
+			</div>
+			${this.buildLabel()}
+		`;
 	}
 
 	buildDefaultToggle() {
@@ -135,8 +153,23 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					display: block;
 					touch-action: pan-y;
 					--color: var(--feature-color);
+					--md-ripple-hover-opacity: var(
+						--ha-ripple-hover-opacity,
+						0.08
+					);
+					--md-ripple-pressed-opacity: var(
+						--ha-ripple-pressed-opacity,
+						0.12
+					);
+					--md-ripple-hover-color: var(
+						--ha-ripple-hover-color,
+						var(--ha-ripple-color)
+					);
+					--md-ripple-pressed-color: var(
+						--ha-ripple-pressed-color,
+						var(--ha-ripple-color)
+					);
 				}
-
 				.thumb {
 					display: flex;
 					flex-direction: column;
@@ -151,9 +184,57 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						transform 180ms ease-in-out,
 						background-color 180ms ease-in-out;
 				}
-
-				.checked {
+				.thumb.checked {
 					transform: translateX(100%);
+				}
+
+				:host:has(.checkbox) {
+					display: flex;
+					flex-direction: row;
+					--mdc-icon-size: 18px;
+					--icon-color: var(--mdc-checkbox-ink-color, #fff);
+					--ha-ripple-color: var(
+						--mdc-checkbox-unchecked-color,
+						#aaa
+					);
+				}
+				:host:has(.checkbox.checked) {
+					--ha-ripple-color: var(
+						--mdc-checkbox-checked-color,
+						#018786
+					);
+				}
+				.container:has(.checkbox) {
+					height: var(--mdc-checkbox-touch-target-size, 40px);
+					width: var(--mdc-checkbox-touch-target-size, 40px);
+					border-radius: var(--mdc-checkbox-touch-target-size, 40px);
+					flex-basis: auto;
+					flex-shrink: 0;
+					background: 0 0;
+				}
+				.checkbox {
+					height: 18px;
+					width: 18px;
+					border-radius: 2px;
+					border: solid 2px;
+					background: transparent;
+					border-color: var(
+						--mdc-checkbox-unchecked-color,
+						rgba(0, 0, 0, 0.54)
+					);
+				}
+				.checkbox.checked {
+					background: var(
+						--mdc-checkbox-checked-color,
+						var(--mdc-theme-secondary, #018786)
+					);
+					border-color: var(
+						--mdc-checkbox-checked-color,
+						var(--mdc-theme-secondary, #018786)
+					);
+				}
+				.checkbox:not(.checked) > .icon {
+					visibility: hidden;
 				}
 			`,
 		];
