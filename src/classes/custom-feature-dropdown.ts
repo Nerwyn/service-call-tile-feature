@@ -132,11 +132,10 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		const options = this.config.options ?? [];
 		let selectedOption: IEntry | undefined = undefined;
 		for (const option of options) {
-			const optionName = this.renderTemplate(option.option as string);
-			if (
-				this.value != undefined &&
-				(this.value ?? '').toString() == (optionName ?? '').toString()
-			) {
+			const optionName = String(
+				this.renderTemplate(option.option as string),
+			);
+			if (String(this.value) == optionName) {
 				selectedOption = option;
 			}
 
