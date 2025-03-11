@@ -206,10 +206,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			) || (Number(value) as number) > this.range[0];
 	}
 
-	buildLabel(entry: IEntry = this.config, context?: object) {
-		return this.sliderOn ? super.buildLabel(entry, context) : html``;
-	}
-
 	buildTooltip() {
 		return html`
 			<div
@@ -347,7 +343,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				break;
 		}
 		this.setSliderState(context['value' as keyof typeof context] as number);
-		this.sliderClass = `${this.sliderClass}${this.sliderOn ? '' : ' off'}`;
 
 		this.resizeObserver.observe(
 			this.shadowRoot?.querySelector('.container') ?? this,
@@ -369,7 +364,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		);
 
 		return html`
-			<div class="container">
+			<div class="container ${this.sliderOn ? 'on' : 'off'}">
 				${this.buildBackground()}
 				${this.buildSlider(undefined, context)}
 				${this.buildIcon(undefined, context)}
@@ -405,6 +400,15 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 						)
 					);
 				}
+				.off > .background {
+					background: var(
+						--background,
+						var(--color, var(--state-inactive-color))
+					);
+				}
+				.off > .label {
+					display: none;
+				}
 
 				.slider {
 					position: absolute;
@@ -419,8 +423,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				.slider,
 				.default-thumb,
 				.flat-thumb,
-				.round-thumb,
-				.off {
+				.round-thumb {
 					width: inherit;
 					overflow: hidden;
 					touch-action: pan-y;
@@ -574,11 +577,11 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					border-radius: var(--thumb-border-radius, var(--height));
 				}
 
-				.off::-webkit-slider-thumb {
+				.off > ::-webkit-slider-thumb {
 					visibility: hidden;
 				}
 
-				.off::-moz-range-thumb {
+				.off > ::-moz-range-thumb {
 					visibility: hidden;
 				}
 

@@ -86,7 +86,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	buildCheckbox() {
 		return html`
 			<div
-				class="container"
+				class="container ${this.checked ? 'on' : 'off'}"
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
@@ -94,9 +94,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			>
-				<div class="checkbox ${this.checked ? 'checked' : ''}">
-					${this.buildIcon()}
-				</div>
+				<div class="checkbox">${this.buildIcon()}</div>
 				${this.buildRipple()}
 			</div>
 			${this.buildLabel()}
@@ -106,7 +104,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	buildDefaultToggle() {
 		return html`
 			<div
-				class="container"
+				class="container ${this.checked ? 'on' : 'off'}"
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
@@ -115,9 +113,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@contextmenu=${this.onContextMenu}
 			>
 				<div class="background"></div>
-				<div class="thumb ${this.checked ? 'checked' : ''}">
-					${this.buildIcon()}${this.buildLabel()}
-				</div>
+				<div class="thumb">${this.buildIcon()}${this.buildLabel()}</div>
 			</div>
 		`;
 	}
@@ -152,7 +148,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host {
 					display: block;
 					touch-action: pan-y;
-					--color: var(--feature-color);
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
 						0.08
@@ -170,6 +165,21 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						var(--ha-ripple-color)
 					);
 				}
+				.background {
+					background: var(
+						--background,
+						var(
+							--color,
+							var(--feature-color, var(--state-inactive-color))
+						)
+					);
+				}
+				.off > .background {
+					background: var(
+						--background,
+						var(--color, var(--state-inactive-color))
+					);
+				}
 				.thumb {
 					display: flex;
 					flex-direction: column;
@@ -177,14 +187,17 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					justify-content: center;
 					height: 100%;
 					width: 50%;
-					background: var(--color, var(--state-inactive-color));
+					background: var(
+						--color,
+						var(--feature-color, var(--state-inactive-color))
+					);
 					opacity: var(--opacity, 1);
 					border-radius: var(--feature-border-radius, 12px);
 					transition:
 						transform 180ms ease-in-out,
 						background-color 180ms ease-in-out;
 				}
-				.thumb.checked {
+				.on > .thumb {
 					transform: translateX(100%);
 				}
 
@@ -198,7 +211,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						#aaa
 					);
 				}
-				:host:has(.checkbox.checked) {
+				:host:has(.on > .checkbox) {
 					--ha-ripple-color: var(
 						--mdc-checkbox-checked-color,
 						#018786
@@ -223,7 +236,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						rgba(0, 0, 0, 0.54)
 					);
 				}
-				.checkbox.checked {
+				.on > .checkbox {
 					background: var(
 						--mdc-checkbox-checked-color,
 						var(--mdc-theme-secondary, #018786)
@@ -233,7 +246,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						var(--mdc-theme-secondary, #018786)
 					);
 				}
-				.checkbox:not(.checked) > .icon {
+				.off > .checkbox > .icon {
 					visibility: hidden;
 				}
 			`,
