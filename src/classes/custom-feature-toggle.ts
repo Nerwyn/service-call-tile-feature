@@ -202,10 +202,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		if (
 			this.renderTemplate(this.config.thumb ?? 'default') == 'md3-switch'
 		) {
+			const background = this.shadowRoot?.querySelector(
+				'.background',
+			) as HTMLElement;
 			try {
-				const background = this.shadowRoot?.querySelector(
-					'.background',
-				) as HTMLElement;
 				const style = getComputedStyle(background);
 
 				const buttonChecked = style.getPropertyValue(
@@ -224,16 +224,24 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					trackChecked == buttonChecked ||
 					trackUnchecked == buttonUnchecked
 				) {
-					const opacity = this.checked ? '0.54' : '0.38';
-					background?.style.setProperty(
-						'--background-opacity',
-						opacity,
-					);
+					if (this.checked) {
+						background?.style.removeProperty('background');
+						background?.style.setProperty('opacity', '54%');
+					} else {
+						background?.style.removeProperty('opacity');
+						background?.style.setProperty(
+							'background',
+							'rgba(from var(--switch-unchecked-track-color) r g b / 38%)',
+						);
+					}
 				} else {
-					background?.style.removeProperty('--background-opacity');
+					background?.style.removeProperty('background');
+					background?.style.removeProperty('opacity');
 				}
 			} catch (e) {
 				console.error(e);
+				background?.style.removeProperty('background');
+				background?.style.removeProperty('opacity');
 			}
 		}
 	}
@@ -462,11 +470,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border-radius: 52px;
 					background: var(--switch-unchecked-track-color);
 					border: 2px solid var(--switch-unchecked-button-color);
+					opacity: 1;
 					transition:
 						opacity 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
-					--background-opacity: 1;
 				}
 				.md3-switch.on > .background {
 					background: var(--switch-checked-track-color);
