@@ -239,7 +239,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					flex-direction: row;
 					gap: 10px;
 					--mdc-icon-size: 18px;
-					--icon-color: var(--mdc-checkbox-ink-color, #fff);
 					--ha-ripple-color: var(
 						--mdc-checkbox-unchecked-color,
 						#aaa
@@ -280,6 +279,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						--mdc-checkbox-checked-color,
 						var(--mdc-theme-secondary, #018786)
 					);
+					--icon-color: var(--mdc-checkbox-ink-color, #fff);
 				}
 				.off > .checkbox > .icon {
 					visibility: hidden;
