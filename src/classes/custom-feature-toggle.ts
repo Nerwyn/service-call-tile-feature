@@ -491,11 +491,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
-					--mdc-icon-size: 18px;
 				}
 				.md2-switch:has(.icon),
 				.md3-switch:has(.icon) {
 					--thumb-size: 24px;
+					--mdc-icon-size: 16px;
 					--icon-color: var(
 						--switch-unchecked-icon-color,
 						var(--input-background-color)
