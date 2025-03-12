@@ -80,7 +80,27 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildMD2Switch() {
-		return html``;
+		return html`
+			${this.buildIcon(this.config.icon)}${this.buildLabel(
+				this.config.label,
+			)}
+			<div
+				class="container md2-toggle ${this.checked ? 'on' : 'off'}"
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
+				@contextmenu=${this.onContextMenu}
+			>
+				<div class="background"></div>
+				<div class="thumb">
+					${this.buildIcon(
+						this.config.thumb_icon,
+					)}${this.buildRipple()}
+				</div>
+			</div>
+		`;
 	}
 
 	buildCheckbox() {
@@ -94,10 +114,14 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			>
-				<div class="checkbox">${this.buildIcon()}</div>
+				<div class="checkbox">
+					${this.buildIcon(this.config.thumb_icon)}
+				</div>
 				${this.buildRipple()}
 			</div>
-			${this.buildLabel()}
+			${this.buildIcon(this.config.icon)}${this.buildLabel(
+				this.config.label,
+			)}
 		`;
 	}
 
@@ -113,7 +137,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@contextmenu=${this.onContextMenu}
 			>
 				<div class="background"></div>
-				<div class="thumb">${this.buildIcon()}${this.buildLabel()}</div>
+				<div class="thumb">
+					${this.buildIcon(this.config.icon)}${this.buildLabel(
+						this.config.label,
+					)}
+				</div>
 			</div>
 		`;
 	}
@@ -166,6 +194,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					);
 				}
 				.background {
+					cursor: pointer;
 					background: var(
 						--background,
 						var(
@@ -185,6 +214,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
+					cursor: pointer;
 					height: 100%;
 					width: 50%;
 					background: var(
@@ -197,6 +227,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						transform 180ms ease-in-out,
 						background-color 180ms ease-in-out;
 				}
+				.off > .thumb {
+					background: var(--color, var(--state-inactive-color));
+				}
 				.on > .thumb {
 					transform: translateX(100%);
 				}
@@ -204,6 +237,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.checkbox) {
 					display: flex;
 					flex-direction: row;
+					gap: 10px;
 					--mdc-icon-size: 18px;
 					--icon-color: var(--mdc-checkbox-ink-color, #fff);
 					--ha-ripple-color: var(
@@ -235,6 +269,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						--mdc-checkbox-unchecked-color,
 						rgba(0, 0, 0, 0.54)
 					);
+					cursor: pointer;
 				}
 				.on > .checkbox {
 					background: var(
@@ -248,6 +283,77 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				}
 				.off > .checkbox > .icon {
 					visibility: hidden;
+				}
+				.container:has(.checkbox) ~ .label,
+				.label:has(~ .md2-toggle),
+				.label:has(~ .md3-toggle) {
+					justify-content: flex-start;
+					white-space: pre-line;
+				}
+
+				:host:has(.md2-toggle) {
+					display: flex;
+					flex-direction: row;
+					gap: 10px;
+					--ha-ripple-color: #aaa;
+				}
+				.md2-toggle {
+					justify-content: flex-start;
+					flex-basis: auto;
+					flex-shrink: 0;
+					height: 14px;
+					width: 36px;
+					overflow: visible;
+					margin: calc((var(--feature-height, 40px) - 14px) / 2);
+					cursor: pointer;
+				}
+				.md2-toggle > .background {
+					border-radius: 32px;
+					opacity: 0.38;
+					background: var(--switch-unchecked-track-color);
+					transition:
+						opacity 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
+				}
+				.md2-toggle.on > .background {
+					background: var(--switch-checked-track-color);
+					border-color: var(--switch-checked-track-color);
+					opacity: 0.54;
+				}
+				.md2-toggle > .thumb {
+					background: 0 0;
+					height: 40px;
+					width: 40px;
+					border-radius: 40px;
+					position: absolute;
+					left: -10px;
+					transition:
+						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
+				}
+				.md2-toggle > .thumb::before {
+					content: '';
+					box-shadow:
+						rgba(0, 0, 0, 0.2) 0px 3px 1px -2px,
+						rgba(0, 0, 0, 0.14) 0px 2px 2px 0px,
+						rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+					box-sizing: border-box;
+					position: absolute;
+					height: 20px;
+					width: 20px;
+					border: 10px solid;
+					border-radius: 50%;
+					background: var(--switch-unchecked-button-color);
+					border-color: var(--switch-unchecked-button-color);
+				}
+				.md2-toggle.on > .thumb {
+					transform: translateX(18px);
+				}
+				.md2-toggle.on > .thumb::before {
+					background: var(--switch-checked-button-color);
+					border-color: var(--switch-checked-button-color);
 				}
 			`,
 		];

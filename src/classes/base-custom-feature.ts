@@ -759,11 +759,11 @@ export class BaseCustomFeature extends LitElement {
 			: html``;
 	}
 
-	buildStyles(entry: IEntry = this.config, context?: object) {
-		return entry.styles
+	buildStyles(styles: string = this.config.styles ?? '', context?: object) {
+		return styles
 			? html`
 					<style>
-						${(this.renderTemplate(entry.styles, context) as string)
+						${(this.renderTemplate(styles, context) as string)
 							.replace(/ !important/g, '')
 							.replace(/;/g, ' !important;')}
 					</style>
@@ -775,26 +775,20 @@ export class BaseCustomFeature extends LitElement {
 		return html` <div class="background"></div>`;
 	}
 
-	buildIcon(entry: IEntry = this.config, context?: object) {
-		let icon = html``;
-		if (entry.icon) {
-			icon = html`<ha-icon
+	buildIcon(icon?: string, context?: object) {
+		if (icon) {
+			return html`<ha-icon
 				class="icon"
-				.icon=${this.renderTemplate(entry.icon as string, context)}
+				.icon=${this.renderTemplate(icon, context)}
 			></ha-icon>`;
 		}
-		return icon;
+		return '';
 	}
 
-	buildLabel(entry: IEntry = this.config, context?: object) {
-		if (entry.label) {
-			const text: string = this.renderTemplate(
-				entry.label as string,
-				context,
-			) as string;
-			if (text) {
-				return html`<pre class="label">${text}</pre>`;
-			}
+	buildLabel(label?: string, context?: object) {
+		if (label) {
+			// prettier-ignore
+			return html`<pre class="label">${this.renderTemplate(label, context)}</pre>`;
 		}
 		return '';
 	}

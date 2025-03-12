@@ -2,7 +2,6 @@ import { css, CSSResult, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import { DEBOUNCE_TIME } from '../models/constants';
-import { IEntry } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 import './custom-feature-button';
 
@@ -181,9 +180,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		}
 	}
 
-	buildLabel(entry: IEntry = this.config, context?: object) {
+	buildLabel(label?: string, context?: object) {
 		return this.value != undefined
-			? super.buildLabel(entry, context)
+			? super.buildLabel(label, context)
 			: html``;
 	}
 
@@ -255,7 +254,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 
 		return html`
 			${this.buildBackground()}${this.buildButton('decrement')}
-			${this.buildIcon()}${this.buildLabel()}
+			${this.buildIcon(this.config.icon)}${this.buildLabel(
+				this.config.label,
+			)}
 			${this.buildButton(
 				'increment',
 			)}${this.buildSpinboxStyles()}${this.buildStyles()}
@@ -348,7 +349,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 export class OperatorButton extends BaseCustomFeature {
 	render() {
 		return html`
-			${this.buildBackground()}${this.buildIcon()}${super.buildLabel()}
+			${this.buildBackground()}${this.buildIcon(
+				this.config.icon,
+			)}${super.buildLabel(this.config.label)}
 			${this.buildStyles()}
 		`;
 	}

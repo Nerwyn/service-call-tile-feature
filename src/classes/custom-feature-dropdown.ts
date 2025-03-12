@@ -170,9 +170,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 				@contextmenu=${this.onContextMenu}
 			>
 				${selectedOption
-					? html`${this.buildIcon(selectedOption)}${this.buildLabel(
-							selectedOption,
-						)}${this.buildStyles(selectedOption)}`
+					? html`${this.buildIcon(
+							selectedOption.icon,
+						)}${this.buildLabel(
+							selectedOption.label,
+						)}${this.buildStyles(selectedOption.styles)}`
 					: ''}
 				${this.buildRipple()}
 			</div>
@@ -376,7 +378,9 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				@touchend=${this.onTouchEnd}
 				@contextmenu=${this.onContextMenu}
 			>
-				${this.buildIcon()}${this.buildLabel()}${this.buildRipple()}
+				${this.buildIcon(this.config.icon)}${this.buildLabel(
+					this.config.label,
+				)}${this.buildRipple()}
 			</div>
 			${this.buildStyles()}`;
 	}

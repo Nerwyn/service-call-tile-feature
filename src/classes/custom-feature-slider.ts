@@ -9,7 +9,7 @@ import {
 	STEP,
 	STEP_COUNT,
 } from '../models/constants';
-import { IEntry, SliderThumbType } from '../models/interfaces';
+import { SliderThumbType } from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-slider')
@@ -214,11 +214,13 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		`;
 	}
 
-	buildSlider(entry: IEntry = this.config, context: object) {
+	buildSlider(context: object) {
 		const style: StyleInfo = {};
 		if (
-			this.renderTemplate(entry.tap_action?.action as string, context) ==
-			'none'
+			this.renderTemplate(
+				this.config.tap_action?.action as string,
+				context,
+			) == 'none'
 		) {
 			style['pointer-events'] = 'none';
 		}
@@ -365,10 +367,9 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 
 		return html`
 			<div class="container ${this.sliderOn ? 'on' : 'off'}">
-				${this.buildBackground()}
-				${this.buildSlider(undefined, context)}
-				${this.buildIcon(undefined, context)}
-				${this.buildLabel(undefined, context)}
+				${this.buildBackground()}${this.buildSlider(context)}
+				${this.buildIcon(this.config.icon, context)}
+				${this.buildLabel(this.config.label, context)}
 			</div>
 			${this.buildTooltip()}${this.buildSliderStyles(context)}
 			${this.buildStyles(undefined, context)}
@@ -387,7 +388,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				:host {
 					overflow: visible;
 					pointer-events: none;
-
+					cursor: pointer;
 					--height: var(--feature-height, 40px);
 				}
 

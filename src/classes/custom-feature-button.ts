@@ -226,7 +226,9 @@ export class CustomFeatureButton extends BaseCustomFeature {
 			${this.buildRipple()}
 		</button>`;
 
-		return html`${button}${this.buildIcon()}${this.buildLabel()}${this.buildStyles()}`;
+		return html`${button}${this.buildIcon(
+			this.config.icon,
+		)}${this.buildLabel(this.config.label)}${this.buildStyles()}`;
 	}
 
 	static get styles() {

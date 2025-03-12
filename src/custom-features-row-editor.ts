@@ -1389,6 +1389,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 	}
 
 	buildToggleGuiEditor() {
+		const context = this.getEntryContext(this.activeEntry as IEntry);
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
@@ -1426,7 +1427,31 @@ export class CustomFeaturesRowEditor extends LitElement {
 				)}
 			</div>
 			${this.buildAppearancePanel(html`
-				${this.buildCommonAppearanceOptions()}
+				${this.renderTemplate(
+					this.activeEntry?.thumb ?? 'default',
+					context,
+				) == 'default'
+					? this.buildCommonAppearanceOptions()
+					: html`${this.buildSelector('Label', 'label', {
+								text: { multiline: true },
+							})}
+							<div class="form">
+								${this.buildSelector('Icon', 'icon', {
+									icon: {},
+								})}${this.buildSelector(
+									'Thumb icon',
+									'thumb_icon',
+									{
+										icon: {},
+									},
+								)}${this.buildSelector(
+									'Units',
+									'unit_of_measurement',
+									{
+										text: {},
+									},
+								)}
+							</div>`}
 				${this.buildSelector(
 					'Thumb type',
 					'thumb',

@@ -73,4 +73,5 @@ export interface ISpinboxOptions {
 
 export interface IToggleOptions {
 	thumb?: ThumbType;
+	thumb_icon?: string;
 }
