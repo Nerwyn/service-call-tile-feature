@@ -174,7 +174,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		this.setValue();
 
 		let toggle: TemplateResult<1>;
-		switch (this.renderTemplate(this.config.thumb as ToggleThumbType)) {
+		switch (
+			this.renderTemplate(
+				this.config.thumb ?? 'default',
+			) as ToggleThumbType
+		) {
 			case 'md3-switch':
 				toggle = this.buildMD3Switch();
 				break;
@@ -191,6 +195,47 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		}
 
 		return html`${toggle}${this.buildStyles(this.config.styles)}`;
+	}
+
+	updated() {
+		// md3-switch fix for themes that don't set different button and track colors
+		if (
+			this.renderTemplate(this.config.thumb ?? 'default') == 'md3-switch'
+		) {
+			try {
+				const background = this.shadowRoot?.querySelector(
+					'.background',
+				) as HTMLElement;
+				const style = getComputedStyle(background);
+
+				const buttonChecked = style.getPropertyValue(
+					'--switch-checked-button-color',
+				);
+				const trackChecked = style.getPropertyValue(
+					'--switch-checked-track-color',
+				);
+				const trackUnchecked = style.getPropertyValue(
+					'--switch-unchecked-track-color',
+				);
+				const buttonUnchecked = style.getPropertyValue(
+					'--switch-unchecked-button-color',
+				);
+				if (
+					trackChecked == buttonChecked ||
+					trackUnchecked == buttonUnchecked
+				) {
+					const opacity = this.checked ? '0.54' : '0.38';
+					background?.style.setProperty(
+						'--background-opacity',
+						opacity,
+					);
+				} else {
+					background?.style.removeProperty('--background-opacity');
+				}
+			} catch (e) {
+				console.error(e);
+			}
+		}
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
@@ -340,7 +385,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 14px;
 					width: 36px;
 					overflow: visible;
-					margin: calc((var(--feature-height, 40px) - 14px) / 2);
+					margin: calc((var(--feature-height, 40px) - 14px) / 2) 12px;
 					cursor: pointer;
 				}
 				.md2-switch > .background {
@@ -400,7 +445,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 28px;
 					width: 48px;
 					overflow: visible;
-					margin: calc((var(--feature-height, 40px) - 32px) / 2);
+					margin: calc((var(--feature-height, 40px) - 32px) / 2) 6px;
 					cursor: pointer;
 					--thumb-size: 16px;
 				}
@@ -417,11 +462,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border-radius: 52px;
 					background: var(--switch-unchecked-track-color);
 					border: 2px solid var(--switch-unchecked-button-color);
-					opacity: 1;
 					transition:
 						opacity 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
+					--background-opacity: 1;
 				}
 				.md3-switch.on > .background {
 					background: var(--switch-checked-track-color);
