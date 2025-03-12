@@ -87,7 +87,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				)}
 			</div>
 			<div
-				class="container md2-toggle ${this.checked ? 'on' : 'off'}"
+				class="container md2-switch ${this.checked ? 'on' : 'off'}"
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
@@ -303,12 +303,13 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					white-space: pre-line;
 				}
 
-				:host:has(.md2-toggle) {
+				:host:has(.md2-switch) {
 					display: flex;
 					flex-direction: row;
+					justify-content: flex-end;
 					--ha-ripple-color: #aaa;
 				}
-				.md2-toggle {
+				.md2-switch {
 					justify-content: flex-start;
 					flex-basis: auto;
 					flex-shrink: 0;
@@ -318,7 +319,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					margin: calc((var(--feature-height, 40px) - 14px) / 2);
 					cursor: pointer;
 				}
-				.md2-toggle > .background {
+				.md2-switch > .background {
 					border-radius: 32px;
 					opacity: 0.38;
 					background: var(--switch-unchecked-track-color);
@@ -327,12 +328,12 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
 				}
-				.md2-toggle.on > .background {
+				.md2-switch.on > .background {
 					background: var(--switch-checked-track-color);
 					border-color: var(--switch-checked-track-color);
 					opacity: 0.54;
 				}
-				.md2-toggle > .thumb {
+				.md2-switch > .thumb {
 					background: 0 0;
 					height: 40px;
 					width: 40px;
@@ -344,7 +345,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
 				}
-				.md2-toggle > .thumb::before {
+				.md2-switch > .thumb::before {
 					content: '';
 					box-shadow:
 						rgba(0, 0, 0, 0.2) 0px 3px 1px -2px,
@@ -359,10 +360,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					background: var(--switch-unchecked-button-color);
 					border-color: var(--switch-unchecked-button-color);
 				}
-				.md2-toggle.on > .thumb {
+				.md2-switch.on > .thumb {
 					transform: translateX(18px);
 				}
-				.md2-toggle.on > .thumb::before {
+				.md2-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
 					border-color: var(--switch-checked-button-color);
 				}
