@@ -81,9 +81,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 	buildMD2Switch() {
 		return html`
-			${this.buildIcon(this.config.icon)}${this.buildLabel(
-				this.config.label,
-			)}
+			<div class="icon-label">
+				${this.buildIcon(this.config.icon)}${this.buildLabel(
+					this.config.label,
+				)}
+			</div>
 			<div
 				class="container md2-toggle ${this.checked ? 'on' : 'off'}"
 				@pointerdown=${this.onPointerDown}
@@ -119,9 +121,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				</div>
 				${this.buildRipple()}
 			</div>
-			${this.buildIcon(this.config.icon)}${this.buildLabel(
-				this.config.label,
-			)}
+			<div class="icon-label">
+				${this.buildIcon(this.config.icon)}${this.buildLabel(
+					this.config.label,
+				)}
+			</div>
 		`;
 	}
 
@@ -237,7 +241,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.checkbox) {
 					display: flex;
 					flex-direction: row;
-					gap: 10px;
 					--mdc-icon-size: 18px;
 					--ha-ripple-color: var(
 						--mdc-checkbox-unchecked-color,
@@ -284,9 +287,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.off > .checkbox > .icon {
 					visibility: hidden;
 				}
-				.container:has(.checkbox) ~ .label,
-				.label:has(~ .md2-toggle),
-				.label:has(~ .md3-toggle) {
+				.icon-label {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					gap: 10px;
+					height: 100%;
+					width: 100%;
+				}
+				.icon-label > .label {
 					justify-content: flex-start;
 					white-space: pre-line;
 				}
@@ -294,7 +303,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.md2-toggle) {
 					display: flex;
 					flex-direction: row;
-					gap: 10px;
 					--ha-ripple-color: #aaa;
 				}
 				.md2-toggle {
