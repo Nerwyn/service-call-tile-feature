@@ -47,7 +47,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 			);
 		}
 
-		return html`${selector}${this.buildStyles()}`;
+		return html`${selector}${this.buildStyles(this.config.styles)}`;
 	}
 
 	updated() {

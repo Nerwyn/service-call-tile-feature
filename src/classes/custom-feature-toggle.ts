@@ -170,7 +170,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				break;
 		}
 
-		return html`${toggle}${this.buildStyles()} `;
+		return html`${toggle}${this.buildStyles(this.config.styles)}`;
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
@@ -294,6 +294,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					gap: 10px;
 					height: 100%;
 					width: 100%;
+				}
+				.icon-label:empty {
+					display: none;
 				}
 				.icon-label > .label {
 					justify-content: flex-start;

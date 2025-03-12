@@ -181,7 +181,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			<ha-icon class="down-arrow" .icon=${'mdi:menu-down'}></ha-icon>
 		</div>`;
 
-		return html`${select}${dropdown}${this.buildDropdownStyles()}${this.buildStyles()}`;
+		return html`${select}${dropdown}${this.buildDropdownStyles()}${this.buildStyles(
+			this.config.styles,
+		)}`;
 	}
 
 	updated() {
@@ -382,7 +384,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					this.config.label,
 				)}${this.buildRipple()}
 			</div>
-			${this.buildStyles()}`;
+			${this.buildStyles(this.config.styles)}`;
 	}
 
 	static get styles() {

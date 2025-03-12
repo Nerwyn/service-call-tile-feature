@@ -372,7 +372,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				${this.buildLabel(this.config.label, context)}
 			</div>
 			${this.buildTooltip()}${this.buildSliderStyles(context)}
-			${this.buildStyles(undefined, context)}
+			${this.buildStyles(this.config.styles, context)}
 		`;
 	}
 

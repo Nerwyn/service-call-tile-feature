@@ -259,7 +259,9 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 			)}
 			${this.buildButton(
 				'increment',
-			)}${this.buildSpinboxStyles()}${this.buildStyles()}
+			)}${this.buildSpinboxStyles()}${this.buildStyles(
+				this.config.styles,
+			)}
 		`;
 	}
 
@@ -352,7 +354,7 @@ export class OperatorButton extends BaseCustomFeature {
 			${this.buildBackground()}${this.buildIcon(
 				this.config.icon,
 			)}${super.buildLabel(this.config.label)}
-			${this.buildStyles()}
+			${this.buildStyles(this.config.styles)}
 		`;
 	}
 }

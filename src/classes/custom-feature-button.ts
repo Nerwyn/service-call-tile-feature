@@ -228,7 +228,9 @@ export class CustomFeatureButton extends BaseCustomFeature {
 
 		return html`${button}${this.buildIcon(
 			this.config.icon,
-		)}${this.buildLabel(this.config.label)}${this.buildStyles()}`;
+		)}${this.buildLabel(this.config.label)}${this.buildStyles(
+			this.config.styles,
+		)}`;
 	}
 
 	static get styles() {

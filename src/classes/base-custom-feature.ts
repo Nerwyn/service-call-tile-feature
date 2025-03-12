@@ -759,7 +759,7 @@ export class BaseCustomFeature extends LitElement {
 			: html``;
 	}
 
-	buildStyles(styles: string = this.config.styles ?? '', context?: object) {
+	buildStyles(styles?: string, context?: object) {
 		return styles
 			? html`
 					<style>
@@ -776,21 +776,17 @@ export class BaseCustomFeature extends LitElement {
 	}
 
 	buildIcon(icon?: string, context?: object) {
-		if (icon) {
-			return html`<ha-icon
-				class="icon"
-				.icon=${this.renderTemplate(icon, context)}
-			></ha-icon>`;
-		}
-		return '';
+		return icon
+			? html`<ha-icon
+					class="icon"
+					.icon=${this.renderTemplate(icon, context)}
+				></ha-icon>`
+			: '';
 	}
 
 	buildLabel(label?: string, context?: object) {
-		if (label) {
-			// prettier-ignore
-			return html`<pre class="label">${this.renderTemplate(label, context)}</pre>`;
-		}
-		return '';
+		// prettier-ignore
+		return label ? html`<pre class="label">${this.renderTemplate(label, context)}</pre>` : '';
 	}
 
 	onPointerDown(e: PointerEvent) {
