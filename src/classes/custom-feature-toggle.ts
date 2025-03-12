@@ -505,7 +505,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.md3-switch.on:has(.icon) {
 					--icon-color: var(
 						--switch-checked-icon-color,
-						var(--accent-color)
+						var(--input-background-color)
 					);
 				}
 				.md3-switch > .thumb::before {
