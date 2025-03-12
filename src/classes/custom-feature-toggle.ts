@@ -76,7 +76,27 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildMD3Switch() {
-		return html``;
+		return html`
+			<div class="icon-label">
+				${this.buildIcon(this.config.icon)}${this.buildLabel(
+					this.config.label,
+				)}
+			</div>
+			<div
+				class="container md3-switch ${this.checked ? 'on' : 'off'}"
+				@pointerdown=${this.onPointerDown}
+				@pointerup=${this.onPointerUp}
+				@pointermove=${this.onPointerMove}
+				@pointercancel=${this.onPointerCancel}
+				@pointerleave=${this.onPointerLeave}
+				@contextmenu=${this.onContextMenu}
+			>
+				<div class="background"></div>
+				<div class="thumb">
+					${this.buildIcon(this.config.thumb_icon)}
+				</div>
+			</div>
+		`;
 	}
 
 	buildMD2Switch() {
@@ -177,6 +197,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		return [
 			super.styles as CSSResult,
 			css`
+				/* Default toggle */
 				:host {
 					display: block;
 					touch-action: pan-y;
@@ -238,6 +259,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					transform: translateX(100%);
 				}
 
+				/* Material Design Checkbox */
 				:host:has(.checkbox) {
 					display: flex;
 					flex-direction: row;
@@ -303,7 +325,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					white-space: pre-line;
 				}
 
-				:host:has(.md2-switch) {
+				/* Material Design 2 Switch */
+				:host:has(.md2-switch),
+				:host:has(.md3-switch) {
 					display: flex;
 					flex-direction: row;
 					justify-content: flex-end;
@@ -366,6 +390,88 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.md2-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
 					border-color: var(--switch-checked-button-color);
+				}
+
+				/* Material Design 3 Switch */
+				.md3-switch {
+					justify-content: flex-start;
+					flex-basis: auto;
+					flex-shrink: 0;
+					height: 28px;
+					width: 48px;
+					overflow: visible;
+					margin: calc((var(--feature-height, 40px) - 32px) / 2);
+					cursor: pointer;
+					--thumb-size: 16px;
+				}
+				.md3-switch.on {
+					--thumb-size: 24px;
+				}
+				.md3-switch:active {
+					--thumb-size: 30px !important;
+				}
+				.md3-switch.on:active {
+					--thumb-size: 28px !important;
+				}
+				.md3-switch > .background {
+					border-radius: 52px;
+					background: var(--switch-unchecked-track-color);
+					border: 2px solid var(--switch-unchecked-button-color);
+					opacity: 1;
+					transition:
+						opacity 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
+				}
+				.md3-switch.on > .background {
+					background: var(--switch-checked-track-color);
+					border-color: var(--switch-checked-track-color);
+				}
+				.md3-switch > .thumb {
+					background: 0 0;
+					height: 40px;
+					width: 40px;
+					border-radius: 40px;
+					left: -4px;
+					position: absolute;
+					transition:
+						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
+					--mdc-icon-size: 18px;
+				}
+				.md2-switch:has(.icon),
+				.md3-switch:has(.icon) {
+					--thumb-size: 24px;
+					--icon-color: var(
+						--switch-unchecked-icon-color,
+						var(--input-background-color)
+					);
+				}
+				.md2-switch.on:has(.icon),
+				.md3-switch.on:has(.icon) {
+					--icon-color: var(
+						--switch-checked-icon-color,
+						var(--accent-color)
+					);
+				}
+				.md3-switch > .thumb::before {
+					content: '';
+					box-sizing: border-box;
+					position: absolute;
+					height: var(--thumb-size);
+					width: var(--thumb-size);
+					border-radius: 50%;
+					background: var(--switch-unchecked-button-color);
+					transition:
+						height 0.2s cubic-bezier(0.2, 0, 0, 1),
+						width 0.2s cubic-bezier(0.2, 0, 0, 1);
+				}
+				.md3-switch.on > .thumb {
+					transform: translateX(20px);
+				}
+				.md3-switch.on > .thumb::before {
+					background: var(--switch-checked-button-color);
 				}
 			`,
 		];
