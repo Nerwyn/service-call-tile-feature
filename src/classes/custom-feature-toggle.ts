@@ -316,7 +316,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.checkbox) {
 					display: flex;
 					flex-direction: row;
-					--mdc-icon-size: 18px;
 					--ha-ripple-pressed-opacity: 0.1;
 					--ha-ripple-hover-color: var(
 						--mdc-checkbox-unchecked-state-layer,
@@ -344,6 +343,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					flex-basis: auto;
 					flex-shrink: 0;
 					background: 0 0;
+					--mdc-icon-size: 18px;
 				}
 				.checkbox {
 					height: 18px;
