@@ -526,6 +526,63 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.md3-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
 				}
+				.md3-switch > .background::after {
+					content: '';
+					position: absolute;
+					height: 32px;
+					width: 52px;
+					border-radius: 32px;
+					pointer-events: none;
+					top: -2px;
+					left: -2px;
+					z-index: 1;
+					opacity: 0;
+					background: var(
+						--switch-unchecked-track-state-layer,
+						var(--primary-text-color)
+					);
+					transition: opacity 0.1s cubic-bezier(0.4, 0, 1, 1) 0s;
+				}
+				.md3-switch.on:hover > .background::after {
+					background: var(--switch-checked-track-color);
+				}
+				@media (hover: hover) {
+					.md3-switch:hover > .background::after {
+						opacity: 0.08;
+					}
+				}
+				.md3-switch:focus-visible > .background::after,
+				.md3-switch:active > .background::after {
+					opacity: 0.1;
+				}
+				@media (hover: hover) {
+					.md3-switch:hover > .thumb::before {
+						background: var(
+							--switch-unchecked-button-state-layer,
+							var(--secondary-text-color)
+						) !important;
+					}
+					.md3-switch.on:hover > .thumb::before {
+						background: var(
+							--switch-checked-button-state-layer,
+							var(--accent-color)
+						) !important;
+					}
+				}
+				.md3-switch:focus-visible .thumb::before,
+				.md3-switch:active .thumb::before {
+					background: var(
+						--switch-unchecked-button-state-layer,
+						var(--secondary-text-color)
+					) !important;
+				}
+				.md3-switch.on:focus-visible .thumb::before,
+				.md3-switch.on:active .thumb::before {
+					background: var(
+						--switch-checked-button-state-layer,
+						var(--accent-color)
+					) !important;
+				}
 			`,
 		];
 	}
