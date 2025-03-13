@@ -28,10 +28,8 @@ import {
 	IEntry,
 	IOption,
 	ITarget,
-	SliderThumbTypes,
 	TileFeatureType,
 	TileFeatureTypes,
-	ToggleThumbTypes,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
 
@@ -1092,7 +1090,32 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						select: {
 							mode: 'dropdown',
-							options: SliderThumbTypes,
+							options: [
+								{
+									value: 'default',
+									label: 'Default',
+									description:
+										'Curved corners and a target bar - like the default light brightness and cover position card features.',
+								},
+								{
+									value: 'line',
+									label: 'Line',
+									description:
+										'A thin bar with no trailing part - like the default light color temperature card feature.',
+								},
+								{
+									value: 'flat',
+									label: 'Flat',
+									description:
+										'A flat thumb - like mushroom cards light brightness slider.',
+								},
+								{
+									value: 'round',
+									label: 'Round',
+									description:
+										'A thick round slider thumb - like an Android volume slider.',
+								},
+							],
 							reorder: false,
 						},
 					},
@@ -1458,7 +1481,32 @@ export class CustomFeaturesRowEditor extends LitElement {
 					{
 						select: {
 							mode: 'dropdown',
-							options: ToggleThumbTypes,
+							options: [
+								{
+									value: 'default',
+									label: 'Default',
+									description:
+										'A large toggle with an optional icon and label on the thumb - like the default toggle card feature.',
+								},
+								{
+									value: 'checkbox',
+									label: 'Checkbox',
+									description:
+										'A checkbox with a thumb icon, and a separate icon and label - like seen in todo lists.',
+								},
+								{
+									value: 'md2-switch',
+									label: 'Material Design 2 Switch',
+									description:
+										'A switch with a thumb icon, and a separate icon and label - like the switches found throughout Home Assistant configuration menus.',
+								},
+								{
+									value: 'md3-switch',
+									label: 'Material Design 3 Switch',
+									description:
+										'An updated switch with a thumb icon, and a separate icon and label - like the switches found in modern Android.',
+								},
+							],
 							reorder: false,
 						},
 					},
