@@ -9,7 +9,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	direction?: 'left' | 'right';
 
 	async onPointerUp(_e: PointerEvent) {
-		super.onPointerUp();
 		if (!this.swiping) {
 			if (this.direction) {
 				// TODO rtl fix?
@@ -45,7 +44,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-			super.onPointerUp();
 		} else if (Math.abs(horizontal) > swipeSensitivity) {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';

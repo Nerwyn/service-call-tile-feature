@@ -781,12 +781,7 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
-	onPointerUp(_e?: PointerEvent) {
-		const ripple = this.shadowRoot?.querySelector(
-			'md-ripple',
-		) as unknown as { endPressAnimation?: () => void };
-		ripple?.endPressAnimation?.();
-	}
+	onPointerUp(_e: PointerEvent) {}
 
 	onPointerMove(e: PointerEvent) {
 		if (this.currentX && this.currentY && e.isPrimary) {
@@ -800,7 +795,6 @@ export class BaseCustomFeature extends LitElement {
 	onPointerCancel(_e: PointerEvent) {
 		this.endAction();
 		this.swiping = true;
-		this.onPointerUp();
 	}
 
 	onPointerLeave(e: PointerEvent) {
@@ -816,6 +810,14 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
+	onTouchEnd(_e?: TouchEvent) {
+		// Stuck ripple fix
+		const ripple = this.shadowRoot?.querySelector(
+			'md-ripple',
+		) as unknown as { endPressAnimation?: () => void };
+		ripple?.endPressAnimation?.();
+	}
+
 	confirmationFailed() {
 		clearTimeout(this.getValueFromHassTimer);
 		this.getValueFromHass = true;
@@ -824,6 +826,7 @@ export class BaseCustomFeature extends LitElement {
 
 	firstUpdated() {
 		this.addEventListener('confirmation-failed', this.confirmationFailed);
+		this.addEventListener('touchend', this.onTouchEnd);
 	}
 
 	static get styles(): CSSResult | CSSResult[] {

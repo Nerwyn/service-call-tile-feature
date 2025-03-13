@@ -122,7 +122,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	}
 
 	async onPointerUp(_e: PointerEvent) {
-		super.onPointerUp();
 		this.setThumbOffset();
 		this.showTooltip = false;
 		this.setValue();

@@ -17,7 +17,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	onPointerUp(_e: PointerEvent) {
-		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
 			this.open = !this.open;
 			this.endAction();
@@ -37,7 +36,6 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		) {
 			this.endAction();
 			this.swiping = true;
-			super.onPointerUp();
 		}
 	}
 
@@ -316,7 +314,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 	async onPointerUp(e: PointerEvent) {
 		e.preventDefault();
-		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,
