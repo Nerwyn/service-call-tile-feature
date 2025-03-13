@@ -21,6 +21,7 @@ export class BaseCustomFeature extends LitElement {
 	@property() hass!: HomeAssistant;
 	@property() config!: IEntry;
 	@property() stateObj!: HassEntity;
+	@property() shouldRenderRipple = true;
 
 	@state() value?: string | number | boolean = 0;
 	entityId?: string;
@@ -43,11 +44,6 @@ export class BaseCustomFeature extends LitElement {
 	currentY?: number;
 	deltaX?: number;
 	deltaY?: number;
-
-	@property() shouldRenderRipple = true;
-	@state() renderRipple = true;
-	renderRippleOff?: ReturnType<typeof setTimeout>;
-	renderRippleOn?: ReturnType<typeof setTimeout>;
 
 	rtl: boolean = false;
 
@@ -740,23 +736,8 @@ export class BaseCustomFeature extends LitElement {
 		}, valueFromHassDelay);
 	}
 
-	toggleRipple() {
-		clearTimeout(this.renderRippleOff);
-		clearTimeout(this.renderRippleOn);
-		this.renderRippleOff = setTimeout(
-			() => (this.renderRipple = false),
-			2000,
-		);
-		this.renderRippleOn = setTimeout(
-			() => (this.renderRipple = true),
-			2500,
-		);
-	}
-
 	buildRipple() {
-		return this.shouldRenderRipple && this.renderRipple
-			? html`<md-ripple></md-ripple>`
-			: html``;
+		return this.shouldRenderRipple ? html`<md-ripple></md-ripple>` : '';
 	}
 
 	buildStyles(styles?: string, context?: object) {
@@ -800,7 +781,12 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
-	onPointerUp(_e: PointerEvent) {}
+	onPointerUp(_e?: PointerEvent) {
+		const ripple = this.shadowRoot?.querySelector(
+			'md-ripple',
+		) as unknown as { endPressAnimation?: () => void };
+		ripple?.endPressAnimation?.();
+	}
 
 	onPointerMove(e: PointerEvent) {
 		if (this.currentX && this.currentY && e.isPrimary) {
@@ -814,7 +800,7 @@ export class BaseCustomFeature extends LitElement {
 	onPointerCancel(_e: PointerEvent) {
 		this.endAction();
 		this.swiping = true;
-		this.toggleRipple();
+		this.onPointerUp();
 	}
 
 	onPointerLeave(e: PointerEvent) {

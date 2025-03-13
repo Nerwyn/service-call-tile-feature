@@ -60,10 +60,6 @@ export class CustomFeatureButton extends BaseCustomFeature {
 
 	async onPointerDown(e: PointerEvent) {
 		super.onPointerDown(e);
-		clearTimeout(this.renderRippleOff);
-		clearTimeout(this.renderRippleOn);
-		this.renderRipple = true;
-
 		if (!this.swiping) {
 			if (
 				this.config.momentary_start_action &&
@@ -125,6 +121,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 	}
 
 	async onPointerUp(e: PointerEvent) {
+		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
 			if (
 				this.config.momentary_end_action &&
@@ -162,7 +159,6 @@ export class CustomFeatureButton extends BaseCustomFeature {
 				// Hold action is not triggered, fire tap action
 				this.onClick(e);
 			}
-			this.toggleRipple();
 		}
 	}
 

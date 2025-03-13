@@ -64,6 +64,7 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	onPointerUp(e: PointerEvent) {
+		super.onPointerUp();
 		clearTimeout(this.debounceTimer);
 
 		if (!this.swiping && this.initialX && this.initialY) {

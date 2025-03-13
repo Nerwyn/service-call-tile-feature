@@ -9,6 +9,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	direction?: 'left' | 'right';
 
 	async onPointerUp(_e: PointerEvent) {
+		super.onPointerUp();
 		if (!this.swiping) {
 			if (this.direction) {
 				// TODO rtl fix?
@@ -25,7 +26,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.checked = !this.checked;
 			this.fireHapticEvent('light');
 			await this.sendAction('tap_action');
-			this.toggleRipple();
 		}
 		this.endAction();
 		this.resetGetValueFromHass();
@@ -45,7 +45,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-			this.toggleRipple();
+			super.onPointerUp();
 		} else if (Math.abs(horizontal) > swipeSensitivity) {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
@@ -317,15 +317,24 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					display: flex;
 					flex-direction: row;
 					--mdc-icon-size: 18px;
-					--ha-ripple-color: var(
-						--mdc-checkbox-unchecked-color,
-						#aaa
+					--ha-ripple-pressed-opacity: 0.1;
+					--ha-ripple-hover-color: var(
+						--mdc-checkbox-unchecked-state-layer,
+						var(--primary-text-color)
+					);
+					--ha-ripple-pressed-color: var(
+						--mdc-checkbox-checked-color,
+						var(--primary-color)
 					);
 				}
 				:host:has(.on > .checkbox) {
-					--ha-ripple-color: var(
+					--ha-ripple-hover-color: var(
 						--mdc-checkbox-checked-color,
-						#018786
+						var(--primary-color)
+					);
+					--ha-ripple-pressed-color: var(
+						--mdc-checkbox-unchecked-state-layer,
+						var(--primary-text-color)
 					);
 				}
 				.container:has(.checkbox) {
@@ -362,6 +371,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.off > .checkbox > .icon {
 					visibility: hidden;
 				}
+				@media (hover: hover) {
+					.off:hover > .checkbox {
+						border-color: var(
+							--mdc-checkbox-unchecked-state-layer,
+							var(--primary-text-color)
+						);
+					}
+				}
+
 				.icon-label {
 					display: flex;
 					flex-direction: row;

@@ -15,6 +15,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 	}
 
 	onPointerUp(e: PointerEvent) {
+		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = false;

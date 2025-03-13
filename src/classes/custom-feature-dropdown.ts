@@ -16,18 +16,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 	}
 
-	onPointerDown(e: PointerEvent) {
-		super.onPointerDown(e);
-		clearTimeout(this.renderRippleOff);
-		clearTimeout(this.renderRippleOn);
-		this.renderRipple = true;
-	}
-
 	onPointerUp(_e: PointerEvent) {
+		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
 			this.open = !this.open;
 			this.endAction();
-			this.toggleRipple();
 		}
 	}
 
@@ -44,7 +37,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		) {
 			this.endAction();
 			this.swiping = true;
-			this.toggleRipple();
+			super.onPointerUp();
 		}
 	}
 
@@ -318,16 +311,13 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 
 	onPointerDown(e: PointerEvent) {
 		super.onPointerDown(e);
-		clearTimeout(this.renderRippleOff);
-		clearTimeout(this.renderRippleOn);
-		this.renderRipple = true;
 		this.fireHapticEvent('light');
 	}
 
 	async onPointerUp(e: PointerEvent) {
 		e.preventDefault();
+		super.onPointerUp();
 		if (!this.swiping && this.initialX && this.initialY) {
-			this.toggleRipple();
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,
 			);
