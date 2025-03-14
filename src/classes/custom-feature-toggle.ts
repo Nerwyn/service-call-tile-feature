@@ -66,10 +66,24 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	setValue() {
 		super.setValue();
 		if (this.getValueFromHass) {
+			let checkedValues = ['true', 'yes', 'on', 'enable', 'enabled', '1'];
+			if ((this.config.checked_values ?? []).length) {
+				checkedValues = (this.config.checked_values ?? []).map(
+					(value) =>
+						(
+							(this.renderTemplate(value) as string) ?? ''
+						).toLowerCase(),
+				);
+			}
+
 			this.checked =
-				['true', 'yes', 'on', 'enable', '1'].includes(
-					String(this.value).toLowerCase(),
-				) || Number(this.value) > 0;
+				checkedValues.includes(String(this.value).toLowerCase()) ||
+				(String(
+					this.renderTemplate(
+						String(this.config.check_numeric ?? true),
+					),
+				) == 'true' &&
+					Number(this.value) > 0);
 		}
 	}
 

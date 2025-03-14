@@ -672,6 +672,8 @@ export class CustomFeaturesRowEditor extends LitElement {
 		selector: object,
 		placeholder?: string | number | boolean | object,
 	) {
+		// https://github.com/home-assistant/frontend/tree/dev/src/components/ha-selector
+		// https://github.com/home-assistant/frontend/blob/dev/src/data/selector.ts
 		const hass: HomeAssistant = {
 			...this.hass,
 			localize: (key, values) => {
@@ -1419,19 +1421,47 @@ export class CustomFeaturesRowEditor extends LitElement {
 		return html`
 			${this.buildMainFeatureOptions()}
 			${this.buildSelector(
-				'Update after action delay',
-				'value_from_hass_delay',
+				'Additional checked values',
+				'checked_values',
 				{
-					number: {
-						min: 0,
-						step: 1,
+					select: {
+						multiple: true,
+						custom_value: true,
 						mode: 'box',
-						unit_of_measurement: 'ms',
+						options: [
+							'true',
+							'yes',
+							'on',
+							'enable',
+							'enabled',
+							'1',
+						],
+						reorder: true,
 					},
 				},
-				UPDATE_AFTER_ACTION_DELAY,
 			)}
 			<div class="form">
+				${this.buildSelector(
+					'Check numeric value',
+					'check_numeric',
+					{
+						boolean: {},
+					},
+					true,
+				)}
+				${this.buildSelector(
+					'Update after action delay',
+					'value_from_hass_delay',
+					{
+						number: {
+							min: 0,
+							step: 1,
+							mode: 'box',
+							unit_of_measurement: 'ms',
+						},
+					},
+					UPDATE_AFTER_ACTION_DELAY,
+				)}
 				${this.buildSelector(
 					'Autofill',
 					'autofill_entity_id',
@@ -1449,6 +1479,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 					HAPTICS,
 				)}
 			</div>
+			${this.buildAlertBox(
+				'Change the feature appearance or action information based on the boolean state of the toggle using a template like \'mdi:power-{{ iif(checked, "on", "off") }}\'',
+			)}
 			${this.buildAppearancePanel(html`
 				${this.renderTemplate(
 					this.activeEntry?.thumb ?? 'default',
