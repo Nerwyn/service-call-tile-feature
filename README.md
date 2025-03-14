@@ -1674,7 +1674,7 @@ features:
         value_from_hass_delay: 5000
         momentary_end_action:
           action: url
-          url_path: https://xkcd.com/{{ 1000* HOLD_SECS }}
+          url_path: https://xkcd.com/{{ 1000* hold_secs }}
         entity_id: climate.downstairs_thermostat
         value_attribute: state
   - type: custom:service-call

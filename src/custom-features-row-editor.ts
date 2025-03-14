@@ -1762,31 +1762,21 @@ export class CustomFeaturesRowEditor extends LitElement {
 			return '';
 		}
 
-		// Legacy string interpolation
-		if (typeof str == 'string' && /VALUE|UNIT|HOLD_SECS/g.test(str)) {
-			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
-				if (str == key) {
-					return context[key as keyof object] as string;
-				} else if (str.includes(key)) {
-					str = str.replace(
-						new RegExp(key, 'g'),
-						(context[key as keyof object] ?? '') as string,
-					);
-				}
-			}
-		}
-
 		return str;
 	}
 
 	getEntryContext(entry: IEntry) {
 		const context = {
-			VALUE: 0,
-			HOLD_SECS: 0,
-			UNIT: '',
 			value: 0,
 			hold_secs: 0,
 			unit: '',
+			initialX: 0,
+			initialY: 0,
+			currentX: 0,
+			currentY: 0,
+			deltaX: 0,
+			deltaY: 0,
+			checked: true,
 			config: {
 				...entry,
 				entity: '',
@@ -1805,12 +1795,11 @@ export class CustomFeaturesRowEditor extends LitElement {
 			entry.unit_of_measurement as string,
 			context,
 		) as string;
-		(context.UNIT = unit), (context.unit = unit);
+		context.unit = unit;
 		const value = this.getFeatureValue(
 			context.config.entity,
 			context.config.attribute,
 		);
-		context.VALUE = value;
 		context.value = value;
 		return context;
 	}

@@ -640,9 +640,6 @@ export class BaseCustomFeature extends LitElement {
 		}
 
 		context = {
-			VALUE: this.value as string,
-			HOLD_SECS: holdSecs,
-			UNIT: this.unitOfMeasurement,
 			value: this.value as string,
 			hold_secs: holdSecs,
 			unit: this.unitOfMeasurement,
@@ -674,7 +671,6 @@ export class BaseCustomFeature extends LitElement {
 			value = Number(value).toFixed(this.precision);
 			context = {
 				...context,
-				VALUE: value,
 				value: value,
 			};
 		}
@@ -687,20 +683,6 @@ export class BaseCustomFeature extends LitElement {
 		} catch (e) {
 			console.error(e);
 			return '';
-		}
-
-		// Legacy string interpolation
-		if (typeof str == 'string' && /VALUE|UNIT|HOLD_SECS/g.test(str)) {
-			for (const key of ['VALUE', 'HOLD_SECS', 'UNIT']) {
-				if (str == key) {
-					return context[key as keyof object] as string;
-				} else {
-					str = str.replace(
-						new RegExp(key, 'g'),
-						(context[key as keyof object] ?? '') as string,
-					);
-				}
-			}
 		}
 
 		return str;
