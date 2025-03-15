@@ -1,6 +1,10 @@
 import { css, CSSResult, html, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { ToggleThumbType } from '../models/interfaces';
+import {
+	CheckedValues,
+	ToggleThumbType,
+	UncheckedValues,
+} from '../models/interfaces';
 import { BaseCustomFeature } from './base-custom-feature';
 
 @customElement('custom-feature-toggle')
@@ -66,24 +70,39 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	setValue() {
 		super.setValue();
 		if (this.getValueFromHass) {
-			let checkedValues = ['true', 'yes', 'on', 'enable', 'enabled', '1'];
+			// Allow vs block list flag
+			const allow =
+				String(
+					this.renderTemplate(String(this.config.allow_list ?? true)),
+				) == 'true';
+
+			let values: string[];
 			if ((this.config.checked_values ?? []).length) {
-				checkedValues = (this.config.checked_values ?? []).map(
-					(value) =>
-						(
-							(this.renderTemplate(value) as string) ?? ''
-						).toLowerCase(),
+				// User defined list of values
+				values = (this.config.checked_values ?? []).map((value) =>
+					(
+						(this.renderTemplate(value) as string) ?? ''
+					).toLowerCase(),
 				);
+			} else if (allow) {
+				// White list
+				values = CheckedValues;
+			} else {
+				// Block list
+				values = UncheckedValues;
 			}
 
-			this.checked =
-				checkedValues.includes(String(this.value).toLowerCase()) ||
-				(String(
+			// Value > 0 check flag
+			const checkNumeric =
+				String(
 					this.renderTemplate(
 						String(this.config.check_numeric ?? true),
 					),
-				) == 'true' &&
-					Number(this.value) > 0);
+				) == 'true';
+
+			this.checked =
+				allow == values.includes(String(this.value).toLowerCase()) ||
+				(checkNumeric && Number(this.value) > 0);
 		}
 	}
 

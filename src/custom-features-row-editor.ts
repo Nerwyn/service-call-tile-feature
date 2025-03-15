@@ -21,6 +21,7 @@ import {
 	Actions,
 	ActionType,
 	ActionTypes,
+	CheckedValues,
 	HomeAssistant,
 	IAction,
 	IConfig,
@@ -30,6 +31,7 @@ import {
 	ITarget,
 	TileFeatureType,
 	TileFeatureTypes,
+	UncheckedValues,
 } from './models/interfaces';
 import { deepGet, deepSet } from './utils';
 
@@ -1415,31 +1417,41 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	buildToggleGuiEditor() {
 		const context = this.getEntryContext(this.activeEntry as IEntry);
+		const thumb = this.renderTemplate(
+			this.activeEntry?.thumb ?? 'default',
+			context,
+		);
+		const allow = this.renderTemplate(
+			this.activeEntry?.allow_list ?? true,
+			context,
+		);
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
 		return html`
 			${this.buildMainFeatureOptions()}
 			${this.buildSelector(
-				'Additional checked values',
-				'checked_values',
+				'Update after action delay',
+				'value_from_hass_delay',
 				{
-					select: {
-						multiple: true,
-						custom_value: true,
+					number: {
+						min: 0,
+						step: 1,
 						mode: 'box',
-						options: [
-							'true',
-							'yes',
-							'on',
-							'enable',
-							'enabled',
-							'1',
-						],
-						reorder: true,
+						unit_of_measurement: 'ms',
 					},
 				},
+				UPDATE_AFTER_ACTION_DELAY,
 			)}
+			${this.buildSelector('Alternate checked values', 'checked_values', {
+				select: {
+					multiple: true,
+					custom_value: true,
+					mode: 'dropdown',
+					options: allow ? CheckedValues : UncheckedValues,
+					reorder: true,
+				},
+			})}
 			<div class="form">
 				${this.buildSelector(
 					'Check numeric value',
@@ -1450,17 +1462,12 @@ export class CustomFeaturesRowEditor extends LitElement {
 					true,
 				)}
 				${this.buildSelector(
-					'Update after action delay',
-					'value_from_hass_delay',
+					`${allow ? 'Allow' : 'Block'} checked values`,
+					'allow_list',
 					{
-						number: {
-							min: 0,
-							step: 1,
-							mode: 'box',
-							unit_of_measurement: 'ms',
-						},
+						boolean: {},
 					},
-					UPDATE_AFTER_ACTION_DELAY,
+					true,
 				)}
 				${this.buildSelector(
 					'Autofill',
@@ -1483,10 +1490,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 				'Change the feature appearance or action information based on the boolean state of the toggle using a template like \'mdi:power-{{ iif(checked, "on", "off") }}\'',
 			)}
 			${this.buildAppearancePanel(html`
-				${this.renderTemplate(
-					this.activeEntry?.thumb ?? 'default',
-					context,
-				) == 'default'
+				${thumb == 'default'
 					? this.buildCommonAppearanceOptions()
 					: html`${this.buildSelector('Label', 'label', {
 								text: { multiline: true },

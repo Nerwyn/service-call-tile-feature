@@ -71,9 +71,22 @@ export interface ISpinboxOptions {
 	decrement?: IEntry;
 }
 
+export const CheckedValues = ['true', 'yes', 'on', 'enable', 'enabled', '1'];
+export const UncheckedValues = [
+	'false',
+	'no',
+	'off',
+	'disable',
+	'disabled',
+	'0',
+	'undefined',
+	'null',
+];
+
 export interface IToggleOptions {
 	thumb?: ThumbType;
 	thumb_icon?: string;
 	checked_values?: string[];
 	check_numeric?: boolean;
+	allow_list?: boolean;
 }
