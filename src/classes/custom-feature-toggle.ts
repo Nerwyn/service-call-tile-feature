@@ -228,6 +228,14 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		return html`${toggle}${this.buildStyles(this.config.styles)}`;
 	}
 
+	firstUpdated() {
+		// Firefox md checkbox and switch flex justify content fix
+		// Because :host:has() doesn't work with Firefox
+		if (this.renderTemplate(this.config.thumb ?? 'default') != 'default') {
+			this.style.setProperty('justify-content', 'flex-end');
+		}
+	}
+
 	updated() {
 		// md3-switch fix for themes that don't set different button and track colors
 		if (
@@ -283,8 +291,13 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			css`
 				/* Default toggle */
 				:host {
-					display: block;
+					flex-direction: row;
+					justify-content: flex-start;
 					touch-action: pan-y;
+					border-radius: 0;
+				}
+				.container {
+					border-radius: var(--feature-border-radius, 12px);
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
 						0.08
@@ -344,9 +357,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				}
 
 				/* Material Design Checkbox */
-				:host:has(.checkbox) {
-					display: flex;
-					flex-direction: row;
+				.container:has(.checkbox) {
+					height: var(--mdc-checkbox-touch-target-size, 40px);
+					width: var(--mdc-checkbox-touch-target-size, 40px);
+					border-radius: var(--mdc-checkbox-touch-target-size, 40px);
+					justify-content: center;
+					flex-basis: auto;
+					flex-shrink: 0;
+					background: 0 0;
+					--mdc-icon-size: 18px;
 					--ha-ripple-pressed-opacity: 0.1;
 					--ha-ripple-hover-color: var(
 						--mdc-checkbox-unchecked-state-layer,
@@ -357,7 +376,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						var(--primary-color)
 					);
 				}
-				:host:has(.on > .checkbox) {
+				.container.on:has(.checkbox) {
 					--ha-ripple-hover-color: var(
 						--mdc-checkbox-checked-color,
 						var(--primary-color)
@@ -366,15 +385,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						--mdc-checkbox-unchecked-state-layer,
 						var(--primary-text-color)
 					);
-				}
-				.container:has(.checkbox) {
-					height: var(--mdc-checkbox-touch-target-size, 40px);
-					width: var(--mdc-checkbox-touch-target-size, 40px);
-					border-radius: var(--mdc-checkbox-touch-target-size, 40px);
-					flex-basis: auto;
-					flex-shrink: 0;
-					background: 0 0;
-					--mdc-icon-size: 18px;
 				}
 				.checkbox {
 					height: 18px;
@@ -418,6 +428,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					gap: 10px;
 					height: 100%;
 					width: 100%;
+					min-width: 0;
 				}
 				.icon-label:empty {
 					display: none;
@@ -425,15 +436,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.icon-label > .label {
 					justify-content: flex-start;
 					white-space: pre-line;
+					height: 100%;
+					overflow: hidden;
+					text-overflow: clip;
 				}
 
 				/* Material Design 2 Switch */
 				:host:has(.md2-switch),
 				:host:has(.md3-switch) {
-					display: flex;
-					flex-direction: row;
 					justify-content: flex-end;
-					--ha-ripple-color: #aaa;
 				}
 				.md2-switch {
 					justify-content: flex-start;
@@ -444,6 +455,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					overflow: visible;
 					margin: calc((var(--feature-height, 40px) - 14px) / 2) 12px;
 					cursor: pointer;
+					--ha-ripple-color: #aaa;
 				}
 				.md2-switch > .background {
 					border-radius: 32px;
