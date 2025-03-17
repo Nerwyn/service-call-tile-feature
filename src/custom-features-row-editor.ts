@@ -1098,26 +1098,18 @@ export class CustomFeaturesRowEditor extends LitElement {
 								{
 									value: 'default',
 									label: 'Default',
-									description:
-										'Curved corners and a target bar - like the default light brightness and cover position card features.',
 								},
 								{
 									value: 'line',
 									label: 'Line',
-									description:
-										'A thin bar with no trailing part - like the default light color temperature card feature.',
 								},
 								{
 									value: 'flat',
 									label: 'Flat',
-									description:
-										'A flat thumb - like mushroom cards light brightness slider.',
 								},
 								{
 									value: 'round',
 									label: 'Round',
-									description:
-										'A thick round slider thumb - like an Android volume slider.',
 								},
 							],
 							reorder: false,
@@ -1487,31 +1479,9 @@ export class CustomFeaturesRowEditor extends LitElement {
 				)}
 			</div>
 			${this.buildAlertBox(
-				'Change the feature appearance or action information based on the boolean state of the toggle using a template like \'mdi:power-{{ iif(checked, "on", "off") }}\'',
+				'Use the boolean state of the toggle in a template like \'mdi:power-{{ iif(checked, "on", "off") }}\'',
 			)}
 			${this.buildAppearancePanel(html`
-				${thumb == 'default'
-					? this.buildCommonAppearanceOptions()
-					: html`${this.buildSelector('Label', 'label', {
-								text: { multiline: true },
-							})}
-							<div class="form">
-								${this.buildSelector('Icon', 'icon', {
-									icon: {},
-								})}${this.buildSelector(
-									'Thumb icon',
-									'thumb_icon',
-									{
-										icon: {},
-									},
-								)}${this.buildSelector(
-									'Units',
-									'unit_of_measurement',
-									{
-										text: {},
-									},
-								)}
-							</div>`}
 				${this.buildSelector(
 					'Thumb type',
 					'thumb',
@@ -1522,26 +1492,18 @@ export class CustomFeaturesRowEditor extends LitElement {
 								{
 									value: 'default',
 									label: 'Default',
-									description:
-										'A large toggle with an optional icon and label on the thumb - like the default toggle card feature.',
 								},
 								{
 									value: 'checkbox',
 									label: 'Checkbox',
-									description:
-										'A checkbox with a thumb icon, and a separate icon and label - like seen in todo lists.',
 								},
 								{
 									value: 'md2-switch',
 									label: 'Material Design 2 Switch',
-									description:
-										'A switch with a thumb icon, and a separate icon and label - like the switches found throughout Home Assistant configuration menus.',
 								},
 								{
 									value: 'md3-switch',
 									label: 'Material Design 3 Switch',
-									description:
-										'An updated switch with a thumb icon, and a separate icon and label - like the switches found in modern Android.',
 								},
 							],
 							reorder: false,
@@ -1549,6 +1511,26 @@ export class CustomFeaturesRowEditor extends LitElement {
 					},
 					'default',
 				)}
+				${this.buildSelector('Label', 'label', {
+					text: { multiline: true },
+				})}
+				<div class="form">
+					${this.buildSelector('Icon', 'icon', {
+						icon: {},
+					})}
+					${this.buildSelector('Units', 'unit_of_measurement', {
+						text: {},
+					})}${this.buildSelector(
+						'Unchecked icon',
+						'unchecked_icon',
+						{
+							icon: {},
+						},
+					)}
+					${this.buildSelector('Checked icon', 'checked_icon', {
+						icon: {},
+					})}
+				</div>
 			`)}
 			${this.buildInteractionsPanel(html`
 				${this.buildActionOption('Behavior', 'tap_action', {

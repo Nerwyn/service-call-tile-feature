@@ -124,7 +124,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			>
 				<div class="background"></div>
 				<div class="thumb">
-					${this.buildIcon(this.config.thumb_icon)}
+					${this.buildIcon(
+						this.config[`${this.checked ? '' : 'un'}checked_icon`],
+					)}
 				</div>
 			</div>
 		`;
@@ -149,7 +151,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				<div class="background"></div>
 				<div class="thumb">
 					${this.buildIcon(
-						this.config.thumb_icon,
+						this.config[`${this.checked ? '' : 'un'}checked_icon`],
 					)}${this.buildRipple()}
 				</div>
 			</div>
@@ -168,7 +170,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@contextmenu=${this.onContextMenu}
 			>
 				<div class="checkbox">
-					${this.buildIcon(this.config.thumb_icon)}
+					${this.buildIcon(
+						this.config[`${this.checked ? '' : 'un'}checked_icon`],
+					)}
 				</div>
 				${this.buildRipple()}
 			</div>
@@ -192,6 +196,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@contextmenu=${this.onContextMenu}
 			>
 				<div class="background"></div>
+				${this.buildIcon(this.config.checked_icon) || html`<div></div>`}
+				${this.buildIcon(this.config.unchecked_icon) ||
+				html`<div></div>`}
 				<div class="thumb">
 					${this.buildIcon(this.config.icon)}${this.buildLabel(
 						this.config.label,
@@ -299,11 +306,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				/* Default toggle */
 				:host {
 					flex-direction: row;
-					justify-content: flex-start;
 					touch-action: pan-y;
 					border-radius: 0;
 				}
 				.container {
+					justify-content: space-around;
 					border-radius: var(--feature-border-radius, 12px);
 					--md-ripple-hover-opacity: var(
 						--ha-ripple-hover-opacity,
@@ -343,6 +350,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
+					position: absolute;
+					left: 0;
 					cursor: pointer;
 					height: 100%;
 					width: 50%;
@@ -416,9 +425,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					);
 					--icon-color: var(--mdc-checkbox-ink-color, #fff);
 				}
-				.off > .checkbox > .icon {
-					visibility: hidden;
-				}
 				@media (hover: hover) {
 					.off:hover > .checkbox {
 						border-color: var(
@@ -486,7 +492,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 40px;
 					width: 40px;
 					border-radius: 40px;
-					position: absolute;
 					left: -10px;
 					transition:
 						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -557,7 +562,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					width: 40px;
 					border-radius: 40px;
 					left: -4px;
-					position: absolute;
 					transition:
 						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),

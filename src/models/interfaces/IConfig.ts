@@ -85,7 +85,8 @@ export const UncheckedValues = [
 
 export interface IToggleOptions {
 	thumb?: ThumbType;
-	thumb_icon?: string;
+	checked_icon?: string;
+	unchecked_icon?: string;
 	checked_values?: string[];
 	check_numeric?: boolean;
 	allow_list?: boolean;

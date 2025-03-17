@@ -13,7 +13,7 @@
 
 _Formerly called Service Card Tile Feature_
 
-Call any [action](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, dropdowns, selectors, sliders, and spinboxes. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#tile-features), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
+Call any [action](https://www.home-assistant.io/dashboards/actions/) via card features. These custom features will let you create super customizable buttons, dropdowns, selectors, sliders, spinboxes, and toggles. [The Home Assistant developers gave us the ability to create custom features](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card-feature), why is no one else taking advantage of it? And why isn't something like a generic button feature already in Home Assistant? I don't know but here it is.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/example_tile.png" alt="example_tile" width="600"/>
 
@@ -71,6 +71,18 @@ Like sliders, the spinbox's action should use an action which sets a value simil
 
 You can also override the default behavior of the increment and decrement buttons by changing the tab bar to `INCREMENT` or `DECREMENT` and modifying the actions there. Doing so will disable the normal increment/decrement and debounce button behavior and create a button feature instead. Spinbox button appearance and styles can also be modified more directly in the `INCREMENT` and `DECREMENT` tabs.
 
+## Toggles
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/toggle_tile.png" alt="toggle_tile" width="600"/>
+
+Toggles allow you to create Home Assistant style toggles, similar to the default switch and light entity toggle features. Like the default toggle, you can either tap or swipe on it in the correct direction to activate it. While toggles work best with `toggle` actions, like all features in this project it can be used with any action.
+
+Toggles have a special template variable `checked`. `checked` gives you the current boolean value of the feature. By default this value is true if the feature value is in the allow list `true, yes, on, enable, enabled, 1` or if it's numeric cast is greater than 0. You can disable numeric checks and switch to checking a block list `false, no, off, disable, disabled, 0, undefined, null` using the configuration UI. You can also set a custom allow/block list.
+
+In addition to the default Home Assistant toggle feature style toggle, you can also make the toggle appear as a Material Design checkbox, a Material Design 2 switch, or a Material Design 3 switch. The Material Design checkbox and switch options use theme colors instead of the feature color, and have been carefully designed to follow the Material Design specifications. See the [styles section](#css-styles) below for more information on which variables they use. The Material Design 3 switch in particular is made to work best with [Material You Theme](https://github.com/Nerwyn/material-rounded-theme).
+
+Toggles feature three icons! There's the icon normally shown alongside the label, and additional checked and unchecked icons. For the default toggle the normal icon and label will appear on the toggle thumb while the checked/unchecked icons will appear in the toggle background. For the Material Design toggle options, the normal icon and label will appear inline with the checkbox/switch, and the checked/unchecked icons will appear within the checkbox or on the switch thumb.
+
 # How To Use
 
 This project now has a fully featured configuration user interface! To get started, install this project using HACS. Then go to a dashboard and create a tile card, or any other card that supports card features. The entity ID can be anything you like. Click `ADD FEATURE` and then `Custom features row`
@@ -125,6 +137,12 @@ Sliders and spinboxes will wait one second before updating their internal values
 Dropdowns and selectors are made up of option, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row. Dropdowns have dropdown options which can each have a single action, and selectors have buttons which can have multiple different actions.
 
 Like sliders and spinboxes, selectors have a one second delay before updating their internal values from Home Assistant, which can be adjusted using `Update after action delay`.
+
+### Toggle General Options
+
+<img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/toggle_general_options.png" alt="toggle_general_options" width="600"/>
+
+TODO
 
 ## Appearance
 
@@ -260,6 +278,13 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --mdc-list-side-padding-right       | Right padding of option.                               |
 | --mdc-list-side-padding             | Side padding of option, lower priority than above two. |
 | --mdc-list-item-graphic-margin      | Gap between option icon and label.                     |
+
+## Toggle CSS Attributes
+
+| Name | Description |
+| ---- | ----------- |
+
+TODO
 
 ## Actions
 
