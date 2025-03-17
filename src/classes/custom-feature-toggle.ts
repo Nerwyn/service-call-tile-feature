@@ -229,10 +229,17 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	firstUpdated() {
-		// Firefox md checkbox and switch flex justify content fix
+		// Firefox md checkbox and switch flex fixes
 		// Because :host:has() doesn't work with Firefox
 		if (this.renderTemplate(this.config.thumb ?? 'default') != 'default') {
+			// Keeps toggles visible on small width displays
 			this.style.setProperty('justify-content', 'flex-end');
+			if (
+				!this.shadowRoot?.querySelector('.icon-label')?.children.length
+			) {
+				// Makes checkboxes and toggles take up minimal space if they don't have an icon or label
+				this.style.setProperty('flex', '0 0 min-content');
+			}
 		}
 	}
 
@@ -421,6 +428,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					}
 				}
 
+				:host:has(.icon-label:empty) {
+					flex: 0 0 min-content;
+				}
 				.icon-label {
 					display: flex;
 					flex-direction: row;
