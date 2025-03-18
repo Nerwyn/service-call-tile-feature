@@ -384,21 +384,27 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					--mdc-icon-size: 18px;
 					--ha-ripple-pressed-opacity: 0.1;
 					--ha-ripple-hover-color: var(
-						--mdc-checkbox-unchecked-state-layer,
+						--checkbox-unchecked-icon-color,
 						var(--primary-text-color)
 					);
 					--ha-ripple-pressed-color: var(
-						--mdc-checkbox-checked-color,
-						var(--primary-color)
+						--checkbox-checked-border-color,
+						var(
+							--mdc-checkbox-checked-color,
+							var(--mdc-theme-secondary, #018786)
+						)
 					);
 				}
 				.container.on:has(.checkbox) {
 					--ha-ripple-hover-color: var(
-						--mdc-checkbox-checked-color,
-						var(--primary-color)
+						--checkbox-checked-border-color,
+						var(
+							--mdc-checkbox-checked-color,
+							var(--mdc-theme-secondary, #018786)
+						)
 					);
 					--ha-ripple-pressed-color: var(
-						--mdc-checkbox-unchecked-state-layer,
+						--checkbox-unchecked-icon-color,
 						var(--primary-text-color)
 					);
 				}
@@ -409,26 +415,42 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border: solid 2px;
 					background: transparent;
 					border-color: var(
-						--mdc-checkbox-unchecked-color,
-						rgba(0, 0, 0, 0.54)
+						--checkbox-unchecked-border-color,
+						var(
+							--mdc-checkbox-unchecked-color,
+							var(--secondary-text-color)
+						)
 					);
 					cursor: pointer;
+					--icon-color: var(
+						--checkbox-unchecked-icon-color,
+						var(--primary-text-color)
+					);
 				}
 				.on > .checkbox {
 					background: var(
-						--mdc-checkbox-checked-color,
-						var(--mdc-theme-secondary, #018786)
+						--checkbox-checked-border-color,
+						var(
+							--mdc-checkbox-checked-color,
+							var(--mdc-theme-secondary, #018786)
+						)
 					);
 					border-color: var(
-						--mdc-checkbox-checked-color,
-						var(--mdc-theme-secondary, #018786)
+						--checkbox-checked-border-color,
+						var(
+							--mdc-checkbox-checked-color,
+							var(--mdc-theme-secondary, #018786)
+						)
 					);
-					--icon-color: var(--mdc-checkbox-ink-color, #fff);
+					--icon-color: var(
+						--checkbox-checked-icon-color,
+						var(--mdc-checkbox-ink-color, var(--accent-color))
+					);
 				}
 				@media (hover: hover) {
 					.off:hover > .checkbox {
 						border-color: var(
-							--mdc-checkbox-unchecked-state-layer,
+							--checkbox-unchecked-icon-color,
 							var(--primary-text-color)
 						);
 					}
