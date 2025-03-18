@@ -107,6 +107,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildMD3Switch() {
+		const styles = this.rtl
+			? `
+				.container,
+				.thumb > .icon {
+					flex-direction: row-reverse !important;
+					transform: scaleX(-1) !important;
+				}
+			`
+			: '';
 		return html`
 			<div class="icon-label">
 				${this.buildIcon(this.config.icon)}${this.buildLabel(
@@ -129,10 +138,21 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					)}
 				</div>
 			</div>
+			<style>
+				${styles}
+			</style>
 		`;
 	}
 
 	buildMD2Switch() {
+		const styles = this.rtl
+			? `
+				.container,
+				.thumb > .icon {
+					transform: scaleX(-1) !important;
+				}
+			`
+			: '';
 		return html`
 			<div class="icon-label">
 				${this.buildIcon(this.config.icon)}${this.buildLabel(
@@ -155,6 +175,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					)}${this.buildRipple()}
 				</div>
 			</div>
+			<style>
+				${styles}
+			</style>
 		`;
 	}
 
@@ -185,6 +208,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildDefaultToggle() {
+		const styles = this.rtl
+			? `
+			.container,
+			.icon,
+			.label {
+				transform: scaleX(-1) !important;
+			}
+		`
+			: '';
 		return html`
 			<div
 				class="container ${this.checked ? 'on' : 'off'}"
@@ -205,11 +237,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					)}
 				</div>
 			</div>
+			<style>
+				${styles}
+			</style>
 		`;
 	}
 
 	render() {
 		this.setValue();
+		this.rtl = getComputedStyle(this).direction == 'rtl';
 
 		let toggle: TemplateResult<1>;
 		switch (
