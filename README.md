@@ -75,11 +75,11 @@ You can also override the default behavior of the increment and decrement button
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/toggle_tile.png" alt="toggle_tile" width="600"/>
 
-Toggles allow you to create Home Assistant style toggles, similar to the default switch and light entity toggle features. Like the default toggle, you can either tap or swipe on it in the correct direction to activate it. While toggles work best with `toggle` actions, like all features in this project it can be used with any action.
+Toggles allow you to create Home Assistant style toggles, similar to the default switch and light entity toggle features. Like the default toggle, you can either tap or swipe on it in the correct direction to activate it. While toggles work best with `toggle` actions, like all features in this project it can be used with any action. You can use templates to change the toggle on and off options.
 
 Toggles have a special template variable `checked`. `checked` gives you the current boolean value of the feature. By default this value is true if the feature value is in the allow list `true, yes, on, enable, enabled, 1` or if it's numeric cast is greater than 0. You can disable numeric checks and switch to checking a block list `false, no, off, disable, disabled, 0, undefined, null` using the configuration UI. You can also set a custom allow/block list.
 
-In addition to the default Home Assistant toggle feature style toggle, you can also make the toggle appear as a Material Design checkbox, a Material Design 2 switch, or a Material Design 3 switch. The Material Design checkbox and switch options use theme colors instead of the feature color, and have been carefully designed to follow the Material Design specifications. See the [styles section](#css-styles) below for more information on which variables they use. The Material Design 3 switch in particular is made to work best with [Material You Theme](https://github.com/Nerwyn/material-rounded-theme).
+In addition to the default Home Assistant toggle feature style toggle, you can also make the toggle appear as a Material Design checkbox, a Material Design 2 switch, or a Material Design 3 switch. The Material Design checkbox and switch options use theme colors instead of the feature color, and have been carefully designed to follow the Material Design specifications. See the [styles section](#css-styles) below for more information on which variables they use. The Material Design 3 switch in particular is made to work best with [Material You Theme](https://github.com/Nerwyn/material-rounded-theme). If you choose one of the checkbox or switch options and do not provide an icon or label, the feature will only use the minimum width necessary to show the toggle, instead of being equal width to any other features in the row.
 
 Toggles feature three icons! There's the icon normally shown alongside the label, and additional checked and unchecked icons. For the default toggle the normal icon and label will appear on the toggle thumb while the checked/unchecked icons will appear in the toggle background. For the Material Design toggle options, the normal icon and label will appear inline with the checkbox/switch, and the checked/unchecked icons will appear within the checkbox or on the switch thumb.
 
@@ -134,7 +134,7 @@ Sliders and spinboxes will wait one second before updating their internal values
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/selector_general_options.png" alt="selector_general_options" width="600"/>
 
-Dropdowns and selectors are made up of option, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row. Dropdowns have dropdown options which can each have a single action, and selectors have buttons which can have multiple different actions.
+Dropdowns and selectors are made up of options, which can be added to, reordered, copied, deleted, and edited from a list similar to the overall features or custom features in a row. Dropdowns have dropdown options which can each have a single action, and selectors have buttons which can have multiple different actions.
 
 Like sliders and spinboxes, selectors have a one second delay before updating their internal values from Home Assistant, which can be adjusted using `Update after action delay`.
 
@@ -142,7 +142,7 @@ Like sliders and spinboxes, selectors have a one second delay before updating th
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/toggle_general_options.png" alt="toggle_general_options" width="600"/>
 
-TODO
+While toggles are fairly simple, custom toggles have some extra options so you can customize their behavior. By default a toggle is considered on/checked if it's value (entity's state or attribute) is in the list `true, yes, on, enable, enabled, 1`, or if it's numerica cast is greater than zero. You can disable the numeric cast check with the option `Check numeric value`. You can also change the toggle check behavior to instead set the toggle state to off/unchecked if it's value is in the list `false, no, off, disable, disabled, 0, undefined, null` using the option `Allow/Block checked values`. If you want to make your toggle change it's state based on a value not in either of these lists or a limited list, you can use the `Alternate checked values` box to create an alternate allow or block list.
 
 ## Appearance
 
@@ -150,11 +150,13 @@ TODO
 
 All features can have a `Label`, `Icon`, and `Units` (dropdowns and selectors support these fields at the option level). These fields can also be set using templates. Like the overall custom features row, each custom feature can have it's CSS styles set (including using templates).
 
+Toggles have two extra icons for checked and unchecked states. These icons appear in the background of the default toggle, within the box of the checkbox toggle, and on the thumb of the switch toggles.
+
 ### A Note on Templating
 
 Almost all fields support nunjucks templating. Nunjucks is a templating engine for JavaScript, which is heavily based on the jinja2 templating engine for Python which Home Assistant uses. While the syntax of nunjucks and jinja2 is almost identical, you may find the [nunjucks documentation](https://mozilla.github.io/nunjucks/templating.html) useful. Most extensions supported by Home Assistant templates are supported by this templating system, but not all and the syntax may vary. Please see the [ha-nunjucks](https://github.com/Nerwyn/ha-nunjucks) repository for a list of available extensions. If you want additional extensions to be added or have templating questions or bugs, please make an issue or discussion on that repository, not this one.
 
-You can include the current value of a feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a momentary end action. Each custom feature can also reference it's entry using `config` within templates. `config.entity` and `config.attribute` will return the features entity ID and attribute with their templates rendered (if they have them), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template. Information about the parent card such as it's entity ID, state, and attributes can be accessed using `stateObj`. The structure of `stateObj` can be found [here](https://github.com/home-assistant/home-assistant-js-websocket/blob/1d51737f6092b95e2bc98e85aca752771b97b760/lib/types.ts#L72-L96) as a `HassEntity` type and is listed below.
+You can include the current value of a feature and it's units by using the variables `value` and `unit` in a label template. You can also include `hold_secs` in a template if performing a momentary end action. For toggles you can use the boolean variable `checked` to check whether the toggle is on or off. Each custom feature can also reference it's entry using `config` within templates. `config.entity` and `config.attribute` will return the features entity ID and attribute with their templates rendered (if they have them), and other templated config fields can be rendered within templates by wrapping them in the function `render` within a template. Information about the parent card such as it's entity ID, state, and attributes can be accessed using `stateObj`. The structure of `stateObj` can be found [here](https://github.com/home-assistant/home-assistant-js-websocket/blob/1d51737f6092b95e2bc98e85aca752771b97b760/lib/types.ts#L72-L96) as a `HassEntity` type and is listed below.
 
 <details>
 
@@ -281,10 +283,21 @@ While any CSS property can be used, these values are internal CSS attributes use
 
 ## Toggle CSS Attributes
 
-| Name | Description |
-| ---- | ----------- |
-
-TODO
+| Name                                  | Description                                                                             |
+| ------------------------------------- | --------------------------------------------------------------------------------------- |
+| --checkbox-checked-border-color       | Border color of checked checkboxes.                                                     |
+| --checkbox-unchecked-border-color     | Border color of unchecked checkboxes.                                                   |
+| --checkbox-checked-icon-color         | Icon color of checked checkboxes.                                                       |
+| --checkbox-unchecked-icon-color       | Icon color of unchecked checkboxes.                                                     |
+| --switch-checked-button-color         | Handle color of checked switches.                                                       |
+| --switch-unchecked-button-color       | Handle color of unchecked switches.                                                     |
+| --switch-checked-button-state-layer   | Hover/focused/pressed handle overlay color for checked Material Design 3 switches.      |
+| --switch-unchecked-button-state-layer | Hover/focused/pressed handle overlay color for unchecked Material Design 3 switches.    |
+| --switch-checked-track-color          | Background color of checked switches.                                                   |
+| --switch-unchecked-track-color        | Background color of unchecked switches.                                                 |
+| --switch-unchecked-track-state-layer  | Hover/focused/pressed background overlay color for unchecked Material Design 3 switches |
+| --switch-checked-icon-color           | Icon color of checked switches.                                                         |
+| --switch-unchecked-icon-color         | Icon color of unchecked switches.                                                       |
 
 ## Actions
 
@@ -314,6 +327,16 @@ Actions follow the [Home Assistant actions](https://www.home-assistant.io/dashbo
 | Evaluate JS    | Evaluate a string as JavaScript code. You have access to the custom feature via `this`, which includes `this.hass`, `this.config`, and `this.value`. **Potentially dangerous, do not use unless you know what you're doing.**           |
 | Repeat         | Repeat the tap action ten times a second while held. Only applicable to hold.                                                                                                                                                           |
 | No action      | Explicilty set a command to do nothing.                                                                                                                                                                                                 |
+
+The entire action `data` and `target` fields are templatable, meaning that you can define the entire field as a YAML string in a template like so:
+
+```yaml
+action: light.turn_{{ iif(checked, 'on', 'off') }}
+data: |
+  {% if checked %}
+  brightness_pct: 100
+  {% endif %}
+```
 
 ### Adjustable Timings
 
@@ -349,7 +372,7 @@ While all configuration can now be done through the user interface, these YAML e
 
 ## Example 1
 
-A lock tile with lock and unlock selector options
+A lock tile with a toggle.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/lock_tile.png" alt="lock_tile" width="600"/>
 
@@ -361,46 +384,31 @@ A lock tile with lock and unlock selector options
 features:
   - type: custom:service-call
     entries:
-      - type: selector
+      - type: toggle
         entity_id: lock.front_door_ble
-        options:
-          - icon: mdi:lock
-            option: locked
-            tap_action:
-              action: perform-action
-              perform_action: lock.lock
-              target:
-                entity_id: lock.front_door_ble
-              data: {}
-            entity_id: lock.front_door_ble
-            type: button
-            value_attribute: state
-            styles: |
-              --color: var(--green-color);
-          - icon: mdi:lock-open-outline
-            option: unlocked
-            tap_action:
-              action: perform-action
-              perform_action: lock.unlock
-              target:
-                entity_id: lock.front_door_ble
-              data: {}
-            autofill_entity_id: true
-            haptics: false
-            entity_id: lock.front_door_ble
-            type: button
-            value_attribute: state
-            styles: |
-              --color: var(--red-color);
         value_attribute: state
-        styles: ''
+        styles: |-
+          :host {
+            --color: var(--feature-color);
+          }
+        tap_action:
+          action: toggle
+          target:
+            entity_id: lock.front_door_ble
+          data: {}
+        checked_values:
+          - locked
+        checked_icon: mdi:lock
+        unchecked_icon: mdi:lock-open-outline
+        icon: mdi:door
 type: tile
 entity: lock.front_door_ble
 show_entity_picture: false
 vertical: false
 layout_options:
   grid_columns: 4
-  grid_rows: 5
+  grid_rows: 2
+features_position: bottom
 card_mod:
   style:
     ha-tile-info$: |
@@ -426,35 +434,37 @@ A light tile with a button for each bulb, a color selector and dropdown, brightn
 features:
   - type: custom:service-call
     entries:
-      - type: button
+      - type: toggle
         tap_action:
-          action: call-service
-          service: light.toggle
+          action: perform-action
           confirmation:
             text: >-
-              Are you sure you want to turn the light {{ 'on' if
-              is_state(config.entity, 'off') else 'off' }}?
+              Are you sure you want to turn the light {{ 'on' if checked else
+              'off' }}?
             exemptions: []
           target:
-            entity_id: light.chandelier
-        icon: >-
-          {{ iif(is_state(config.entity, "on"), "mdi:ceiling-light",
-          "mdi:ceiling-light-outline") }}
-        label: '{{ value if value > 0 else "" }}{{ unit if value > 0 else "" }}'
+            entity_id:
+              - light.chandelier
+          perform_action: light.turn_{{ 'on' if checked else 'off' }}
+          data: |
+            {% if checked %}
+            kelvin: 2000
+            {% endif %}
+        icon: ''
+        label: >-
+          {{ value if checked else states(config.entity) }}{{ unit if checked
+          else "" }}
         value_attribute: brightness
         unit_of_measurement: '%'
         autofill_entity_id: true
         entity_id: light.chandelier
         styles: |-
           :host {
-            flex-basis: 200%;
-            --icon-color: red;
-            {% if is_state(config.entity, "on") %}
-            --color: rgb({{ state_attr(config.entity, "rgb_color") }});
-            {% endif %}
-            ;
+            flex-basis: 400%;
           }
         haptics: true
+        unchecked_icon: mdi:ceiling-light-outline
+        checked_icon: mdi:ceiling-light
       - tap_action:
           action: call-service
           service: light.toggle
@@ -561,7 +571,7 @@ features:
                 color_name: green
               target:
                 entity_id: light.chandelier
-            option: 0,128,0
+            option: 0,255,0
             label: Green
             icon: mdi:alpha-g
             entity_id: light.chandelier
@@ -571,7 +581,7 @@ features:
               :host {
                 --label-color: green;
                 --color: green;
-                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '0,128,0' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '0,255,0' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -582,7 +592,7 @@ features:
                 color_name: blue
               target:
                 entity_id: light.chandelier
-            option: 0,0,255
+            option: 11,0,255
             label: Blue
             icon: mdi:alpha-b
             entity_id: light.chandelier
@@ -592,7 +602,7 @@ features:
               :host {
                 --label-color: blue;
                 --color: blue;
-                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '0,0,255' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '11,0,255' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -603,7 +613,7 @@ features:
                 color_temp: 500
               target:
                 entity_id: light.chandelier
-            option: 255,166,87
+            option: 255,137,14
             label: White
             icon: mdi:alpha-w
             entity_id: light.chandelier
@@ -614,7 +624,7 @@ features:
                 flex-basis: 200%;
                 --label-color: white;
                 --color: white;
-                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '255,166,87' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '255,137,14' %}
                 --label-filter: invert(1);
                 --icon-filter: invert(1);
                 {% endif %}
@@ -626,7 +636,7 @@ features:
                 entity_id: light.chandelier
               data:
                 color_name: purple
-            option: 128,0,128
+            option: 254,11,255
             label: Purple
             icon: mdi:alpha-p
             entity_id: light.chandelier
@@ -636,7 +646,24 @@ features:
               :host {
                 --label-color: purple;
                 --color: purple;
-                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '128,0,128' %}
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '254,11,255' %}
+                --label-filter: invert(1);
+                {% endif %}
+              }
+          - entity_id: light.chandelier
+            option: 'null'
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_off
+              target:
+                entity_id:
+                  - light.chandelier
+              data: {}
+            label: 'Off'
+            icon: mdi:alpha-o
+            styles: |
+              :host {
+                {% if (state_attr(config.entity, "rgb_color") or []).join(',') == '255,0,0' %}
                 --label-filter: invert(1);
                 {% endif %}
               }
@@ -653,7 +680,7 @@ features:
         entity_id: light.chandelier
         options:
           - entity_id: light.chandelier
-            option: 255,166,87
+            option: 255,137,14
             tap_action:
               action: perform-action
               perform_action: light.turn_on
@@ -665,7 +692,7 @@ features:
             icon: mdi:checkbox-blank-circle
             styles: |-
               .icon {
-                color: rgb(255,166,87);
+                color: rgb(255,137,14);
               }
           - entity_id: light.chandelier
             option: 255,0,0
@@ -685,7 +712,7 @@ features:
                 color: var(--red-color);
               }
           - entity_id: light.chandelier
-            option: 0,128,0
+            option: 0,255,0
             tap_action:
               action: perform-action
               perform_action: light.turn_on
@@ -702,7 +729,7 @@ features:
                 color: var(--green-color);
               }
           - entity_id: light.chandelier
-            option: 0,0,255
+            option: 11,0,255
             tap_action:
               action: perform-action
               perform_action: light.turn_on
@@ -718,7 +745,7 @@ features:
                 color: var(--blue-color);
               }
           - entity_id: light.chandelier
-            option: 128,0,128
+            option: 254,11,255
             tap_action:
               action: perform-action
               perform_action: light.turn_on
@@ -791,8 +818,8 @@ features:
         unit_of_measurement: ' Mireds'
         icon: mdi:thermometer
         range:
-          - '{{ state_attr(config.entity, "min_mireds") }}'
-          - '{{ state_attr(config.entity, "max_mireds") }}'
+          - '{{ state_attr("light.chandelier", "min_mireds") }}'
+          - '{{ state_attr("light.chandelier", "max_mireds") }}'
         step: 1
         entity_id: light.chandelier
         styles: |-
@@ -868,6 +895,14 @@ entity: light.chandelier
 layout_options:
   grid_columns: 4
   grid_rows: 5
+icon_tap_action:
+  action: perform-action
+  perform_action: light.toggle
+  target:
+    entity_id: light.chandelier
+  confirmation: true
+features_position: bottom
+vertical: false
 ```
 
 </details>
