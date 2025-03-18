@@ -252,7 +252,23 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --background             | Color for the custom feature background. Sometimes equivalent to `--color`.                          |
 | --background-opacity     | Opacity of the feature background. Defaults to 0.2.                                                  |
 
-#### Slider CSS Attributes
+Most features have additional custom CSS attributes which can be used to style them. I've also include their HTML below, so you can more easily style them directly using CSS selectors.
+
+#### Button HTML
+
+```html
+<custom-feature-button>
+  #shadow-root
+  <button class="background">
+    ::before
+    <md-ripple></md-ripple>
+  </button>
+  <ha-icon class="icon"></ha-icon>
+  <pre class="label"></pre>
+</custom-feature-button>
+```
+
+#### Slider CSS Attributes and HTML
 
 | Name                  | Description                                                                                            |
 | --------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -263,14 +279,48 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --tooltip-transform   | Tooltip location transform function, defaults to `translate(var(--thumb-offset), -35px)`.              |
 | --tooltip-display     | Tooltip display value, set to `none` to hide tooltip, defaults to `initial`.                           |
 
-## Selector CSS Attributes
+```html
+<custom-feature-slider>
+  #shadow-root
+  <div class="container on">
+    <div class="background"></div>
+    <input
+      id="slider"
+      type="range"
+      class="slider default-thumb"
+      min="0"
+      max="100"
+      step="1"
+      value="100"
+    />
+    <ha-icon class="icon"></ha-icon>
+    <pre class="label"></pre>
+  </div>
+  <div class="tooltip faded-out">::after</div>
+</custom-feature-slider>
+```
+
+## Selector CSS Attributes and HTML
 
 | Name            | Description                                       |
 | --------------- | ------------------------------------------------- |
 | --color         | Hover and selected background color of an option. |
 | --hover-opacity | Opacity to use when hovering over an option.      |
 
-## Dropdown CSS Attributes
+```html
+<custom-feature-selector>
+  #shadow-root
+  <div class="background"></div>
+  <custom-feature-button id="option_A" class="option"></custom-feature-button>
+  <custom-feature-button
+    id="option_B"
+    class="selected option"
+  ></custom-feature-button>
+  <custom-feature-button id="option_C" class="option"></custom-feature-button>
+</custom-feature-selector>
+```
+
+## Dropdown CSS Attributes and HTML
 
 | Name                                | Description                                            |
 | ----------------------------------- | ------------------------------------------------------ |
@@ -280,6 +330,39 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --mdc-list-side-padding-right       | Right padding of option.                               |
 | --mdc-list-side-padding             | Side padding of option, lower priority than above two. |
 | --mdc-list-item-graphic-margin      | Gap between option icon and label.                     |
+
+```html
+<custom-feature-dropdown>
+  #shadow-root
+  <div class="container">
+    <div class="background"></div>
+    <div class="select">
+      <ha-icon class="icon"></ha-icon>
+      <pre class="label"></pre>
+      <md-ripple></md-ripple>
+    </div>
+    <ha-icon class="down-arrow"></ha-icon>
+  </div>
+  <div class="dropdown">
+    <custom-feature-dropdown-option id="option_A" class="selected option">
+      #shadow-root
+      <div class="background"></div>
+      <div class="content">
+        <ha-icon class="icon"></ha-icon>
+        <pre class="label"></pre>
+      </div>
+    </custom-feature-dropdown-option>
+    <custom-feature-dropdown-option
+      id="option_B"
+      class="option"
+    ></custom-feature-dropdown-option>
+    <custom-feature-dropdown-option
+      id="option_C"
+      class="option"
+    ></custom-feature-dropdown-option>
+  </div>
+</custom-feature-dropdown>
+```
 
 ## Toggle CSS Attributes
 
@@ -298,6 +381,75 @@ While any CSS property can be used, these values are internal CSS attributes use
 | --switch-unchecked-track-state-layer  | Hover/focused/pressed background overlay color for unchecked Material Design 3 switches |
 | --switch-checked-icon-color           | Icon color of checked switches.                                                         |
 | --switch-unchecked-icon-color         | Icon color of unchecked switches.                                                       |
+
+```html
+<!-- Default -->
+<custom-feature-toggle>
+  #shadow-root
+  <div class="container off">
+    <div class="background"></div>
+    <ha-icon class="icon"></ha-icon>
+    <ha-icon class="icon"></ha-icon>
+    <div class="thumb">
+      <ha-icon class="icon"></ha-icon>
+      <pre class="label"></pre>
+    </div>
+  </div>
+  <custom-feature-toggle></custom-feature-toggle
+></custom-feature-toggle>
+
+<!-- Checkbox -->
+<custom-feature-toggle style="justify-content: flex-end;">
+  #shadow-root
+  <div class="container on">
+    <div class="checkbox">
+      <ha-icon class="icon"></ha-icon>
+    </div>
+    <md-ripple></md-ripple>
+  </div>
+  <div class="icon-label">
+    <ha-icon class="icon"></ha-icon>
+    <pre class="label"></pre>
+  </div>
+  <custom-feature-toggle></custom-feature-toggle
+></custom-feature-toggle>
+
+<!-- Material Design 2 Switch -->
+<custom-feature-toggle style="justify-content: flex-end;">
+  #shadow-root
+  <div class="icon-label">
+    <ha-icon class="icon"></ha-icon>
+    <pre class="label"></pre>
+  </div>
+  <div class="container md2-switch on">
+    <div class="background"></div>
+    <div class="thumb">
+      ::before
+      <ha-icon class="icon"></ha-icon>
+      <md-ripple></md-ripple>
+    </div>
+  </div>
+  <custom-feature-toggle></custom-feature-toggle
+></custom-feature-toggle>
+
+<!-- Material Design 3 Switch -->
+<custom-feature-toggle style="justify-content: flex-end;">
+  #shadow-root
+  <div class="icon-label">
+    <ha-icon class="icon"></ha-icon>
+    <pre class="label"></pre>
+  </div>
+  <div class="container md3-switch off">
+    <div class="background"></div>
+    <div class="thumb">
+      ::before
+      <ha-icon class="icon"></ha-icon>
+      <md-ripple></md-ripple>
+    </div>
+  </div>
+  <custom-feature-toggle></custom-feature-toggle
+></custom-feature-toggle>
+```
 
 ## Actions
 
