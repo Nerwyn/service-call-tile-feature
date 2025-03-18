@@ -84,7 +84,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					).toLowerCase(),
 				);
 			} else if (allow) {
-				// White list
+				// Allow list
 				values = CheckedValues;
 			} else {
 				// Block list
