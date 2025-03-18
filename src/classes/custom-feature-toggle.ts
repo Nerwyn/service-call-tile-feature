@@ -15,9 +15,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	async onPointerUp(_e: PointerEvent) {
 		if (!this.swiping) {
 			if (this.direction) {
-				// TODO rtl fix?
 				// Only fire on swipe if it's in the right direction
-				const checked = this.direction == 'right';
+				const checked = this.direction == (this.rtl ? 'left' : 'right');
 				if (this.checked == checked) {
 					this.endAction();
 					this.resetGetValueFromHass();
