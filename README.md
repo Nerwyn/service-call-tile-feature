@@ -453,7 +453,7 @@ Most features have additional custom CSS attributes which can be used to style t
 
 ## Actions
 
-There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons, selector options, and spinbox buttons support all three. Dropdown options and sliders only support tap actions. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
+There are three traditional ways to trigger an action - tap, double tap, and hold. Buttons, selector options, and spinbox buttons support all three. Dropdown options, sliders, and toggles only support tap actions. While you can swipe horizontally on toggles this is considered a tap action. Defining a double tap action that is not `none` introduces a 200ms delay to single tap actions.
 
 <img src="https://raw.githubusercontent.com/Nerwyn/service-call-tile-feature/main/assets/button_actions_options.png" alt="button_actions_options" width="600"/>
 
