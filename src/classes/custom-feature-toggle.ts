@@ -424,19 +424,13 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					);
 					--ha-ripple-pressed-color: var(
 						--checkbox-checked-border-color,
-						var(
-							--mdc-checkbox-checked-color,
-							var(--mdc-theme-secondary, #018786)
-						)
+						var(--mdc-checkbox-checked-color, var(--primary-color))
 					);
 				}
 				.container.on:has(.checkbox) {
 					--ha-ripple-hover-color: var(
 						--checkbox-checked-border-color,
-						var(
-							--mdc-checkbox-checked-color,
-							var(--mdc-theme-secondary, #018786)
-						)
+						var(--mdc-checkbox-checked-color, var(--primary-color))
 					);
 					--ha-ripple-pressed-color: var(
 						--checkbox-unchecked-icon-color,
@@ -465,21 +459,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.on > .checkbox {
 					background: var(
 						--checkbox-checked-border-color,
-						var(
-							--mdc-checkbox-checked-color,
-							var(--mdc-theme-secondary, #018786)
-						)
+						var(--mdc-checkbox-checked-color, var(--primary-color))
 					);
 					border-color: var(
 						--checkbox-checked-border-color,
-						var(
-							--mdc-checkbox-checked-color,
-							var(--mdc-theme-secondary, #018786)
-						)
+						var(--mdc-checkbox-checked-color, var(--primary-color))
 					);
 					--icon-color: var(
 						--checkbox-checked-icon-color,
-						var(--mdc-checkbox-ink-color, var(--accent-color))
+						var(--mdc-checkbox-ink-color, #fff)
 					);
 				}
 				@media (hover: hover) {
