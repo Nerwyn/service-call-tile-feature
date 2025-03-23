@@ -554,7 +554,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 20px;
 					width: 20px;
 					border: 10px solid;
-					border-radius: 50%;
+					border-radius: 28px;
 					background: var(--switch-unchecked-button-color);
 					border-color: var(--switch-unchecked-button-color);
 				}
@@ -576,16 +576,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					overflow: visible;
 					margin: calc((var(--feature-height, 40px) - 32px) / 2) 6px;
 					cursor: pointer;
-					--thumb-size: 16px;
-				}
-				.md3-switch.on {
-					--thumb-size: 24px;
-				}
-				.md3-switch:active {
-					--thumb-size: 30px !important;
-				}
-				.md3-switch.on:active {
-					--thumb-size: 28px !important;
 				}
 				.md3-switch > .background {
 					border-radius: 52px;
@@ -614,7 +604,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				}
 				.md2-switch:has(.icon),
 				.md3-switch:has(.icon) {
-					--thumb-size: 24px;
 					--mdc-icon-size: 16px;
 					--icon-color: var(
 						--switch-unchecked-icon-color,
@@ -632,20 +621,33 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					content: '';
 					box-sizing: border-box;
 					position: absolute;
-					height: var(--thumb-size);
-					width: var(--thumb-size);
-					border-radius: 50%;
+					height: 16px;
+					width: 16px;
+					border-radius: 32px;
 					background: var(--switch-unchecked-button-color);
-					transition:
-						height 0.2s cubic-bezier(0.2, 0, 0, 1),
-						width 0.2s cubic-bezier(0.2, 0, 0, 1);
+					transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+				}
+				.md3-switch.off:active > .thumb::before {
+					transform: scale(1.875, 1.875);
+				}
+				.md3-switch.off:has(.icon) > .thumb::before {
+					height: 24px;
+					width: 24px;
+				}
+				.md3-switch.off:active:has(.icon) > .thumb::before {
+					transform: scale(1.25, 1.25);
 				}
 				.md3-switch.on > .thumb {
 					transform: translateX(20px);
 				}
 				.md3-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
+					transform: scale(1.5, 1.5);
 				}
+				.md3-switch.on:active > .thumb::before {
+					transform: scale(1.75, 1.75);
+				}
+
 				.md3-switch > .background::after {
 					content: '';
 					position: absolute;
