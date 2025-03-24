@@ -150,13 +150,13 @@ export class CustomFeatureDialog extends LitElement {
 					opacity 0.05s linear;
 			}
 			dialog.closed {
-				translate: 0 -100px !important;
-				scale: 1 0 !important;
-				opacity: 0 !important;
+				translate: 0 -100px;
+				scale: 1 0;
+				opacity: 0;
 				transition:
 					translate 0.15s cubic-bezier(0.3, 0, 0, 1),
 					scale 0.15s cubic-bezier(0.3, 0, 0.8, 0.15),
-					opacity 0.05s linear 0.025s !important;
+					opacity 0.05s linear 0.025s;
 			}
 
 			dialog::backdrop {

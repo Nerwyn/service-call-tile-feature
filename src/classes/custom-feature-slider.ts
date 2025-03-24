@@ -606,10 +606,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				}
 				.faded-out {
 					opacity: 0;
-					transition:
-						opacity 180ms ease-in-out 0s,
-						left 180ms ease-in-out 0s,
-						bottom 180ms ease-in-out 0s;
+					transition: opacity 180ms ease-in-out 0s;
 				}
 				.faded-in {
 					opacity: 1;
