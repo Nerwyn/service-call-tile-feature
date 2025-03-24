@@ -123,7 +123,9 @@ export class CustomFeatureDialog extends LitElement {
 				-webkit-tap-highlight-color: transparent;
 				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 			}
+
 			dialog {
+				height: fit-content;
 				padding: 24px;
 				pointer-events: none;
 				display: inline-flex;
@@ -139,21 +141,21 @@ export class CustomFeatureDialog extends LitElement {
 			}
 			dialog[open] {
 				pointer-events: all;
-				transform: translateY(0);
-				height: fit-content;
+				translate: 0 0;
+				scale: 1 1;
 				opacity: 1;
 				transition:
-					transform 0.5s cubic-bezier(0.3, 0, 0, 1),
-					height 0.5s cubic-bezier(0.2, 0, 0, 1),
+					translate 0.5s cubic-bezier(0.3, 0, 0, 1),
+					scale 0.5s cubic-bezier(0.2, 0, 0, 1),
 					opacity 0.05s linear;
 			}
 			dialog.closed {
-				transform: translateY(-50px) !important;
-				height: 0 !important;
+				translate: 0 -100px !important;
+				scale: 1 0 !important;
 				opacity: 0 !important;
 				transition:
-					transform 0.15s cubic-bezier(0.3, 0, 0, 1),
-					height 0.15s cubic-bezier(0.3, 0, 0.8, 0.15),
+					translate 0.15s cubic-bezier(0.3, 0, 0, 1),
+					scale 0.15s cubic-bezier(0.3, 0, 0.8, 0.15),
 					opacity 0.05s linear 0.025s !important;
 			}
 

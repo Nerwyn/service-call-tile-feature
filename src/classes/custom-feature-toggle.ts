@@ -271,6 +271,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	firstUpdated() {
+		super.firstUpdated();
+
 		// Firefox md checkbox and switch flex fixes
 		// Because :host:has() doesn't work with Firefox
 		if (this.renderTemplate(this.config.thumb ?? 'default') != 'default') {
