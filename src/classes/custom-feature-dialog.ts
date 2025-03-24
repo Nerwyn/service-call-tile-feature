@@ -133,6 +133,7 @@ export class CustomFeatureDialog extends LitElement {
 				position: fixed;
 				border: none;
 				outline: none;
+				color: var(--primary-text-color);
 				background: var(
 					--ha-card-background,
 					var(--card-background-color, #fff)
