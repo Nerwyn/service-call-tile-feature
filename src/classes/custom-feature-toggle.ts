@@ -273,7 +273,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	firstUpdated() {
 		super.firstUpdated();
 
-		// Firefox md checkbox and switch flex fixes
+		// Firefox md checkbox and switch flex and overflow fixes
 		// Because :host:has() doesn't work with Firefox
 		if (this.renderTemplate(this.config.thumb ?? 'default') != 'default') {
 			// Keeps toggles visible on small width displays
@@ -283,6 +283,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			) {
 				// Makes checkboxes and toggles take up minimal space if they don't have an icon or label
 				this.style.setProperty('flex', '0 0 min-content');
+
+				// Allow ripples to overflow
+				this.style.setProperty('overflow', 'visible');
 			}
 		}
 	}
@@ -410,6 +413,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				}
 
 				/* Material Design Checkbox */
+				:host:has(.checkbox) {
+					overflow: visible;
+				}
 				.container:has(.checkbox) {
 					height: var(--mdc-checkbox-touch-target-size, 40px);
 					width: var(--mdc-checkbox-touch-target-size, 40px);
@@ -508,6 +514,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.md2-switch),
 				:host:has(.md3-switch) {
 					justify-content: flex-end;
+					overflow: visible;
 				}
 				.md2-switch {
 					justify-content: flex-start;
@@ -516,7 +523,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 14px;
 					width: 36px;
 					overflow: visible;
-					margin: calc((var(--feature-height, 40px) - 14px) / 2) 12px;
+					margin: 0 4px;
 					cursor: pointer;
 					--ha-ripple-color: #aaa;
 				}
@@ -576,7 +583,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 28px;
 					width: 48px;
 					overflow: visible;
-					margin: calc((var(--feature-height, 40px) - 32px) / 2) 6px;
+					margin: 0 4px;
 					cursor: pointer;
 				}
 				.md3-switch > .background {
