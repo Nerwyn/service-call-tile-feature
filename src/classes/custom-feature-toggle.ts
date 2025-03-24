@@ -543,10 +543,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				}
 				.md2-switch > .thumb {
 					background: 0 0;
-					height: 40px;
-					width: 40px;
-					border-radius: 40px;
-					left: -10px;
+					height: 48px;
+					width: 48px;
+					border-radius: 48px;
+					left: -15px;
 					transition:
 						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
