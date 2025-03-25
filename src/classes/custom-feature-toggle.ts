@@ -422,7 +422,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					opacity: var(--opacity, 1);
 					border-radius: var(--feature-border-radius, 12px);
 					transition:
-						transform 180ms ease-in-out,
+						translate 180ms ease-in-out,
 						background-color 180ms ease-in-out;
 				}
 				.off > .thumb {
@@ -589,7 +589,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border-radius: 48px;
 					left: -15px;
 					transition:
-						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						translate 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
 				}
