@@ -355,11 +355,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
-	onTouchEnd(e: TouchEvent) {
-		super.onTouchEnd();
-		e.preventDefault();
-	}
-
 	closeDropdown(value?: string) {
 		const event = new Event('dropdown-close', {
 			bubbles: true,
@@ -382,7 +377,6 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				@pointermove=${this.onPointerMove}
 				@pointercancel=${this.onPointerCancel}
 				@pointerleave=${this.onPointerLeave}
-				@touchend=${this.onTouchEnd}
 				@contextmenu=${this.onContextMenu}
 			>
 				${this.buildIcon(this.config.icon)}${this.buildLabel(

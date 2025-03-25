@@ -793,7 +793,9 @@ export class BaseCustomFeature extends LitElement {
 		}
 	}
 
-	onTouchEnd(_e?: TouchEvent) {
+	onTouchEnd(e: TouchEvent) {
+		e.preventDefault();
+
 		// Stuck ripple fix
 		const ripple = this.shadowRoot?.querySelector(
 			'md-ripple',
