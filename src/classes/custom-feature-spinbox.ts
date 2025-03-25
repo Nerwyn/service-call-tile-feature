@@ -265,6 +265,45 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		`;
 	}
 
+	async onKeyDown(e: KeyboardEvent) {
+		switch (e.key) {
+			case 'ArrowLeft':
+				e.preventDefault();
+				clearTimeout(this.debounceTimer);
+				clearTimeout(this.getValueFromHassTimer);
+				this.getValueFromHass = false;
+				this.operateValue('decrement');
+				this.debounceTimer = setTimeout(async () => {
+					await this.sendAction('tap_action');
+					this.resetGetValueFromHass();
+				}, this.debounceTime);
+				break;
+			case 'ArrowRight':
+				e.preventDefault();
+				clearTimeout(this.debounceTimer);
+				clearTimeout(this.getValueFromHassTimer);
+				this.getValueFromHass = false;
+				this.operateValue('increment');
+				this.debounceTimer = setTimeout(async () => {
+					await this.sendAction('tap_action');
+					this.resetGetValueFromHass();
+				}, this.debounceTime);
+				break;
+			default:
+				break;
+		}
+	}
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.shadowRoot
+			?.querySelector('#decrement')
+			?.removeAttribute('tabindex');
+		this.shadowRoot
+			?.querySelector('#increment')
+			?.removeAttribute('tabindex');
+	}
+
 	static get styles() {
 		return [
 			super.styles as CSSResult,
