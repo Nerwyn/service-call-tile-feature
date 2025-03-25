@@ -493,7 +493,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						)
 					);
 					cursor: pointer;
-					transition: box-shadow 180ms ease-in-out;
+					transition:
+						background 180ms ease-in-out,
+						box-shadow 180ms ease-in-out;
 					--icon-color: var(
 						--checkbox-unchecked-icon-color,
 						var(--primary-text-color)
