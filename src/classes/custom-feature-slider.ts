@@ -279,7 +279,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 			this.currentValue = this.value;
 		}
 		const context = {
-			VALUE: this.getValueFromHass ? this.value : this.currentValue,
 			value: this.getValueFromHass ? this.value : this.currentValue,
 		};
 
@@ -377,6 +376,62 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		`;
 	}
 
+	async onKeyDown(e: KeyboardEvent) {
+		switch (e.key) {
+			case 'ArrowLeft':
+				e.preventDefault();
+				this.getValueFromHass = false;
+				this.showTooltip = true;
+				this.currentValue = Math.max(
+					Math.min(
+						((this.currentValue ??
+							this.value ??
+							this.range[0]) as number) - this.step,
+						this.range[1],
+					),
+					this.range[0],
+				);
+				break;
+			case 'ArrowRight':
+				e.preventDefault();
+				this.getValueFromHass = false;
+				this.showTooltip = true;
+				this.currentValue = Math.max(
+					Math.min(
+						((this.currentValue ??
+							this.value ??
+							this.range[0]) as number) + this.step,
+						this.range[1],
+					),
+					this.range[0],
+				);
+				break;
+			default:
+				break;
+		}
+	}
+
+	async onKeyUp(e: KeyboardEvent) {
+		switch (e.key) {
+			case 'ArrowLeft':
+			case 'ArrowRight':
+				e.preventDefault();
+				this.showTooltip = false;
+				this.value = this.currentValue;
+				await this.sendAction('tap_action');
+				this.endAction();
+				this.resetGetValueFromHass();
+				break;
+			default:
+				break;
+		}
+	}
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.addEventListener('keyup', this.onKeyUp);
+	}
+
 	disconnectedCallback(): void {
 		super.disconnectedCallback();
 		this.resizeObserver.disconnect();
@@ -420,6 +475,9 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 					height: inherit;
 					background: none;
 					pointer-events: all;
+				}
+				.slider:focus-visible {
+					outline: none;
 				}
 
 				.slider,

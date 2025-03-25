@@ -276,13 +276,18 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		if (e.key == 'Enter' || e.key == ' ') {
-			e.preventDefault();
-			this.getValueFromHass = false;
-			clearTimeout(this.getValueFromHassTimer);
-			this.checked = !this.checked;
-			this.sendAction('tap_action');
-			this.resetGetValueFromHass();
+		switch (e.key) {
+			case 'Enter':
+			case ' ':
+				e.preventDefault();
+				this.getValueFromHass = false;
+				clearTimeout(this.getValueFromHassTimer);
+				this.checked = !this.checked;
+				this.sendAction('tap_action');
+				this.resetGetValueFromHass();
+				break;
+			default:
+				break;
 		}
 	}
 

@@ -178,9 +178,14 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		if (e.key == 'Enter' || e.key == ' ') {
-			e.preventDefault();
-			this.open = !this.open;
+		switch (e.key) {
+			case 'Enter':
+			case ' ':
+				e.preventDefault();
+				this.open = !this.open;
+				break;
+			default:
+				break;
 		}
 	}
 
