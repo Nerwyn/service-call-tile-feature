@@ -177,6 +177,12 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		)}`;
 	}
 
+	async onKeyDown(e: KeyboardEvent) {
+		if (e.key == 'Enter' || e.key == ' ') {
+			this.open = !this.open;
+		}
+	}
+
 	updated() {
 		const options = this.config.options ?? [];
 		const optionElements = Array.from(
@@ -189,6 +195,11 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					? 'selected'
 					: ''
 			} option`;
+			if (this.open) {
+				optionElements[i].setAttribute('tabindex', '0');
+			} else {
+				optionElements[i].removeAttribute('tabindex');
+			}
 		}
 	}
 
@@ -339,6 +350,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	}
 
 	onTouchEnd(e: TouchEvent) {
+		super.onTouchEnd();
 		e.preventDefault();
 	}
 

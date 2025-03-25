@@ -106,12 +106,13 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildMD3Switch() {
+		this.removeAttribute('tabindex');
 		const styles = this.rtl
 			? `
 				.container,
 				.thumb > .icon {
 					flex-direction: row-reverse !important;
-					transform: scaleX(-1) !important;
+					scale: -1 1 !important;
 				}
 			`
 			: '';
@@ -123,6 +124,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			</div>
 			<div
 				class="container md3-switch ${this.checked ? 'on' : 'off'}"
+				tabindex="0"
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
@@ -144,11 +146,12 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildMD2Switch() {
+		this.removeAttribute('tabindex');
 		const styles = this.rtl
 			? `
 				.container,
 				.thumb > .icon {
-					transform: scaleX(-1) !important;
+					scale -1 1 !important;
 				}
 			`
 			: '';
@@ -160,6 +163,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			</div>
 			<div
 				class="container md2-switch ${this.checked ? 'on' : 'off'}"
+				tabindex="0"
 				@pointerdown=${this.onPointerDown}
 				@pointerup=${this.onPointerUp}
 				@pointermove=${this.onPointerMove}
@@ -181,6 +185,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildCheckbox() {
+		this.removeAttribute('tabindex');
 		return html`
 			<div
 				class="container ${this.checked ? 'on' : 'off'}"
@@ -191,7 +196,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				@pointerleave=${this.onPointerLeave}
 				@contextmenu=${this.onContextMenu}
 			>
-				<div class="checkbox">
+				<div class="checkbox" tabindex="0">
 					${this.buildIcon(
 						this.config[`${this.checked ? '' : 'un'}checked_icon`],
 					)}
@@ -212,7 +217,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			.container,
 			.icon,
 			.label {
-				transform: scaleX(-1) !important;
+				scaleX: -1 1 !important;
 			}
 		`
 			: '';
@@ -268,6 +273,14 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		}
 
 		return html`${toggle}${this.buildStyles(this.config.styles)}`;
+	}
+
+	async onKeyDown(e: KeyboardEvent) {
+		if (e.key == 'Enter' || e.key == ' ') {
+			this.checked = !this.checked;
+			this.sendAction('tap_action');
+			this.resetGetValueFromHass();
+		}
 	}
 
 	firstUpdated() {
@@ -347,7 +360,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host {
 					flex-direction: row;
 					touch-action: pan-y;
-					border-radius: 0;
 				}
 				.container {
 					justify-content: space-around;
@@ -409,12 +421,12 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					background: var(--color, var(--state-inactive-color));
 				}
 				.on > .thumb {
-					transform: translateX(100%);
+					translate: 100%;
 				}
 
 				/* Material Design Checkbox */
-				:host:has(.checkbox) {
-					overflow: visible;
+				:host(:has(.checkbox)) {
+					border-radius: 0;
 				}
 				.container:has(.checkbox) {
 					height: var(--mdc-checkbox-touch-target-size, 40px);
@@ -459,6 +471,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						)
 					);
 					cursor: pointer;
+					transition: box-shadow 180ms ease-in-out;
 					--icon-color: var(
 						--checkbox-unchecked-icon-color,
 						var(--primary-text-color)
@@ -485,6 +498,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 							var(--primary-text-color)
 						);
 					}
+				}
+				.checkbox:focus-visible {
+					outline: none;
+					box-shadow: 0 0 0 2px var(--feature-color);
 				}
 
 				:host:has(.icon-label:empty) {
@@ -515,6 +532,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				:host:has(.md3-switch) {
 					justify-content: flex-end;
 					overflow: visible;
+					border-radius: 0;
 				}
 				.md2-switch {
 					justify-content: flex-start;
@@ -568,7 +586,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border-color: var(--switch-unchecked-button-color);
 				}
 				.md2-switch.on > .thumb {
-					transform: translateX(18px);
+					translate: 18px;
 				}
 				.md2-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
@@ -607,7 +625,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					border-radius: 40px;
 					left: -4px;
 					transition:
-						transform 90ms cubic-bezier(0.4, 0, 0.2, 1),
+						translate 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),
 						border-color 90ms cubic-bezier(0.4, 0, 0.2, 1);
 				}
@@ -626,35 +644,59 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						var(--input-background-color)
 					);
 				}
+				.md3-switch.on > .thumb {
+					translate: 20px;
+				}
 				.md3-switch > .thumb::before {
 					content: '';
 					box-sizing: border-box;
 					position: absolute;
 					height: 16px;
 					width: 16px;
-					border-radius: 32px;
+					border-radius: 28px;
 					background: var(--switch-unchecked-button-color);
-					transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
-				}
-				.md3-switch.off:active > .thumb::before {
-					transform: scale(1.875, 1.875);
+					transition: scale 0.2s cubic-bezier(0.2, 0, 0, 1);
 				}
 				.md3-switch.off:has(.icon) > .thumb::before {
-					height: 24px;
-					width: 24px;
+					scale: 1.5;
 				}
-				.md3-switch.off:active:has(.icon) > .thumb::before {
-					transform: scale(1.25, 1.25);
+				@media (hover: hover) {
+					.md3-switch.off:hover > .thumb::before {
+						scale: 1.75;
+						background: var(
+							--switch-unchecked-button-state-layer,
+							var(--secondary-text-color)
+						);
+					}
 				}
-				.md3-switch.on > .thumb {
-					transform: translateX(20px);
+				.md3-switch.off:focus-visible > .thumb::before,
+				.md3-switch.off:active > .thumb::before {
+					scale: 1.75;
+					background: var(
+						--switch-unchecked-button-state-layer,
+						var(--secondary-text-color)
+					);
 				}
 				.md3-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
-					transform: scale(1.5, 1.5);
+					scale: 1.5;
 				}
+				@media (hover: hover) {
+					.md3-switch.on:hover > .thumb::before {
+						scale: 1.75;
+						background: var(
+							--switch-checked-button-state-layer,
+							var(--accent-color)
+						);
+					}
+				}
+				.md3-switch.on:focus-visible > .thumb::before,
 				.md3-switch.on:active > .thumb::before {
-					transform: scale(1.75, 1.75);
+					scale: 1.75;
+					background: var(
+						--switch-checked-button-state-layer,
+						var(--accent-color)
+					);
 				}
 
 				.md3-switch > .background::after {
@@ -685,34 +727,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.md3-switch:focus-visible > .background::after,
 				.md3-switch:active > .background::after {
 					opacity: 0.1;
-				}
-				@media (hover: hover) {
-					.md3-switch:hover > .thumb::before {
-						background: var(
-							--switch-unchecked-button-state-layer,
-							var(--secondary-text-color)
-						) !important;
-					}
-					.md3-switch.on:hover > .thumb::before {
-						background: var(
-							--switch-checked-button-state-layer,
-							var(--accent-color)
-						) !important;
-					}
-				}
-				.md3-switch:focus-visible .thumb::before,
-				.md3-switch:active .thumb::before {
-					background: var(
-						--switch-unchecked-button-state-layer,
-						var(--secondary-text-color)
-					) !important;
-				}
-				.md3-switch.on:focus-visible .thumb::before,
-				.md3-switch.on:active .thumb::before {
-					background: var(
-						--switch-checked-button-state-layer,
-						var(--accent-color)
-					) !important;
 				}
 			`,
 		];

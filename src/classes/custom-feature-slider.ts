@@ -231,6 +231,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				id="slider"
 				type="range"
 				class="${this.sliderClass}"
+				tabindex="-1"
 				style=${styleMap(style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"

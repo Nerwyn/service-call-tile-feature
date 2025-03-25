@@ -11,6 +11,7 @@ export class CustomFeatureDialog extends LitElement {
 	@state() open: boolean = false;
 	@state() fadedIn: boolean = false;
 	fadedInTimer?: ReturnType<typeof setTimeout> = undefined;
+	tabIndex = -1;
 
 	showDialog(config: IDialog) {
 		this.config = config;

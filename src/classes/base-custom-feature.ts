@@ -46,6 +46,7 @@ export class BaseCustomFeature extends LitElement {
 	deltaY?: number;
 
 	rtl: boolean = false;
+	tabIndex: number = 0;
 
 	fireHapticEvent(haptic: HapticType) {
 		if (
@@ -806,9 +807,17 @@ export class BaseCustomFeature extends LitElement {
 		this.requestUpdate();
 	}
 
+	async onKeyDown(e: KeyboardEvent) {
+		if (e.key == 'Enter' || e.key == ' ') {
+			await this.sendAction('tap_action');
+			this.endAction();
+		}
+	}
+
 	firstUpdated() {
-		this.addEventListener('confirmation-failed', this.confirmationFailed);
+		this.addEventListener('keydown', this.onKeyDown);
 		this.addEventListener('touchend', this.onTouchEnd);
+		this.addEventListener('confirmation-failed', this.confirmationFailed);
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
@@ -830,8 +839,12 @@ export class BaseCustomFeature extends LitElement {
 				font-size: inherit;
 				color: inherit;
 				flex-basis: 100%;
+				transition: box-shadow 180ms ease-in-out;
 				-webkit-tap-highlight-color: transparent;
 				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			:host(:focus-visible) {
+				box-shadow: 0 0 0 2px var(--feature-color);
 			}
 
 			.container {

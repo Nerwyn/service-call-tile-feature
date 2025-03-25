@@ -211,6 +211,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 
 		const button = html`<button
 			class=${`${this.className} background`}
+			tabindex="-1"
 			@pointerdown=${this.onPointerDown}
 			@pointerup=${this.onPointerUp}
 			@pointermove=${this.onPointerMove}
@@ -263,6 +264,7 @@ export class CustomFeatureButton extends BaseCustomFeature {
 					width: 100%;
 					border: none;
 					overflow: hidden;
+					transition: box-shadow 180ms ease-in-out;
 				}
 				button::before {
 					content: '';
@@ -273,6 +275,9 @@ export class CustomFeatureButton extends BaseCustomFeature {
 					width: 100%;
 					background: var(--color, var(--disabled-color));
 					opacity: var(--opacity, 0.2);
+				}
+				button:focus-visible {
+					outline: none;
 				}
 
 				@media (hover: hover) {
