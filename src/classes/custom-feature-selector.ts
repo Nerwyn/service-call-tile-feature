@@ -81,11 +81,18 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					--opacity: 0;
 					--background-opacity: 0;
 				}
+				.option:focus-visible {
+					box-shadow: none;
+					--opacity: 0.2;
+				}
 
 				.selected {
 					--opacity: 1;
 					--background-opacity: 1;
 					--hover-opacity: 1;
+				}
+				.selected:focus-visible {
+					--opacity: 1;
 				}
 			`,
 		];
