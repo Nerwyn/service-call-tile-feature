@@ -381,28 +381,32 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				e.preventDefault();
 				this.getValueFromHass = false;
 				this.showTooltip = true;
-				this.currentValue = Math.max(
-					Math.min(
-						((this.currentValue ??
-							this.value ??
-							this.range[0]) as number) - this.step,
-						this.range[1],
+				this.currentValue = Math.min(
+					Math.max(
+						parseFloat(
+							(this.currentValue ??
+								this.value ??
+								this.range[0]) as string,
+						) - this.step,
+						this.range[0],
 					),
-					this.range[0],
+					this.range[1],
 				);
 				break;
 			case 'ArrowRight':
 				e.preventDefault();
 				this.getValueFromHass = false;
 				this.showTooltip = true;
-				this.currentValue = Math.max(
-					Math.min(
-						((this.currentValue ??
-							this.value ??
-							this.range[0]) as number) + this.step,
-						this.range[1],
+				this.currentValue = Math.min(
+					Math.max(
+						parseFloat(
+							(this.currentValue ??
+								this.value ??
+								this.range[0]) as string,
+						) + this.step,
+						this.range[0],
 					),
-					this.range[0],
+					this.range[1],
 				);
 				break;
 			default:
