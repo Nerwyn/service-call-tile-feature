@@ -38,6 +38,16 @@ export class CustomFeatureDialog extends LitElement {
 		this.fadedIn = false;
 		this.open = false;
 
+		if (e?.type == 'cancel' && this.config.type == 'confirmation') {
+			const event = new Event('confirmation-result', {
+				bubbles: true,
+				composed: true,
+			});
+			event.detail = false;
+
+			this.dispatchEvent(event);
+		}
+
 		const dialog = this.shadowRoot?.querySelector('dialog');
 		if (dialog) {
 			setTimeout(() => {

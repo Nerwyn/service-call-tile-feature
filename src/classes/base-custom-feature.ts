@@ -809,6 +809,7 @@ export class BaseCustomFeature extends LitElement {
 
 	async onKeyDown(e: KeyboardEvent) {
 		if (e.key == 'Enter' || e.key == ' ') {
+			e.preventDefault();
 			await this.sendAction('tap_action');
 			this.endAction();
 		}

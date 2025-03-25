@@ -277,6 +277,9 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 	async onKeyDown(e: KeyboardEvent) {
 		if (e.key == 'Enter' || e.key == ' ') {
+			e.preventDefault();
+			this.getValueFromHass = false;
+			clearTimeout(this.getValueFromHassTimer);
 			this.checked = !this.checked;
 			this.sendAction('tap_action');
 			this.resetGetValueFromHass();
@@ -457,6 +460,20 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						var(--primary-text-color)
 					);
 				}
+				.container:has(.checkbox)::after {
+					content: '';
+					position: absolute;
+					height: var(--mdc-checkbox-touch-target-size, 40px);
+					width: var(--mdc-checkbox-touch-target-size, 40px);
+					border-radius: var(--mdc-checkbox-touch-target-size, 40px);
+					background: var(--ha-ripple-hover-color);
+					opacity: 0;
+					pointer-events: none;
+				}
+				.container:has(.checkbox:focus-visible)::after {
+					outline: none;
+					opacity: var(--ha-ripple-pressed-opacity);
+				}
 				.checkbox {
 					height: 18px;
 					width: 18px;
@@ -499,9 +516,10 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 						);
 					}
 				}
-				.checkbox:focus-visible {
+				.checkbox:focus-visible,
+				.md2-switch:focus-visible,
+				.md3-switch:focus-visible {
 					outline: none;
-					box-shadow: 0 0 0 2px var(--feature-color);
 				}
 
 				:host:has(.icon-label:empty) {
@@ -591,6 +609,18 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				.md2-switch.on > .thumb::before {
 					background: var(--switch-checked-button-color);
 					border-color: var(--switch-checked-button-color);
+				}
+				.md2-switch > .thumb::after {
+					content: '';
+					position: absolute;
+					height: 48px;
+					width: 48px;
+					border-radius: 48px;
+					background: var(--ha-ripple-color);
+					opacity: 0;
+				}
+				.md2-switch:focus-visible > .thumb::after {
+					opacity: var(--ha-ripple-pressed-opacity);
 				}
 
 				/* Material Design 3 Switch */

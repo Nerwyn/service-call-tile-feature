@@ -179,6 +179,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 
 	async onKeyDown(e: KeyboardEvent) {
 		if (e.key == 'Enter' || e.key == ' ') {
+			e.preventDefault();
 			this.open = !this.open;
 		}
 	}
@@ -395,6 +396,14 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 					width: 100%;
 					overflow: visible;
 					--color: rgb(0, 0, 0, 0);
+				}
+				:host(:focus-visible) {
+					box-shadow: none;
+					--background: var(--ha-ripple-color);
+					--background-opacity: var(
+						--ha-ripple-pressed-opacity,
+						0.12
+					);
 				}
 				.background {
 					pointer-events: none;

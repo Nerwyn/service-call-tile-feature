@@ -66,16 +66,7 @@ export class BaseDialog extends LitElement {
 				}
 			}
 			button:active {
-				background: var(
-					--ha-ripple-pressed-color,
-					var(
-						--ha-ripple-color,
-						var(
-							--md-ripple-pressed-color,
-							var(--secondary-text-color)
-						)
-					)
-				);
+				background: var(--background);
 				opacity: var(
 					--ha-ripple-pressed-opacity,
 					var(--md-ripple-pressed-opacity, 0.12)
@@ -83,8 +74,11 @@ export class BaseDialog extends LitElement {
 			}
 			button:focus-visible {
 				outline: none;
-				box-shadow: inset 0 0 0px 100vh
-					rgba(from var(--background) r g b / 0.08);
+				background: var(--background);
+				opacity: var(
+					--ha-ripple-hover-opacity,
+					var(--md-ripple-hover-opacity, 0.08)
+				);
 			}
 
 			.button span {
