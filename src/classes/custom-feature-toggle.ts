@@ -566,7 +566,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 14px;
 					width: 36px;
 					overflow: visible;
-					margin: 0 4px;
+					margin: 0 1px;
 					cursor: pointer;
 					--ha-ripple-color: #aaa;
 				}
@@ -638,7 +638,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					height: 28px;
 					width: 48px;
 					overflow: visible;
-					margin: 0 4px;
+					margin-right: 4px;
 					cursor: pointer;
 				}
 				.md3-switch > .background {
