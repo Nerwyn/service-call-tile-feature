@@ -280,17 +280,21 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 		// Firefox md checkbox and switch flex and overflow fixes
 		// Because :host:has() doesn't work with Firefox
-		if (this.renderTemplate(this.config.thumb ?? 'default') != 'default') {
+		if (
+			this.firefox &&
+			this.renderTemplate(this.config.thumb ?? 'default') != 'default'
+		) {
 			// Keeps toggles visible on small width displays
 			this.style.setProperty('justify-content', 'flex-end');
+
+			// Allow ripples to overflow
+			this.style.setProperty('overflow', 'visible');
+
 			if (
 				!this.shadowRoot?.querySelector('.icon-label')?.children.length
 			) {
 				// Makes checkboxes and toggles take up minimal space if they don't have an icon or label
 				this.style.setProperty('flex', '0 0 min-content');
-
-				// Allow ripples to overflow
-				this.style.setProperty('overflow', 'visible');
 			}
 		}
 	}

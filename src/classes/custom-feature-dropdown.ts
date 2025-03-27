@@ -388,7 +388,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		super.onKeyDown(e);
+		await super.onKeyDown(e);
 		if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
 			e.preventDefault();
 			const direction = e.key == 'ArrowUp' ? 'previous' : 'next';

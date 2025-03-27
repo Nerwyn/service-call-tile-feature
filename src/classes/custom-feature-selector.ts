@@ -52,8 +52,20 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		return html`${selector}${this.buildStyles(this.config.styles)}`;
 	}
 
-	async onKeyDown(_e: KeyboardEvent) {}
-	async onKeyUp(_e: KeyboardEvent) {}
+	async onKeyDown(_e: KeyboardEvent) {
+		// Firefox focused selector box shadow fix
+		// Because :host:has() doesn't work with Firefox
+		if (this.firefox) {
+			this.style.setProperty(
+				'box-shadow',
+				'0 0 0 2px var(--feature-color)',
+			);
+		}
+	}
+	async onKeyUp(e: KeyboardEvent) {
+		this.onKeyDown(e);
+	}
+
 	async optionOnKeyDown(e: KeyboardEvent) {
 		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
 			e.preventDefault();
@@ -89,10 +101,19 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		}
 	}
 
+	onFocusOut(_e: FocusEvent) {
+		// Firefox focused selector box shadow fix
+		// Because :host:has() doesn't work with Firefox
+		if (this.firefox) {
+			this.style.removeProperty('box-shadow');
+		}
+	}
+
 	firstUpdated() {
 		super.firstUpdated();
 		this.removeAttribute('tabindex');
 		this.addEventListener('focus', this.onFocus);
+		this.addEventListener('focusout', this.onFocusOut);
 	}
 
 	updated() {
@@ -121,7 +142,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					--background: var(--disabled-color);
 					--hover-opacity: 0.2;
 				}
-				:host(:focus-within) {
+				:host:has(.option:focus-visible) {
 					box-shadow: 0 0 0 2px var(--feature-color);
 				}
 
