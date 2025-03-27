@@ -23,8 +23,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					return;
 				}
 			}
-			this.getValueFromHass = false;
 			clearTimeout(this.getValueFromHassTimer);
+			this.getValueFromHass = false;
 			this.checked = !this.checked;
 			this.fireHapticEvent('light');
 			await this.sendAction('tap_action');
@@ -273,22 +273,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		}
 
 		return html`${toggle}${this.buildStyles(this.config.styles)}`;
-	}
-
-	async onKeyDown(e: KeyboardEvent) {
-		switch (e.key) {
-			case 'Enter':
-			case ' ':
-				e.preventDefault();
-				this.getValueFromHass = false;
-				clearTimeout(this.getValueFromHassTimer);
-				this.checked = !this.checked;
-				this.sendAction('tap_action');
-				this.resetGetValueFromHass();
-				break;
-			default:
-				break;
-		}
 	}
 
 	firstUpdated() {

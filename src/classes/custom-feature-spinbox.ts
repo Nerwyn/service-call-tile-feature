@@ -266,90 +266,46 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		let button: CustomFeatureButton;
-		switch (e.key) {
-			case 'ArrowLeft':
-				button = this.shadowRoot?.querySelector(
-					'custom-feature-button#decrement',
-				) as CustomFeatureButton;
-				if (button) {
-					await button.onKeyDown(
-						new window.KeyboardEvent('keydown', {
-							...e,
-							key: 'Enter',
-						}),
-					);
-				} else {
-					e.preventDefault();
-					clearTimeout(this.debounceTimer);
-					clearTimeout(this.getValueFromHassTimer);
-					this.getValueFromHass = false;
-					this.operateValue('decrement');
-					this.debounceTimer = setTimeout(async () => {
-						await this.sendAction('tap_action');
-						this.resetGetValueFromHass();
-					}, this.debounceTime);
-				}
-				break;
-			case 'ArrowRight':
-				button = this.shadowRoot?.querySelector(
-					'custom-feature-button#increment',
-				) as CustomFeatureButton;
-				if (button) {
-					await button.onKeyDown(
-						new window.KeyboardEvent('keydown', {
-							...e,
-							key: 'Enter',
-						}),
-					);
-				} else {
-					e.preventDefault();
-					clearTimeout(this.debounceTimer);
-					clearTimeout(this.getValueFromHassTimer);
-					this.getValueFromHass = false;
-					this.operateValue('increment');
-					this.debounceTimer = setTimeout(async () => {
-						await this.sendAction('tap_action');
-						this.resetGetValueFromHass();
-					}, this.debounceTime);
-				}
-				break;
-			default:
-				break;
+		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+			const operator = e.key == 'ArrowLeft' ? 'decrement' : 'increment';
+			const button = this.shadowRoot?.querySelector(
+				`custom-feature-button#${operator}`,
+			) as CustomFeatureButton;
+			if (button) {
+				await button.onKeyDown(
+					new window.KeyboardEvent('keydown', {
+						...e,
+						key: 'Enter',
+					}),
+				);
+			} else {
+				e.preventDefault();
+				clearTimeout(this.debounceTimer);
+				clearTimeout(this.getValueFromHassTimer);
+				this.getValueFromHass = false;
+				this.operateValue(operator);
+				this.debounceTimer = setTimeout(async () => {
+					await this.sendAction('tap_action');
+					this.resetGetValueFromHass();
+				}, this.debounceTime);
+			}
 		}
 	}
 
 	async onKeyUp(e: KeyboardEvent) {
-		let button: CustomFeatureButton;
-		switch (e.key) {
-			case 'ArrowLeft':
-				button = this.shadowRoot?.querySelector(
-					'custom-feature-button#decrement',
-				) as CustomFeatureButton;
-				if (button) {
-					await button.onKeyUp(
-						new window.KeyboardEvent('keyup', {
-							...e,
-							key: 'Enter',
-						}),
-					);
-				}
-				break;
-			case 'ArrowRight':
-				button = this.shadowRoot?.querySelector(
-					'custom-feature-button#increment',
-				) as CustomFeatureButton;
-				if (button) {
-					await button.onKeyUp(
-						new window.KeyboardEvent('keyup', {
-							...e,
-							key: 'Enter',
-						}),
-					);
-				}
-				break;
-			default:
-				break;
+		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+			const operator = e.key == 'ArrowLeft' ? 'decrement' : 'increment';
+			const button = this.shadowRoot?.querySelector(
+				`custom-feature-button#${operator}`,
+			) as CustomFeatureButton;
+			if (button) {
+				await button.onKeyUp(
+					new window.KeyboardEvent('keyup', {
+						...e,
+						key: 'Enter',
+					}),
+				);
+			}
 		}
 	}
 

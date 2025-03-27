@@ -1,4 +1,4 @@
-import { css, CSSResult, html } from 'lit';
+import { css, CSSResult, html, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { IEntry, IOption } from '../models/interfaces';
@@ -47,7 +47,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 			this.value = value;
 			this.resetGetValueFromHass();
 		}
-		this.open = false;
+		if (e.detail.close) {
+			this.open = false;
+		}
 	}
 
 	buildDropdownStyles() {
@@ -144,6 +146,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		}
 		const dropdown = html`<div
 			class="dropdown ${this.open ? '' : 'collapsed'}"
+			tabindex="-1"
 			@dropdown-close=${this.closeDropdown}
 		>
 			${dropdownOptions}
@@ -177,34 +180,29 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 		)}`;
 	}
 
-	async onKeyDown(e: KeyboardEvent) {
-		switch (e.key) {
-			case 'Enter':
-			case ' ':
-				e.preventDefault();
-				this.open = !this.open;
-				break;
-			default:
-				break;
-		}
-	}
-
-	updated() {
-		const options = this.config.options ?? [];
-		const optionElements = Array.from(
-			this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
-		);
-		for (const i in options) {
-			optionElements[i].className = `${
-				String(this.value) ==
-				String(this.renderTemplate(options[i].option as string))
-					? 'selected'
-					: ''
-			} option`;
-			if (this.open) {
-				optionElements[i].setAttribute('tabindex', '0');
-			} else {
-				optionElements[i].removeAttribute('tabindex');
+	updated(changedProperties: PropertyValues) {
+		if (changedProperties.has('open')) {
+			const options = this.config.options ?? [];
+			const optionElements = Array.from(
+				this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
+			) as HTMLElement[];
+			for (const i in options) {
+				if (!changedProperties.get('open')) {
+					const selected =
+						String(this.value) ==
+						String(
+							this.renderTemplate(options[i].option as string),
+						);
+					optionElements[i].className = `${
+						selected ? 'selected' : ''
+					} option`;
+					optionElements[i].setAttribute('tabindex', '0');
+					if (selected) {
+						optionElements[i].focus();
+					}
+				} else {
+					optionElements[i].removeAttribute('tabindex');
+				}
 			}
 		}
 	}
@@ -334,6 +332,7 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		if (!this.swiping && this.initialX && this.initialY) {
 			this.closeDropdown(
 				this.renderTemplate(this.config.option as string) as string,
+				Boolean(e.pointerType),
 			);
 			await this.sendAction('tap_action');
 			this.endAction();
@@ -355,13 +354,14 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 		}
 	}
 
-	closeDropdown(value?: string) {
+	closeDropdown(value?: string, close?: boolean) {
 		const event = new Event('dropdown-close', {
 			bubbles: true,
 			composed: true,
 		});
 		event.detail = {
 			value,
+			close,
 		};
 		this.dispatchEvent(event);
 	}
@@ -384,6 +384,11 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				)}${this.buildRipple()}
 			</div>
 			${this.buildStyles(this.config.styles)}`;
+	}
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.removeAttribute('tabindex');
 	}
 
 	static get styles() {

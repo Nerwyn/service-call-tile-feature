@@ -231,6 +231,7 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 				id="slider"
 				type="range"
 				class="${this.sliderClass}"
+				tabindex="-1"
 				style=${styleMap(style)}
 				min="${this.range[0]}"
 				max="${this.range[1]}"
@@ -372,64 +373,34 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		switch (e.key) {
-			case 'ArrowLeft':
-				e.preventDefault();
-				this.getValueFromHass = false;
-				this.showTooltip = true;
-				this.currentValue = Math.min(
-					Math.max(
-						parseFloat(
-							(this.currentValue ??
-								this.value ??
-								this.range[0]) as string,
-						) - this.step,
-						this.range[0],
-					),
-					this.range[1],
-				);
-				break;
-			case 'ArrowRight':
-				e.preventDefault();
-				this.getValueFromHass = false;
-				this.showTooltip = true;
-				this.currentValue = Math.min(
-					Math.max(
-						parseFloat(
-							(this.currentValue ??
-								this.value ??
-								this.range[0]) as string,
-						) + this.step,
-						this.range[0],
-					),
-					this.range[1],
-				);
-				break;
-			default:
-				break;
+		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+			e.preventDefault();
+			this.getValueFromHass = false;
+			this.showTooltip = true;
+			this.currentValue = Math.min(
+				Math.max(
+					parseFloat(
+						(this.currentValue ??
+							this.value ??
+							this.range[0]) as string,
+					) +
+						(e.key == 'ArrowLeft' ? -1 : 1) * this.step,
+					this.range[0],
+				),
+				this.range[1],
+			);
 		}
 	}
 
 	async onKeyUp(e: KeyboardEvent) {
-		switch (e.key) {
-			case 'ArrowLeft':
-			case 'ArrowRight':
-				e.preventDefault();
-				this.showTooltip = false;
-				this.value = this.currentValue;
-				await this.sendAction('tap_action');
-				this.endAction();
-				this.resetGetValueFromHass();
-				break;
-			default:
-				break;
+		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+			e.preventDefault();
+			this.showTooltip = false;
+			this.value = this.currentValue;
+			await this.sendAction('tap_action');
+			this.endAction();
+			this.resetGetValueFromHass();
 		}
-	}
-
-	firstUpdated() {
-		super.firstUpdated();
-		const input = this.shadowRoot?.querySelector('input');
-		input?.removeAttribute('tabindex');
 	}
 
 	connectedCallback(): void {

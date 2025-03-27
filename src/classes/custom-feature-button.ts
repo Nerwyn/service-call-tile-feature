@@ -229,44 +229,6 @@ export class CustomFeatureButton extends BaseCustomFeature {
 		)}`;
 	}
 
-	async onKeyDown(e: KeyboardEvent) {
-		if (!e.repeat) {
-			switch (e.key) {
-				case 'Enter':
-				case ' ':
-					e.preventDefault();
-					this.onPointerDown(
-						new window.PointerEvent('pointerdown', {
-							clientX: 1,
-							clientY: 1,
-						}),
-					);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	async onKeyUp(e: KeyboardEvent) {
-		if (!e.repeat) {
-			switch (e.key) {
-				case 'Enter':
-				case ' ':
-					e.preventDefault();
-					this.onPointerUp(
-						new window.PointerEvent('pointerup', {
-							clientX: 1,
-							clientY: 1,
-						}),
-					);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
 	static get styles() {
 		return [
 			super.styles as CSSResult,

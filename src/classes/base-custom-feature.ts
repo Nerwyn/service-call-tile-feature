@@ -809,8 +809,31 @@ export class BaseCustomFeature extends LitElement {
 		this.requestUpdate();
 	}
 
-	async onKeyDown(_e: KeyboardEvent) {}
-	async onKeyUp(_e: KeyboardEvent) {}
+	async onKeyDown(e: KeyboardEvent) {
+		if (!e.repeat && ['Enter', ' '].includes(e.key)) {
+			e.preventDefault();
+			this.onPointerDown(
+				new window.PointerEvent('pointerdown', {
+					...e,
+					clientX: 1,
+					clientY: 1,
+				}),
+			);
+		}
+	}
+
+	async onKeyUp(e: KeyboardEvent) {
+		if (!e.repeat && ['Enter', ' '].includes(e.key)) {
+			e.preventDefault();
+			this.onPointerUp(
+				new window.PointerEvent('pointerup', {
+					...e,
+					clientX: 1,
+					clientY: 1,
+				}),
+			);
+		}
+	}
 
 	firstUpdated() {
 		this.addEventListener('keydown', this.onKeyDown);
