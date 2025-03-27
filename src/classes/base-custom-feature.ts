@@ -809,21 +809,12 @@ export class BaseCustomFeature extends LitElement {
 		this.requestUpdate();
 	}
 
-	async onKeyDown(e: KeyboardEvent) {
-		switch (e.key) {
-			case 'Enter':
-			case ' ':
-				e.preventDefault();
-				await this.sendAction('tap_action');
-				this.endAction();
-				break;
-			default:
-				break;
-		}
-	}
+	async onKeyDown(_e: KeyboardEvent) {}
+	async onKeyUp(_e: KeyboardEvent) {}
 
 	firstUpdated() {
 		this.addEventListener('keydown', this.onKeyDown);
+		this.addEventListener('keyup', this.onKeyUp);
 		this.addEventListener('touchend', this.onTouchEnd);
 		this.addEventListener('confirmation-failed', this.confirmationFailed);
 	}
@@ -863,7 +854,7 @@ export class BaseCustomFeature extends LitElement {
 
 			.background {
 				position: absolute;
-				width: inherit;
+				width: 100%;
 				height: var(--background-height, 100%);
 				background: var(
 					--background,

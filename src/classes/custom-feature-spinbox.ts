@@ -4,6 +4,7 @@ import { customElement } from 'lit/decorators.js';
 import { DEBOUNCE_TIME } from '../models/constants';
 import { BaseCustomFeature } from './base-custom-feature';
 import './custom-feature-button';
+import { CustomFeatureButton } from './custom-feature-button';
 
 @customElement('custom-feature-spinbox')
 export class CustomFeatureSpinbox extends BaseCustomFeature {
@@ -154,7 +155,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 		) {
 			return html`
 				<custom-feature-button
-					class="operator"
 					id=${operator}
 					.hass=${this.hass}
 					.config=${actions}
@@ -266,28 +266,87 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
+		let button: CustomFeatureButton;
 		switch (e.key) {
 			case 'ArrowLeft':
-				e.preventDefault();
-				clearTimeout(this.debounceTimer);
-				clearTimeout(this.getValueFromHassTimer);
-				this.getValueFromHass = false;
-				this.operateValue('decrement');
-				this.debounceTimer = setTimeout(async () => {
-					await this.sendAction('tap_action');
-					this.resetGetValueFromHass();
-				}, this.debounceTime);
+				button = this.shadowRoot?.querySelector(
+					'custom-feature-button#decrement',
+				) as CustomFeatureButton;
+				if (button) {
+					await button.onKeyDown(
+						new window.KeyboardEvent('keydown', {
+							...e,
+							key: 'Enter',
+						}),
+					);
+				} else {
+					e.preventDefault();
+					clearTimeout(this.debounceTimer);
+					clearTimeout(this.getValueFromHassTimer);
+					this.getValueFromHass = false;
+					this.operateValue('decrement');
+					this.debounceTimer = setTimeout(async () => {
+						await this.sendAction('tap_action');
+						this.resetGetValueFromHass();
+					}, this.debounceTime);
+				}
 				break;
 			case 'ArrowRight':
-				e.preventDefault();
-				clearTimeout(this.debounceTimer);
-				clearTimeout(this.getValueFromHassTimer);
-				this.getValueFromHass = false;
-				this.operateValue('increment');
-				this.debounceTimer = setTimeout(async () => {
-					await this.sendAction('tap_action');
-					this.resetGetValueFromHass();
-				}, this.debounceTime);
+				button = this.shadowRoot?.querySelector(
+					'custom-feature-button#increment',
+				) as CustomFeatureButton;
+				if (button) {
+					await button.onKeyDown(
+						new window.KeyboardEvent('keydown', {
+							...e,
+							key: 'Enter',
+						}),
+					);
+				} else {
+					e.preventDefault();
+					clearTimeout(this.debounceTimer);
+					clearTimeout(this.getValueFromHassTimer);
+					this.getValueFromHass = false;
+					this.operateValue('increment');
+					this.debounceTimer = setTimeout(async () => {
+						await this.sendAction('tap_action');
+						this.resetGetValueFromHass();
+					}, this.debounceTime);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	async onKeyUp(e: KeyboardEvent) {
+		let button: CustomFeatureButton;
+		switch (e.key) {
+			case 'ArrowLeft':
+				button = this.shadowRoot?.querySelector(
+					'custom-feature-button#decrement',
+				) as CustomFeatureButton;
+				if (button) {
+					await button.onKeyUp(
+						new window.KeyboardEvent('keyup', {
+							...e,
+							key: 'Enter',
+						}),
+					);
+				}
+				break;
+			case 'ArrowRight':
+				button = this.shadowRoot?.querySelector(
+					'custom-feature-button#increment',
+				) as CustomFeatureButton;
+				if (button) {
+					await button.onKeyUp(
+						new window.KeyboardEvent('keyup', {
+							...e,
+							key: 'Enter',
+						}),
+					);
+				}
 				break;
 			default:
 				break;
@@ -350,19 +409,6 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					display: none !important;
 				}
 
-				.operator {
-					font-size: 14px;
-					font-weight: 500;
-					opacity: 0.77;
-					position: absolute;
-					width: fit-content;
-					padding: 0 10px;
-					cursor: pointer;
-
-					--mdc-icon-size: 16px;
-					--background-opacity: 0;
-				}
-
 				#decrement {
 					left: 0px;
 				}
@@ -371,15 +417,32 @@ export class CustomFeatureSpinbox extends BaseCustomFeature {
 					right: 0px;
 				}
 
+				.operator,
 				custom-feature-button {
 					position: absolute;
+					font-size: 14px;
+					font-weight: 500;
+					opacity: 0.77;
+					position: absolute;
+
+					--mdc-icon-size: 16px;
+				}
+
+				.operator {
+					width: fit-content;
+					padding: 0 10px;
+					cursor: pointer;
+
+					--background-opacity: 0;
+				}
+
+				custom-feature-button {
 					min-width: 36px;
 					width: min-content;
-					padding: 0 10px;
+					padding: 0;
 
 					--opacity: 0;
 					--color: rgb(0, 0, 0, 0);
-					--mdc-icon-size: 16px;
 				}
 			`,
 		];

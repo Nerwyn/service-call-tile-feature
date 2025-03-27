@@ -345,10 +345,6 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 		}
 		this.setSliderState(context['value' as keyof typeof context] as number);
 
-		this.resizeObserver.observe(
-			this.shadowRoot?.querySelector('.container') ?? this,
-		);
-
 		if (sliderElement) {
 			const style = getComputedStyle(sliderElement);
 			const thumbWidth = style.getPropertyValue('--thumb-width');
@@ -432,9 +428,15 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 
 	firstUpdated() {
 		super.firstUpdated();
-		this.addEventListener('keyup', this.onKeyUp);
 		const input = this.shadowRoot?.querySelector('input');
 		input?.removeAttribute('tabindex');
+	}
+
+	connectedCallback(): void {
+		super.connectedCallback();
+		this.resizeObserver.observe(
+			this.shadowRoot?.querySelector('.container') ?? this,
+		);
 	}
 
 	disconnectedCallback(): void {
