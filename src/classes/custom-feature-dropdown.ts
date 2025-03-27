@@ -141,6 +141,7 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 					.config=${option}
 					.stateObj=${this.stateObj}
 					id=${optionName}
+					class="option"
 				/>
 			`);
 		}
@@ -183,9 +184,9 @@ export class CustomFeatureDropdown extends BaseCustomFeature {
 	updated(changedProperties: PropertyValues) {
 		if (changedProperties.has('open')) {
 			const options = this.config.options ?? [];
-			const optionElements = Array.from(
-				this.shadowRoot?.querySelector('.dropdown')?.children ?? [],
-			) as HTMLElement[];
+			const optionElements = this.shadowRoot?.querySelectorAll(
+				'.option',
+			) as unknown as HTMLElement[];
 			for (const i in options) {
 				if (!changedProperties.get('open')) {
 					const selected =
@@ -384,6 +385,28 @@ export class CustomFeatureDropdownOption extends BaseCustomFeature {
 				)}${this.buildRipple()}
 			</div>
 			${this.buildStyles(this.config.styles)}`;
+	}
+
+	async onKeyDown(e: KeyboardEvent) {
+		super.onKeyDown(e);
+		if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+			e.preventDefault();
+			const direction = e.key == 'ArrowUp' ? 'previous' : 'next';
+			let target = (e.currentTarget as HTMLElement)?.[
+				`${direction}ElementSibling`
+			] as HTMLElement | null;
+			if (!target?.className?.includes('option')) {
+				const optionElements = (
+					this.getRootNode() as ShadowRoot
+				)?.querySelectorAll('.option');
+				if (optionElements) {
+					target = optionElements[
+						e.key == 'ArrowUp' ? optionElements.length - 1 : 0
+					] as HTMLElement;
+				}
+			}
+			target?.focus();
+		}
 	}
 
 	firstUpdated() {

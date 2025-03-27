@@ -36,6 +36,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					.hass=${this.hass}
 					.config=${option}
 					.shouldRenderRipple=${false}
+					class="option"
 					id=${this.renderTemplate(option.option as string)}
 					@pointerdown=${this.onPointerDown}
 					@pointerup=${this.onPointerUp}
@@ -43,6 +44,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					@pointercancel=${this.onPointerCancel}
 					@pointerleave=${this.onPointerLeave}
 					@contextmenu=${this.onContextMenu}
+					@keydown=${this.optionOnKeyDown}
 				/>`,
 			);
 		}
@@ -50,17 +52,60 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 		return html`${selector}${this.buildStyles(this.config.styles)}`;
 	}
 
+	async onKeyDown(_e: KeyboardEvent) {}
+	async onKeyUp(_e: KeyboardEvent) {}
+	async optionOnKeyDown(e: KeyboardEvent) {
+		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+			e.preventDefault();
+			const direction = e.key == 'ArrowLeft' ? 'previous' : 'next';
+			let target = (e.currentTarget as HTMLElement)?.[
+				`${direction}ElementSibling`
+			] as HTMLElement | null;
+			if (!target?.className?.includes('option')) {
+				const optionElements =
+					this.shadowRoot?.querySelectorAll('.option');
+				if (optionElements) {
+					target = optionElements[
+						e.key == 'ArrowLeft' ? optionElements.length - 1 : 0
+					] as HTMLElement;
+				}
+			}
+			target?.focus();
+		}
+	}
+
+	onFocus(_e: FocusEvent) {
+		const options = this.config.options ?? [];
+		const optionElements = this.shadowRoot?.querySelectorAll(
+			'.option',
+		) as unknown as HTMLElement[];
+		for (const i in options) {
+			const selected =
+				String(this.value) ==
+				String(this.renderTemplate(options[i].option as string));
+			if (selected) {
+				optionElements[i].focus();
+			}
+		}
+	}
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.removeAttribute('tabindex');
+		this.addEventListener('focus', this.onFocus);
+	}
+
 	updated() {
 		const options = this.config.options ?? [];
-		const optionElements = Array.from(
-			this.shadowRoot?.children ?? [],
-		).slice(1);
+		const optionElements = this.shadowRoot?.querySelectorAll(
+			'.option',
+		) as unknown as HTMLElement[];
 		for (const i in options) {
-			optionElements[i].className = `${
+			const selected =
 				String(this.value) ==
-				String(this.renderTemplate(options[i].option as string))
-					? 'selected'
-					: ''
+				String(this.renderTemplate(options[i].option as string));
+			optionElements[i].className = `${
+				selected ? 'selected' : ''
 			} option`;
 		}
 	}
@@ -75,6 +120,9 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					--color: var(--feature-color);
 					--background: var(--disabled-color);
 					--hover-opacity: 0.2;
+				}
+				:host(:focus-within) {
+					box-shadow: 0 0 0 2px var(--feature-color);
 				}
 
 				.option {
