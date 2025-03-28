@@ -26,6 +26,7 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 
 	render() {
 		this.setValue();
+		this.rtl = getComputedStyle(this).direction == 'rtl';
 
 		const selector = [this.buildBackground()];
 		const options = this.config.options ?? [];
@@ -69,7 +70,8 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 	async optionOnKeyDown(e: KeyboardEvent) {
 		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
 			e.preventDefault();
-			const direction = e.key == 'ArrowLeft' ? 'previous' : 'next';
+			const direction =
+				(e.key == 'ArrowLeft') != this.rtl ? 'previous' : 'next';
 			let target = (e.currentTarget as HTMLElement)?.[
 				`${direction}ElementSibling`
 			] as HTMLElement | null;
@@ -78,7 +80,9 @@ export class CustomFeatureSelector extends BaseCustomFeature {
 					this.shadowRoot?.querySelectorAll('.option');
 				if (optionElements) {
 					target = optionElements[
-						e.key == 'ArrowLeft' ? optionElements.length - 1 : 0
+						(e.key == 'ArrowLeft') != this.rtl
+							? optionElements.length - 1
+							: 0
 					] as HTMLElement;
 				}
 			}

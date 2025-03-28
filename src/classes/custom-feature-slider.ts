@@ -373,7 +373,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	}
 
 	async onKeyDown(e: KeyboardEvent) {
-		if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+		const keys = ['ArrowLeft', 'ArrowRight'];
+		if (keys.includes(e.key)) {
 			e.preventDefault();
 			this.getValueFromHass = false;
 			this.showTooltip = true;
@@ -384,7 +385,8 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 							this.value ??
 							this.range[0]) as string,
 					) +
-						(e.key == 'ArrowLeft' ? -1 : 1) * this.step,
+						((e.key == 'ArrowLeft') != this.rtl ? -1 : 1) *
+							this.step,
 					this.range[0],
 				),
 				this.range[1],
