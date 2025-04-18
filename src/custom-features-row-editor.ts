@@ -567,7 +567,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						@click=${this.addOption}
 						outlined
 						class="add-list-item"
-						.label="${'ADD OPTION'}"
+						.label="${'Add option'}"
 					>
 						<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 					</ha-button>
@@ -584,7 +584,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						<ha-button
 							slot="trigger"
 							outlined
-							.label="${'ADD CUSTOM FEATURE'}"
+							.label="${'Add custom feature'}"
 						>
 							<ha-icon .icon=${'mdi:plus'} slot="icon"></ha-icon>
 						</ha-button>
@@ -1714,7 +1714,7 @@ export class CustomFeaturesRowEditor extends LitElement {
 						<ha-button
 							@click=${this.handleUpdateDeprecatedConfig}
 							outlined
-							.label="${'UPDATE OLD CONFIG'}"
+							.label="${'Update old config'}"
 						>
 							<ha-icon .icon=${'mdi:cog'} slot="icon"></ha-icon>
 						</ha-button>
