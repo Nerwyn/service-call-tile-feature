@@ -1,4 +1,4 @@
-import { css, CSSResult, html, TemplateResult } from 'lit';
+import { css, CSSResult, html, PropertyValueMap, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import {
 	CheckedValues,
@@ -34,6 +34,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	onPointerMove(e: PointerEvent) {
+		const deltaX0 = this.deltaX;
 		super.onPointerMove(e);
 
 		// Only consider significant enough movement
@@ -52,7 +53,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.direction = horizontal > 0 ? 'right' : 'left';
 		}
 
-		this.requestUpdate();
+		this.requestUpdate('deltaX', deltaX0);
 	}
 
 	endAction() {
@@ -348,6 +349,15 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				background?.style.removeProperty('opacity');
 			}
 		}
+	}
+
+	shouldUpdate(
+		changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>,
+	) {
+		return (
+			changedProperties.has('deltaX') ||
+			super.shouldUpdate(changedProperties)
+		);
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
