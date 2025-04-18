@@ -36,4 +36,4 @@ Any new features should be documented in the README.
 
 ## Make a pull request
 
-Once you think your code is ready, make a pull request on the original repository! Make sure to use [the included PR template](https://github.com/Nerwyn/service-call-tile-feature/blob/main/.github/PULL_REQUEST_TEMPLATE/pull_request.md).
+Once you think your code is ready, make a pull request on the original repository! Make sure to use [the included PR template](https://github.com/Nerwyn/custom-card-features/blob/main/.github/PULL_REQUEST_TEMPLATE/pull_request.md).

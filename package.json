@@ -1,6 +1,6 @@
 {
-	"name": "custom-features-row",
-	"version": "4.3.4",
+	"name": "custom-card-features",
+	"version": "4.3.5",
 	"description": "Custom Features for Home Assistant Tile Card And More!",
 	"main": "./dist/custom-features-row.min.js",
 	"type": "module",
@@ -17,15 +17,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Nerwyn/service-call-tile-feature.git"
+		"url": "git+https://github.com/Nerwyn/custom-card-features.git"
 	},
 	"keywords": [],
 	"author": "Nerwyn",
 	"license": "Apache-2.0",
 	"bugs": {
-		"url": "https://github.com/Nerwyn/service-call-tile-feature/issues"
+		"url": "https://github.com/Nerwyn/custom-card-features/issues"
 	},
-	"homepage": "https://github.com/Nerwyn/service-call-tile-feature#readme",
+	"homepage": "https://github.com/Nerwyn/custom-card-features#readme",
 	"dependencies": {
 		"ha-nunjucks": "latest",
 		"js-yaml": "latest",
