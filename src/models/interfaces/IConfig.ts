@@ -91,5 +91,5 @@ export interface IToggleOptions {
 	check_numeric?: boolean;
 	allow_list?: boolean;
 	swipe_only?: boolean;
-	sensitivity?: number;
+	full_swipe?: boolean;
 }

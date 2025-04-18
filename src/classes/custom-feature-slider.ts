@@ -26,12 +26,11 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	step: number = STEP;
 	intervalId?: ReturnType<typeof setTimeout>;
 
-	@state() sliderWidth: number = 0;
 	thumbWidth: number = 0;
 	sliderClass: string = 'slider ';
 	resizeObserver = new ResizeObserver((entries) => {
 		for (const entry of entries) {
-			this.sliderWidth = entry.contentRect.width;
+			this.featureWidth = entry.contentRect.width;
 			this.setThumbOffset();
 		}
 	});
@@ -179,14 +178,14 @@ export class CustomFeatureSlider extends BaseCustomFeature {
 	}
 
 	setThumbOffset() {
-		const maxOffset = (this.sliderWidth - this.thumbWidth) / 2;
+		const maxOffset = (this.featureWidth - this.thumbWidth) / 2;
 		const value = Number(
 			this.getValueFromHass ? this.value : this.currentValue,
 		);
 		this.thumbOffset = Math.min(
 			Math.max(
 				Math.round(
-					((this.sliderWidth - this.thumbWidth) /
+					((this.featureWidth - this.thumbWidth) /
 						(this.range[1] - this.range[0])) *
 						(value - (this.range[0] + this.range[1]) / 2),
 				),

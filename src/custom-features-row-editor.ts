@@ -15,7 +15,6 @@ import {
 	REPEAT_DELAY,
 	STEP,
 	STEP_COUNT,
-	SWIPE_SENSITIVITY,
 	UPDATE_AFTER_ACTION_DELAY,
 } from './models/constants';
 import {
@@ -1421,6 +1420,13 @@ export class CustomFeaturesRowEditor extends LitElement {
 					context,
 				),
 			) == 'true';
+		const fullSwipe =
+			String(
+				this.renderTemplate(
+					this.activeEntry?.full_swipe ?? false,
+					context,
+				),
+			) == 'true';
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
@@ -1450,21 +1456,16 @@ export class CustomFeaturesRowEditor extends LitElement {
 			})}
 			<div class="form">
 				${this.buildSelector(
-					'Swipe Sensitivity',
-					'sensitivity',
+					'Swipe Only',
+					'swipe_only',
 					{
-						number: {
-							min: 0,
-							step: 1,
-							mode: 'box',
-							unit_of_measurement: 'px',
-						},
+						boolean: {},
 					},
-					SWIPE_SENSITIVITY,
+					false,
 				)}
 				${this.buildSelector(
-					swipeOnly ? 'Swipe Only' : 'Tap or Swipe',
-					'swipe_only',
+					'Full Swipe',
+					'full_swipe',
 					{
 						boolean: {},
 					},

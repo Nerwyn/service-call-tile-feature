@@ -12,5 +12,3 @@ export const STEP_COUNT = 100;
 export const STEP = 1;
 export const RANGE_MIN = 0;
 export const RANGE_MAX = 100;
-
-export const SWIPE_SENSITIVITY = 16;

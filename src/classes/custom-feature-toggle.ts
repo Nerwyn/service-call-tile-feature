@@ -1,6 +1,5 @@
 import { css, CSSResult, html, PropertyValueMap, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { SWIPE_SENSITIVITY } from '../models/constants';
 import {
 	CheckedValues,
 	ToggleThumbType,
@@ -11,12 +10,38 @@ import { BaseCustomFeature } from './base-custom-feature';
 @customElement('custom-feature-toggle')
 export class CustomFeatureToggle extends BaseCustomFeature {
 	@state() checked: boolean = false;
-	swipeSensitivity: number = SWIPE_SENSITIVITY;
 	direction?: 'left' | 'right';
 
+	@state() thumbWidth: number = 0;
+	resizeObserver = new ResizeObserver((entries) => {
+		for (const entry of entries) {
+			this.featureWidth = entry.contentRect.width;
+		}
+	});
+
 	async onPointerUp(_e: PointerEvent) {
-		if (!this.swiping) {
+		if (!this.swiping && this.initialX && this.initialY) {
 			if (this.direction) {
+				// Reject non-full width swipes if enabled
+				if (
+					String(
+						this.renderTemplate(
+							String(this.config.full_swipe ?? false),
+						),
+					) == 'true'
+				) {
+					const swipeSensitivity =
+						this.featureWidth - this.thumbWidth;
+					if (
+						Math.abs((this.currentX ?? 0) - (this.initialX ?? 0)) <
+						swipeSensitivity
+					) {
+						this.endAction();
+						this.resetGetValueFromHass();
+						return;
+					}
+				}
+
 				// Only fire on swipe if it's in the right direction
 				const checked = this.direction == (this.rtl ? 'left' : 'right');
 				if (this.checked == checked) {
@@ -51,6 +76,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 		// Only consider significant enough movement
 		const sensitivity = 40;
+		const swipeSensitivity = 16;
 		const horizontal = (this.currentX ?? 0) - (this.initialX ?? 0);
 		if (
 			Math.abs(horizontal) <
@@ -59,7 +85,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-		} else if (Math.abs(horizontal) > this.swipeSensitivity) {
+		} else if (Math.abs(horizontal) > swipeSensitivity) {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
 		}
@@ -264,11 +290,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	render() {
 		this.setValue();
 		this.rtl = getComputedStyle(this).direction == 'rtl';
-		this.swipeSensitivity = parseFloat(
-			(this.renderTemplate(
-				this.config.sensitivity as unknown as string,
-			) as string) ?? SWIPE_SENSITIVITY,
-		);
 
 		let toggle: TemplateResult<1>;
 		switch (
@@ -319,6 +340,16 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	updated() {
+		// Get thumb width
+		const thumb = this.shadowRoot?.querySelector('.thumb');
+		if (thumb) {
+			this.thumbWidth = parseFloat(
+				getComputedStyle(thumb)
+					.getPropertyValue('width')
+					.replace('px', ''),
+			);
+		}
+
 		// md3-switch fix for themes that don't set different button and track colors
 		if (
 			this.renderTemplate(this.config.thumb ?? 'default') == 'md3-switch'
@@ -371,9 +402,22 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>,
 	) {
 		return (
-			changedProperties.has('deltaX') ||
+			(changedProperties.has('deltaX') &&
+				/deltaX|initialX|currentX/.test(this.config.styles ?? '')) ||
 			super.shouldUpdate(changedProperties)
 		);
+	}
+
+	connectedCallback(): void {
+		super.connectedCallback();
+		this.resizeObserver.observe(
+			this.shadowRoot?.querySelector('.container') ?? this,
+		);
+	}
+
+	disconnectedCallback(): void {
+		super.disconnectedCallback();
+		this.resizeObserver.disconnect();
 	}
 
 	static get styles(): CSSResult | CSSResult[] {
