@@ -90,4 +90,6 @@ export interface IToggleOptions {
 	checked_values?: string[];
 	check_numeric?: boolean;
 	allow_list?: boolean;
+	swipe_only?: boolean;
+	sensitivity?: number;
 }

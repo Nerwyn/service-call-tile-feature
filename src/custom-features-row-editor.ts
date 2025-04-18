@@ -15,6 +15,7 @@ import {
 	REPEAT_DELAY,
 	STEP,
 	STEP_COUNT,
+	SWIPE_SENSITIVITY,
 	UPDATE_AFTER_ACTION_DELAY,
 } from './models/constants';
 import {
@@ -1409,14 +1410,17 @@ export class CustomFeaturesRowEditor extends LitElement {
 
 	buildToggleGuiEditor() {
 		const context = this.getEntryContext(this.activeEntry as IEntry);
-		const thumb = this.renderTemplate(
-			this.activeEntry?.thumb ?? 'default',
-			context,
-		);
 		const allow = this.renderTemplate(
 			this.activeEntry?.allow_list ?? true,
 			context,
 		);
+		const swipeOnly =
+			String(
+				this.renderTemplate(
+					this.activeEntry?.swipe_only ?? false,
+					context,
+				),
+			) == 'true';
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
@@ -1445,6 +1449,27 @@ export class CustomFeaturesRowEditor extends LitElement {
 				},
 			})}
 			<div class="form">
+				${this.buildSelector(
+					'Swipe Sensitivity',
+					'sensitivity',
+					{
+						number: {
+							min: 0,
+							step: 1,
+							mode: 'box',
+							unit_of_measurement: 'px',
+						},
+					},
+					SWIPE_SENSITIVITY,
+				)}
+				${this.buildSelector(
+					swipeOnly ? 'Swipe Only' : 'Tap or Swipe',
+					'swipe_only',
+					{
+						boolean: {},
+					},
+					false,
+				)}
 				${this.buildSelector(
 					'Check numeric value',
 					'check_numeric',

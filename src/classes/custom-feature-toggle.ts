@@ -1,5 +1,6 @@
 import { css, CSSResult, html, PropertyValueMap, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { SWIPE_SENSITIVITY } from '../models/constants';
 import {
 	CheckedValues,
 	ToggleThumbType,
@@ -10,6 +11,7 @@ import { BaseCustomFeature } from './base-custom-feature';
 @customElement('custom-feature-toggle')
 export class CustomFeatureToggle extends BaseCustomFeature {
 	@state() checked: boolean = false;
+	swipeSensitivity: number = SWIPE_SENSITIVITY;
 	direction?: 'left' | 'right';
 
 	async onPointerUp(_e: PointerEvent) {
@@ -22,6 +24,16 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 					this.resetGetValueFromHass();
 					return;
 				}
+			} else if (
+				String(
+					this.renderTemplate(
+						String(this.config.swipe_only ?? false),
+					),
+				) == 'true'
+			) {
+				this.endAction();
+				this.resetGetValueFromHass();
+				return;
 			}
 			clearTimeout(this.getValueFromHassTimer);
 			this.getValueFromHass = false;
@@ -39,7 +51,6 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 
 		// Only consider significant enough movement
 		const sensitivity = 40;
-		const swipeSensitivity = 16;
 		const horizontal = (this.currentX ?? 0) - (this.initialX ?? 0);
 		if (
 			Math.abs(horizontal) <
@@ -48,7 +59,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-		} else if (Math.abs(horizontal) > swipeSensitivity) {
+		} else if (Math.abs(horizontal) > this.swipeSensitivity) {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
 		}
@@ -253,6 +264,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	render() {
 		this.setValue();
 		this.rtl = getComputedStyle(this).direction == 'rtl';
+		this.swipeSensitivity = parseFloat(
+			(this.renderTemplate(
+				this.config.sensitivity as unknown as string,
+			) as string) ?? SWIPE_SENSITIVITY,
+		);
 
 		let toggle: TemplateResult<1>;
 		switch (
