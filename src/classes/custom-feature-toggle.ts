@@ -51,6 +51,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			// Swipe detection
 			this.direction = horizontal > 0 ? 'right' : 'left';
 		}
+
+		this.requestUpdate();
 	}
 
 	endAction() {

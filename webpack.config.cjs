@@ -14,7 +14,7 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'),
-		filename: '[name].min.js',
+		filename: 'custom-card-features.min.js',
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js'],
