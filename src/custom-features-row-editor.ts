@@ -1413,20 +1413,10 @@ export class CustomFeaturesRowEditor extends LitElement {
 			this.activeEntry?.allow_list ?? true,
 			context,
 		);
-		const swipeOnly =
-			String(
-				this.renderTemplate(
-					this.activeEntry?.swipe_only ?? false,
-					context,
-				),
-			) == 'true';
-		const fullSwipe =
-			String(
-				this.renderTemplate(
-					this.activeEntry?.full_swipe ?? false,
-					context,
-				),
-			) == 'true';
+		const thumb = this.renderTemplate(
+			this.activeEntry?.thumb ?? 'default',
+			context,
+		);
 		const actionsNoRepeat = Actions.concat();
 		actionsNoRepeat.splice(Actions.indexOf('repeat'), 1);
 
@@ -1455,22 +1445,24 @@ export class CustomFeaturesRowEditor extends LitElement {
 				},
 			})}
 			<div class="form">
-				${this.buildSelector(
-					'Swipe Only',
-					'swipe_only',
-					{
-						boolean: {},
-					},
-					false,
-				)}
-				${this.buildSelector(
-					'Full Swipe',
-					'full_swipe',
-					{
-						boolean: {},
-					},
-					false,
-				)}
+				${thumb == 'default'
+					? html`${this.buildSelector(
+							'Swipe Only',
+							'swipe_only',
+							{
+								boolean: {},
+							},
+							false,
+						)}
+						${this.buildSelector(
+							'Full Swipe',
+							'full_swipe',
+							{
+								boolean: {},
+							},
+							false,
+						)}`
+					: ``}
 				${this.buildSelector(
 					'Check numeric value',
 					'check_numeric',

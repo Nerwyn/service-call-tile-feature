@@ -779,6 +779,7 @@ export class BaseCustomFeature extends LitElement {
 
 	onPointerCancel(_e: PointerEvent) {
 		this.endAction();
+		this.resetGetValueFromHass();
 		this.swiping = true;
 	}
 

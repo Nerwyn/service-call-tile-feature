@@ -11,6 +11,7 @@ import { BaseCustomFeature } from './base-custom-feature';
 export class CustomFeatureToggle extends BaseCustomFeature {
 	@state() checked: boolean = false;
 	direction?: 'left' | 'right';
+	thumbType: ToggleThumbType = 'default';
 
 	@state() thumbWidth: number = 0;
 	resizeObserver = new ResizeObserver((entries) => {
@@ -85,12 +86,13 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			this.swiping = true;
 			this.getValueFromHass = true;
 			this.setValue();
-		} else if (Math.abs(horizontal) > swipeSensitivity) {
-			// Swipe detection
-			this.direction = horizontal > 0 ? 'right' : 'left';
+		} else if (this.thumbType == 'default') {
+			if (Math.abs(horizontal) > swipeSensitivity) {
+				// Swipe detection
+				this.direction = horizontal > 0 ? 'right' : 'left';
+			}
+			this.requestUpdate('deltaX', deltaX0);
 		}
-
-		this.requestUpdate('deltaX', deltaX0);
 	}
 
 	endAction() {
@@ -252,15 +254,41 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 	}
 
 	buildDefaultToggle() {
-		const styles = this.rtl
+		const rtlStyles = this.rtl
 			? `
 			.container,
 			.icon,
 			.label {
-				scaleX: -1 1 !important;
+				scale: -1 1 !important;
 			}
 		`
 			: '';
+		let fullSwipeStyles = '';
+		if (
+			String(
+				this.renderTemplate(String(this.config.full_swipe ?? false)),
+			) == 'true'
+		) {
+			const maxTranslate =
+				100 * (this.featureWidth / this.thumbWidth - 1);
+			if (!this.swiping && this.initialX && this.initialY) {
+				fullSwipeStyles = `
+					.thumb {
+						translate: clamp(0%, ${(this.rtl ? -1 : 1) * ((this.currentX ?? 0) - (this.initialX ?? 0))}px, ${maxTranslate}%) !important;
+						transition: none !important;
+					}
+					.on > .thumb {
+						translate: clamp(0%, calc(${maxTranslate}% + ${(this.rtl ? -1 : 1) * ((this.currentX ?? 0) - (this.initialX ?? 0))}px), ${maxTranslate}%) !important;
+					}
+				`;
+			} else {
+				fullSwipeStyles = `
+					.on > .thumb {
+						translate: ${maxTranslate}% !important;
+					}
+				`;
+			}
+		}
 		return html`
 			<div
 				class="container ${this.checked ? 'on' : 'off'}"
@@ -282,7 +310,8 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 				</div>
 			</div>
 			<style>
-				${styles}
+				${rtlStyles}
+				${fullSwipeStyles}
 			</style>
 		`;
 	}
@@ -291,12 +320,11 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 		this.setValue();
 		this.rtl = getComputedStyle(this).direction == 'rtl';
 
+		this.thumbType = this.renderTemplate(
+			this.config.thumb ?? 'default',
+		) as ToggleThumbType;
 		let toggle: TemplateResult<1>;
-		switch (
-			this.renderTemplate(
-				this.config.thumb ?? 'default',
-			) as ToggleThumbType
-		) {
+		switch (this.thumbType) {
 			case 'md3-switch':
 				toggle = this.buildMD3Switch();
 				break;
