@@ -193,7 +193,7 @@ export class CustomFeatureToggle extends BaseCustomFeature {
 			? `
 				.container,
 				.thumb > .icon {
-					scale -1 1 !important;
+					scale: -1 1 !important;
 				}
 			`
 			: '';
